@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+    <parent>
+        <groupId>ro.fortsoft.pippo</groupId>
+        <artifactId>pippo-parent</artifactId>
+        <version>0.1.0-SNAPSHOT</version>
+    </parent>
+
+    <modelVersion>4.0.0</modelVersion>
+    <artifactId>pippo</artifactId>
+    <packaging>pom</packaging>
+    <name>Pippo</name>
+    <description>
+        A module that provides dependencies to all core submodules needed to
+        run Pippo application. This way Maven users can depend only on this
+        module without bothering that Pippo core depends on several modules.
+    </description>
+
+    <dependencies>
+        <dependency>
+            <groupId>ro.fortsoft.pippo</groupId>
+            <artifactId>pippo-core</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>ro.fortsoft.pippo</groupId>
+            <artifactId>pippo-jetty</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>ro.fortsoft.pippo</groupId>
+            <artifactId>pippo-freemarker</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+    </dependencies>
+
+</project>
