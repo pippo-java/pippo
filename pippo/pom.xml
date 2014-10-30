@@ -4,12 +4,12 @@
     <parent>
         <groupId>ro.fortsoft.pippo</groupId>
         <artifactId>pippo-parent</artifactId>
-        <version>0.1.0</version>
+        <version> 0.2.0-SNAPSHOT</version>
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
     <artifactId>pippo</artifactId>
-    <version>0.1.0</version>
+    <version>0.2.0-SNAPSHOT</version>
     <packaging>pom</packaging>
     <name>Pippo</name>
     <description>
