@@ -12,21 +12,50 @@
  */
 package ro.fortsoft.pippo.core;
 
+import javax.servlet.http.HttpSession;
 import java.util.Enumeration;
 
 /**
  * @author Decebal Suiu
  */
-public interface Session {
+public class Session {
 
-    public void setAttribute(String name, Object value);
+    private HttpSession httpSession;
 
-    public Object getAttribute(String name);
+    public Session(HttpSession httpSession) {
+        this.httpSession = httpSession;
+    }
 
-    public Enumeration<String> getAttributeNames();
+    public String getId() {
+        return httpSession.getId();
+    }
 
-    public void removeAttribute(String name);
+    public void setAttribute(String name, Object value) {
+        httpSession.setAttribute(name, value);
+    }
 
-    public void invalidate();
+    public Object getAttribute(String name) {
+        return httpSession.getAttribute(name);
+    }
+
+    public Enumeration<String> getAttributeNames() {
+        return httpSession.getAttributeNames();
+    }
+
+    public void removeAttribute(String name) {
+        httpSession.removeAttribute(name);
+    }
+
+    public void invalidate() {
+        httpSession.invalidate();
+    }
+
+    public boolean isNew() {
+        return httpSession.isNew();
+    }
+
+    public HttpSession getHttpSession() {
+        return httpSession;
+    }
 
 }

@@ -15,6 +15,7 @@ package ro.fortsoft.pippo.core;
 import org.apache.commons.io.IOUtils;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import java.util.*;
 
 /**
@@ -26,6 +27,7 @@ public class Request {
 
     private HttpServletRequest httpServletRequest;
     private Map<String, StringValue> parameters;
+    private Session session;
 
     private String body; // cache
 
@@ -106,6 +108,21 @@ public class Request {
 
     public HttpServletRequest getHttpServletRequest() {
         return httpServletRequest;
+    }
+
+    public Session getSession() {
+        return getSession(true);
+    }
+
+    public Session getSession(boolean create) {
+        if (session == null) {
+            HttpSession httpSession = httpServletRequest.getSession(create);
+            if (httpSession != null) {
+                session = new Session(httpSession);
+            }
+        }
+
+        return session;
     }
 
     void addPathParameters(Map<String, String> pathParameters) {

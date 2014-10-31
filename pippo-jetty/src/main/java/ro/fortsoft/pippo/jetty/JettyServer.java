@@ -162,8 +162,8 @@ public class JettyServer extends AbstractWebServer {
     }
 
     protected ServletContextHandler createPippoHandler() {
-//        ServletContextHandler handler = new ServletContextHandler(ServletContextHandler.NO_SESSIONS);
-        ServletContextHandler handler = new ServletContextHandler();
+//        ServletContextHandler handler = new ServletContextHandler(); // NO_SESSIONS and NO_SECURITY
+        ServletContextHandler handler = new ServletContextHandler(ServletContextHandler.SESSIONS);
 
 //        FilterHolder filterHolder = new FilterHolder();
 //        filterHolder.setInitParameter(PippoFilter.APP_CLASS_PARAM, Application.class.getName());
