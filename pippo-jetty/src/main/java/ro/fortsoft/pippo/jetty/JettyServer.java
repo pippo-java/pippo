@@ -12,8 +12,10 @@
  */
 package ro.fortsoft.pippo.jetty;
 
-import org.eclipse.jetty.server.*;
+import org.eclipse.jetty.server.Handler;
 import org.eclipse.jetty.server.Request;
+import org.eclipse.jetty.server.Server;
+import org.eclipse.jetty.server.ServerConnector;
 import org.eclipse.jetty.server.handler.HandlerList;
 import org.eclipse.jetty.server.handler.ResourceHandler;
 import org.eclipse.jetty.servlet.FilterHolder;
@@ -22,7 +24,9 @@ import org.eclipse.jetty.util.resource.Resource;
 import org.eclipse.jetty.util.ssl.SslContextFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import ro.fortsoft.pippo.core.*;
+import ro.fortsoft.pippo.core.AbstractWebServer;
+import ro.fortsoft.pippo.core.PippoRuntimeException;
+import ro.fortsoft.pippo.core.RuntimeMode;
 
 import javax.servlet.DispatcherType;
 import javax.servlet.ServletException;
