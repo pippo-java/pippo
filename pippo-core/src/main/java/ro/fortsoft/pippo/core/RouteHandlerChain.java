@@ -15,8 +15,11 @@ package ro.fortsoft.pippo.core;
 /**
  * @author Decebal Suiu
  */
-public interface RouteHandler {
+public interface RouteHandlerChain {
 
-    public void handle(Request request, Response response, RouteHandlerChain chain);
+    /**
+     * Calls the next route handler.
+     */
+    public void next();
 
 }

@@ -16,6 +16,7 @@ import ro.fortsoft.pippo.core.Application;
 import ro.fortsoft.pippo.core.Request;
 import ro.fortsoft.pippo.core.Response;
 import ro.fortsoft.pippo.core.RouteHandler;
+import ro.fortsoft.pippo.core.RouteHandlerChain;
 import ro.fortsoft.pippo.demo.crud.Contact;
 
 import java.io.File;
@@ -34,7 +35,7 @@ public class SimpleApplication extends Application {
         GET("/", new RouteHandler() {
 
             @Override
-            public void handle(Request request, Response response) {
+            public void handle(Request request, Response response, RouteHandlerChain chain) {
                 response.send("Hello World");
             }
 
@@ -43,7 +44,7 @@ public class SimpleApplication extends Application {
         GET("/file", new RouteHandler() {
 
             @Override
-            public void handle(Request request, Response response) {
+            public void handle(Request request, Response response, RouteHandlerChain chain) {
                 response.file(new File("pom.xml"));
             }
 
@@ -52,7 +53,7 @@ public class SimpleApplication extends Application {
         GET("/json", new RouteHandler() {
 
             @Override
-            public void handle(Request request, Response response) {
+            public void handle(Request request, Response response, RouteHandlerChain chain) {
                 Contact contact = new Contact()
                         .setName("John")
                         .setPhone("0733434435")
@@ -68,7 +69,7 @@ public class SimpleApplication extends Application {
         GET("/template", new RouteHandler() {
 
             @Override
-            public void handle(Request request, Response response) {
+            public void handle(Request request, Response response, RouteHandlerChain chain) {
                 Map<String, Object> model = new HashMap<String, Object>();
                 model.put("greeting", "Hello my friend");
                 response.render("hello.ftl", model);
@@ -79,7 +80,7 @@ public class SimpleApplication extends Application {
         GET("/error", new RouteHandler() {
 
             @Override
-            public void handle(Request request, Response response) {
+            public void handle(Request request, Response response, RouteHandlerChain chain) {
                 throw new RuntimeException("Errorrrrrrrr...");
             }
 

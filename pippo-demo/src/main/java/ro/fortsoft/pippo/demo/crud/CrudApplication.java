@@ -16,6 +16,7 @@ import ro.fortsoft.pippo.core.Application;
 import ro.fortsoft.pippo.core.Request;
 import ro.fortsoft.pippo.core.Response;
 import ro.fortsoft.pippo.core.RouteHandler;
+import ro.fortsoft.pippo.core.RouteHandlerChain;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -43,10 +44,35 @@ public class CrudApplication extends Application {
 
         contactService = new InMemoryContactService();
 
+        // audit filter
+        GET("/*", new RouteHandler() {
+
+            @Override
+            public void handle(Request request, Response response, RouteHandlerChain chain) {
+                System.out.println("request.getUri() = " + request.getUri());
+                chain.next();
+            }
+
+        });
+        // authentication filter
+        GET("/contact*", new RouteHandler() {
+
+            @Override
+            public void handle(Request request, Response response, RouteHandlerChain chain) {
+                if (request.getSession().getAttribute("username") == null) {
+                    request.getSession().setAttribute("originalDestination", request.getUri());
+                    response.redirect("/login");
+                } else {
+                    chain.next();
+                }
+            }
+
+        });
+
         GET("/", new RouteHandler() {
 
             @Override
-            public void handle(Request request, Response response) {
+            public void handle(Request request, Response response, RouteHandlerChain chain) {
                 response.redirect("/contacts");
             }
 
@@ -55,7 +81,7 @@ public class CrudApplication extends Application {
         GET("/contacts", new RouteHandler() {
 
             @Override
-            public void handle(Request request, Response response) {
+            public void handle(Request request, Response response, RouteHandlerChain chain) {
                 Map<String, Object> model = new HashMap<String, Object>();
                 model.put("contacts", contactService.getContacts());
                 response.render("crud/contacts.ftl", model);
@@ -66,26 +92,28 @@ public class CrudApplication extends Application {
         GET("/contact/:id", new RouteHandler() {
 
             @Override
-            public void handle(Request request, Response response) {
-                String action = request.getParameter("action").toString("new");
+            public void handle(Request request, Response response, RouteHandlerChain chain) {
                 int id = request.getParameter("id").toInt(0);
+                String action = request.getParameter("action").toString("new");
                 if ("delete".equals(action)) {
                     contactService.delete(id);
                     response.redirect("/contacts");
-                } else {
-                    Contact contact = (id > 0) ? contactService.getContact(id) : new Contact();
-                    Map<String, Object> model = new HashMap<String, Object>();
-                    model.put("contact", contact);
-                    StringBuilder editAction = new StringBuilder();
-                    editAction.append("/contact?action=save");
-                    if (id > 0) {
-                        editAction.append("&id=");
-                        editAction.append(id);
-                    }
-                    model.put("editAction", editAction);
-                    model.put("backAction", "/contacts");
-                    response.render("crud/contact.ftl", model);
+
+                    return;
                 }
+
+                Contact contact = (id > 0) ? contactService.getContact(id) : new Contact();
+                Map<String, Object> model = new HashMap<String, Object>();
+                model.put("contact", contact);
+                StringBuilder editAction = new StringBuilder();
+                editAction.append("/contact?action=save");
+                if (id > 0) {
+                    editAction.append("&id=");
+                    editAction.append(id);
+                }
+                model.put("editAction", editAction);
+                model.put("backAction", "/contacts");
+                response.render("crud/contact.ftl", model);
             }
 
         });
@@ -93,7 +121,7 @@ public class CrudApplication extends Application {
         POST("/contact", new RouteHandler() {
 
             @Override
-            public void handle(Request request, Response response) {
+            public void handle(Request request, Response response, RouteHandlerChain chain) {
                 String action = request.getParameter("action").toString();
                 if ("save".equals(action)) {
                     Contact contact = new Contact();
@@ -104,6 +132,36 @@ public class CrudApplication extends Application {
                     contactService.save(contact);
                     response.redirect("/contacts");
                 }
+            }
+
+        });
+
+        GET("/login", new RouteHandler() {
+
+            @Override
+            public void handle(Request request, Response response, RouteHandlerChain chain) {
+                response.render("crud/login.ftl");
+            }
+
+        });
+
+        POST("/login", new RouteHandler() {
+
+            @Override
+            public void handle(Request request, Response response, RouteHandlerChain chain) {
+                String username = request.getParameter("username").toString();
+                String password = request.getParameter("password").toString();
+                if (authenticate(username, password)) {
+                    request.getSession().setAttribute("username", username);
+                    String originalDestination = (String) request.getSession().getAttribute("originalDestination");
+                    response.redirect(originalDestination != null ? originalDestination : "/contacts");
+                } else {
+                    response.redirect("/login");
+                }
+            }
+
+            private boolean authenticate(String username, String password) {
+                return !username.isEmpty() && !password.isEmpty();
             }
 
         });

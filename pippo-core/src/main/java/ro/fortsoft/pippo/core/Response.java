@@ -25,6 +25,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringWriter;
+import java.util.Collections;
 import java.util.Map;
 
 /**
@@ -238,6 +239,10 @@ public class Response {
     public void json(Object object) {
         header(HttpConstants.Header.CONTENT_TYPE, HttpConstants.ContentType.APPLICATION_JSON);
         send(new Gson().toJson(object));
+    }
+
+    public void render(String templateName) {
+        render(templateName, Collections.EMPTY_MAP);
     }
 
     public void render(String templateName, Map<String, Object> model) {
