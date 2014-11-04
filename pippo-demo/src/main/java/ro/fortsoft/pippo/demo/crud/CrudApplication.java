@@ -61,6 +61,7 @@ public class CrudApplication extends Application {
             public void handle(Request request, Response response, RouteHandlerChain chain) {
                 if (request.getSession().getAttribute("username") == null) {
                     request.getSession().setAttribute("originalDestination", request.getUri());
+                    request.getSession().setAttribute("error", "Access denied");
                     response.redirect("/login");
                 } else {
                     chain.next();
@@ -140,7 +141,13 @@ public class CrudApplication extends Application {
 
             @Override
             public void handle(Request request, Response response, RouteHandlerChain chain) {
-                response.render("crud/login.ftl");
+                Map<String, Object> model = new HashMap<String, Object>();
+                String error = (String) request.getSession().getAttribute("error");
+                request.getSession().removeAttribute("error");
+                if (error != null) {
+                    model.put("error", error);
+                }
+                response.render("crud/login.ftl", model);
             }
 
         });
@@ -156,6 +163,7 @@ public class CrudApplication extends Application {
                     String originalDestination = (String) request.getSession().getAttribute("originalDestination");
                     response.redirect(originalDestination != null ? originalDestination : "/contacts");
                 } else {
+                    request.getSession().setAttribute("error", "Authentication failed");
                     response.redirect("/login");
                 }
             }
