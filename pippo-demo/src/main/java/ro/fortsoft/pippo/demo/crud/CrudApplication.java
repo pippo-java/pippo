@@ -61,7 +61,6 @@ public class CrudApplication extends Application {
             public void handle(Request request, Response response, RouteHandlerChain chain) {
                 if (request.getSession().getAttribute("username") == null) {
                     request.getSession().setAttribute("originalDestination", request.getUri());
-                    request.getSession().setAttribute("error", "Access denied");
                     response.redirect("/login");
                 } else {
                     chain.next();
