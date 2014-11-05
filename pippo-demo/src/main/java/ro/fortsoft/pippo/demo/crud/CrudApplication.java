@@ -82,9 +82,16 @@ public class CrudApplication extends Application {
 
             @Override
             public void handle(Request request, Response response, RouteHandlerChain chain) {
+                /*
+                // variant 1
                 Map<String, Object> model = new HashMap<String, Object>();
                 model.put("contacts", contactService.getContacts());
                 response.render("crud/contacts.ftl", model);
+                */
+
+                // variant 2
+                response.getLocals().put("contacts", contactService.getContacts());
+                response.render("crud/contacts.ftl");
             }
 
         });

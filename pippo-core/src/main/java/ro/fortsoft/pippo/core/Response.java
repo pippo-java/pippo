@@ -26,6 +26,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringWriter;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -37,6 +38,7 @@ public class Response {
 
     private HttpServletResponse httpServletResponse;
     private TemplateEngine templateEngine;
+    private Map<String, Object> locals;
 
     Response(HttpServletResponse httpServletResponse, TemplateEngine templateEngine) {
         this.httpServletResponse = httpServletResponse;
@@ -242,7 +244,7 @@ public class Response {
     }
 
     public void render(String templateName) {
-        render(templateName, Collections.EMPTY_MAP);
+        render(templateName, new HashMap<String, Object>());
     }
 
     public void render(String templateName, Map<String, Object> model) {
@@ -251,10 +253,29 @@ public class Response {
             return;
         }
 
+        // merge the model passed with the locals data
+        model.putAll(getLocals());
+
+        // render the template using the merged model
         StringWriter stringWriter = new StringWriter();
         templateEngine.render(templateName, model, stringWriter);
         send(stringWriter.toString());
     }
+
+    /**
+     * Good for storing variables for the current request/response cycle.
+     * Also these variables will be available automatically to all templates for the current request/response cycle.
+     *
+     * @return
+     */
+    public Map<String, Object> getLocals() {
+        if (locals == null) {
+            locals = new HashMap<String, Object>();
+        }
+
+        return locals;
+    }
+
 
     private boolean isHeaderEmpty(String name) {
         String value = getHttpServletResponse().getHeader(name);
