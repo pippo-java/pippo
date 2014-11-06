@@ -79,8 +79,6 @@ For SimpleDemo you have two java files: SimpleDemo.java and SimpleApplication.ja
 public class SimpleDemo {
 
     public static void main(String[] args) {
-        //new Pippo().start(); // run the default web server with the default web server settings
-
         Pippo pippo = new Pippo(new SimpleApplication());
         pippo.getServer().getSettings().staticFilesLocation("/public");
         pippo.start();
@@ -112,11 +110,10 @@ public class SimpleApplication extends Application {
         GET("/template", (request, response, chain) -> {
                 Map<String, Object> model = new HashMap<>();
                 model.put("greeting", "Hello my friend");
-
                 response.render("hello.ftl", model);
         });
 
-        GET("/error", (request, response, chain) -> { throw new RuntimeException("Errorrrrrrrr..."); });
+        GET("/error", (request, response, chain) -> { throw new RuntimeException("Error"); });
     }
 
 }
@@ -217,14 +214,12 @@ GET("/hello",(request, response, chain) -> response.send("Hello World"));
 
 You can see in the above example that I put an audit filter in front of all requests.
 
-An __Application__ is a class which associates with an instance of Pippofilter to serve pages over the HTTP protocol. Usually I subclass this class and add my routes in `init()` method.
+An __Application__ is a class which associates with an instance of PippoFilter to serve pages over the HTTP protocol. Usually I subclass this class and add my routes in `init()` method.
 
 ```java
 public class MyDemo {
 
     public static void main(String[] args) {
-        //new Pippo().start(); // run the default web server with the default web server settings
-
         Pippo pippo = new Pippo(new SimpleApplication());
         pippo.getServer().getSettings().staticFilesLocation("/public");
         pippo.start();
