@@ -5,11 +5,14 @@ The goal of this project is to create a micro web framework in Java that should 
 The concept it's not new (I was inspired by Sinatra, Express JS, Play Framework) but my intention is to provide a clean, easy to use and modular solution. Pippo can be uses in small and medium applications and also in applications based on micro services architecture.   
 I believe in simplicity and I will try to develop this framework with these words in mind.  
 
+The framework is based on Java Servlet 3.0. 
+
 Artifacts
 -------------------
 - Pippo Core `pippo-core` (jar)
 - Pippo Jetty `pippo-jetty` (jar)
-- Pippo Freemarker `pippo-fremarker` (jar)
+- Pippo Freemarker `pippo-freemarker` (jar)
+- Pippo Jade `pippo-jade` (jar)
 
 Using Maven
 -------------------
@@ -69,12 +72,14 @@ I provide a pippo-demo module that contains two demo applications: SimpleDemo an
 
 For SimpleDemo you have two java files: SimpleDemo.java and SimpleApplication.java
 
+> **NOTE**
+> Pippo is built using Java 1.7 (and NOT Java 1.8) but we will use lambdas in examples to show shorter code. 
 
 ```java
 public class SimpleDemo {
 
     public static void main(String[] args) {
-//        new Pippo().start(); // run the default web server with the default web server settings
+        //new Pippo().start(); // run the default web server with the default web server settings
 
         Pippo pippo = new Pippo(new SimpleApplication());
         pippo.getServer().getSettings().staticFilesLocation("/public");
@@ -93,15 +98,14 @@ public class SimpleApplication extends Application {
 
         GET("/file", (request, response, chain) -> response.file(new File("pom.xml"));
 
-
         GET("/json", (request, response, chain) -> {
                 Contact contact = new Contact()
                         .setName("John")
                         .setPhone("0733434435")
                         .setAddress("Sunflower Street, No. 6");
                 // you can use variant 1 or 2
-//                response.contentType(HttpConstants.ContentType.APPLICATION_JSON); // 1
-//                response.send(new Gson().toJson(contact)); // 1
+                //response.contentType(HttpConstants.ContentType.APPLICATION_JSON); // 1
+                //response.send(new Gson().toJson(contact)); // 1
                 response.json(contact); // 2
          });
 
@@ -113,7 +117,6 @@ public class SimpleApplication extends Application {
         });
 
         GET("/error", (request, response, chain) -> { throw new RuntimeException("Errorrrrrrrr..."); });
-
     }
 
 }
@@ -136,6 +139,7 @@ In Pippo are few concepts that you would need to know them as simple user:
 - Response
 - Route
 - RouteHandler
+- RouteHandlerChain
 
 If you want to extend Pippo (create new module, modify some default behaviors) you would need to know about:
 - PippoFilter
@@ -143,6 +147,7 @@ If you want to extend Pippo (create new module, modify some default behaviors) y
 - WebServer
 - TemplateEngine
 - ServiceLocator
+- Initializer
 
 The easy mode to run your application si to use Pippo wrapper class.  
 
@@ -154,7 +159,7 @@ Routes are defined using an HTTP verb and a path pattern. Any request to the ser
 GET("/", new RouteHandler() {
 
     @Override
-    public void handle(Request request, Response response) {
+    public void handle(Request request, Response response, RouteHandlerChain chain) {
         response.send("Hello World");
     }
 
@@ -180,15 +185,14 @@ You can retrieve the path parameter value for a request in type safe mode using:
 
 ```java
 GET("/contact/:id", (request, response, chain) -> {
-        int id = request.getParameter("id").toInt(0);    
-        String action = request.getParameter("action").toString("new");
-        
-        Map<String, Object> model = new HashMap<String, Object>();
-        model.put("id", id);
-        model.put("action", action)
-        response.render("crud/contact.ftl", model);
-    });
-
+    int id = request.getParameter("id").toInt(0);    
+    String action = request.getParameter("action").toString("new");
+    
+    Map<String, Object> model = new HashMap<String, Object>();
+    model.put("id", id);
+    model.put("action", action)
+    response.render("crud/contact.ftl", model);
+});
 ```
 
 The __Response__ is a wrapper over HttpServletResponse from servlet API and it provides functionality for modifying the response. You can send a char sequence with `send` method, or a file with `file` method, or a json with `json` method. Also you can send a template file merged with a model using `render` method.  
@@ -197,7 +201,7 @@ The __Request__ is a wrapper over HttpServletRequest from servlet API.
 
 When a request is made to the server, which matches a route definition, the associated handlers are called. The __RouteMather__ contains a method `List<RouteMatch> findRoutes(String requestMethod, String requestUri)` that returns all routes which matches a route definition (String requestMethod, String requestUri).  
 Why does RouterMatcher have the method findRoutes(...):List<RouteMatch> instead of findRoute(...):RouteMatch? My response is that I want to use the RouteHandler also to define the Filter concept. I don't want to define a new interface Filter with the same signature as the RouteHandler interface.
-A __RouteHandler__ has only one method `void handle(Request request, Response response)`. The __handle__ method can be an endpoint or not. A regular RouteHandler is an endpoint, that means that the response is committed in the handle method of that RouteHandler instance. A committed response has already had its status code and headers written. In Response class exists a method `isCommitted()` that tell you if the response is committed or not. The methods from Response that commit a response are: `send`, `json`, `file`, `render`. If you try to commit a response that was already committed (after content has been written) than a PippoRuntimeException will be thrown.
+A __RouteHandler__ has only one method `void handle(Request request, Response response, RouteHandlerChain chain)`. The __handle__ method can be an endpoint or not. A regular RouteHandler is an endpoint, that means that the response is committed in the handle method of that RouteHandler instance. A committed response has already had its status code and headers written. In Response class exists a method `isCommitted()` that tell you if the response is committed or not. The methods from Response that commit a response are: `send`, `json`, `file`, `render`. If you try to commit a response that was already committed (after content has been written) than a PippoRuntimeException will be thrown.
 You can see a filter as a RouteHandler that does not commit the response. A filter is typically used to perform a particular piece of functionality either before or after the primary functionality (another RouteHandler) of a web application is performed. The filter might determine that the user does not have permissions to access a particular servlet, and it might send the user to an error page rather than to the requested resource.
 
 ```java
@@ -219,7 +223,7 @@ An __Application__ is a class which associates with an instance of Pippofilter t
 public class MyDemo {
 
     public static void main(String[] args) {
-//        new Pippo().start(); // run the default web server with the default web server settings
+        //new Pippo().start(); // run the default web server with the default web server settings
 
         Pippo pippo = new Pippo(new SimpleApplication());
         pippo.getServer().getSettings().staticFilesLocation("/public");
@@ -234,8 +238,7 @@ public class MyApplication extends Application {
     public void init() {
         super.init();
 
-        GET("/", (request, response, chain) -> response.send("Hello World"));
-        
+        GET("/", (request, response, chain) -> response.send("Hello World"));        
     }
 
 }
@@ -260,7 +263,6 @@ public class MyDemo {
     }
 
 }
-
 ```     
 
 Static files
@@ -303,13 +305,64 @@ You can see that CrudDemo uses bootstrap framework. You can use the bootstrap cs
 </head>
 ```
 
+Upload
+-------------------
+Pippo has builtin support for upload. For a perfect running example see UploadDemo from pippo-demo module.    
+
+In what follows I will show you how simple it is to work with uploads.
+
+```java
+public static void main(String[] args) {
+    Pippo pippo = new Pippo();
+    Application application = pippo.getApplication();
+    // the following two lines are optional 
+    application.setUploadLocation("upload");
+    application.setMaximumUploadSize(100 * 1024); // 100k
+
+    application.GET("/", (request, response, chain) -> response.send("upload.ftl"));
+
+    application.POST("/upload", (request, response, chain) -> {
+        // retrieves the value for 'file' input
+        FileItem file = request.getFile("file");
+        try {
+            // write to disk
+            //file.write(file.getSubmittedFileName()); // write the file in application upload location
+            File uploadedFile = new File(file.getSubmittedFileName());
+            file.write(uploadedFile);
+
+            // send response
+            response.send("Uploaded file to '" + uploadedFile + "'");
+        } catch (IOException e) {
+            throw new PippoRuntimeException(e); // to display the error stack as response
+        }
+    });
+
+    pippo.start();
+}
+```
+
+The content for 'upload.ftl' is:
+```html
+<html>
+    <head>
+        <title>Welcome!</title>
+    </head>
+    <body>
+        <form action="/upload" method="post" enctype="multipart/form-data">
+            <input type="file" name="file">
+            <input type="submit" value="Submit">
+        </form>
+    </body>
+</html>
+```
+
 Embedded web server
 -------------------
-TODO
+TBD
 
 Templates
 -------------------
-TODO
+TBD
 
 Runtime mode
 -------------------
