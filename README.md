@@ -89,28 +89,12 @@ public class SimpleApplication extends Application {
     public void init() {
         super.init();
 
-        GET("/", new RouteHandler() {
+        GET("/", (request, response, chain) -> response.send("Hello World"));
 
-            @Override
-            public void handle(Request request, Response response) {
-                response.send("Hello World");
-            }
+        GET("/file", (request, response, chain) -> response.file(new File("pom.xml"));
 
-        });
 
-        GET("/file", new RouteHandler() {
-
-            @Override
-            public void handle(Request request, Response response) {
-                response.file(new File("pom.xml"));
-            }
-
-        });
-
-        GET("/json", new RouteHandler() {
-
-            @Override
-            public void handle(Request request, Response response) {
+        GET("/json", (request, response, chain) -> {
                 Contact contact = new Contact()
                         .setName("John")
                         .setPhone("0733434435")
@@ -119,29 +103,16 @@ public class SimpleApplication extends Application {
 //                response.contentType(HttpConstants.ContentType.APPLICATION_JSON); // 1
 //                response.send(new Gson().toJson(contact)); // 1
                 response.json(contact); // 2
-            }
+         });
 
-        });
-
-        GET("/template", new RouteHandler() {
-
-            @Override
-            public void handle(Request request, Response response) {
-                Map<String, Object> model = new HashMap<String, Object>();
+        GET("/template", (request, response, chain) -> {
+                Map<String, Object> model = new HashMap<>();
                 model.put("greeting", "Hello my friend");
+
                 response.render("hello.ftl", model);
-            }
-
         });
 
-        GET("/error", new RouteHandler() {
-
-            @Override
-            public void handle(Request request, Response response) {
-                throw new RuntimeException("Errorrrrrrrr...");
-            }
-
-        });
+        GET("/error", (request, response, chain) -> { throw new RuntimeException("Errorrrrrrrr..."); });
 
     }
 
@@ -188,9 +159,13 @@ GET("/", new RouteHandler() {
     }
 
 });
+
+//or more concise using Java 8 lambdas
+
+GET("/", (request, response, chain) -> response.send("Hello World"));
 ```
 
-Routes in Pippo are created using methods named after HTTP verbs. For instance, in the previous example, we created a route to handle GET requests to the root of the website. You have a corresponding method in Application for all commonly used HTTP verbs (GET, POST, DELETE, HEAD, PUT). For a basic website, only GET and POST are likely to be used.   
+Routes in Pippo are created using methods named after HTTP verbs. For instance, in the previous example, we created a route to handle GET requests to the root of the website. You have a corresponding method in Application for all commonly used HTTP verbs (GET, POST, DELETE, HEAD, PUT). For a basic website, only GET and POST are likely to be used.
 
 The route that is defined first takes precedence over other matching routes. So the ordering of routes is crucial to the behavior of an application.   
 
@@ -204,10 +179,7 @@ As you can see, it's easy to create routes with parameters. A parameter is prece
 You can retrieve the path parameter value for a request in type safe mode using:
 
 ```java
-GET("/contact/:id", new RouteHandler() {
-
-    @Override
-    public void handle(Request request, Response response) {
+GET("/contact/:id", (request, response, chain) -> {
         int id = request.getParameter("id").toInt(0);    
         String action = request.getParameter("action").toString("new");
         
@@ -215,9 +187,8 @@ GET("/contact/:id", new RouteHandler() {
         model.put("id", id);
         model.put("action", action)
         response.render("crud/contact.ftl", model);
-    }
-    
-}
+    });
+
 ```
 
 The __Response__ is a wrapper over HttpServletResponse from servlet API and it provides functionality for modifying the response. You can send a char sequence with `send` method, or a file with `file` method, or a json with `json` method. Also you can send a template file merged with a model using `render` method.  
@@ -225,31 +196,19 @@ The __Response__ is a wrapper over HttpServletResponse from servlet API and it p
 The __Request__ is a wrapper over HttpServletRequest from servlet API.  
 
 When a request is made to the server, which matches a route definition, the associated handlers are called. The __RouteMather__ contains a method `List<RouteMatch> findRoutes(String requestMethod, String requestUri)` that returns all routes which matches a route definition (String requestMethod, String requestUri).  
-Why RouterMatcher has method findRoutes(...):List<RouteMatch> instead of findRoute(...):RouteMatch? My response is that I want to use the RouteHandler also to define the Filter concept. I don't want to define a new interface Filter with the same signature as the RouteHandler interface.  
+Why does RouterMatcher have the method findRoutes(...):List<RouteMatch> instead of findRoute(...):RouteMatch? My response is that I want to use the RouteHandler also to define the Filter concept. I don't want to define a new interface Filter with the same signature as the RouteHandler interface.
 A __RouteHandler__ has only one method `void handle(Request request, Response response)`. The __handle__ method can be an endpoint or not. A regular RouteHandler is an endpoint, that means that the response is committed in the handle method of that RouteHandler instance. A committed response has already had its status code and headers written. In Response class exists a method `isCommitted()` that tell you if the response is committed or not. The methods from Response that commit a response are: `send`, `json`, `file`, `render`. If you try to commit a response that was already committed (after content has been written) than a PippoRuntimeException will be thrown.
 You can see a filter as a RouteHandler that does not commit the response. A filter is typically used to perform a particular piece of functionality either before or after the primary functionality (another RouteHandler) of a web application is performed. The filter might determine that the user does not have permissions to access a particular servlet, and it might send the user to an error page rather than to the requested resource.
 
 ```java
 // audit filter
-GET("/*", new RouteHandler() {
-
-    @Override
-    public void handle(Request request, Response response) {
-        System.out.println("Url: '" + request.getUrl());
-        System.out.println("Uri: '" + request.getUri());
-        System.out.println("Parameters: " + request.getParameters());
-    }
-
+GET("/*", (request, response, chain) -> {
+    System.out.println("Url: '" + request.getUrl());
+    System.out.println("Uri: '" + request.getUri());
+    System.out.println("Parameters: " + request.getParameters());
 });
 
-GET("/hello", new RouteHandler() {
-
-    @Override
-    public void handle(Request request, Response response) {
-        response.send("Hello World");
-    }
-
-});
+GET("/hello",(request, response, chain) -> response.send("Hello World"));
 ```
 
 You can see in the above example that I put an audit filter in front of all requests.
@@ -275,14 +234,7 @@ public class MyApplication extends Application {
     public void init() {
         super.init();
 
-        GET("/", new RouteHandler() {
-
-            @Override
-            public void handle(Request request, Response response) {
-                response.send("Hello World");
-            }
-
-        });
+        GET("/", (request, response, chain) -> response.send("Hello World"));
         
     }
 
@@ -301,14 +253,7 @@ public class MyDemo {
         pippo.getServer().getSettings().staticFilesLocation("/public");
 
         // add routes
-        pippo.getApplication().GET("/", new RouteHandler() {
-
-            @Override
-            public void handle(Request request, Response response) {
-                response.send("Hello World");
-            }
-
-        });
+        pippo.getApplication().GET("/", (request, response, chain) -> response.send("Hello World"));
 
         // start the embedded server
         pippo.start();
