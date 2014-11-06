@@ -27,15 +27,10 @@ public class Application {
     private ExceptionHandler exceptionHandler;
     private RouteNotFoundHandler routeNotFoundHandler;
 
-    /*
-     * Cache value for the runtime mode. No need to re-read it because it wont change at runtime.
-     */
-    private RuntimeMode runtimeMode;
+    private String uploadLocation = System.getProperty("java.io.tmpdir");
+    private long maximumUploadSize = -1L;
 
     public void init() {
-        routeMatcher = new DefaultRouteMatcher();
-        exceptionHandler = new DefaultExceptionHandler();
-        routeNotFoundHandler = new DefaultRouteNotFoundHandler(this);
     }
 
     public void destroy() {
@@ -61,6 +56,10 @@ public class Application {
     }
 
     public RouteMatcher getRouteMatcher() {
+        if (routeMatcher == null) {
+            routeMatcher = new DefaultRouteMatcher();
+        }
+
         return routeMatcher;
     }
 
@@ -91,13 +90,17 @@ public class Application {
     public void addRoute(String urlPattern, String requestMethod, RouteHandler routeHandler) {
         Route route = new Route(urlPattern, requestMethod, routeHandler);
         try {
-            routeMatcher.addRoute(route);
+            getRouteMatcher().addRoute(route);
         } catch (Exception e) {
             log.error("Cannot add route '{}'", route, e);
         }
     }
 
     public ExceptionHandler getExceptionHandler() {
+        if (exceptionHandler == null) {
+            exceptionHandler = new DefaultExceptionHandler();
+        }
+
         return exceptionHandler;
     }
 
@@ -106,11 +109,41 @@ public class Application {
     }
 
     public RouteNotFoundHandler getRouteNotFoundHandler() {
+        if (routeNotFoundHandler == null) {
+            routeNotFoundHandler = new DefaultRouteNotFoundHandler(this);
+        }
+
         return routeNotFoundHandler;
     }
 
     public void setRouteNotFoundHandler(RouteNotFoundHandler routeNotFoundHandler) {
         this.routeNotFoundHandler = routeNotFoundHandler;
+    }
+
+    /**
+     * The directory location where files will be stored.
+     *
+     * @return
+     */
+    public String getUploadLocation() {
+        return uploadLocation;
+    }
+
+    public void setUploadLocation(String uploadLocation) {
+        this.uploadLocation = uploadLocation;
+    }
+
+    /**
+     * Gets the maximum size allowed for uploaded files.
+     *
+     * @return
+     */
+    public long getMaximumUploadSize() {
+        return maximumUploadSize;
+    }
+
+    public void setMaximumUploadSize(long maximumUploadSize) {
+        this.maximumUploadSize = maximumUploadSize;
     }
 
 }

@@ -25,10 +25,12 @@ import org.eclipse.jetty.util.ssl.SslContextFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ro.fortsoft.pippo.core.AbstractWebServer;
+import ro.fortsoft.pippo.core.HttpConstants;
 import ro.fortsoft.pippo.core.PippoRuntimeException;
 import ro.fortsoft.pippo.core.RuntimeMode;
 
 import javax.servlet.DispatcherType;
+import javax.servlet.MultipartConfigElement;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -166,22 +168,23 @@ public class JettyServer extends AbstractWebServer {
     }
 
     protected ServletContextHandler createPippoHandler() {
-//        ServletContextHandler handler = new ServletContextHandler(); // NO_SESSIONS and NO_SECURITY
-        ServletContextHandler handler = new ServletContextHandler(ServletContextHandler.SESSIONS);
-
-//        FilterHolder filterHolder = new FilterHolder();
-//        filterHolder.setInitParameter(PippoFilter.APP_CLASS_PARAM, Application.class.getName());
-//        filterHolder.setInitParameter(PippoFilter.FILTER_MAPPING_PARAM, "/*");
-        FilterHolder filterHolder = new FilterHolder(pippoFilter);
+        String location = pippoFilter.getApplication().getUploadLocation();
+        long maxFileSize = pippoFilter.getApplication().getMaximumUploadSize();
+        MultipartConfigElement multipartConfig = new MultipartConfigElement(location, maxFileSize, -1L, 0);
+        ServletContextHandler handler = new PippoHandler(ServletContextHandler.SESSIONS, multipartConfig);
 
         String filterPath = pippoFilter.getFilterPath();
-        // TODO (I have other better option?)
+        // TODO (other better option?)
         if (filterPath == null) {
 //            filterPath = "/app/*"; // default value
             filterPath = "/*"; // default value
         }
+
         EnumSet<DispatcherType> dispatches = EnumSet.of(DispatcherType.REQUEST, DispatcherType.ERROR);
-        handler.addFilter(filterHolder, filterPath, dispatches);
+
+        FilterHolder pippoFilterHolder = new FilterHolder(pippoFilter);
+        handler.addFilter(pippoFilterHolder, filterPath, dispatches);
+        log.debug("Using pippo filter for path '{}'",  filterPath);
 
         return handler;
     }
@@ -199,6 +202,38 @@ public class JettyServer extends AbstractWebServer {
             }
 
             super.handle(target, baseRequest, request, response);
+        }
+
+    }
+
+    /**
+     * Inject a MultipartConfig in a filter.
+     */
+    private static class PippoHandler extends ServletContextHandler {
+
+        private MultipartConfigElement multipartConfig;
+
+        private PippoHandler(int options, MultipartConfigElement multipartConfig) {
+            super(options);
+
+            this.multipartConfig = multipartConfig;
+        }
+
+        @Override
+        public void doHandle(String target, Request baseRequest, HttpServletRequest request, HttpServletResponse response)
+                throws IOException, ServletException {
+
+            if (isMultipartRequest(request)) {
+                baseRequest.setAttribute(Request.__MULTIPART_CONFIG_ELEMENT, multipartConfig);
+            }
+
+            super.doHandle(target, baseRequest, request, response);
+        }
+
+        private boolean isMultipartRequest(HttpServletRequest request) {
+            return HttpConstants.Method.POST.equalsIgnoreCase(request.getMethod())
+                    && request.getContentType() != null
+                    && request.getContentType().toLowerCase().startsWith(HttpConstants.ContentType.MULTIPART_FORM_DATA);
         }
 
     }

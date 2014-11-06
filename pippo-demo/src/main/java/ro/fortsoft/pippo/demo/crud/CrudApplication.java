@@ -54,6 +54,7 @@ public class CrudApplication extends Application {
             }
 
         });
+
         // authentication filter
         GET("/contact*", new RouteHandler() {
 

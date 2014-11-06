@@ -16,6 +16,8 @@ import org.apache.commons.io.IOUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import javax.servlet.http.Part;
+import java.util.Collection;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
@@ -30,6 +32,7 @@ public class Request {
 
     private HttpServletRequest httpServletRequest;
     private Map<String, StringValue> parameters;
+    private Map<String, FileItem> files;
     private Session session;
 
     private String body; // cache
@@ -37,6 +40,7 @@ public class Request {
     Request(HttpServletRequest servletRequest) {
         this.httpServletRequest = servletRequest;
 
+        // fill parameters if any
         parameters = new HashMap<String, StringValue>();
         Enumeration<String> names = httpServletRequest.getParameterNames();
         while (names.hasMoreElements()) {
@@ -126,6 +130,26 @@ public class Request {
         }
 
         return session;
+    }
+
+    public Map<String, FileItem> getFiles() {
+        if (files == null) {
+            files = new HashMap<String, FileItem>();
+            try {
+                Collection<Part> parts = httpServletRequest.getParts();
+                for (Part part : parts) {
+                    files.put(part.getName(), new FileItem(part));
+                }
+            } catch (Exception e) {
+                throw new PippoRuntimeException("Cannot get files", e);
+            }
+        }
+
+        return files;
+    }
+
+    public FileItem getFile(String name) {
+        return getFiles().get(name);
     }
 
     void addPathParameters(Map<String, String> pathParameters) {
