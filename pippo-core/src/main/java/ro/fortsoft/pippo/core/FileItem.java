@@ -27,6 +27,7 @@ import java.io.InputStream;
 public class FileItem {
 
     private Part part;
+    private String submittedFileName;
 
     public FileItem(Part part) {
         this.part = part;
@@ -42,7 +43,30 @@ public class FileItem {
     }
 
     /**
-     * Returns the size of this fille.
+     * Retrieves the filename specified by the client.
+     * @return
+     */
+    public String getSubmittedFileName() {
+        // TODO this method also introduced in servlet 3.1 specification (delegate to part when I adopt servlet 3.1)
+        if (submittedFileName == null) {
+            String header = part.getHeader(HttpConstants.Header.CONTENT_DISPOSITION);
+            if (header == null) {
+                return null;
+            }
+
+            for (String headerPart : header.split(";")) {
+                if (headerPart.trim().startsWith("filename")) {
+                    submittedFileName = headerPart.substring(headerPart.indexOf('=') + 1).trim().replace("\"", "");
+                    break;
+                }
+            }
+        }
+
+        return submittedFileName;
+    }
+
+    /**
+     * Returns the size of this file.
      *
      * @return a <code>long</code> specifying the size of this part, in bytes.
      */
@@ -107,6 +131,7 @@ public class FileItem {
     public String toString() {
         return "FileItem{" +
                 "name='" + getName() + '\'' +
+                ", submittedFileName='" + getSize() + '\'' +
                 ", size=" + getSize() +
                 ", contentType='" + getContentType() + '\'' +
                 '}';
