@@ -316,6 +316,8 @@ You can see that CrudDemo uses bootstrap framework. You can use the bootstrap cs
 </head>
 ```
 
+I want to point that the static files/resources are served directly by the embedded server (in case of pippo-jetty) and not by Pippo (through PippoFilter). 
+
 Locals
 -------------------
 Locals are good for storing variables for the __CURRENT__ request/response cycle.
