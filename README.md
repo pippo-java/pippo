@@ -497,7 +497,39 @@ TBD
 
 Templates
 -------------------
-TBD
+Not all applications are REST based and you might need to generate some HTML. 
+It is not productive to inline the HTML in strings in your code and concatenate them at request time. 
+Pippo ships with Freemarker template engine as default and Jade template engine as a builtin alternative. These engines
+are optional and Pippo detect automatically the template engine using __ServiceLocator__.  
+You can set programmatically the desired template engine using `setTemplateEngine(TemplateEngine templateEngine)` from
+__Appplication__.
+
+If you want to add support for other template engine in your application, please create a new module/project, add file 
+`ro.fortsoft.pippo.core.TemplateEngine` in _src/main/resources/META-INF/services_ folder with your class name that implements 
+TemplateEngine as content (for Jade the content file is _ro.fortsoft.pippo.jade.JadeTemplateEngine_).  
+
+The `TemplateEngine` interface contains only one method, `public void render(String templateName, Map<String, Object> model, Writer writer)`, 
+that must be implemented by your concrete template engine.
+
+The template engine is uses in `public void render(String templateName, Map<String, Object> model)` and `public void render(String templateName)` 
+from `Response` class.
+
+Bellow is a code snippet about how you can use a template as response to a request:
+```java
+GET("/contact/:id", (request, response, chain) -> {
+    int id = request.getParameter("id").toInt(0);    
+    String action = request.getParameter("action").toString("new");
+    
+    Map<String, Object> model = new HashMap<String, Object>();
+    model.put("id", id);
+    model.put("action", action)
+    response.render("crud/contact.ftl", model);
+});
+```
+
+Don't forget that `locals` variables from a response will be available automatically to all templates for the current request/response cycle.
+ 
+For more information about how to implement a template engine please see _pippo-freemarker_ and _pippo-jade_ modules.
 
 Runtime mode
 -------------------
