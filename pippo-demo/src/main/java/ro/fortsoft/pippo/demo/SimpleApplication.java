@@ -90,7 +90,6 @@ public class SimpleApplication extends Application {
             }
 
         });
-
     }
 
 }
