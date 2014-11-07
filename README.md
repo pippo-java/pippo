@@ -97,27 +97,41 @@ public class SimpleApplication extends Application {
         GET("/file", (request, response, chain) -> response.file(new File("pom.xml"));
 
         GET("/json", (request, response, chain) -> {
-                Contact contact = new Contact()
-                        .setName("John")
-                        .setPhone("0733434435")
-                        .setAddress("Sunflower Street, No. 6");
-                // you can use variant 1 or 2
-                //response.contentType(HttpConstants.ContentType.APPLICATION_JSON); // 1
-                //response.send(new Gson().toJson(contact)); // 1
-                response.json(contact); // 2
+            Contact contact = new Contact()
+                    .setName("John")
+                    .setPhone("0733434435")
+                    .setAddress("Sunflower Street, No. 6");
+            // you can use variant 1 or 2
+            //response.contentType(HttpConstants.ContentType.APPLICATION_JSON); // 1
+            //response.send(new Gson().toJson(contact)); // 1
+            response.json(contact); // 2
          });
 
         GET("/template", (request, response, chain) -> {
-                Map<String, Object> model = new HashMap<>();
-                model.put("greeting", "Hello my friend");
-                response.render("hello.ftl", model);
+            Map<String, Object> model = new HashMap<>();
+            model.put("greeting", "Hello my friend");
+            response.render("hello.ftl", model);
         });
 
         GET("/error", (request, response, chain) -> { throw new RuntimeException("Error"); });
     }
 
 }
-```     
+``` 
+
+where `Contact` is a simple POJO:
+```java
+public class Contact  {
+
+    private int id;
+    private String name;
+    private String phone;
+    private String address;
+    
+    // getters ans setters
+
+}
+```
 
 After run the application, open your internet browser and check the routes declared in Application (`http://localhost:8338/`, 
 `http://localhost:8338/file`, `http://localhost:8338/json`, `http://localhost:8338/error`).
@@ -300,6 +314,51 @@ You can see that CrudDemo uses bootstrap framework. You can use the bootstrap cs
 </head>
 ```
 
+Locals
+-------------------
+Locals are good for storing variables for the __CURRENT__ request/response cycle.
+These variables will be available automatically to all templates for the current request/response cycle.
+
+```java
+GET("/contacts", (request, response, chain) -> {
+    /*
+    // variant 1 (with model)
+    Map<String, Object> model = new HashMap<String, Object>();
+    model.put("contacts", contactService.getContacts());
+    response.render("crud/contacts.ftl", model);
+    */
+
+    // variant 2 (with locals)
+    response.getLocals().put("contacts", contactService.getContacts());
+    response.render("crud/contacts.ftl");
+```
+
+Another scenario for locals:
+```java
+// filter that inject 'contacts' in locals and implicit in all templates' model
+GET("/contact*", (request, response, chain) -> {
+    response.getLocals().put("contacts", contactService.getContacts());
+});
+
+// just consume 'contacts' in template 
+GET("/contact*", (request, response, chain) -> {
+    response.render("crud/contacts.ftl");
+});
+```
+
+The snippet for contacts.ftl (show a list with all contacts' name):
+```html
+<html>
+    <body>
+        <ul>
+        <#list contacts as contact>
+            <li>${contact.name}</li>
+        </#list>
+        </ul?
+    </body>
+</html>
+```
+
 Upload
 -------------------
 Pippo has builtin support for upload. For a perfect running example see UploadDemo from pippo-demo module.    
@@ -350,6 +409,87 @@ The content for 'upload.ftl' is:
     </body>
 </html>
 ```
+
+Security
+-------------------
+You can secure your application or only some parts using a filter (a RouteHandler). Remember that routes are matched 
+in the order they are added/defined so put your security filter in front of regular routes (regular routes are 
+endpoint routes for a request).
+
+I will show you a simple implementation for a security filter.
+
+```java
+// authentication filter
+GET("/contact*", (request, response, chain) -> {
+    if (request.getSession().getAttribute("username") == null) {
+        request.getSession().setAttribute("originalDestination", request.getUri());
+        response.redirect("/login");
+    } else {
+        chain.next();
+    }
+});
+
+// show contacts page
+GET("/contacts", (request, response, chain) -> response.send("contacts.ftl"));
+
+// show contact page for the contact with id specified as path parameter 
+GET("/contact/:id", (request, response, chain) -> response.send("contact.ftl"));
+
+// show login page
+GET("/login", request, response, chain) -> {
+    Map<String, Object> model = new HashMap<String, Object>();
+    String error = (String) request.getSession().getAttribute("error");
+    request.getSession().removeAttribute("error");
+    if (error != null) {
+        model.put("error", error);
+    }
+    response.render("crud/login.ftl", model);
+});
+
+// process login submit
+POST("/login", (request, response, chain) -> {
+    String username = request.getParameter("username").toString();
+    String password = request.getParameter("password").toString();
+    if (authenticate(username, password)) {
+        request.getSession().setAttribute("username", username);
+        String originalDestination = (String) request.getSession().getAttribute("originalDestination");
+        response.redirect(originalDestination != null ? originalDestination : "/contacts");
+    } else {
+        request.getSession().setAttribute("error", "Authentication failed");
+        response.redirect("/login");
+    }
+});
+
+// a dump implementation for authenticate method
+private boolean authenticate(String username, String password) {
+    return !username.isEmpty() && !password.isEmpty();
+}
+```
+
+The content for login.ftl can be:
+```html
+<html>
+    <head>
+        <title>Login</title>
+    </head>
+    <body>
+        <#if error??>
+            ${error}
+        </#if>
+        
+        <form method="post" action="/login">
+            <input placeholder="Username" name="username">
+            <input placeholder="Password" name="password" type="password">
+            <input type="submit" value="Login">
+        </form>
+    </body
+</html>
+```
+
+In above code I want to protect all pages (contacts, contact) for the Contact domain entity.  
+The authentication tests to see if the 'username' attribute is present in the session object. If 'username' is present
+than call the regular route with `chain.next()` else redirect to the login page. I added 'originalDestination' attribute
+because after authentication process I want to continue with the original destination (original url). 
 
 Embedded web server
 -------------------
