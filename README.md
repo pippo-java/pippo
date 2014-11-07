@@ -646,8 +646,13 @@ After above steps a folder _target_ is created for each module and all goodies a
 
 Demo
 -------------------
-The demo application is in pippo-demo module. The demo module contains two demo applications: SimpleDemo and CrudDemo.  
-In CrudDemo contains a Create Retrieve Update Delete demo (with twitter bootstrap). 
+The demo application is in pippo-demo module. The demo module contains some demo applications: 
+- SimpleDemo
+- CrudDemo
+- UploadDemo
+- JadeDemo
+  
+CrudDemo is a __C__reate __R__etrieve __U__pdate __D__elete demo (with twitter bootstrap as static resources). 
     
 Mailing list
 --------------
