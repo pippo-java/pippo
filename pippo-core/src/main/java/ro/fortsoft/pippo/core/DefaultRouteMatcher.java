@@ -137,20 +137,19 @@ public class DefaultRouteMatcher extends AbstractRouteMatcher {
     }
 
     private Map<String, String> getParameters(PatternBinding binding, String requestUri) {
+        Map<String, String> parameters = new HashMap<String, String>();
+
         List<String> parameterNames = binding.getParameterNames();
         Matcher matcher = binding.getPattern().matcher(requestUri);
         matcher.matches();
         int groupCount = matcher.groupCount();
         if (groupCount > 0) {
-            Map<String, String> parameters = new HashMap<String, String>();
             for (int i = 1; i <= groupCount; i++) {
                 parameters.put(parameterNames.get(i - 1), matcher.group(i));
             }
-
-            return parameters;
         }
 
-        return null;
+        return parameters;
     }
 
     private class PatternBinding {

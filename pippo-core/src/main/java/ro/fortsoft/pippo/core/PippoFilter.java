@@ -32,9 +32,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Enumeration;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 
@@ -132,35 +130,7 @@ public class PippoFilter implements Filter {
             RouteMatcher routeMatcher = application.getRouteMatcher();
             List<RouteMatch> routeMatches = routeMatcher.findRoutes(requestMethod, relativePath);
             if (!routeMatches.isEmpty()) {
-                final Iterator<RouteMatch> iterator = routeMatches.iterator();
-                RouteMatch routeMatch = iterator.next();
-                Map<String, String> pathParameters = routeMatch.getPathParameters();
-                if (pathParameters != null) {
-                    request.addPathParameters(pathParameters);
-                }
-                Route route = routeMatch.getRoute();
-                log.debug("Found {}", route);
-                RouteHandler routeHandler = route.getRouteHandler();
-                log.debug("Call handler for {}", route);
-
-                RouteHandlerChain routeHandlerChain = new RouteHandlerChain() {
-
-                    @Override
-                    public void next() {
-                        // TODO it's an idea to throw an exception (NotNextRouteException or similar) ?!
-                        if (iterator.hasNext()) {
-                            Route nextRoute = iterator.next().getRoute();
-                            log.debug("Next route is {}", nextRoute);
-                            RouteHandler nextHandler = nextRoute.getRouteHandler();
-                            iterator.remove();
-
-                            log.debug("Call handler for {}", nextRoute);
-                            nextHandler.handle(request, response, this);
-                        }
-                    }
-
-                };
-                routeHandler.handle(request, response, routeHandlerChain);
+                new DefaultRouteHandlerChain(request, response, routeMatches).next();
             } else {
                 log.warn("Cannot find a route for '{} {}'", requestMethod, requestUri);
                 RouteNotFoundHandler routeNotFoundHandler = application.getRouteNotFoundHandler();

@@ -18,6 +18,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.servlet.http.Part;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
@@ -32,6 +33,8 @@ public class Request {
 
     private HttpServletRequest httpServletRequest;
     private Map<String, StringValue> parameters;
+    private Map<String, String> pathParameters;
+    private Map<String, StringValue> allParameters; // parameters + pathParameters
     private Map<String, FileItem> files;
     private Session session;
 
@@ -40,25 +43,26 @@ public class Request {
     Request(HttpServletRequest servletRequest) {
         this.httpServletRequest = servletRequest;
 
-        // fill parameters if any
-        parameters = new HashMap<String, StringValue>();
+        // fill (query) parameters if any
+        Map<String, StringValue> tmp = new HashMap<String, StringValue>();
         Enumeration<String> names = httpServletRequest.getParameterNames();
         while (names.hasMoreElements()) {
             String name = names.nextElement();
-            parameters.put(name, new StringValue(httpServletRequest.getParameter(name)));
+            tmp.put(name, new StringValue(httpServletRequest.getParameter(name)));
         }
+        parameters = Collections.unmodifiableMap(tmp);
     }
 
     public Map<String, StringValue> getParameters() {
-        return parameters;
+        return getAllParameters();
     }
 
     public StringValue getParameter(String name) {
-        if (!parameters.containsKey(name)) {
+        if (!getAllParameters().containsKey(name)) {
             return new StringValue(null);
         }
 
-        return parameters.get(name);
+        return getAllParameters().get(name);
     }
 
     public String getHost() {
@@ -152,11 +156,26 @@ public class Request {
         return getFiles().get(name);
     }
 
-    void addPathParameters(Map<String, String> pathParameters) {
-        Set<String> names = pathParameters.keySet();
-        for (String name : names) {
-            parameters.put(name, new StringValue(pathParameters.get(name)));
+    // called in (Default)RouteHandlerChain.next()
+    void setPathParameters(Map<String, String> pathParameters) {
+        this.pathParameters = pathParameters;
+        allParameters = null; // invalidate and force recreate
+    }
+
+    private Map<String, StringValue> getAllParameters() {
+        if (allParameters == null) {
+            Map<String, StringValue> tmp = new HashMap<String, StringValue>();
+            // add query parameters
+            tmp.putAll(parameters);
+            // add path parameters
+            Set<String> names = pathParameters.keySet();
+            for (String name : names) {
+                tmp.put(name, new StringValue(pathParameters.get(name)));
+            }
+            allParameters = Collections.unmodifiableMap(tmp);
         }
+
+        return allParameters;
     }
 
 }
