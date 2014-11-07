@@ -493,7 +493,62 @@ because after authentication process I want to continue with the original destin
 
 Embedded web server
 -------------------
-TBD
+Most server-side Java applications (e.g. web or service-oriented) are intended to run within a container. 
+The traditional way to package these apps for distribution is to bundle them as a WAR file. 
+Of course you can use the above model for your application development or you can use the simple way. 
+Rather than your application being deployed to a container, an embedded container is deployed within the application itself.
+Pippo comes with Jetty as embedded web server. You can choose another container if you want (for example Tomcat).
+ 
+See below the classic `Hello World` in Pippo using the default web server:
+```java
+public class HelloWorld {
+
+    public static void main(String[] args) {
+        Pippo pippo = new Pippo();
+        pippo.getApplication.GET("/", (request, response, chain) -> response.send("Hello World!"));
+        pippo.start();
+    }
+
+}
+```
+
+You can run _HelloWorld_ class from your IDE (or command line) as a normal (desktop) application. 
+The `default port` for embedded web server is __8338__ so open your internet browser and type `http://localhost:8338` to 
+see the result.
+
+You can change some aspects of the embedded web server using `WebServerSettings`:
+```java
+Pippo pippo = new Pippo();
+pippo.getServer().getSettings().port(8081).staticFilesLocation("/public");
+pippo.start();
+```
+
+In above snippet I changed the port to _8081_ and ai specify the static file location to _public_.
+
+If you need to create support for another embedded web server that is not implemented in Pippo or third-party modules 
+than all you need to do is to implement `WebServer` (or to extends `AbstractWebServer`).
+
+```java
+public interface WebServer {
+
+    public WebServerSettings getSettings();
+
+    public void setSettings(WebServerSettings settings);
+
+    public PippoFilter getPippoFilter();
+
+    public void setPippoFilter(PippoFilter pippoFilter);
+
+    public void start();
+
+    public void stop();
+    
+}
+```
+
+If you want to make your embedded server plugable for Pippo than you must add file 
+`ro.fortsoft.pippo.core.WebServer` in _src/main/resources/META-INF/services_ folder with your class name that implements  
+WebServer as content (for an hypothetical Tomcat integration the content file should be _ro.fortsoft.pippo.tomcat.TomcatServer).
 
 Templates
 -------------------
