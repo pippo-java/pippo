@@ -652,7 +652,7 @@ The demo application is in pippo-demo module. The demo module contains some demo
 - Upload
 - Jade
   
-CrudDemo is a <b>C</b>reate <b>R</>etrieve <b>U</b>pdate <b>D</b>elete demo (with twitter bootstrap as static resources). 
+CrudDemo is a <b>C</b>reate <b>R</b>etrieve <b>U</b>pdate <b>D</b>elete demo (with twitter bootstrap as static resources). 
     
 Mailing list
 --------------
