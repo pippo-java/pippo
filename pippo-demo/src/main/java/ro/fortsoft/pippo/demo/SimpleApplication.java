@@ -32,6 +32,7 @@ public class SimpleApplication extends Application {
     public void init() {
         super.init();
 
+        // send 'Hello World' as response
         GET("/", new RouteHandler() {
 
             @Override
@@ -41,6 +42,7 @@ public class SimpleApplication extends Application {
 
         });
 
+        // send a file as response
         GET("/file", new RouteHandler() {
 
             @Override
@@ -50,6 +52,7 @@ public class SimpleApplication extends Application {
 
         });
 
+        // send a json as response
         GET("/json", new RouteHandler() {
 
             @Override
@@ -66,6 +69,7 @@ public class SimpleApplication extends Application {
 
         });
 
+        // send a template as response
         GET("/template", new RouteHandler() {
 
             @Override
@@ -77,11 +81,12 @@ public class SimpleApplication extends Application {
 
         });
 
+        // send an error as response
         GET("/error", new RouteHandler() {
 
             @Override
             public void handle(Request request, Response response, RouteHandlerChain chain) {
-                throw new RuntimeException("Errorrrrrrrr...");
+                throw new RuntimeException("Error");
             }
 
         });
