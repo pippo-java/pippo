@@ -25,7 +25,6 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringWriter;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -148,9 +147,17 @@ public class Response {
     }
 
     public Response noCache() {
-        header(HttpConstants.Header.PRAGMA, "No-cache");
-        header(HttpConstants.Header.CACHE_CONTROL, "no-cache,no-store,max-age=0");
-        getHttpServletResponse().setDateHeader("Expires", 0);
+        // no-cache headers for HTTP/1.1
+        header(HttpConstants.Header.CACHE_CONTROL, "no-store, no-cache, must-revalidate");
+
+        // no-cache headers for HTTP/1.1 (IE)
+        header(HttpConstants.Header.CACHE_CONTROL, "post-check=0, pre-check=0");
+
+        // no-cache headers for HTTP/1.0
+        header(HttpConstants.Header.PRAGMA, "no-cache");
+
+        // set the expires to past
+        httpServletResponse.setDateHeader("Expires", 0);
 
         return this;
     }
