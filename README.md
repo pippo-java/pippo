@@ -647,12 +647,12 @@ After above steps a folder _target_ is created for each module and all goodies a
 Demo
 -------------------
 The demo application is in pippo-demo module. The demo module contains some demo applications: 
-- SimpleDemo
-- CrudDemo
-- UploadDemo
-- JadeDemo
+- Simple
+- Crud
+- Upload
+- Jade
   
-CrudDemo is a __C__reate __R__etrieve __U__pdate __D__elete demo (with twitter bootstrap as static resources). 
+CrudDemo is a <b>C</b>reate <b>R</>etrieve <b>U</b>pdate <b>D</b>elete demo (with twitter bootstrap as static resources). 
     
 Mailing list
 --------------
