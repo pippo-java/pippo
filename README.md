@@ -178,7 +178,7 @@ GET("/", new RouteHandler() {
 
 });
 
-//or more concise using Java 8 lambdas
+// or more concise using Java 8 lambdas
 
 GET("/", (request, response, chain) -> response.send("Hello World"));
 ```
@@ -213,9 +213,10 @@ The __Response__ is a wrapper over HttpServletResponse from servlet API and it p
 The __Request__ is a wrapper over HttpServletRequest from servlet API.  
 
 When a request is made to the server, which matches a route definition, the associated handlers are called. The __RouteMather__ contains a method `List<RouteMatch> findRoutes(String requestMethod, String requestUri)` that returns all routes which matches a route definition (String requestMethod, String requestUri).  
-Why does RouterMatcher have the method findRoutes(...):List<RouteMatch> instead of findRoute(...):RouteMatch? My response is that I want to use the RouteHandler also to define the Filter concept. I don't want to define a new interface Filter with the same signature as the RouteHandler interface.
-A __RouteHandler__ has only one method `void handle(Request request, Response response, RouteHandlerChain chain)`. The __handle__ method can be an endpoint or not. A regular RouteHandler is an endpoint, that means that the response is committed in the handle method of that RouteHandler instance. A committed response has already had its status code and headers written. In Response class exists a method `isCommitted()` that tell you if the response is committed or not. The methods from Response that commit a response are: `send`, `json`, `file`, `render`. If you try to commit a response that was already committed (after content has been written) than a PippoRuntimeException will be thrown.
-You can see a filter as a RouteHandler that does not commit the response. A filter is typically used to perform a particular piece of functionality either before or after the primary functionality (another RouteHandler) of a web application is performed. The filter might determine that the user does not have permissions to access a particular servlet, and it might send the user to an error page rather than to the requested resource.
+Why does RouterMatcher have the method findRoutes(...):List<RouteMatch> instead of findRoute(...):RouteMatch? My response is that I want to use the RouteHandler also to define the Filter concept. I don't want to define a new interface Filter with the same signature as the RouteHandler interface.  
+A __RouteHandler__ has only one method `void handle(Request request, Response response, RouteHandlerChain chain)`. The __handle__ method can be an endpoint or not. A regular RouteHandler is an endpoint, that means that the response is committed in the handle method of that RouteHandler instance. A committed response has already had its status code and headers written. In Response class exists a method `isCommitted()` that tell you if the response is committed or not. The methods from Response that commit a response are: `send`, `json`, `file`, `render`. If you try to commit a response that was already committed (after content has been written) than a PippoRuntimeException will be thrown.  
+You can reconize in a very simple mode if a response method sets the committed flag on true (it's an endpoint method) just by looking at its signature. The convension is that these methods return `void` unlike the other methods that return `Response` (you can set many fields at once).  
+You can see a filter as a RouteHandler that does not commit the response. A filter is typically used to perform a particular piece of functionality either before or after the primary functionality (another RouteHandler) of a web application is performed. The filter might determine that the user does not have permissions to access a particular servlet, and it might send the user to an error page rather than to the requested resource.  
 
 ```java
 // audit filter
