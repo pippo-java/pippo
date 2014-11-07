@@ -373,7 +373,7 @@ public static void main(String[] args) {
     application.setUploadLocation("upload");
     application.setMaximumUploadSize(100 * 1024); // 100k
 
-    application.GET("/", (request, response, chain) -> response.send("upload.ftl"));
+    application.GET("/", (request, response, chain) -> response.render("upload.ftl"));
 
     application.POST("/upload", (request, response, chain) -> {
         // retrieves the value for 'file' input
@@ -548,7 +548,7 @@ public interface WebServer {
 
 If you want to make your embedded server plugable for Pippo than you must add file 
 `ro.fortsoft.pippo.core.WebServer` in _src/main/resources/META-INF/services_ folder with your class name that implements  
-WebServer as content (for an hypothetical Tomcat integration the content file should be _ro.fortsoft.pippo.tomcat.TomcatServer).
+WebServer as content (for an hypothetical Tomcat integration the content file should be _ro.fortsoft.pippo.tomcat.TomcatServer_).
 
 Templates
 -------------------
