@@ -13,7 +13,6 @@
 package ro.fortsoft.pippo.core;
 
 import com.google.gson.Gson;
-import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -232,7 +231,7 @@ public class Response {
         }
 
         try {
-            int length = IOUtils.copy(input, httpServletResponse.getOutputStream());
+            long length = IoUtils.copy(input, httpServletResponse.getOutputStream());
             if (isHeaderEmpty(HttpConstants.Header.CONTENT_LENGTH)) {
                 contentLength(length);
             }
@@ -241,7 +240,7 @@ public class Response {
         } catch (Exception e) {
             throw new PippoRuntimeException(e);
         } finally {
-            IOUtils.closeQuietly(input);
+            IoUtils.close(input);
         }
     }
 

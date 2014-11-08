@@ -12,8 +12,6 @@
  */
 package ro.fortsoft.pippo.core;
 
-import org.apache.commons.io.IOUtils;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.servlet.http.Part;
@@ -92,7 +90,7 @@ public class Request {
     public String getBody() {
         if (body == null) {
             try {
-                body = IOUtils.toString(httpServletRequest.getInputStream());
+                body = IoUtils.toString(httpServletRequest.getInputStream());
             } catch (Exception e) {
                 throw new PippoRuntimeException("Exception when reading the request body", e);
             }

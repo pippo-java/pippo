@@ -12,8 +12,6 @@
  */
 package ro.fortsoft.pippo.core;
 
-import org.apache.commons.io.FileUtils;
-
 import javax.servlet.http.Part;
 import java.io.File;
 import java.io.IOException;
@@ -114,7 +112,7 @@ public class FileItem {
      * @throws IOException
      */
     public void write(File file) throws IOException {
-        FileUtils.copyInputStreamToFile(getInputStream(), file);
+        IoUtils.copy(getInputStream(), file);
     }
 
     /**
