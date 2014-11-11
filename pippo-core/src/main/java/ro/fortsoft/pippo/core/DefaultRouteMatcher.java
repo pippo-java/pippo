@@ -41,8 +41,8 @@ public class DefaultRouteMatcher extends AbstractRouteMatcher {
     }
 
     @Override
-    public List<RouteMatch> findRoutes(String requestMethod, String requestUri) {
-        log.debug("Finding route for '{} {}'", requestMethod, requestUri);
+    public List<RouteMatch> findRoutes(String requestUri, String requestMethod) {
+        log.debug("Finding route for '{} {}'", requestUri, requestMethod);
         List<PatternBinding> bindings = bindingsCache.get(requestMethod);
         if (bindings == null) {
             return Collections.emptyList();
