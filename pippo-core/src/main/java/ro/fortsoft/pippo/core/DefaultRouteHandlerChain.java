@@ -56,7 +56,6 @@ public class DefaultRouteHandlerChain implements RouteHandlerChain {
             iterator.remove();
 
             log.debug("Call handler for {}", route);
-            RouteHandler routeHandler = route.getRouteHandler();
             route.getRouteHandler().handle(request, response, this);
         }
     }
