@@ -25,7 +25,7 @@ public interface RouteMatcher {
 
     public void addRoute(Route route) throws Exception;
 
-    public List<RouteMatch> findRoutes(String requestMethod, String requestUri);
+    public List<RouteMatch> findRoutes(String requestUri, String requestMethod);
 
     public List<Route> getRoutes();
 

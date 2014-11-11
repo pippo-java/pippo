@@ -128,7 +128,7 @@ public class PippoFilter implements Filter {
         final Response response = new Response(httpServletResponse, templateEngine);
         try {
             RouteMatcher routeMatcher = application.getRouteMatcher();
-            List<RouteMatch> routeMatches = routeMatcher.findRoutes(requestMethod, relativePath);
+            List<RouteMatch> routeMatches = routeMatcher.findRoutes(relativePath, requestMethod);
             if (!routeMatches.isEmpty()) {
                 new DefaultRouteHandlerChain(request, response, routeMatches).next();
             } else {
