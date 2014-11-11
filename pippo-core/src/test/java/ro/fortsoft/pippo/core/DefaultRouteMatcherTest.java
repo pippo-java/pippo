@@ -117,7 +117,7 @@ public class DefaultRouteMatcherTest extends Assert {
     }
 
     @Test
-    public void testStarRoute() throws Exception {
+    public void testWildcardRoute() throws Exception {
         Route route = new Route("/*", HttpConstants.Method.GET, new EmptyRouteHandler());
         routeMatcher.addRoute(route);
 
