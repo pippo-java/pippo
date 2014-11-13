@@ -71,20 +71,40 @@ public class Application {
         addRoute(urlPattern, HttpConstants.Method.GET, routeHandler);
     }
 
+    public void GET(String urlPattern, Class<? extends Controller> controllerClass, String methodName) {
+        addRoute(urlPattern, HttpConstants.Method.GET, new ControllerHandler(controllerClass, methodName));
+    }
+
     public void POST(String urlPattern, RouteHandler routeHandler) {
         addRoute(urlPattern, HttpConstants.Method.POST, routeHandler);
+    }
+
+    public void POST(String urlPattern, Class<? extends Controller> controllerClass, String methodName) {
+        addRoute(urlPattern, HttpConstants.Method.POST, new ControllerHandler(controllerClass, methodName));
     }
 
     public void DELETE(String urlPattern, RouteHandler routeHandler) {
         addRoute(urlPattern, HttpConstants.Method.DELETE, routeHandler);
     }
 
+    public void DELETE(String urlPattern, Class<? extends Controller> controllerClass, String methodName) {
+        addRoute(urlPattern, HttpConstants.Method.DELETE, new ControllerHandler(controllerClass, methodName));
+    }
+
     public void HEAD(String urlPattern, RouteHandler routeHandler) {
         addRoute(urlPattern, HttpConstants.Method.HEAD, routeHandler);
     }
 
+    public void HEAD(String urlPattern, Class<? extends Controller> controllerClass, String methodName) {
+        addRoute(urlPattern, HttpConstants.Method.HEAD, new ControllerHandler(controllerClass, methodName));
+    }
+
     public void PUT(String urlPattern, RouteHandler routeHandler) {
         addRoute(urlPattern, HttpConstants.Method.PUT, routeHandler);
+    }
+
+    public void PUT(String urlPattern, Class<? extends Controller> controllerClass, String methodName) {
+        addRoute(urlPattern, HttpConstants.Method.PUT, new ControllerHandler(controllerClass, methodName));
     }
 
     public void addRoute(String urlPattern, String requestMethod, RouteHandler routeHandler) {
