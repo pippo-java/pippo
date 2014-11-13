@@ -138,6 +138,36 @@ public class Contact  {
 After run the application, open your internet browser and check the routes declared in Application (`http://localhost:8338/`, 
 `http://localhost:8338/file`, `http://localhost:8338/json`, `http://localhost:8338/error`).
 
+Controllers
+-------------------
+Another approach to handling a request and producing a response is using Controllers. After routing has determined what controller to use, an action method will be invoked.
+In Pippo, controllers are instances of `Controller`.
+
+Defining a new controller is simple:
+```java
+public class ContactsController extends Controller {
+
+    public void index() {
+        getResponse().render("crud/contacts.ftl");
+    }
+
+}
+```
+
+Methods attached to the controller (for example `index` from above snippet) are known as action functions. When Pippo receives a request, it will create a new instance of the controller and call the appropriate action method.
+You can register a controller's action in application with a simple line:
+```java
+public class ControllerDemo {
+
+    public static void main(String[] args) {
+        Pippo pippo = new Pippo();
+        pippo.getApplication().GET("/", ContactsController.class, "index");
+        pippo.start();
+    }
+
+}
+```
+
 Under the hood
 -------------------
 First, the framework is splits in modules (`pippo-core`, `pippo-jetty`, `pippo-freemarker`, ...) because I want to use only that modules that are usefully for me. For example if I develop a rest like application for a javascript frontend library (angular, ...) I don't want to use a template engine because my application connects to a database and it delivers only json.  
