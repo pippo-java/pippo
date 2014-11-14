@@ -24,6 +24,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringWriter;
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -189,7 +190,7 @@ public class Response {
         }
 
         if (getCharacterEncoding() == null) {
-            characterEncoding("utf-8");
+            characterEncoding(StandardCharsets.UTF_8.toString());
         }
 
         write(content);
