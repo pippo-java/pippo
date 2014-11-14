@@ -20,7 +20,7 @@ import java.lang.reflect.Method;
 /**
  * @author Decebal Suiu
  */
-class ControllerHandler implements RouteHandler {
+public class ControllerHandler implements RouteHandler {
 
     private static final Logger log = LoggerFactory.getLogger(ControllerHandler.class);
 
