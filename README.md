@@ -261,6 +261,36 @@ GET("/hello",(request, response, chain) -> response.send("Hello World"));
 
 You can see in the above example that I put an audit filter in front of all requests.
 
+From version 0.4, Pippo comes with a new very useful method `getEntityFromParameters` in __Request__. This method binding the request parameters values from PUT/POST/etc to Java objects (POJOs).  
+Let's see some code that shows in action this feature:
+```java
+POST("/contact", (request, response, chain) -> {
+    String action = request.getParameter("action").toString();
+    if ("save".equals(action)) {
+        Contact contact = request.getEntityFromParameters(Contact.class);
+        contactService.save(contact);
+        response.redirect("/contacts");
+    }
+});
+```
+The old version has:
+```java
+POST("/contact", (request, response, chain) -> {
+    String action = request.getParameter("action").toString();
+    if ("save".equals(action)) {
+        Contact contact = new Contact();
+        contact.setId(request.getParameter("id").toInt(-1));
+        contact.setName(request.getParameter("name").toString());
+        contact.setPhone(request.getParameter("phone").toString());
+        contact.setAddress(request.getParameter("address").toString());
+        contactService.save(contact);
+        response.redirect("/contacts");
+    }
+});                    
+```
+
+For now, Pippo comes with a constrain. The types for entity's fields that will be binding must be String, Boolean, Integer, Long, Float or Double.  
+
 An __Application__ is a class which associates with an instance of PippoFilter to serve pages over the HTTP protocol. Usually I subclass this class and add my routes in `init()` method.
 
 ```java
