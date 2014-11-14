@@ -154,7 +154,7 @@ public class ContactsController extends Controller {
 }
 ```
 
-Methods attached to the controller (for example `index` from above snippet) are known as action functions. When Pippo receives a request, it will create a new instance of the controller and call the appropriate action method.
+Methods attached to the controller (for example `index` from above snippet) are known as action methods. When Pippo receives a request, it will create a new instance of the controller and call the appropriate action method.
 You can register a controller's action in application with a simple line:
 ```java
 public class ControllerDemo {
