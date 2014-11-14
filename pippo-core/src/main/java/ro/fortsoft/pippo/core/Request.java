@@ -12,9 +12,13 @@
  */
 package ro.fortsoft.pippo.core;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.servlet.http.Part;
+import java.lang.reflect.Field;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Enumeration;
@@ -28,6 +32,8 @@ import java.util.Set;
  * @author Decebal Suiu
  */
 public class Request {
+
+    private static final Logger log = LoggerFactory.getLogger(Request.class);
 
     private HttpServletRequest httpServletRequest;
     private Map<String, StringValue> parameters;
@@ -61,6 +67,33 @@ public class Request {
         }
 
         return getAllParameters().get(name);
+    }
+
+    public <T> T getEntityFromParameters(Class<T> entityClass) {
+        T entity;
+
+        try {
+            entity = entityClass.newInstance();
+        } catch (Exception e) {
+            log.error("Cannot create new instance of class '{}'", entityClass.getName(), e);
+            return null;
+        }
+
+        for (Field field : entityClass.getDeclaredFields()) {
+            if (getAllParameters().containsKey(field.getName())) {
+                field.setAccessible(true);
+                try {
+                    Object value = getAllParameters().get(field.getName()).to(field.getType());
+                    field.set(entity, value);
+                } catch (IllegalAccessException e) {
+                    log.error("Cannot set value for field '{}'", field.getName(), e);
+                } catch (Exception e) {
+                    log.error(e.getMessage(), e);
+                }
+            }
+        }
+
+        return entity;
     }
 
     public String getHost() {

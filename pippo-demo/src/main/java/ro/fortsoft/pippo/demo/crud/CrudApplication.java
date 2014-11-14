@@ -132,11 +132,7 @@ public class CrudApplication extends Application {
             public void handle(Request request, Response response, RouteHandlerChain chain) {
                 String action = request.getParameter("action").toString();
                 if ("save".equals(action)) {
-                    Contact contact = new Contact();
-                    contact.setId(request.getParameter("id").toInt(-1));
-                    contact.setName(request.getParameter("name").toString());
-                    contact.setPhone(request.getParameter("phone").toString());
-                    contact.setAddress(request.getParameter("address").toString());
+                    Contact contact = request.getEntityFromParameters(Contact.class);
                     contactService.save(contact);
                     response.redirect("/contacts");
                 }

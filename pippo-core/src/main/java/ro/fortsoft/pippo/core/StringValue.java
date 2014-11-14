@@ -66,6 +66,18 @@ public class StringValue implements Serializable {
         return Float.parseFloat(value);
     }
 
+    public double toDouble() {
+        return toDouble(0);
+    }
+
+    public double toDouble(double defaultValue) {
+        if (value == null) {
+            return defaultValue;
+        }
+
+        return Double.parseDouble(value);
+    }
+
     public boolean toBoolean() {
         return toBoolean(false);
     }
@@ -100,6 +112,34 @@ public class StringValue implements Serializable {
         }
 
         return Arrays.asList(value.split(","));
+    }
+
+    public Object to(Class<?> type) throws Exception {
+        if (type == null) {
+            return null;
+        }
+
+        if (type == String.class) {
+            return toString();
+        }
+
+        if ((type == Integer.TYPE) || (type == Integer.class)) {
+            return toInt();
+        }
+
+        if ((type == Long.TYPE) || (type == Long.class)) {
+            return toLong();
+        }
+
+        if ((type == Boolean.TYPE) || (type == Boolean.class)) {
+            return toBoolean();
+        }
+
+        if ((type == Double.TYPE) || (type == Double.class)) {
+            return toDouble();
+        }
+
+        throw new Exception("Cannot convert '" + toString() + "'to type '" + type + "'");
     }
 
     @Override
