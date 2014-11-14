@@ -198,7 +198,7 @@ public class Response {
         try {
             httpServletResponse.flushBuffer();
         } catch (IOException e) {
-            new PippoRuntimeException(e);
+            throw new PippoRuntimeException(e);
         }
     }
 
