@@ -44,11 +44,18 @@ public class ControllerHandler implements RouteHandler {
     public void handle(Request request, Response response, RouteHandlerChain chain) {
         log.debug("Invoke method '{}' from '{}'", methodName, controllerClass.getName());
         try {
+            // create the controller instance
+            Controller controller = controllerClass.newInstance();
+            Application.get().getControllerInstantiationListeners().onInstantiation(controller);
+
+            // init controller
+            controller.init(request, response, chain);
+            Application.get().getControllerInitializationListeners().onInitialize(controller);
+
             // invoke action (a method from controller)
             Method method = controllerClass.getMethod(methodName, new Class[]{});
-            Controller instance = controllerClass.newInstance();
-            instance.init(request, response, chain);
-            method.invoke(instance, new Object[] {});
+            Application.get().getControllerInvokeListeners().onInvoke(controller, method);
+            method.invoke(controller, new Object[] {});
         } catch (Exception e) {
             throw new PippoRuntimeException(e);
         }

@@ -14,6 +14,9 @@ package ro.fortsoft.pippo.core;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import ro.fortsoft.pippo.core.controller.ControllerInitializationListenerList;
+import ro.fortsoft.pippo.core.controller.ControllerInstantiationListenerList;
+import ro.fortsoft.pippo.core.controller.ControllerInvokeListenerList;
 
 /**
  * @author Decebal Suiu
@@ -29,6 +32,10 @@ public class Application {
 
     private String uploadLocation = System.getProperty("java.io.tmpdir");
     private long maximumUploadSize = -1L;
+
+    private ControllerInstantiationListenerList controllerInstantiationListeners;
+    private ControllerInitializationListenerList controllerInitializationListeners;
+    private ControllerInvokeListenerList controllerInvokeListeners;
 
     /**
      * Get Application for current thread.
@@ -179,6 +186,30 @@ public class Application {
 
     public void setMaximumUploadSize(long maximumUploadSize) {
         this.maximumUploadSize = maximumUploadSize;
+    }
+
+    public ControllerInstantiationListenerList getControllerInstantiationListeners() {
+        if (controllerInstantiationListeners == null) {
+            controllerInstantiationListeners = new ControllerInstantiationListenerList();
+        }
+
+        return controllerInstantiationListeners;
+    }
+
+    public ControllerInitializationListenerList getControllerInitializationListeners() {
+        if (controllerInitializationListeners == null) {
+            controllerInitializationListeners = new ControllerInitializationListenerList();
+        }
+
+        return controllerInitializationListeners;
+    }
+
+    public ControllerInvokeListenerList getControllerInvokeListeners() {
+        if (controllerInvokeListeners == null) {
+            controllerInvokeListeners = new ControllerInvokeListenerList();
+        }
+
+        return controllerInvokeListeners;
     }
 
 }
