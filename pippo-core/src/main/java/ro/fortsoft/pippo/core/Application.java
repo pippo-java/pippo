@@ -25,6 +25,7 @@ import ro.fortsoft.pippo.core.route.Route;
 import ro.fortsoft.pippo.core.route.RouteHandler;
 import ro.fortsoft.pippo.core.route.RouteMatcher;
 import ro.fortsoft.pippo.core.route.RouteNotFoundHandler;
+import ro.fortsoft.pippo.core.util.ServiceLocator;
 
 /**
  * @author Decebal Suiu

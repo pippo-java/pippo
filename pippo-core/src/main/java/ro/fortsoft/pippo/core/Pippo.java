@@ -14,6 +14,7 @@ package ro.fortsoft.pippo.core;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import ro.fortsoft.pippo.core.util.ServiceLocator;
 
 /**
  * @author Decebal Suiu
