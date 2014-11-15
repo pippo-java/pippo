@@ -82,30 +82,37 @@ public class PippoFilter implements Filter {
             log.debug("Created application '{}'", application);
         }
 
+        ThreadContext.setApplication(application);
+
         try {
             initializers = getInitializers();
+            for (Initializer initializer : initializers) {
+                initializer.init(application);
+            }
+            application.init();
+
+            String runtimeMode = application.getRuntimeMode().toString().toUpperCase();
+            log.info("Pippo started ({})", runtimeMode);
         } catch (Exception e) {
-            log.error("Cannot read pippo.properties file", e);
+            destroy();
             throw new ServletException(e);
+        } finally {
+            ThreadContext.detach();
         }
-
-        for (Initializer initializer : initializers) {
-            initializer.init(application);
-        }
-        application.init();
-
-        String runtimeMode = application.getRuntimeMode().toString().toUpperCase();
-        log.debug("Application started ({})", runtimeMode);
     }
 
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain chain)
             throws IOException, ServletException {
+        final ThreadContext previousThreadContext = ThreadContext.detach();
+
         HttpServletRequest httpServletRequest = (HttpServletRequest) servletRequest;
         HttpServletResponse httpServletResponse = (HttpServletResponse) servletResponse;
 
         // TODO test for redirect
         // no redirect; process the request
+        ThreadContext.setApplication(application);
+
         String requestMethod = httpServletRequest.getMethod();
         String requestUri = httpServletRequest.getRequestURI();
         log.debug("Request '{} {}'", requestMethod, requestUri);
@@ -148,6 +155,8 @@ public class PippoFilter implements Filter {
                     log.debug("The response has already been committed. Cannot use the exception handler.");
                 }
             }
+        } finally {
+            ThreadContext.restore(previousThreadContext);
         }
     }
 
@@ -178,12 +187,19 @@ public class PippoFilter implements Filter {
     @Override
     public void destroy() {
         if (application != null) {
-            for (Initializer initializer : initializers) {
-                initializer.destroy(application);
+            ThreadContext.setApplication(application);
+
+            try {
+                for (Initializer initializer : initializers) {
+                    initializer.destroy(application);
+                }
+                application.destroy();
+
+                log.info("Pippo destroyed");
+            } finally {
+                ThreadContext.detach();
+                application = null;
             }
-            application.destroy();
-            application = null;
-            log.debug("Application destroyed");
         }
     }
 

@@ -30,6 +30,21 @@ public class Application {
     private String uploadLocation = System.getProperty("java.io.tmpdir");
     private long maximumUploadSize = -1L;
 
+    /**
+     * Get Application for current thread.
+     *
+     * @return The current thread's Application
+     */
+    public static Application get() {
+        Application application = ThreadContext.getApplication();
+        if (application == null) {
+            throw new PippoRuntimeException("There is no application attached to current thread " +
+                    Thread.currentThread().getName());
+        }
+
+        return application;
+    }
+
     public void init() {
     }
 
