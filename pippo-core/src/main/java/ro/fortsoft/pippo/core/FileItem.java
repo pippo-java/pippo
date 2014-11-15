@@ -12,6 +12,8 @@
  */
 package ro.fortsoft.pippo.core;
 
+import ro.fortsoft.pippo.core.util.IoUtils;
+
 import javax.servlet.http.Part;
 import java.io.File;
 import java.io.IOException;
