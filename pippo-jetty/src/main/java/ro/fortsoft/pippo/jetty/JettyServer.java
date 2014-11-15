@@ -67,7 +67,7 @@ public class JettyServer extends AbstractWebServer {
 
         try {
             String version = server.getClass().getPackage().getImplementationVersion();
-            log.debug("Starting Jetty Server {} on port {}", version, settings.getPort());
+            log.info("Starting Jetty Server {} on port {}", version, settings.getPort());
             server.start();
             server.join();
         } catch (Exception e) {
