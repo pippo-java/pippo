@@ -29,6 +29,7 @@ public class HttpConstants {
         public static final String CONNECT = "CONNECT";
         public static final String OPTIONS = "OPTIONS";
         */
+
     }
 
     public static class StatusCode {
