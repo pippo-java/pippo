@@ -10,16 +10,16 @@
  * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the
  * specific language governing permissions and limitations under the License.
  */
-package ro.fortsoft.pippo.core;
+package ro.fortsoft.pippo.core.route;
+
+import ro.fortsoft.pippo.core.Request;
+import ro.fortsoft.pippo.core.Response;
 
 /**
  * @author Decebal Suiu
  */
-public interface RouteHandlerChain {
+public interface RouteHandler {
 
-    /**
-     * Calls the next route handler.
-     */
-    public void next();
+    public void handle(Request request, Response response, RouteHandlerChain chain);
 
 }

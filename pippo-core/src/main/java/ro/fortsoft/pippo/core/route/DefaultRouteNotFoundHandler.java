@@ -10,7 +10,12 @@
  * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the
  * specific language governing permissions and limitations under the License.
  */
-package ro.fortsoft.pippo.core;
+package ro.fortsoft.pippo.core.route;
+
+import ro.fortsoft.pippo.core.Application;
+import ro.fortsoft.pippo.core.HttpConstants;
+import ro.fortsoft.pippo.core.Request;
+import ro.fortsoft.pippo.core.Response;
 
 import java.util.List;
 

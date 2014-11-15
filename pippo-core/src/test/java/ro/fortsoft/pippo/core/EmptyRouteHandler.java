@@ -12,6 +12,9 @@
  */
 package ro.fortsoft.pippo.core;
 
+import ro.fortsoft.pippo.core.route.RouteHandler;
+import ro.fortsoft.pippo.core.route.RouteHandlerChain;
+
 /**
  * @author Decebal Suiu
  */

@@ -10,13 +10,29 @@
  * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the
  * specific language governing permissions and limitations under the License.
  */
-package ro.fortsoft.pippo.core;
+package ro.fortsoft.pippo.core.route;
+
+import java.util.Map;
 
 /**
  * @author Decebal Suiu
  */
-public interface RouteNotFoundHandler {
+public class RouteMatch {
 
-    public void handle(String requestMethod, String requestUri, Request request, Response response);
+    private final Route route;
+    private final Map<String, String> pathParameters;
+
+    public RouteMatch(Route route, Map<String, String> pathParameters) {
+        this.route = route;
+        this.pathParameters = pathParameters;
+    }
+
+    public Route getRoute() {
+        return route;
+    }
+
+    public Map<String, String> getPathParameters() {
+        return pathParameters;
+    }
 
 }

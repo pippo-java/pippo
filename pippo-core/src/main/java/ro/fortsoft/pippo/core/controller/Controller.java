@@ -14,7 +14,7 @@ package ro.fortsoft.pippo.core.controller;
 
 import ro.fortsoft.pippo.core.Request;
 import ro.fortsoft.pippo.core.Response;
-import ro.fortsoft.pippo.core.RouteHandlerChain;
+import ro.fortsoft.pippo.core.route.RouteHandlerChain;
 
 /**
  * @author Decebal Suiu

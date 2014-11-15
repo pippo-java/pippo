@@ -15,8 +15,8 @@ package ro.fortsoft.pippo.demo.crud;
 import ro.fortsoft.pippo.core.Application;
 import ro.fortsoft.pippo.core.Request;
 import ro.fortsoft.pippo.core.Response;
-import ro.fortsoft.pippo.core.RouteHandler;
-import ro.fortsoft.pippo.core.RouteHandlerChain;
+import ro.fortsoft.pippo.core.route.RouteHandler;
+import ro.fortsoft.pippo.core.route.RouteHandlerChain;
 
 import java.util.HashMap;
 import java.util.Map;

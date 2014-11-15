@@ -189,7 +189,7 @@ public class Request {
     }
 
     // called in (Default)RouteHandlerChain.next()
-    void setPathParameters(Map<String, String> pathParameters) {
+    public void setPathParameters(Map<String, String> pathParameters) {
         this.pathParameters = pathParameters;
         allParameters = null; // invalidate and force recreate
     }

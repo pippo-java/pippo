@@ -10,10 +10,12 @@
  * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the
  * specific language governing permissions and limitations under the License.
  */
-package ro.fortsoft.pippo.core;
+package ro.fortsoft.pippo.core.route;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import ro.fortsoft.pippo.core.Request;
+import ro.fortsoft.pippo.core.Response;
 
 import java.util.Iterator;
 import java.util.List;

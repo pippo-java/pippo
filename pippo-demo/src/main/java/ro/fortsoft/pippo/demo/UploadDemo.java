@@ -6,8 +6,8 @@ import ro.fortsoft.pippo.core.Pippo;
 import ro.fortsoft.pippo.core.PippoRuntimeException;
 import ro.fortsoft.pippo.core.Request;
 import ro.fortsoft.pippo.core.Response;
-import ro.fortsoft.pippo.core.RouteHandler;
-import ro.fortsoft.pippo.core.RouteHandlerChain;
+import ro.fortsoft.pippo.core.route.RouteHandler;
+import ro.fortsoft.pippo.core.route.RouteHandlerChain;
 
 import java.io.File;
 import java.io.IOException;

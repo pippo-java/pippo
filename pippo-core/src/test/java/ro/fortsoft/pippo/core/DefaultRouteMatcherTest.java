@@ -18,6 +18,9 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
+import ro.fortsoft.pippo.core.route.DefaultRouteMatcher;
+import ro.fortsoft.pippo.core.route.Route;
+import ro.fortsoft.pippo.core.route.RouteMatch;
 
 import java.util.List;
 import java.util.Map;
