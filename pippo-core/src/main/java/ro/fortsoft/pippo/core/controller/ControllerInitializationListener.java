@@ -12,8 +12,6 @@
  */
 package ro.fortsoft.pippo.core.controller;
 
-import ro.fortsoft.pippo.core.Controller;
-
 /**
  * Listener interface that receives messages when controllers are initialized
  * (after Controller#init method has been executed).

@@ -12,7 +12,6 @@
  */
 package ro.fortsoft.pippo.core.controller;
 
-import ro.fortsoft.pippo.core.Controller;
 import ro.fortsoft.pippo.core.util.ListenerList;
 
 import java.lang.reflect.Method;

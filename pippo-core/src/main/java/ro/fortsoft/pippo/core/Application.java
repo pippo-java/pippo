@@ -14,6 +14,8 @@ package ro.fortsoft.pippo.core;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import ro.fortsoft.pippo.core.controller.Controller;
+import ro.fortsoft.pippo.core.controller.ControllerHandler;
 import ro.fortsoft.pippo.core.controller.ControllerInitializationListenerList;
 import ro.fortsoft.pippo.core.controller.ControllerInstantiationListenerList;
 import ro.fortsoft.pippo.core.controller.ControllerInvokeListenerList;

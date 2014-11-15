@@ -12,7 +12,7 @@
  */
 package ro.fortsoft.pippo.demo.controller;
 
-import ro.fortsoft.pippo.core.Controller;
+import ro.fortsoft.pippo.core.controller.Controller;
 import ro.fortsoft.pippo.demo.crud.ContactService;
 import ro.fortsoft.pippo.demo.crud.InMemoryContactService;
 

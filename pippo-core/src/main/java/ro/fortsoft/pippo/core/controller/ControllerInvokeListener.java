@@ -12,8 +12,6 @@
  */
 package ro.fortsoft.pippo.core.controller;
 
-import ro.fortsoft.pippo.core.Controller;
-
 import java.lang.reflect.Method;
 
 /**
