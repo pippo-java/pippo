@@ -73,7 +73,6 @@ public class Request {
 
     public <T> T getEntityFromParameters(Class<T> entityClass) {
         T entity;
-
         try {
             entity = entityClass.newInstance();
         } catch (Exception e) {
@@ -83,7 +82,9 @@ public class Request {
 
         for (Field field : entityClass.getDeclaredFields()) {
             if (getAllParameters().containsKey(field.getName())) {
-                field.setAccessible(true);
+                if (!field.isAccessible()) {
+                    field.setAccessible(true);
+                }
                 try {
                     Object value = getAllParameters().get(field.getName()).to(field.getType());
                     field.set(entity, value);
