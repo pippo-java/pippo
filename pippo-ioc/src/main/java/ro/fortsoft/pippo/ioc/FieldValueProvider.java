@@ -24,7 +24,7 @@ public interface FieldValueProvider {
     public Object getFieldValue(Field field, Object fieldOwner);
 
     /**
-     * Returns true if the provifrt can generate a value for the field, false otherwise.
+     * Returns true if the provider can generate a value for the field, false otherwise.
      * If this method returns false, getFieldValue() will not be called on this provider.
      */
     public boolean supportsField(Field field);
