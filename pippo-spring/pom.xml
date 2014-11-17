@@ -8,26 +8,20 @@
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
-    <artifactId>pippo-demo</artifactId>
+    <packaging>jar</packaging>
+    <artifactId>pippo-spring</artifactId>
     <version>0.4.0-SNAPSHOT</version>
-    <name>Pippo Demo</name>
-    <description>Demo application</description>
+    <name>Pippo IoC</name>
+    <description>Integration with Spring Framework</description>
 
-    <properties>
+	<properties>
         <spring.version>4.1.1.RELEASE</spring.version>
     </properties>
 
     <dependencies>
         <dependency>
             <groupId>ro.fortsoft.pippo</groupId>
-            <artifactId>pippo</artifactId>
-            <version>${project.version}</version>
-            <type>pom</type>
-        </dependency>
-
-        <dependency>
-            <groupId>ro.fortsoft.pippo</groupId>
-            <artifactId>pippo-jade</artifactId>
+            <artifactId>pippo-ioc</artifactId>
             <version>${project.version}</version>
         </dependency>
 
@@ -35,13 +29,8 @@
             <groupId>org.springframework</groupId>
             <artifactId>spring-web</artifactId>
             <version>${spring.version}</version>
+            <scope>provided</scope>
         </dependency>
-
-        <dependency>
-            <groupId>ro.fortsoft.pippo</groupId>
-            <artifactId>pippo-spring</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-    </dependencies>
+	</dependencies>
 
 </project>
