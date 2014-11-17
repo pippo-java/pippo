@@ -1,4 +1,4 @@
-package ro.fortsoft.pippo.demo;
+package ro.fortsoft.pippo.demo.upload;
 
 import ro.fortsoft.pippo.core.Application;
 import ro.fortsoft.pippo.core.FileItem;

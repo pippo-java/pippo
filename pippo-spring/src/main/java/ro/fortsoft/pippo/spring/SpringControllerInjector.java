@@ -13,7 +13,6 @@
 package ro.fortsoft.pippo.spring;
 
 import org.springframework.context.ApplicationContext;
-import ro.fortsoft.pippo.core.Application;
 import ro.fortsoft.pippo.core.controller.Controller;
 import ro.fortsoft.pippo.core.controller.ControllerInstantiationListener;
 import ro.fortsoft.pippo.ioc.FieldValueProvider;
@@ -26,7 +25,7 @@ public class SpringControllerInjector extends Injector implements ControllerInst
 
     private FieldValueProvider fieldValueProvider;
 
-    public SpringControllerInjector(Application application, ApplicationContext applicationContext) {
+    public SpringControllerInjector(ApplicationContext applicationContext) {
         fieldValueProvider = new AnnotationFieldValueProvider(applicationContext);
     }
 

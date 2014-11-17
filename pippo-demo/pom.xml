@@ -13,6 +13,10 @@
     <name>Pippo Demo</name>
     <description>Demo application</description>
 
+    <properties>
+        <spring.version>4.1.1.RELEASE</spring.version>
+    </properties>
+
     <dependencies>
         <dependency>
             <groupId>ro.fortsoft.pippo</groupId>
@@ -24,6 +28,18 @@
         <dependency>
             <groupId>ro.fortsoft.pippo</groupId>
             <artifactId>pippo-jade</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-web</artifactId>
+            <version>${spring.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>ro.fortsoft.pippo</groupId>
+            <artifactId>pippo-spring</artifactId>
             <version>${project.version}</version>
         </dependency>
     </dependencies>
