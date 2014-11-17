@@ -155,7 +155,11 @@ public class JettyServer extends AbstractWebServer {
         if (externalStaticFilesLocation != null) {
             log.debug("External static files location: '{}'", externalStaticFilesLocation);
             handler = new StaticResourceHandler();
-            handler.setBaseResource(Resource.newResource(new File(externalStaticFilesLocation)));
+            File dir = new File(externalStaticFilesLocation);
+            if (!dir.exists() || !dir.isDirectory()) {
+                log.warn("Folder '" + dir.getAbsoluteFile() + "' doesn't exist");
+            }
+            handler.setBaseResource(Resource.newResource(dir));
             handler.setDirectoriesListed(false);
             if (RuntimeMode.getCurrent() == RuntimeMode.DEV) {
                 handler.setCacheControl("no-cache"); // disable cache
