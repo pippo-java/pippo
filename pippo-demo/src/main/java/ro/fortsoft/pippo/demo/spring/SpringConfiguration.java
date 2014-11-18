@@ -24,7 +24,7 @@ import ro.fortsoft.pippo.demo.crud.InMemoryContactService;
 public class SpringConfiguration {
 
     @Bean
-    public ContactService contactService(){
+    public ContactService contactService() {
         return new InMemoryContactService();
     }
 
