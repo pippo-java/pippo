@@ -15,6 +15,8 @@ Artifacts
 - Pippo Jetty `pippo-jetty` (jar)
 - Pippo Freemarker `pippo-freemarker` (jar)
 - Pippo Jade `pippo-jade` (jar)
+- Pippo IoC `pippo-ioc` (jar)
+- Pippo Spring `pippo-spring` (jar)
 
 Using Maven
 -------------------
@@ -388,7 +390,7 @@ These variables will be available automatically to all templates for the current
 GET("/contacts", (request, response, chain) -> {
     /*
     // variant 1 (with model)
-    Map<String, Object> model = new HashMap<String, Object>();
+    Map<String, Object> model = new HashMap<>();
     model.put("contacts", contactService.getContacts());
     response.render("crud/contacts.ftl", model);
     */
@@ -502,7 +504,7 @@ GET("/contact/:id", (request, response, chain) -> response.send("contact.ftl"));
 
 // show login page
 GET("/login", request, response, chain) -> {
-    Map<String, Object> model = new HashMap<String, Object>();
+    Map<String, Object> model = new HashMap<>();
     String error = (String) request.getSession().getAttribute("error");
     request.getSession().removeAttribute("error");
     if (error != null) {
@@ -640,7 +642,7 @@ GET("/contact/:id", (request, response, chain) -> {
     int id = request.getParameter("id").toInt(0);    
     String action = request.getParameter("action").toString("new");
     
-    Map<String, Object> model = new HashMap<String, Object>();
+    Map<String, Object> model = new HashMap<>();
     model.put("id", id);
     model.put("action", action)
     response.render("crud/contact.ftl", model);
@@ -650,6 +652,60 @@ GET("/contact/:id", (request, response, chain) -> {
 Don't forget that `locals` variables from a response will be available automatically to all templates for the current request/response cycle.
  
 For more information about how to implement a template engine please see _pippo-freemarker_ and _pippo-jade_ modules.
+
+Spring IoC
+-------------------
+Pippo can be used together with the Spring framework, using Spring as a dependency injection container. When Pippo creates new instances of your various Controller subclasses, the pippo-spring integration would then take care that the Spring-managed service beans (e.g. Services) get injected into the desired instance fields (marked by the `@Inject` annotations in your code). An example of such a Controller subclass could look as follows:
+
+```java
+public class ContactsController extends Controller {
+
+    @Inject
+    private ContactService contactService;
+
+    public void index() {
+        getResponse().getLocals().put("contacts", contactService.getContacts());
+        getResponse().render("crud/contacts.ftl");
+    }
+
+}
+```
+
+Pippo automatically creates the ContactsController instance and pippo-spring integration injects the ContactService service bean, so basically you don’t have to worry about any of that stuff yourself. 
+
+To activate pippo-spring integration in your Application you must add `SpringControllerInjector`:
+```java
+public class MyApplication extends Application {
+
+    @Override
+    public void init() {
+        super.init();
+
+        // create spring application context
+        ApplicationContext applicationContext = new AnnotationConfigApplicationContext(SpringConfiguration.class);
+        
+        // registering SpringControllerInjector
+        getControllerInstantiationListeners().add(new SpringControllerInjector(applicationContext));
+
+        // add controller
+        GET("/", ContactsController.class, "index");        
+    }
+
+}
+```
+
+where SpringConfiguration can looks like:
+```java
+@Configuration
+public class SpringConfiguration {
+
+    @Bean
+    public ContactService contactService() {
+        return new InMemoryContactService();
+    }
+
+}
+```
 
 Modularity
 -------------------
@@ -771,6 +827,7 @@ The demo application is in pippo-demo module. The demo module contains some demo
 - Crud
 - Upload
 - Jade
+- Spring
   
 CrudDemo is a <b>C</b>reate <b>R</b>etrieve <b>U</b>pdate <b>D</b>elete demo (with twitter bootstrap as static resources). 
     
