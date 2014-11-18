@@ -18,6 +18,9 @@ import ro.fortsoft.pippo.core.Pippo;
 import ro.fortsoft.pippo.spring.SpringControllerInjector;
 
 /**
+ * This demo shows how to use Spring Framework to declare a bean and how to use
+ * <code>{@link SpringControllerInjector}</code> to inject that bean in a Controller.
+ *
  * @author Decebal Suiu
  */
 public class SpringDemo {
