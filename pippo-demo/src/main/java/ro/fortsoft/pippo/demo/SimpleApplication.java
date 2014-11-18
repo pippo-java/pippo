@@ -74,7 +74,7 @@ public class SimpleApplication extends Application {
 
             @Override
             public void handle(Request request, Response response, RouteHandlerChain chain) {
-                Map<String, Object> model = new HashMap<String, Object>();
+                Map<String, Object> model = new HashMap<>();
                 model.put("greeting", "Hello my friend");
                 response.render("hello.ftl", model);
             }

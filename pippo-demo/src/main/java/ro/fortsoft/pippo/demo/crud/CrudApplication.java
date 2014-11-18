@@ -85,7 +85,7 @@ public class CrudApplication extends Application {
             public void handle(Request request, Response response, RouteHandlerChain chain) {
                 /*
                 // variant 1
-                Map<String, Object> model = new HashMap<String, Object>();
+                Map<String, Object> model = new HashMap<>();
                 model.put("contacts", contactService.getContacts());
                 response.render("crud/contacts.ftl", model);
                 */
@@ -111,7 +111,7 @@ public class CrudApplication extends Application {
                 }
 
                 Contact contact = (id > 0) ? contactService.getContact(id) : new Contact();
-                Map<String, Object> model = new HashMap<String, Object>();
+                Map<String, Object> model = new HashMap<>();
                 model.put("contact", contact);
                 StringBuilder editAction = new StringBuilder();
                 editAction.append("/contact?action=save");
@@ -144,7 +144,7 @@ public class CrudApplication extends Application {
 
             @Override
             public void handle(Request request, Response response, RouteHandlerChain chain) {
-                Map<String, Object> model = new HashMap<String, Object>();
+                Map<String, Object> model = new HashMap<>();
                 String error = (String) request.getSession().getAttribute("error");
                 request.getSession().removeAttribute("error");
                 if (error != null) {

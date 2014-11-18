@@ -81,7 +81,7 @@ public class InMemoryContactService implements ContactService {
     }
 
     private void addDefaultContacts() {
-        contacts = new ArrayList<Contact>();
+        contacts = new ArrayList<>();
         contacts.add(new Contact(nextId++).setName("John").setPhone("0733434435").setAddress("Sunflower Street, No. 6"));
         contacts.add(new Contact(nextId++).setName("Peter").setPhone("0742333331").setAddress("Sunflower Street, No. 2"));
         contacts.add(new Contact(nextId++).setName("Maria").setPhone("0741200000").setAddress("Sunflower Street, No. 3"));

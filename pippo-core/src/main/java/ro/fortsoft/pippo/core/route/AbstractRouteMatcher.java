@@ -33,8 +33,8 @@ public abstract class AbstractRouteMatcher implements RouteMatcher {
     private Map<String, List<Route>> cache;
 
     public AbstractRouteMatcher() {
-        routes = new ArrayList<Route>();
-        cache = new HashMap<String, List<Route>>();
+        routes = new ArrayList<>();
+        cache = new HashMap<>();
     }
 
     @Override

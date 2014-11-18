@@ -323,7 +323,7 @@ public class PippoFilter implements Filter {
     }
 
     private List<Initializer> getInitializers() throws Exception {
-        List<Initializer> initializers = new ArrayList<Initializer>();
+        List<Initializer> initializers = new ArrayList<>();
         ClassLoader classLoader = getClass().getClassLoader();
         Enumeration<URL> urls = classLoader.getResources("pippo.properties");
         while (urls.hasMoreElements()) {

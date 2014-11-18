@@ -278,7 +278,7 @@ public class Response {
      */
     public Map<String, Object> getLocals() {
         if (locals == null) {
-            locals = new HashMap<String, Object>();
+            locals = new HashMap<>();
         }
 
         return locals;

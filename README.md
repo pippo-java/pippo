@@ -233,7 +233,7 @@ GET("/contact/:id", (request, response, chain) -> {
     int id = request.getParameter("id").toInt(0);    
     String action = request.getParameter("action").toString("new");
     
-    Map<String, Object> model = new HashMap<String, Object>();
+    Map<String, Object> model = new HashMap<>();
     model.put("id", id);
     model.put("action", action)
     response.render("crud/contact.ftl", model);

@@ -50,7 +50,7 @@ public class Request {
         this.httpServletRequest = servletRequest;
 
         // fill (query) parameters if any
-        Map<String, StringValue> tmp = new HashMap<String, StringValue>();
+        Map<String, StringValue> tmp = new HashMap<>();
         Enumeration<String> names = httpServletRequest.getParameterNames();
         while (names.hasMoreElements()) {
             String name = names.nextElement();
@@ -172,7 +172,7 @@ public class Request {
 
     public Map<String, FileItem> getFiles() {
         if (files == null) {
-            files = new HashMap<String, FileItem>();
+            files = new HashMap<>();
             try {
                 Collection<Part> parts = httpServletRequest.getParts();
                 for (Part part : parts) {
@@ -198,7 +198,7 @@ public class Request {
 
     private Map<String, StringValue> getAllParameters() {
         if (allParameters == null) {
-            Map<String, StringValue> tmp = new HashMap<String, StringValue>();
+            Map<String, StringValue> tmp = new HashMap<>();
             // add query parameters
             tmp.putAll(parameters);
             // add path parameters

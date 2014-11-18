@@ -37,7 +37,7 @@ public class DefaultRouteMatcher extends AbstractRouteMatcher {
     public DefaultRouteMatcher() {
         super();
 
-        bindingsCache = new HashMap<String, List<PatternBinding>>();
+        bindingsCache = new HashMap<>();
     }
 
     @Override
@@ -48,7 +48,7 @@ public class DefaultRouteMatcher extends AbstractRouteMatcher {
             return Collections.emptyList();
         }
 
-        List<RouteMatch> routeMatches = new ArrayList<RouteMatch>();
+        List<RouteMatch> routeMatches = new ArrayList<>();
         for (PatternBinding binding : bindings) {
             if (binding.getPattern().matcher(requestUri).matches()) {
                 // TODO improve (it's possible to have the same urlPattern for many routes => same parameters)
@@ -125,7 +125,7 @@ public class DefaultRouteMatcher extends AbstractRouteMatcher {
         matcher.matches();
         int groupCount = matcher.groupCount();
         if (groupCount > 0) {
-            List<String> parameterNames = new ArrayList<String>();
+            List<String> parameterNames = new ArrayList<>();
             for (int i = 1; i <= groupCount; i++) {
                 parameterNames.add(matcher.group(i));
             }
@@ -137,7 +137,7 @@ public class DefaultRouteMatcher extends AbstractRouteMatcher {
     }
 
     private Map<String, String> getParameters(PatternBinding binding, String requestUri) {
-        Map<String, String> parameters = new HashMap<String, String>();
+        Map<String, String> parameters = new HashMap<>();
 
         List<String> parameterNames = binding.getParameterNames();
         Matcher matcher = binding.getPattern().matcher(requestUri);

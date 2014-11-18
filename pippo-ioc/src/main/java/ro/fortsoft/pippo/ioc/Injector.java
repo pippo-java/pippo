@@ -33,7 +33,7 @@ public abstract class Injector {
 
     public static Injector get() {
         // TODO
-//        return Application.get().getMetaData(KEY);
+//        return Application.get().getLocals.get(KEY);
         return null;
     }
 
