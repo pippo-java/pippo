@@ -27,6 +27,9 @@ import ro.fortsoft.pippo.core.route.RouteMatcher;
 import ro.fortsoft.pippo.core.route.RouteNotFoundHandler;
 import ro.fortsoft.pippo.core.util.ServiceLocator;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * @author Decebal Suiu
  */
@@ -45,6 +48,8 @@ public class Application {
     private ControllerInstantiationListenerList controllerInstantiationListeners;
     private ControllerInitializationListenerList controllerInitializationListeners;
     private ControllerInvokeListenerList controllerInvokeListeners;
+
+    private Map<String, Object> locals;
 
     /**
      * Get Application for current thread.
@@ -219,6 +224,14 @@ public class Application {
         }
 
         return controllerInvokeListeners;
+    }
+
+    public Map<String, Object> getLocals() {
+        if (locals == null) {
+            locals = new HashMap<>();
+        }
+
+        return locals;
     }
 
 }
