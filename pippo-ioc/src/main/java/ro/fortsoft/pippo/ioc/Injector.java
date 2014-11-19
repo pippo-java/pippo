@@ -31,12 +31,6 @@ public abstract class Injector {
 
     private final ConcurrentMap<Class, Field[]> fieldsCache = new ConcurrentHashMap<>();
 
-    public static Injector get() {
-        // TODO
-//        return Application.get().getLocals.get(KEY);
-        return null;
-    }
-
     /**
      * Injects the specified object. This method is usually implemented by delegating to
      * {@link #inject(Object, FieldValueProvider)} with some {@link FieldValueProvider}
