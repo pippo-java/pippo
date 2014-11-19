@@ -651,6 +651,51 @@ GET("/contact/:id", (request, response, chain) -> {
 
 Don't forget that `locals` variables from a response will be available automatically to all templates for the current request/response cycle.
  
+For each template engine we expose its configuration. For example __Freemarker__ works with `freemarker.template.Configuration` and __Jade__ works with `de.neuland.jade4j.JadeConfiguration`.  
+In _Application.init_ you can create a new instance for a discovered template engine or you can modify its configuration.
+
+```java
+public class CrudApplication extends Application {
+
+   @Override
+   public void init() {
+      super.init();
+
+      FreemarkerTemplateEngine templateEngine = new FreemarkerTemplateEngine();
+      try {
+         templateEngine.getConfiguration().setDirectoryForTemplateLoading(new File("src/main/resources/templates/"));
+      } catch (IOException e) {
+         throw new PippoRuntimeException(e);
+      }
+      setTemplateEngine(templateEngine);
+
+      // ... add routes
+   }
+
+}
+```
+
+or
+```java
+public class CrudApplication extends Application {
+
+   @Override
+   public void init() {
+      super.init();
+
+      Configuration configuration = ((FreemarkerTemplateEngine) templateEngine).getConfiguration();
+      try {
+         configuration.setDirectoryForTemplateLoading(new File("src/main/resources/templates/"));
+      } catch (IOException e) {
+         throw new PippoRuntimeException(e);
+      }
+
+      // ... add routes
+   }
+
+}
+```
+
 For more information about how to implement a template engine please see _pippo-freemarker_ and _pippo-jade_ modules.
 
 Spring IoC
