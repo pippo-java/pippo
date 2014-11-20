@@ -81,27 +81,11 @@ public abstract class AbstractRouteMatcher implements RouteMatcher {
     }
 
     private boolean existsRequestMethod(String requestMethod) {
-        if (HttpConstants.Method.GET.equals(requestMethod)) {
-            return true;
-        }
-
-        if (HttpConstants.Method.POST.equals(requestMethod)) {
-            return true;
-        }
-
-        if (HttpConstants.Method.PUT.equals(requestMethod)) {
-            return true;
-        }
-
-        if (HttpConstants.Method.HEAD.equals(requestMethod)) {
-            return true;
-        }
-
-        if (HttpConstants.Method.DELETE.equals(requestMethod)) {
-            return true;
-        }
-
-        return false;
+        return HttpConstants.Method.GET.equals(requestMethod)
+                || HttpConstants.Method.POST.equals(requestMethod)
+                || HttpConstants.Method.PUT.equals(requestMethod)
+                || HttpConstants.Method.HEAD.equals(requestMethod)
+                || HttpConstants.Method.DELETE.equals(requestMethod);
     }
 
 }
