@@ -18,6 +18,7 @@ import org.slf4j.LoggerFactory;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
@@ -67,6 +68,13 @@ public class DefaultRouteMatcher extends AbstractRouteMatcher {
     }
 
     @Override
+    public String urlFor(String urlPattern, Map<String, Object> parameters) {
+        PatternBinding binding = getPatternBinding(urlPattern);
+
+        return (binding != null) ? urlFor(binding, parameters) : null;
+    }
+
+    @Override
     protected void validateRoute(Route route) throws Exception {
         super.validateRoute(route);
 
@@ -82,7 +90,7 @@ public class DefaultRouteMatcher extends AbstractRouteMatcher {
         String urlPattern = route.getUrlPattern();
         // TODO improve (it's possible to have the same urlPattern for many routes => same pattern)
         String regex = getRegex(urlPattern);
-        Pattern pattern = Pattern.compile(regex.toString());
+        Pattern pattern = Pattern.compile(regex);
         List<String> parameterNames = getParameterNames(urlPattern);
         PatternBinding binding = new PatternBinding(pattern, route, parameterNames);
         String requestMethod = route.getRequestMethod();
@@ -150,6 +158,57 @@ public class DefaultRouteMatcher extends AbstractRouteMatcher {
         }
 
         return parameters;
+    }
+
+    private PatternBinding getPatternBinding(String urlPattern) {
+        Iterator<List<PatternBinding>> iterator = bindingsCache.values().iterator();
+        while (iterator.hasNext()) {
+            List<PatternBinding> bindings = iterator.next();
+            for (PatternBinding binding : bindings) {
+                if (urlPattern.equals(binding.getRoute().getUrlPattern())) {
+                    return binding;
+                }
+            }
+        }
+
+        return null;
+    }
+
+    private String urlFor(PatternBinding binding, Map<String, Object> parameters) {
+        String urlPattern = binding.getRoute().getUrlPattern();
+
+        // remove wildcards
+        String url = urlPattern.replaceAll("\\*", "");
+
+        List<String> parameterNames = binding.getParameterNames();
+        if (!parameters.keySet().containsAll(parameterNames)) {
+            log.error("You must provide values for all path parameters. {} vs {}", parameterNames, parameters.keySet());
+        }
+
+        Map<String, Object> queryParameters = new HashMap<>(parameters);
+        for (String parameterName : parameterNames) {
+            // replace parameter name with parameter value
+            url = url.replaceAll(":" + parameterName, parameters.get(parameterName).toString());
+            queryParameters.remove(parameterName);
+        }
+
+        if (!queryParameters.isEmpty()) {
+            // add remaining parameters as query parameters
+            StringBuilder query = new StringBuilder();
+            Iterator<String> iterator = queryParameters.keySet().iterator();
+            while (iterator.hasNext()) {
+                String parameterName = iterator.next();
+                Object parameterValue =  queryParameters.get(parameterName);
+                query.append(parameterName).append("=").append(parameterValue.toString());
+                if (iterator.hasNext()) {
+                    query.append("&");
+                }
+            }
+
+            url += "?" + query;
+        }
+
+        return url;
     }
 
     private class PatternBinding {

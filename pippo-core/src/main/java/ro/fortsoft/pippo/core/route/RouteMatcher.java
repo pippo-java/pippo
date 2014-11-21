@@ -13,6 +13,7 @@
 package ro.fortsoft.pippo.core.route;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * This class allows you to do route requests based on the HTTP verb (request method) and the request URI,
@@ -28,5 +29,7 @@ public interface RouteMatcher {
     public List<RouteMatch> findRoutes(String requestUri, String requestMethod);
 
     public List<Route> getRoutes();
+
+    public String urlFor(String urlPattern, Map<String, Object> parameters);
 
 }

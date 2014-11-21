@@ -16,6 +16,9 @@ import ro.fortsoft.pippo.core.controller.Controller;
 import ro.fortsoft.pippo.demo.crud.ContactService;
 import ro.fortsoft.pippo.demo.crud.InMemoryContactService;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * @author Decebal Suiu
  */
@@ -30,6 +33,17 @@ public class ContactsController extends Controller {
     public void index() {
         getResponse().getLocals().put("contacts", contactService.getContacts());
         getResponse().render("crud/contacts.ftl");
+    }
+
+    public void urlFor() {
+        int id = getRequest().getParameter("id").toInt();
+
+        Map<String, Object> parameters = new HashMap<>();
+        parameters.put("id", id);
+        parameters.put("action", "new");
+        String url = getApplication().urlFor(ContactsController.class, "urlFor", parameters);
+
+        getResponse().send("id = " + id + "; url = " + url);
     }
 
 }

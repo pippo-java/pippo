@@ -12,6 +12,7 @@
  */
 package ro.fortsoft.pippo.core.controller;
 
+import ro.fortsoft.pippo.core.Application;
 import ro.fortsoft.pippo.core.Request;
 import ro.fortsoft.pippo.core.Response;
 import ro.fortsoft.pippo.core.route.RouteHandlerChain;
@@ -35,6 +36,10 @@ public class Controller {
 
     public final RouteHandlerChain getChain() {
         return chain;
+    }
+
+    public Application getApplication() {
+        return Application.get();
     }
 
     protected void init(Request request, Response response, RouteHandlerChain chain) {

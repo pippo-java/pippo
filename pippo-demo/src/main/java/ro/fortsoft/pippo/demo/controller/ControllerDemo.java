@@ -23,6 +23,7 @@ public class ControllerDemo {
         Pippo pippo = new Pippo();
         pippo.getServer().getSettings().staticFilesLocation("/public");
         pippo.getApplication().GET("/", ContactsController.class, "index");
+        pippo.getApplication().GET("/contacts/:id", ContactsController.class, "urlFor");
         pippo.start();
     }
 

@@ -28,6 +28,7 @@ import ro.fortsoft.pippo.core.route.RouteNotFoundHandler;
 import ro.fortsoft.pippo.core.util.ServiceLocator;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -232,6 +233,32 @@ public class Application {
         }
 
         return locals;
+    }
+
+    public String urlFor(Class<? extends Controller> controllerClass, String methodName, Map<String, Object> parameters) {
+        Route route = getRoute(controllerClass, methodName);
+
+        return (route != null) ? urlFor(route.getUrlPattern(), parameters) : null;
+    }
+
+    public String urlFor(String urlPattern, Map<String, Object> parameters) {
+        return getRouteMatcher().urlFor(urlPattern, parameters);
+    }
+
+    private Route getRoute(Class<? extends Controller> controllerClass, String methodName) {
+        List<Route> routes = routeMatcher.getRoutes();
+        for (Route route : routes) {
+            RouteHandler routeHandler = route.getRouteHandler();
+            if (routeHandler instanceof ControllerHandler) {
+                ControllerHandler controllerHandler = (ControllerHandler) routeHandler;
+                if (controllerClass == controllerHandler.getControllerClass()
+                        && methodName.equals(controllerHandler.getMethodName())) {
+                    return route;
+                }
+            }
+        }
+
+        return null;
     }
 
 }
