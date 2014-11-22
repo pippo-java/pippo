@@ -12,16 +12,17 @@
  */
 package ro.fortsoft.pippo.demo;
 
+import java.io.File;
+import java.util.HashMap;
+import java.util.Map;
+
 import ro.fortsoft.pippo.core.Application;
 import ro.fortsoft.pippo.core.Request;
 import ro.fortsoft.pippo.core.Response;
 import ro.fortsoft.pippo.core.route.RouteHandler;
 import ro.fortsoft.pippo.core.route.RouteHandlerChain;
+import ro.fortsoft.pippo.demo.controller.J8Controller;
 import ro.fortsoft.pippo.demo.crud.Contact;
-
-import java.io.File;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * @author Decebal Suiu
@@ -41,6 +42,16 @@ public class SimpleApplication extends Application {
             }
 
         });
+
+        // Java8 static lambda to J8Controller which is NOT a RouteHandler.
+        // This approach takes advantage of the fixed arguments (Request, Response, RouteHandlerChain).
+        // Note that J8Controller is not a RouteHandler.
+        GET("/hello1", J8Controller::helloStatic);
+
+        // This one would be ideal, but it requires adopting Java8 in Pippo
+        // GET("/hello2a", J8Controller::hello);
+
+        GET("/hello2b", new J8Controller()::hello);
 
         // send a file as response
         GET("/file", new RouteHandler() {
