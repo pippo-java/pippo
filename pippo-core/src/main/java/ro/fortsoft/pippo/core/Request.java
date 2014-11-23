@@ -12,14 +12,6 @@
  */
 package ro.fortsoft.pippo.core;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import ro.fortsoft.pippo.core.util.IoUtils;
-import ro.fortsoft.pippo.core.util.StringValue;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
-import javax.servlet.http.Part;
 import java.lang.reflect.Field;
 import java.util.Collection;
 import java.util.Collections;
@@ -27,6 +19,16 @@ import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+import javax.servlet.http.Part;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import ro.fortsoft.pippo.core.util.IoUtils;
+import ro.fortsoft.pippo.core.util.StringValue;
 
 /**
  * Represents a server-side HTTP request. An instance of this class is created for each request.
@@ -71,7 +73,7 @@ public class Request {
         return getAllParameters().get(name);
     }
 
-    public <T> T getEntityFromParameters(Class<T> entityClass) {
+    public <T> T createEntityFromParameters(Class<T> entityClass) {
         T entity;
         try {
             entity = entityClass.newInstance();
@@ -80,7 +82,13 @@ public class Request {
             return null;
         }
 
-        for (Field field : entityClass.getDeclaredFields()) {
+        updateEntityFromParameters(entity);
+
+        return entity;
+    }
+
+    public <T> T updateEntityFromParameters(T entity) {
+        for (Field field : entity.getClass().getDeclaredFields()) {
             if (getAllParameters().containsKey(field.getName())) {
                 if (!field.isAccessible()) {
                     field.setAccessible(true);
