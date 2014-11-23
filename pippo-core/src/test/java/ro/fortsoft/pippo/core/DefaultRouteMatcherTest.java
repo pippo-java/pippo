@@ -128,4 +128,18 @@ public class DefaultRouteMatcherTest extends Assert {
         assertEquals(routeMatches.size(), 1);
     }
 
+    @Test
+    public void testPatchRoute() throws Exception {
+        Route route = new Route("/contact/:id", HttpConstants.Method.PATCH, new EmptyRouteHandler());
+        routeMatcher.addRoute(route);
+
+        List<RouteMatch> routeMatches = routeMatcher.findRoutes("/contact/3", HttpConstants.Method.PATCH);
+        assertEquals(routeMatches.size(), 1);
+
+        Map<String, String> pathParameters = routeMatches.get(0).getPathParameters();
+        assertNotNull(pathParameters);
+        assertEquals(pathParameters.size(), 1);
+        assertTrue(pathParameters.containsKey("id"));
+        assertEquals(pathParameters.get("id"), String.valueOf(3));
+    }
 }

@@ -144,6 +144,14 @@ public class Application {
         addRoute(urlPattern, HttpConstants.Method.PUT, new ControllerHandler(controllerClass, methodName));
     }
 
+    public void PATCH(String urlPattern, RouteHandler routeHandler) {
+        addRoute(urlPattern, HttpConstants.Method.PATCH, routeHandler);
+    }
+
+    public void PATCH(String urlPattern, Class<? extends Controller> controllerClass, String methodName) {
+        addRoute(urlPattern, HttpConstants.Method.PATCH, new ControllerHandler(controllerClass, methodName));
+    }
+
     public void addRoute(String urlPattern, String requestMethod, RouteHandler routeHandler) {
         Route route = new Route(urlPattern, requestMethod, routeHandler);
         try {
