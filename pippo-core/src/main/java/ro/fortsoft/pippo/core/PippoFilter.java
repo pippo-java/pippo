@@ -1,14 +1,17 @@
 /*
- * Copyright 2014 Decebal Suiu
+ * Copyright (C) 2014 the original author or authors.
  *
- * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this work except in compliance with
- * the License. You may obtain a copy of the License in the LICENSE file, or at:
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
- * http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on
- * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the
- * specific language governing permissions and limitations under the License.
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package ro.fortsoft.pippo.core;
 
@@ -29,6 +32,7 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.net.URL;
@@ -356,7 +360,6 @@ public class PippoFilter implements Filter {
      * @return The version of Pippo. Eg. "1.6-SNAPSHOT" while developing of "1.6" when released.
      */
     private final String readPippoVersion() {
-
         // location of the properties file
         String LOCATION_OF_PIPPO_BUILTIN_PROPERTIES = "pippo/pippo-builtin.properties";
         // and the key inside the properties file.
@@ -374,11 +377,10 @@ public class PippoFilter implements Filter {
 
         } catch (Exception e) {
             //this should not happen. Never.
-            throw new RuntimeErrorException(new Error("Something is wrong with your build. Cannot find resource " + LOCATION_OF_PIPPO_BUILTIN_PROPERTIES));
+            throw new PippoRuntimeException("Something is wrong with your build. Cannot find resource " + LOCATION_OF_PIPPO_BUILTIN_PROPERTIES);
         }
 
         return pippoVersion;
-
     }
 
 }
