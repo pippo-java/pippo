@@ -53,14 +53,8 @@
         </dependency>
     </dependencies>
 
- <build>
+    <build>
         <resources>
-            <resource>
-                <directory>src/main/java</directory>
-                <includes>
-                    <include>**/*</include>
-                </includes>
-            </resource>
             <resource>
                 <directory>src/main/resources</directory>
                 <filtering>true</filtering>
@@ -69,5 +63,5 @@
                 </includes>
             </resource>
         </resources>
-        </build>
+    </build>
 </project>
