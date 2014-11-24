@@ -64,6 +64,12 @@ public class PippoFilter implements Filter {
 
     private static final String slash = "/";
 
+    private final String PIPPO_LOGO = "\n"
+    		+" ____  ____  ____  ____  _____\n"
+            + "(  _ \\(_  _)(  _ \\(  _ \\(  _  )\n"
+            + " ) __/ _)(_  ) __/ ) __/ )(_)(   https://github.com/decebals/pippo\n"
+            + "(__)  (____)(__)  (__)  (_____)  {}\n";
+
     private Application application;
     private List<Initializer> initializers;
     private Set<String> ignorePaths;
@@ -71,6 +77,8 @@ public class PippoFilter implements Filter {
 
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
+    	log.info(PIPPO_LOGO, readPippoVersion());
+
         if (ignorePaths == null) {
             initIgnorePaths(filterConfig);
         }
@@ -339,6 +347,38 @@ public class PippoFilter implements Filter {
         }
 
         return initializers;
+    }
+
+    /**
+     * Simply reads a property resource file that contains the version of this
+     * Pippo build. Helps to identify the Pippo version currently running.
+     *
+     * @return The version of Pippo. Eg. "1.6-SNAPSHOT" while developing of "1.6" when released.
+     */
+    private final String readPippoVersion() {
+
+        // location of the properties file
+        String LOCATION_OF_PIPPO_BUILTIN_PROPERTIES = "pippo/pippo-builtin.properties";
+        // and the key inside the properties file.
+        String PIPPO_VERSION_PROPERTY_KEY = "pippo.version";
+
+        String pippoVersion;
+
+        try {
+
+            Properties prop = new Properties();
+            InputStream stream = Thread.currentThread().getContextClassLoader().getResourceAsStream(LOCATION_OF_PIPPO_BUILTIN_PROPERTIES);
+            prop.load(stream);
+
+            pippoVersion = prop.getProperty(PIPPO_VERSION_PROPERTY_KEY);
+
+        } catch (Exception e) {
+            //this should not happen. Never.
+            throw new RuntimeErrorException(new Error("Something is wrong with your build. Cannot find resource " + LOCATION_OF_PIPPO_BUILTIN_PROPERTIES));
+        }
+
+        return pippoVersion;
+
     }
 
 }
