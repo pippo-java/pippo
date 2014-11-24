@@ -21,6 +21,7 @@ import ro.fortsoft.pippo.core.route.DefaultRouteHandlerChain;
 import ro.fortsoft.pippo.core.route.RouteMatch;
 import ro.fortsoft.pippo.core.route.RouteMatcher;
 import ro.fortsoft.pippo.core.route.RouteNotFoundHandler;
+import ro.fortsoft.pippo.core.util.Utils;
 
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
@@ -360,8 +361,6 @@ public class PippoFilter implements Filter {
      * @return The version of Pippo. Eg. "1.6-SNAPSHOT" while developing of "1.6" when released.
      */
     private final String readPippoVersion() {
-        // location of the properties file
-        String LOCATION_OF_PIPPO_BUILTIN_PROPERTIES = "pippo/pippo-builtin.properties";
         // and the key inside the properties file.
         String PIPPO_VERSION_PROPERTY_KEY = "pippo.version";
 
@@ -370,14 +369,15 @@ public class PippoFilter implements Filter {
         try {
 
             Properties prop = new Properties();
-            InputStream stream = Thread.currentThread().getContextClassLoader().getResourceAsStream(LOCATION_OF_PIPPO_BUILTIN_PROPERTIES);
+            URL url = Utils.locateOnClasspath(PippoConstants.LOCATION_OF_PIPPO_BUILTIN_PROPERTIES);
+            InputStream stream = url.openStream();
             prop.load(stream);
 
             pippoVersion = prop.getProperty(PIPPO_VERSION_PROPERTY_KEY);
 
         } catch (Exception e) {
             //this should not happen. Never.
-            throw new PippoRuntimeException("Something is wrong with your build. Cannot find resource " + LOCATION_OF_PIPPO_BUILTIN_PROPERTIES);
+            throw new PippoRuntimeException("Something is wrong with your build. Cannot find resource " + PippoConstants.LOCATION_OF_PIPPO_BUILTIN_PROPERTIES);
         }
 
         return pippoVersion;
