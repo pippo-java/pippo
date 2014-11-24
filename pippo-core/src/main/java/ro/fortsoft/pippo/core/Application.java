@@ -77,7 +77,7 @@ public class Application {
     }
 
     /**
-     * The runtime mode. Must currently be either DEV or PROD.
+     * The runtime mode. Must currently be either DEV, TEST, or PROD.
      */
     public RuntimeMode getRuntimeMode() {
         return RuntimeMode.getCurrent();

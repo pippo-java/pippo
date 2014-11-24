@@ -847,7 +847,7 @@ public class ContactInitializer implements Initializer {
 
 Runtime mode
 -------------------
-An application can run in two modes: __DEV__(development) and __PROD__(production).
+An application can run in three modes: __DEV__(development), __TEST__(testing) and __PROD__(production).
 
 You can change the runtime mode using the "pippo.mode" system property (`-Dpippo.mode=dev` in command line or `System.setProperty("pippo.mode", "dev")`).  
 The default mode is __PROD__.  

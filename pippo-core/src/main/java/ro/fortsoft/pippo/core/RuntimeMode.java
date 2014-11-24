@@ -25,6 +25,7 @@ import java.util.NoSuchElementException;
 public enum RuntimeMode {
 
     DEV("dev"), // development
+    TEST("test"), // testing
     PROD("prod"); // production
 
     private static RuntimeMode current;
@@ -54,7 +55,7 @@ public enum RuntimeMode {
         }
 
         throw new NoSuchElementException("Cannot found Pippo runtime mode with name '" + name +
-                "'. Must be 'dev' or 'prod'.");
+                "'. Must be 'dev', 'test', or 'prod'.");
     }
 
     public static RuntimeMode getCurrent() {
