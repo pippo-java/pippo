@@ -85,7 +85,8 @@ public abstract class AbstractRouteMatcher implements RouteMatcher {
                 || HttpConstants.Method.POST.equals(requestMethod)
                 || HttpConstants.Method.PUT.equals(requestMethod)
                 || HttpConstants.Method.HEAD.equals(requestMethod)
-                || HttpConstants.Method.DELETE.equals(requestMethod);
+                || HttpConstants.Method.DELETE.equals(requestMethod)
+                || HttpConstants.Method.PATCH.equals(requestMethod);
     }
 
 }

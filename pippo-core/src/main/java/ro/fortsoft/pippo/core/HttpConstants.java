@@ -24,6 +24,7 @@ public class HttpConstants {
         public static final String DELETE = "DELETE";
         public static final String HEAD = "HEAD";
         public static final String PUT = "PUT";
+        public static final String PATCH = "PATCH";
         /*
         public static final String TRACE = "TRACE";
         public static final String CONNECT = "CONNECT";
