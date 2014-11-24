@@ -15,10 +15,24 @@
  */
 package ro.fortsoft.pippo.core;
 
-public interface PippoConstants {
+public interface PippoConstant {
 
     String LOCATION_OF_PIPPO_BUILTIN_PROPERTIES = "pippo/pippo-builtin.properties";
 
+    String LOCATION_OF_PIPPO_CLASSPATH_PROPERTIES = "conf/application.properties";
+
+    String APPLICATION_PROPERTIES = "application.properties";
+
     String SYSTEM_PROPERTY_PIPPO_MODE = "pippo.mode";
+
+    String SYSTEM_PROPERTY_PIPPO_SETTINGS = "pippo.settings";
+
+    String SETTING_APPLICATION_NAME = "application.name";
+
+    String SETTING_APPLICATION_VERSION = "application.version";
+
+    String SETTING_SERVER_PORT = "server.port";
+
+    String SETTING_SERVER_HOST = "server.host";
 
 }

@@ -41,6 +41,7 @@ public class Application {
 
     private static final Logger log = LoggerFactory.getLogger(Application.class);
 
+    private PippoSettings pippoSettings;
     private TemplateEngine templateEngine;
     private RouteMatcher routeMatcher;
     private ExceptionHandler exceptionHandler;
@@ -70,6 +71,14 @@ public class Application {
         return application;
     }
 
+    public Application() {
+        this(new PippoSettings());
+    }
+
+    public Application(PippoSettings settings) {
+        this.pippoSettings = new PippoSettings();
+    }
+
     public void init() {
     }
 
@@ -81,6 +90,18 @@ public class Application {
      */
     public RuntimeMode getRuntimeMode() {
         return RuntimeMode.getCurrent();
+    }
+
+    public PippoSettings getPippoSettings() {
+        return pippoSettings;
+    }
+
+    public String getApplicationName() {
+        return pippoSettings.getString(PippoConstant.SETTING_APPLICATION_NAME, "");
+    }
+
+    public String getApplicationVersion() {
+        return pippoSettings.getString(PippoConstant.SETTING_APPLICATION_VERSION, "");
     }
 
     public TemplateEngine getTemplateEngine() {
@@ -270,6 +291,15 @@ public class Application {
         }
 
         return null;
+    }
+
+    @Override
+    public String toString() {
+        String toString = (getApplicationName() + " " + getApplicationVersion()).trim();
+        if (toString.isEmpty()) {
+            super.toString();
+        }
+        return toString;
     }
 
 }

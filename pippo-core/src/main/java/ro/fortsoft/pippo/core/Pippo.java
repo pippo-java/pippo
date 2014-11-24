@@ -52,7 +52,9 @@ public class Pippo {
             PippoFilter pippoFilter = new PippoFilter();
             pippoFilter.setApplication(application);
             server.setPippoFilter(pippoFilter);
-            server.setSettings(new WebServerSettings()); // default settings
+
+            WebServerSettings serverSettings = new WebServerSettings(application.getPippoSettings());
+            server.setSettings(serverSettings);
         }
 
         return server;

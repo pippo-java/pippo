@@ -106,6 +106,8 @@ public class PippoFilter implements Filter {
             for (Initializer initializer : initializers) {
                 initializer.init(application);
             }
+
+            log.debug("Initializing application '{}'", application);
             application.init();
 
             String runtimeMode = application.getRuntimeMode().toString().toUpperCase();
@@ -369,7 +371,7 @@ public class PippoFilter implements Filter {
         try {
 
             Properties prop = new Properties();
-            URL url = Utils.locateOnClasspath(PippoConstants.LOCATION_OF_PIPPO_BUILTIN_PROPERTIES);
+            URL url = Utils.locateOnClasspath(PippoConstant.LOCATION_OF_PIPPO_BUILTIN_PROPERTIES);
             InputStream stream = url.openStream();
             prop.load(stream);
 
@@ -377,7 +379,7 @@ public class PippoFilter implements Filter {
 
         } catch (Exception e) {
             //this should not happen. Never.
-            throw new PippoRuntimeException("Something is wrong with your build. Cannot find resource " + PippoConstants.LOCATION_OF_PIPPO_BUILTIN_PROPERTIES);
+            throw new PippoRuntimeException("Something is wrong with your build. Cannot find resource " + PippoConstant.LOCATION_OF_PIPPO_BUILTIN_PROPERTIES);
         }
 
         return pippoVersion;

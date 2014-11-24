@@ -64,4 +64,28 @@ public class Utils {
         }
         return url;
     }
+
+    public static boolean isNullOrEmpty(String s) {
+        return s == null || s.trim().isEmpty();
+    }
+
+    public static List<String> getStringList(String value, String separator) {
+        List<String> strings = new ArrayList<String>();
+        try {
+            String[] chunks = value.split(separator + "(?=([^\"]*\"[^\"]*\")*[^\"]*$)");
+            for (String chunk : chunks) {
+                chunk = chunk.trim();
+                if (chunk.length() > 0) {
+                    if (chunk.charAt(0) == '"' && chunk.charAt(chunk.length() - 1) == '"') {
+                        // strip double quotes
+                        chunk = chunk.substring(1, chunk.length() - 1).trim();
+                    }
+                    strings.add(chunk);
+                }
+            }
+        } catch (PatternSyntaxException e) {
+            throw new RuntimeException(e);
+        }
+        return Collections.unmodifiableList(strings);
+    }
 }
