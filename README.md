@@ -22,6 +22,7 @@ Artifacts
 - Pippo Jade `pippo-jade` (jar)
 - Pippo IoC `pippo-ioc` (jar)
 - Pippo Spring `pippo-spring` (jar)
+- Pippo Guice `pippo-guice` (jar)
 
 Using Maven
 -------------------
