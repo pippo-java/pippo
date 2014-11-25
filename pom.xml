@@ -98,6 +98,7 @@
         <module>pippo-ioc</module>
         <module>pippo-spring</module>
         <module>pippo-demo</module>
+        <module>pippo-guice</module>
     </modules>
 
 </project>
