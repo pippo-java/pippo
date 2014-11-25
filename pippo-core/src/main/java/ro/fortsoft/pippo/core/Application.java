@@ -76,7 +76,7 @@ public class Application {
     }
 
     public Application(PippoSettings settings) {
-        this.pippoSettings = new PippoSettings();
+        this.pippoSettings = settings;
     }
 
     public void init() {
@@ -299,6 +299,7 @@ public class Application {
         if (toString.isEmpty()) {
             super.toString();
         }
+
         return toString;
     }
 
