@@ -61,7 +61,7 @@ public enum RuntimeMode {
     public static RuntimeMode getCurrent() {
         if (current == null) {
             // retrieves the runtime mode from system
-            String modeAsString = System.getProperty(PippoConstant.SYSTEM_PROPERTY_PIPPO_MODE, RuntimeMode.PROD.toString());
+            String modeAsString = System.getProperty(PippoConstants.SYSTEM_PROPERTY_PIPPO_MODE, RuntimeMode.PROD.toString());
             current = RuntimeMode.byName(modeAsString);
         }
 

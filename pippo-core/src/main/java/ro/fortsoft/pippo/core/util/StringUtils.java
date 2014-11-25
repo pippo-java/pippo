@@ -15,53 +15,15 @@
  */
 package ro.fortsoft.pippo.core.util;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.regex.PatternSyntaxException;
 
 /**
- * Miscellaneous utility functions to keep pippo-core small.
+ * String utility functions to keep pippo-core small.
  */
-public class Utils {
-
-    private final static Logger log = LoggerFactory.getLogger(Utils.class);
-
-    /**
-     * Tries to find a resource with the given name in the classpath.
-     *
-     * @param resourceName
-     *            the name of the resource
-     * @return the URL to the found resource or <b>null</b> if the resource
-     *         cannot be found
-     */
-    public static URL locateOnClasspath(String resourceName) {
-        URL url = null;
-        // attempt to load from the context classpath
-        ClassLoader loader = Thread.currentThread().getContextClassLoader();
-        if (loader != null) {
-            url = loader.getResource(resourceName);
-
-            if (url != null) {
-                log.debug("Located '{}' in the context classpath", resourceName);
-            }
-        }
-
-        // attempt to load from the system classpath
-        if (url == null) {
-            url = ClassLoader.getSystemResource(resourceName);
-
-            if (url != null) {
-                log.debug("Located '{}' in the system classpath", resourceName);
-            }
-        }
-
-        return url;
-    }
+public class StringUtils {
 
     public static boolean isNullOrEmpty(String s) {
         return s == null || s.trim().isEmpty();

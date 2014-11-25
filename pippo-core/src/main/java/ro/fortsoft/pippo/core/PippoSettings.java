@@ -36,7 +36,8 @@ import java.util.concurrent.TimeUnit;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import ro.fortsoft.pippo.core.util.Utils;
+import ro.fortsoft.pippo.core.util.StringUtils;
+import ro.fortsoft.pippo.core.util.ClasspathUtils;
 
 /**
  * A simple properties-file based settings class for Pippo applications.
@@ -105,18 +106,18 @@ public class PippoSettings {
         URL url = null;
         try {
             // System property
-            String systemProperty = System.getProperty(PippoConstant.SYSTEM_PROPERTY_PIPPO_SETTINGS, null);
-            if (!Utils.isNullOrEmpty(systemProperty)) {
+            String systemProperty = System.getProperty(PippoConstants.SYSTEM_PROPERTY_PIPPO_SETTINGS, null);
+            if (!StringUtils.isNullOrEmpty(systemProperty)) {
                 url = URI.create(systemProperty).toURL();
-                log.debug("Located '{}' using the '{}' system property", url, PippoConstant.SYSTEM_PROPERTY_PIPPO_SETTINGS);
+                log.debug("Located '{}' using the '{}' system property", url, PippoConstants.SYSTEM_PROPERTY_PIPPO_SETTINGS);
             }
         } catch (MalformedURLException e) {
-            log.error("Failed to parse '{}' system property!", PippoConstant.SYSTEM_PROPERTY_PIPPO_SETTINGS);
+            log.error("Failed to parse '{}' system property!", PippoConstants.SYSTEM_PROPERTY_PIPPO_SETTINGS);
         }
 
         try {
             // working directory
-            Path path = Paths.get(System.getProperty("user.dir"), PippoConstant.APPLICATION_PROPERTIES);
+            Path path = Paths.get(System.getProperty("user.dir"), PippoConstants.APPLICATION_PROPERTIES);
             if (path.toFile().exists()) {
                 url = path.toUri().toURL();
                 log.debug("Located '{}' in the current working directory", url);
@@ -127,12 +128,12 @@ public class PippoSettings {
 
         if (url == null) {
             // try locating an application classpath properties file
-            url = Utils.locateOnClasspath(PippoConstant.LOCATION_OF_PIPPO_CLASSPATH_PROPERTIES);
+            url = ClasspathUtils.locateOnClasspath(PippoConstants.LOCATION_OF_PIPPO_CLASSPATH_PROPERTIES);
         }
 
         if (url == null) {
             // last resort, use built-in properties
-            url = Utils.locateOnClasspath(PippoConstant.LOCATION_OF_PIPPO_BUILTIN_PROPERTIES);
+            url = ClasspathUtils.locateOnClasspath(PippoConstants.LOCATION_OF_PIPPO_BUILTIN_PROPERTIES);
         }
         return url;
     }
@@ -209,13 +210,13 @@ public class PippoSettings {
         Properties baseProperties = new Properties();
 
         String include = (String) properties.remove("include");
-        if (!Utils.isNullOrEmpty(include)) {
+        if (!StringUtils.isNullOrEmpty(include)) {
 
             // allow for multiples
-            List<String> names = Utils.getStringList(include, defaultListDelimiter);
+            List<String> names = StringUtils.getStringList(include, defaultListDelimiter);
             for (String name : names) {
 
-                if (Utils.isNullOrEmpty(name)) {
+                if (StringUtils.isNullOrEmpty(name)) {
                     continue;
                 }
 
@@ -272,7 +273,7 @@ public class PippoSettings {
     public List<String> getSettingNames(String startingWith) {
         List<String> keys = new ArrayList<String>();
         Properties props = getProperties();
-        if (Utils.isNullOrEmpty(startingWith)) {
+        if (StringUtils.isNullOrEmpty(startingWith)) {
             keys.addAll(props.stringPropertyNames());
         } else {
             startingWith = startingWith.toLowerCase();
@@ -312,7 +313,7 @@ public class PippoSettings {
      */
     public boolean getBoolean(String name, boolean defaultValue) {
         String value = getString(name, null);
-        if (!Utils.isNullOrEmpty(value)) {
+        if (!StringUtils.isNullOrEmpty(value)) {
             return Boolean.parseBoolean(value.trim());
         }
         return defaultValue;
@@ -330,7 +331,7 @@ public class PippoSettings {
     public int getInteger(String name, int defaultValue) {
         try {
             String value = getString(name, null);
-            if (!Utils.isNullOrEmpty(value)) {
+            if (!StringUtils.isNullOrEmpty(value)) {
                 return Integer.parseInt(value.trim().split(" ")[0]);
             }
         } catch (NumberFormatException e) {
@@ -352,7 +353,7 @@ public class PippoSettings {
     public long getLong(String name, long defaultValue) {
         try {
             String value = getString(name, null);
-            if (!Utils.isNullOrEmpty(value)) {
+            if (!StringUtils.isNullOrEmpty(value)) {
                 return Long.parseLong(value.trim().split(" ")[0]);
             }
         } catch (NumberFormatException e) {
@@ -374,7 +375,7 @@ public class PippoSettings {
     public float getFloat(String name, float defaultValue) {
         try {
             String value = getString(name, null);
-            if (!Utils.isNullOrEmpty(value)) {
+            if (!StringUtils.isNullOrEmpty(value)) {
                 return Float.parseFloat(value.trim().split(" ")[0]);
             }
         } catch (NumberFormatException e) {
@@ -396,7 +397,7 @@ public class PippoSettings {
     public double getDouble(String name, double defaultValue) {
         try {
             String value = getString(name, null);
-            if (!Utils.isNullOrEmpty(value)) {
+            if (!StringUtils.isNullOrEmpty(value)) {
                 return Double.parseDouble(value.trim().split(" ")[0]);
             }
         } catch (NumberFormatException e) {
@@ -417,7 +418,7 @@ public class PippoSettings {
      */
     public char getChar(String name, char defaultValue) {
         String value = getString(name, null);
-        if (!Utils.isNullOrEmpty(value)) {
+        if (!StringUtils.isNullOrEmpty(value)) {
             return value.trim().charAt(0);
         }
         return defaultValue;
@@ -457,10 +458,10 @@ public class PippoSettings {
      */
     public List<String> getStrings(String name, String delimiter) {
         String value = getString(name, null);
-        if (Utils.isNullOrEmpty(value)) {
+        if (StringUtils.isNullOrEmpty(value)) {
             return Collections.emptyList();
         }
-        List<String> stringList = Utils.getStringList(value, delimiter);
+        List<String> stringList = StringUtils.getStringList(value, delimiter);
         return stringList;
     }
 
