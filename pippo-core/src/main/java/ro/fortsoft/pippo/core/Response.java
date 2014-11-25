@@ -254,6 +254,11 @@ public class Response {
         send(new Gson().toJson(object));
     }
 
+    public Response bind(String name, Object model) {
+        getLocals().put(name, model);
+        return this;
+    }
+
     public void render(String templateName) {
         render(templateName, new HashMap<String, Object>());
     }

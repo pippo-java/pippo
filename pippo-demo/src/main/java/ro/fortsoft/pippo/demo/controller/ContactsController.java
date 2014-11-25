@@ -34,8 +34,7 @@ public class ContactsController extends Controller {
     }
 
     public void index() {
-        getResponse().getLocals().put("contacts", contactService.getContacts());
-        getResponse().render("crud/contacts.ftl");
+        getResponse().bind("contacts", contactService.getContacts()).render("crud/contacts.ftl");
     }
 
     public void urlFor() {
