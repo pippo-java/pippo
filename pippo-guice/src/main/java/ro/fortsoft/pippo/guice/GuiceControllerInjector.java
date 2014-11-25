@@ -1,4 +1,3 @@
-package ro.fortsoft.pippo.guice;
 /*
  * Copyright (C) 2014 the original author or authors.
  *
@@ -14,7 +13,7 @@ package ro.fortsoft.pippo.guice;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
+package ro.fortsoft.pippo.guice;
 
 import ro.fortsoft.pippo.core.controller.Controller;
 import ro.fortsoft.pippo.core.controller.ControllerInstantiationListener;
