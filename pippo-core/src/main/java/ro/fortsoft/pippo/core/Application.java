@@ -72,7 +72,7 @@ public class Application {
     }
 
     public Application() {
-        this(new PippoSettings());
+        this(new PippoSettings(RuntimeMode.getCurrent()));
     }
 
     public Application(PippoSettings settings) {

@@ -85,6 +85,8 @@ public class PippoSettings {
 
     private final String defaultListDelimiter = ",";
 
+    private final RuntimeMode runtimeMode;
+
     private final Properties properties;
 
     private final Properties overrides;
@@ -95,11 +97,12 @@ public class PippoSettings {
 
     private volatile long lastModified;
 
-    public PippoSettings() {
-        propertiesUrl = getPropertiesUrl();
-        isFile = propertiesUrl.getProtocol().equals("file:");
-        properties = loadProperties(propertiesUrl);
-        overrides = new Properties();
+    public PippoSettings(RuntimeMode runtimeMode) {
+        this.runtimeMode = runtimeMode;
+        this.propertiesUrl = getPropertiesUrl();
+        this.isFile = propertiesUrl.getProtocol().equals("file:");
+        this.properties = loadProperties(propertiesUrl);
+        this.overrides = new Properties();
     }
 
     private URL getPropertiesUrl() {
@@ -171,7 +174,7 @@ public class PippoSettings {
             props = loadIncludes(baseDir, props);
 
             // collect settings for the current runtime mode
-            String prefix = "%" + RuntimeMode.getCurrent().toString() + ".";
+            String prefix = "%" + runtimeMode.toString() + ".";
 
             // sort keys, mode-specific keys are first
             Set<String> keys = new TreeSet<>(props.stringPropertyNames());
