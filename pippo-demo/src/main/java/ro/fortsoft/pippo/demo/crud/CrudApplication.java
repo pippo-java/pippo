@@ -94,8 +94,7 @@ public class CrudApplication extends Application {
                 */
 
                 // variant 2
-                response.getLocals().put("contacts", contactService.getContacts());
-                response.render("crud/contacts.ftl");
+                response.bind("contacts", contactService.getContacts()).render("crud/contacts.ftl");
             }
 
         });

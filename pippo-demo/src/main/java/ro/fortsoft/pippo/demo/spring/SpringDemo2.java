@@ -88,7 +88,7 @@ public class SpringDemo2 {
 
         public void index() {
             ContactService contactService = SpringApplication2.get().getContactService();
-            getResponse().getLocals().put("contacts", contactService.getContacts());
+            getResponse().bind("contacts", contactService.getContacts());
             getResponse().render("crud/contacts.ftl");
         }
 
