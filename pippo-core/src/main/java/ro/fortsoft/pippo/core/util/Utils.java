@@ -15,20 +15,17 @@
  */
 package ro.fortsoft.pippo.core.util;
 
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.List;
-import java.util.regex.PatternSyntaxException;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.regex.PatternSyntaxException;
 
 /**
  * Miscellaneous utility functions to keep pippo-core small.
- *
  */
 public class Utils {
 
@@ -62,6 +59,7 @@ public class Utils {
                 log.debug("Located '{}' in the system classpath", resourceName);
             }
         }
+
         return url;
     }
 
@@ -86,6 +84,8 @@ public class Utils {
         } catch (PatternSyntaxException e) {
             throw new RuntimeException(e);
         }
+
         return Collections.unmodifiableList(strings);
     }
+
 }
