@@ -33,12 +33,19 @@ public class ControllerHandler implements RouteHandler {
 
     private static final Logger log = LoggerFactory.getLogger(ControllerHandler.class);
 
-    private Class<? extends Controller> controllerClass;
-    private String methodName;
+    private final Class<? extends Controller> controllerClass;
+    private final String methodName;
+    private final Method method;
 
     public ControllerHandler(Class<? extends Controller> controllerClass, String methodName) {
         this.controllerClass = controllerClass;
         this.methodName = methodName;
+        try {
+            this.method = controllerClass.getMethod(methodName, new Class[]{});
+        } catch (NoSuchMethodException e) {
+            throw new PippoRuntimeException(String.format("Failed to find controller method '%s.%s'",
+                    controllerClass.getSimpleName(), methodName), e);
+        }
     }
 
     public Class<? extends Controller> getControllerClass() {
@@ -62,7 +69,6 @@ public class ControllerHandler implements RouteHandler {
             Application.get().getControllerInitializationListeners().onInitialize(controller);
 
             // invoke action (a method from controller)
-            Method method = controllerClass.getMethod(methodName, new Class[]{});
             Application.get().getControllerInvokeListeners().onInvoke(controller, method);
             method.invoke(controller, new Object[] {});
         } catch (Exception e) {
