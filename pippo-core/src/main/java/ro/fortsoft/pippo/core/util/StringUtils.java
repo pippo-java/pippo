@@ -29,10 +29,10 @@ public class StringUtils {
         return s == null || s.trim().isEmpty();
     }
 
-    public static List<String> getStringList(String value, String separator) {
-        List<String> strings = new ArrayList<String>();
+    public static List<String> getList(String s, String separator) {
+        List<String> strings = new ArrayList<>();
         try {
-            String[] chunks = value.split(separator + "(?=([^\"]*\"[^\"]*\")*[^\"]*$)");
+            String[] chunks = s.split(separator + "(?=([^\"]*\"[^\"]*\")*[^\"]*$)");
             for (String chunk : chunks) {
                 chunk = chunk.trim();
                 if (chunk.length() > 0) {

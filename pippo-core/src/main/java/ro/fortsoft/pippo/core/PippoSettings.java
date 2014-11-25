@@ -77,7 +77,6 @@ import ro.fortsoft.pippo.core.util.ClasspathUtils;
  * </p>
  *
  * @author James Moger
- *
  */
 public class PippoSettings {
 
@@ -135,6 +134,7 @@ public class PippoSettings {
             // last resort, use built-in properties
             url = ClasspathUtils.locateOnClasspath(PippoConstants.LOCATION_OF_PIPPO_BUILTIN_PROPERTIES);
         }
+
         return url;
     }
 
@@ -173,18 +173,18 @@ public class PippoSettings {
             // collect settings for the current runtime mode
             String prefix = "%" + RuntimeMode.getCurrent().toString() + ".";
 
-            // sort keys, mode-specific keys are first
-            Set<String> keys = new TreeSet<>(props.stringPropertyNames());
-            for (String key : keys) {
-                if (key.charAt(0) == '%') {
+            // sort names, mode-specific names are first
+            Set<String> names = new TreeSet<>(props.stringPropertyNames());
+            for (String name : names) {
+                if (name.charAt(0) == '%') {
                     // mode-specific setting
-                    if (key.startsWith(prefix)) {
+                    if (name.startsWith(prefix)) {
                         // setting for the current runtime mode
-                        properties.put(key.substring(prefix.length()), props.get(key));
+                        properties.put(name.substring(prefix.length()), props.get(name));
                     }
-                } else if (!properties.containsKey(key)) {
+                } else if (!properties.containsKey(name)) {
                     // setting for all modes
-                    properties.put(key, props.get(key));
+                    properties.put(name, props.get(name));
                 }
             }
 
@@ -206,16 +206,13 @@ public class PippoSettings {
      * @throws IOException
      */
     private Properties loadIncludes(File baseDir, Properties properties) throws IOException {
-
         Properties baseProperties = new Properties();
 
         String include = (String) properties.remove("include");
         if (!StringUtils.isNullOrEmpty(include)) {
-
             // allow for multiples
-            List<String> names = StringUtils.getStringList(include, defaultListDelimiter);
+            List<String> names = StringUtils.getList(include, defaultListDelimiter);
             for (String name : names) {
-
                 if (StringUtils.isNullOrEmpty(name)) {
                     continue;
                 }
@@ -240,9 +237,7 @@ public class PippoSettings {
 
                 // read nested includes
                 baseProperties = loadIncludes(file.getParentFile(), baseProperties);
-
             }
-
         }
 
         // includes are "default" properties, they must be set first and the
@@ -271,62 +266,65 @@ public class PippoSettings {
      * @return list of setting names
      */
     public List<String> getSettingNames(String startingWith) {
-        List<String> keys = new ArrayList<String>();
+        List<String> names = new ArrayList<>();
         Properties props = getProperties();
         if (StringUtils.isNullOrEmpty(startingWith)) {
-            keys.addAll(props.stringPropertyNames());
+            names.addAll(props.stringPropertyNames());
         } else {
             startingWith = startingWith.toLowerCase();
             for (Object o : props.keySet()) {
-                String key = o.toString();
-                if (key.toLowerCase().startsWith(startingWith)) {
-                    keys.add(key);
+                String name = o.toString();
+                if (name.toLowerCase().startsWith(startingWith)) {
+                    names.add(name);
                 }
             }
         }
-        return keys;
+
+        return names;
     }
 
     /**
-     * Returns the string value for the specified key. If the key does not exist
-     * or the value for the key can not be interpreted as a string, the
+     * Returns the string value for the specified name. If the name does not exist
+     * or the value for the name can not be interpreted as a string, the
      * defaultValue is returned.
      *
-     * @param key
+     * @param name
      * @param defaultValue
-     * @return key value or defaultValue
+     * @return name value or defaultValue
      */
     public String getString(String name, String defaultValue) {
         String value = getProperties().getProperty(name, defaultValue);
         value = overrides.getProperty(name, value);
+
         return value;
     }
 
     /**
-     * Returns the boolean value for the specified key. If the key does not
-     * exist or the value for the key can not be interpreted as a boolean, the
+     * Returns the boolean value for the specified name. If the name does not
+     * exist or the value for the name can not be interpreted as a boolean, the
      * defaultValue is returned.
      *
-     * @param key
+     * @param name
      * @param defaultValue
-     * @return key value or defaultValue
+     * @return name value or defaultValue
      */
     public boolean getBoolean(String name, boolean defaultValue) {
         String value = getString(name, null);
         if (!StringUtils.isNullOrEmpty(value)) {
             return Boolean.parseBoolean(value.trim());
         }
+
         return defaultValue;
     }
 
     /**
-     * Returns the integer value for the specified key. If the key does not
-     * exist or the value for the key can not be interpreted as an integer, the
+     * Returns the integer value for the specified name. If the name does not
+     * exist or the value for the name can not be interpreted as an integer, the
      * defaultValue is returned.
      *
-     * @param key
+     * @param name
      * @param defaultValue
-     * @return key value or defaultValue
+     * @return name value or defaultValue
      */
     public int getInteger(String name, int defaultValue) {
         try {
@@ -338,17 +336,18 @@ public class PippoSettings {
             log.warn("Failed to parse integer for " + name + " using default of "
                     + defaultValue);
         }
+
         return defaultValue;
     }
 
     /**
-     * Returns the long value for the specified key. If the key does not
-     * exist or the value for the key can not be interpreted as an long, the
+     * Returns the long value for the specified name. If the name does not
+     * exist or the value for the name can not be interpreted as an long, the
      * defaultValue is returned.
      *
-     * @param key
+     * @param name
      * @param defaultValue
-     * @return key value or defaultValue
+     * @return name value or defaultValue
      */
     public long getLong(String name, long defaultValue) {
         try {
@@ -360,17 +359,18 @@ public class PippoSettings {
             log.warn("Failed to parse long for " + name + " using default of "
                     + defaultValue);
         }
+
         return defaultValue;
     }
 
     /**
-     * Returns the float value for the specified key. If the key does not
-     * exist or the value for the key can not be interpreted as a float, the
+     * Returns the float value for the specified name. If the name does not
+     * exist or the value for the name can not be interpreted as a float, the
      * defaultValue is returned.
      *
-     * @param key
+     * @param name
      * @param defaultValue
-     * @return key value or defaultValue
+     * @return name value or defaultValue
      */
     public float getFloat(String name, float defaultValue) {
         try {
@@ -382,17 +382,18 @@ public class PippoSettings {
             log.warn("Failed to parse float for " + name + " using default of "
                     + defaultValue);
         }
+
         return defaultValue;
     }
 
     /**
-     * Returns the double value for the specified key. If the key does not
-     * exist or the value for the key can not be interpreted as a double, the
+     * Returns the double value for the specified name. If the name does not
+     * exist or the value for the name can not be interpreted as a double, the
      * defaultValue is returned.
      *
-     * @param key
+     * @param name
      * @param defaultValue
-     * @return key value or defaultValue
+     * @return name value or defaultValue
      */
     public double getDouble(String name, double defaultValue) {
         try {
@@ -404,32 +405,34 @@ public class PippoSettings {
             log.warn("Failed to parse double for " + name + " using default of "
                     + defaultValue);
         }
+
         return defaultValue;
     }
 
     /**
-     * Returns the char value for the specified key. If the key does not exist
-     * or the value for the key can not be interpreted as a char, the
+     * Returns the char value for the specified name. If the name does not exist
+     * or the value for the name can not be interpreted as a char, the
      * defaultValue is returned.
      *
-     * @param key
+     * @param name
      * @param defaultValue
-     * @return key value or defaultValue
+     * @return name value or defaultValue
      */
     public char getChar(String name, char defaultValue) {
         String value = getString(name, null);
         if (!StringUtils.isNullOrEmpty(value)) {
             return value.trim().charAt(0);
         }
+
         return defaultValue;
     }
 
     /**
-     * Returns the string value for the specified key.  If the key does not
+     * Returns the string value for the specified name.  If the name does not
      * exist an exception is thrown.
      *
-     * @param key
-     * @return key value
+     * @param name
+     * @return name value
      */
     public String getRequiredString(String name) {
         String value = getString(name, null);
@@ -440,7 +443,7 @@ public class PippoSettings {
     }
 
     /**
-     * Returns a list of comma-delimited strings from the specified key.
+     * Returns a list of comma-delimited strings from the specified name.
      *
      * @param name
      * @return list of strings
@@ -450,7 +453,7 @@ public class PippoSettings {
     }
 
     /**
-     * Returns a list of strings from the specified key using the specified delimiter.
+     * Returns a list of strings from the specified name using the specified delimiter.
      *
      * @param name
      * @param delimiter
@@ -461,12 +464,13 @@ public class PippoSettings {
         if (StringUtils.isNullOrEmpty(value)) {
             return Collections.emptyList();
         }
-        List<String> stringList = StringUtils.getStringList(value, delimiter);
+        List<String> stringList = StringUtils.getList(value, delimiter);
+
         return stringList;
     }
 
     /**
-     * Returns a list of comma-delimited integers from the specified key.
+     * Returns a list of comma-delimited integers from the specified name.
      *
      * @param name
      * @return list of strings
@@ -476,7 +480,7 @@ public class PippoSettings {
     }
 
     /**
-     * Returns a list of integers from the specified key using the specified delimiter.
+     * Returns a list of integers from the specified name using the specified delimiter.
      *
      * @param name
      * @param delimiter
@@ -487,7 +491,8 @@ public class PippoSettings {
         if (strings.isEmpty()) {
             return Collections.emptyList();
         }
-        List<Integer> ints = new ArrayList<Integer>();
+
+        List<Integer> ints = new ArrayList<>();
         for (String value : strings) {
             try {
                 int i = Integer.parseInt(value);
@@ -495,11 +500,12 @@ public class PippoSettings {
             } catch (NumberFormatException e) {
             }
         }
+
         return Collections.unmodifiableList(ints);
     }
 
     /**
-     * Returns a list of comma-delimited longs from the specified key.
+     * Returns a list of comma-delimited longs from the specified name.
      *
      * @param name
      * @return list of strings
@@ -509,7 +515,7 @@ public class PippoSettings {
     }
 
     /**
-     * Returns a list of longs from the specified key using the specified delimiter.
+     * Returns a list of longs from the specified name using the specified delimiter.
      *
      * @param name
      * @param delimiter
@@ -520,7 +526,8 @@ public class PippoSettings {
         if (strings.isEmpty()) {
             return Collections.emptyList();
         }
-        List<Long> longs = new ArrayList<Long>();
+
+        List<Long> longs = new ArrayList<>();
         for (String value : strings) {
             try {
                 long i = Long.parseLong(value);
@@ -528,6 +535,7 @@ public class PippoSettings {
             } catch (NumberFormatException e) {
             }
         }
+
         return Collections.unmodifiableList(longs);
     }
 
@@ -543,11 +551,11 @@ public class PippoSettings {
      * <li> n DAYS
      * </ul>
      *
-     * @param key
+     * @param name
      * @return milliseconds
      */
-    public long getDurationInMilliseconds(String key) {
-        return getDurationInMilliseconds(key, 0);
+    public long getDurationInMilliseconds(String name) {
+        return getDurationInMilliseconds(name, 0);
     }
 
     /**
@@ -562,14 +570,15 @@ public class PippoSettings {
      * <li>n DAYS
      * </ul>
      *
-     * @param key
+     * @param name
      * @param defaultValue
      *            in milliseconds
      * @return milliseconds
      */
-    public long getDurationInMilliseconds(String key, long defaultValue) {
-        TimeUnit timeUnit = extractTimeUnit(key, defaultValue + " MILLISECONDS");
-        long duration =  getLong(key, defaultValue);
+    public long getDurationInMilliseconds(String name, long defaultValue) {
+        TimeUnit timeUnit = extractTimeUnit(name, defaultValue + " MILLISECONDS");
+        long duration =  getLong(name, defaultValue);
+
         return timeUnit.toMillis(duration);
     }
 
@@ -585,11 +594,11 @@ public class PippoSettings {
      * <li>n DAYS
      * </ul>
      *
-     * @param key
+     * @param name
      * @return seconds
      */
-    public long getDurationInSeconds(String key) {
-        return getDurationInSeconds(key, 0);
+    public long getDurationInSeconds(String name) {
+        return getDurationInSeconds(name, 0);
     }
 
     /**
@@ -604,14 +613,15 @@ public class PippoSettings {
      * <li>n DAYS
      * </ul>
      *
-     * @param key
+     * @param name
      * @param defaultValue
      *            in seconds
      * @return seconds
      */
-    public long getDurationInSeconds(String key, long defaultValue) {
-        TimeUnit timeUnit = extractTimeUnit(key, defaultValue + " SECONDS");
-        long duration =  getLong(key, defaultValue);
+    public long getDurationInSeconds(String name, long defaultValue) {
+        TimeUnit timeUnit = extractTimeUnit(name, defaultValue + " SECONDS");
+        long duration =  getLong(name, defaultValue);
+
         return timeUnit.toSeconds(duration);
     }
 
@@ -627,11 +637,11 @@ public class PippoSettings {
      * <li> n DAYS
      * </ul>
      *
-     * @param key
+     * @param name
      * @return minutes
      */
-    public long getDurationInMinutes(String key) {
-        return getDurationInMinutes(key, 0);
+    public long getDurationInMinutes(String name) {
+        return getDurationInMinutes(name, 0);
     }
 
     /**
@@ -646,14 +656,15 @@ public class PippoSettings {
      * <li>n DAYS
      * </ul>
      *
-     * @param key
+     * @param name
      * @param defaultValue
      *            in minutes
      * @return minutes
      */
-    public long getDurationInMinutes(String key, long defaultValue) {
-        TimeUnit timeUnit = extractTimeUnit(key, defaultValue + " MINUTES");
-        long duration =  getLong(key, defaultValue);
+    public long getDurationInMinutes(String name, long defaultValue) {
+        TimeUnit timeUnit = extractTimeUnit(name, defaultValue + " MINUTES");
+        long duration =  getLong(name, defaultValue);
+
         return timeUnit.toMinutes(duration);
     }
 
@@ -669,11 +680,11 @@ public class PippoSettings {
      * <li> n DAYS
      * </ul>
      *
-     * @param key
+     * @param name
      * @return hours
      */
-    public long getDurationInHours(String key) {
-        return getDurationInHours(key, 0);
+    public long getDurationInHours(String name) {
+        return getDurationInHours(name, 0);
     }
 
     /**
@@ -688,14 +699,15 @@ public class PippoSettings {
      * <li>n DAYS
      * </ul>
      *
-     * @param key
+     * @param name
      * @param defaultValue
      *            in hours
      * @return hours
      */
-    public long getDurationInHours(String key, long defaultValue) {
-        TimeUnit timeUnit = extractTimeUnit(key, defaultValue + " HOURS");
-        long duration =  getLong(key, defaultValue);
+    public long getDurationInHours(String name, long defaultValue) {
+        TimeUnit timeUnit = extractTimeUnit(name, defaultValue + " HOURS");
+        long duration =  getLong(name, defaultValue);
+
         return timeUnit.toHours(duration);
     }
 
@@ -711,11 +723,11 @@ public class PippoSettings {
      * <li> n DAYS
      * </ul>
      *
-     * @param key
+     * @param name
      * @return days
      */
-    public long getDurationInDays(String key) {
-        return getDurationInDays(key, 0);
+    public long getDurationInDays(String name) {
+        return getDurationInDays(name, 0);
     }
 
     /**
@@ -730,120 +742,121 @@ public class PippoSettings {
      * <li>n DAYS
      * </ul>
      *
-     * @param key
+     * @param name
      * @param defaultValue
      *            in days
      * @return days
      */
-    public long getDurationInDays(String key, long defaultValue) {
-        TimeUnit timeUnit = extractTimeUnit(key, defaultValue + " DAYS");
-        long duration =  getLong(key, defaultValue);
+    public long getDurationInDays(String name, long defaultValue) {
+        TimeUnit timeUnit = extractTimeUnit(name, defaultValue + " DAYS");
+        long duration =  getLong(name, defaultValue);
+
         return timeUnit.toDays(duration);
     }
 
     /**
-     * Extracts the TimeUnit from the key.
+     * Extracts the TimeUnit from the name.
      *
-     * @param key
+     * @param name
      * @param defaultValue
      * @return the extracted TimeUnit
      */
-    private TimeUnit extractTimeUnit(String key, String defaultValue) {
-        String value = getString(key, defaultValue);
+    private TimeUnit extractTimeUnit(String name, String defaultValue) {
+        String value = getString(name, defaultValue);
         try {
             final String[] s = value.split(" ", 2);
             TimeUnit timeUnit = TimeUnit.valueOf(s[1].trim().toUpperCase());
             return timeUnit;
         } catch (Exception ex) {
-            throw new PippoRuntimeException(key + " must have format '<n> <TimeUnit>' where <TimeUnit> is one of 'MILLISECONDS', 'SECONDS', 'MINUTES', 'HOURS', 'DAYS'");
+            throw new PippoRuntimeException(name + " must have format '<n> <TimeUnit>' where <TimeUnit> is one of 'MILLISECONDS', 'SECONDS', 'MINUTES', 'HOURS', 'DAYS'");
         }
     }
 
     /**
      * Tests for the existence of a setting.
      *
-     * @param key
+     * @param name
      * @return true if the setting exists
      */
-    public boolean hasSetting(String key) {
-        return getString(key, null) != null;
+    public boolean hasSetting(String name) {
+        return getString(name, null) != null;
     }
 
     /**
      * Override the setting at runtime with the specified value.
      * This change does not persist.
      *
-     * @param key
+     * @param name
      * @param value
      */
-    public void overrideSetting(String key, boolean value) {
-        overrides.put(key, "" + value);
+    public void overrideSetting(String name, boolean value) {
+        overrides.put(name, "" + value);
     }
 
     /**
      * Override the setting at runtime with the specified value.
      * This change does not persist.
      *
-     * @param key
+     * @param name
      * @param value
      */
-    public void overrideSetting(String key, String value) {
-        overrides.put(key, value);
+    public void overrideSetting(String name, String value) {
+        overrides.put(name, value);
     }
 
     /**
      * Override the setting at runtime with the specified value.
      * This change does not persist.
      *
-     * @param key
+     * @param name
      * @param value
      */
-    public void overrideSetting(String key, char value) {
-        overrides.put(key, "" + value);
+    public void overrideSetting(String name, char value) {
+        overrides.put(name, "" + value);
     }
 
     /**
      * Override the setting at runtime with the specified value.
      * This change does not persist.
      *
-     * @param key
+     * @param name
      * @param value
      */
-    public void overrideSetting(String key, int value) {
-        overrides.put(key, "" + value);
+    public void overrideSetting(String name, int value) {
+        overrides.put(name, "" + value);
     }
 
     /**
      * Override the setting at runtime with the specified value.
      * This change does not persist.
      *
-     * @param key
+     * @param name
      * @param value
      */
-    public void overrideSetting(String key, long value) {
-        overrides.put(key, "" + value);
+    public void overrideSetting(String name, long value) {
+        overrides.put(name, "" + value);
     }
 
     /**
      * Override the setting at runtime with the specified value.
      * This change does not persist.
      *
-     * @param key
+     * @param name
      * @param value
      */
-    public void overrideSetting(String key, float value) {
-        overrides.put(key, "" + value);
+    public void overrideSetting(String name, float value) {
+        overrides.put(name, "" + value);
     }
 
     /**
      * Override the setting at runtime with the specified value.
      * This change does not persist.
      *
-     * @param key
+     * @param name
      * @param value
      */
-    public void overrideSetting(String key, double value) {
-        overrides.put(key, "" + value);
+    public void overrideSetting(String name, double value) {
+        overrides.put(name, "" + value);
     }
 
 }
