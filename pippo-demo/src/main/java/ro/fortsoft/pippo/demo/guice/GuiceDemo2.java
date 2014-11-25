@@ -33,7 +33,6 @@ import com.google.inject.Injector;
 public class GuiceDemo2 {
 
     public static void main(String[] args) {
-
         Injector injector = Guice.createInjector(new GuiceModule());
         Application application = injector.getInstance(GuiceApplication2.class);
         application.getControllerInstantiationListeners().add(new GuiceControllerInjector(injector));
@@ -60,14 +59,16 @@ public class GuiceDemo2 {
             return contactService;
         }
 
+        public static GuiceApplication2 get() {
+            return (GuiceApplication2) Application.get();
+        }
+
     }
 
     public static class ContactsController2 extends Controller {
 
-        @Inject
-        private ContactService contactService;
-
         public void index() {
+            ContactService contactService = GuiceApplication2.get().getContactService();
             getResponse().getLocals().put("contacts", contactService.getContacts());
             getResponse().render("crud/contacts.ftl");
         }
