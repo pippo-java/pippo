@@ -44,6 +44,24 @@
             <version>${project.version}</version>
         </dependency>
 
+        <dependency>
+            <groupId>ro.fortsoft.pippo</groupId>
+            <artifactId>pippo-gson</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>ro.fortsoft.pippo</groupId>
+            <artifactId>pippo-fastjson</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>ro.fortsoft.pippo</groupId>
+            <artifactId>pippo-xstream</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
         <!-- Spring framework -->
         <dependency>
             <groupId>org.springframework</groupId>

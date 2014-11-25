@@ -72,6 +72,23 @@ public class SimpleApplication extends Application {
 
         });
 
+        // send xml as response
+        GET("/xml", new RouteHandler() {
+
+            @Override
+            public void handle(Request request, Response response, RouteHandlerChain chain) {
+                Contact contact = new Contact()
+                        .setName("John")
+                        .setPhone("0733434435")
+                        .setAddress("Sunflower Street, No. 6");
+                // you can use variant 1 or 2
+//                response.contentType(HttpConstants.ContentType.APPLICATION_XML); // 1
+//                response.send(new Xstream().toXML(contact)); // 1
+                response.xml(contact); // 2
+            }
+
+        });
+
         // send a template as response
         GET("/template", new RouteHandler() {
 
