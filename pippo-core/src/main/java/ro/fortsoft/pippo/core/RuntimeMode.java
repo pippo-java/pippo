@@ -25,6 +25,7 @@ import java.util.NoSuchElementException;
 public enum RuntimeMode {
 
     DEV("dev"), // development
+    TEST("test"), // testing
     PROD("prod"); // production
 
     private static RuntimeMode current;
@@ -54,13 +55,13 @@ public enum RuntimeMode {
         }
 
         throw new NoSuchElementException("Cannot found Pippo runtime mode with name '" + name +
-                "'. Must be 'dev' or 'prod'.");
+                "'. Must be 'dev', 'test', or 'prod'.");
     }
 
     public static RuntimeMode getCurrent() {
         if (current == null) {
             // retrieves the runtime mode from system
-            String modeAsString = System.getProperty("pippo.mode", RuntimeMode.PROD.toString());
+            String modeAsString = System.getProperty(PippoConstant.SYSTEM_PROPERTY_PIPPO_MODE, RuntimeMode.PROD.toString());
             current = RuntimeMode.byName(modeAsString);
         }
 

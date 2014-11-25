@@ -22,6 +22,8 @@ import java.io.Serializable;
  */
 public class WebServerSettings implements Serializable {
 
+    private static final long serialVersionUID = 1L;
+
     private static final int defaultPort = 8338;
 
     private String host = "localhost";
@@ -32,6 +34,14 @@ public class WebServerSettings implements Serializable {
     private String keystorePassword;
     private String truststoreFile;
     private String truststorePassword;
+
+    public WebServerSettings() {
+    }
+
+    public WebServerSettings(PippoSettings pippoSettings) {
+        this.port = pippoSettings.getInteger(PippoConstant.SETTING_SERVER_PORT, defaultPort);
+        this.host = pippoSettings.getString(PippoConstant.SETTING_SERVER_HOST, host);
+    }
 
     public String getHost() {
         return host;

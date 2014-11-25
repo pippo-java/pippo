@@ -600,6 +600,32 @@ The authentication tests to see if the 'username' attribute is present in the se
 than call the regular route with `chain.next()` else redirect to the login page. I added 'originalDestination' attribute
 because after authentication process I want to continue with the original destination (original url). 
 
+Settings
+--------
+Your application and modules can be configured using a simple `application.properties` text file. This file supports
+mode-sensitive keys and recursive includes.
+
+    # Include files serve as base settings which may be overridden in this file.
+    include = /path/to/include.properties, /path/to/other.properties
+    
+    application.name = Default Pippo Application
+    %dev.application.name = Developing Pippo Application
+    %test.application.name = Testing Pippo Application
+    %prod.application.name = My Pippo Application
+
+If a setting provides a mode-specific variant for the current runtime mode it's value will be used.  Otherwise, the default
+setting's value will be used.
+
+There is some flexibility in specifying from where to load your `application.properties` file. This is the order Pippo will
+use to try to resolve an `application.properties` file.
+
+1. `-Dpippo.settings=/path/to/application.properties` *(flexible external location)*
+2. `$user.dir/application.properties` *(the working directory of your application)*
+3. `conf/application.properties` *(an embedded classpath resource)*
+
+An externally located `application.properties` file is automatically reloaded, if modified, on the next setting access
+within Pippo. This allows your Pippo application to be responsive without being restarted.
+
 Embedded web server
 -------------------
 Most server-side Java applications (e.g. web or service-oriented) are intended to run within a container. 
@@ -884,7 +910,7 @@ public class ContactInitializer implements Initializer {
 
 Runtime mode
 -------------------
-An application can run in two modes: __DEV__(development) and __PROD__(production).
+An application can run in three modes: __DEV__(development), __TEST__(testing) and __PROD__(production).
 
 You can change the runtime mode using the "pippo.mode" system property (`-Dpippo.mode=dev` in command line or `System.setProperty("pippo.mode", "dev")`).  
 The default mode is __PROD__.  
