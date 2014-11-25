@@ -39,8 +39,8 @@ public class WebServerSettings implements Serializable {
     }
 
     public WebServerSettings(PippoSettings pippoSettings) {
-        this.port = pippoSettings.getInteger(PippoConstant.SETTING_SERVER_PORT, defaultPort);
-        this.host = pippoSettings.getString(PippoConstant.SETTING_SERVER_HOST, host);
+        this.port = pippoSettings.getInteger(PippoConstants.SETTING_SERVER_PORT, defaultPort);
+        this.host = pippoSettings.getString(PippoConstants.SETTING_SERVER_HOST, host);
     }
 
     public String getHost() {

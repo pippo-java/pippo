@@ -97,11 +97,11 @@ public class Application {
     }
 
     public String getApplicationName() {
-        return pippoSettings.getString(PippoConstant.SETTING_APPLICATION_NAME, "");
+        return pippoSettings.getString(PippoConstants.SETTING_APPLICATION_NAME, "");
     }
 
     public String getApplicationVersion() {
-        return pippoSettings.getString(PippoConstant.SETTING_APPLICATION_VERSION, "");
+        return pippoSettings.getString(PippoConstants.SETTING_APPLICATION_VERSION, "");
     }
 
     public TemplateEngine getTemplateEngine() {

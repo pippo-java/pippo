@@ -18,9 +18,9 @@ package ro.fortsoft.pippo.core;
 /**
  * @author Decebal Suiu
  */
-public class HttpConstants {
+public final class HttpConstants {
 
-    public static class Method {
+    public static final class Method {
 
         public static final String GET = "GET";
         public static final String POST = "POST";
@@ -34,9 +34,12 @@ public class HttpConstants {
         public static final String OPTIONS = "OPTIONS";
         */
 
+        private Method() {
+            // restrict instantiation
+        }
     }
 
-    public static class StatusCode {
+    public static final class StatusCode {
 
         public static final int OK = 200;
         public static final int CREATED = 201;
@@ -58,9 +61,12 @@ public class HttpConstants {
         public static final int OVERLOADED = 502;
         public static final int GATEWAY_TIMEOUT = 503;
 
+        private StatusCode() {
+            // restrict instantiation
+        }
     }
 
-    public static class Header {
+    public static final class Header {
 
         public static final String ACCEPT = "Accept";
         public static final String ACCEPT_CHARSET = "Accept-Charset";
@@ -83,9 +89,12 @@ public class HttpConstants {
         public static final String HOST = "Host";
         public static final String LOCATION = "Location";
 
+        private Header() {
+            // restrict instantiation
+        }
     }
 
-    public static class ContentType {
+    public static final class ContentType {
 
         public static final String APPLICATION_FORM_URLENCODED = "application/x-www-form-urlencoded";
         public static final String APPLICATION_JSON = "application/json";
@@ -94,6 +103,12 @@ public class HttpConstants {
         public static final String APPLICATION_OCTET_STREAM = "application/octet-stream";
         public static final String MULTIPART_FORM_DATA = "multipart/form-data";
 
+        private ContentType() {
+            // restrict instantiation
+        }
     }
 
+    private HttpConstants() {
+        // restrict instantiation
+    }
 }

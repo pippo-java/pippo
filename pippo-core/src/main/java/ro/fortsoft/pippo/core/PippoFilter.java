@@ -21,7 +21,7 @@ import ro.fortsoft.pippo.core.route.DefaultRouteHandlerChain;
 import ro.fortsoft.pippo.core.route.RouteMatch;
 import ro.fortsoft.pippo.core.route.RouteMatcher;
 import ro.fortsoft.pippo.core.route.RouteNotFoundHandler;
-import ro.fortsoft.pippo.core.util.Utils;
+import ro.fortsoft.pippo.core.util.ClasspathUtils;
 
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
@@ -371,7 +371,7 @@ public class PippoFilter implements Filter {
         try {
 
             Properties prop = new Properties();
-            URL url = Utils.locateOnClasspath(PippoConstant.LOCATION_OF_PIPPO_BUILTIN_PROPERTIES);
+            URL url = ClasspathUtils.locateOnClasspath(PippoConstants.LOCATION_OF_PIPPO_BUILTIN_PROPERTIES);
             InputStream stream = url.openStream();
             prop.load(stream);
 
@@ -379,7 +379,7 @@ public class PippoFilter implements Filter {
 
         } catch (Exception e) {
             //this should not happen. Never.
-            throw new PippoRuntimeException("Something is wrong with your build. Cannot find resource " + PippoConstant.LOCATION_OF_PIPPO_BUILTIN_PROPERTIES);
+            throw new PippoRuntimeException("Something is wrong with your build. Cannot find resource " + PippoConstants.LOCATION_OF_PIPPO_BUILTIN_PROPERTIES);
         }
 
         return pippoVersion;
