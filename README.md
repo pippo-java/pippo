@@ -18,6 +18,9 @@ Artifacts
 -------------------
 - Pippo Core `pippo-core` (jar)
 - Pippo Jetty `pippo-jetty` (jar)
+- Pippo Gson `pippo-gson` (jar)
+- Pippo Fastjson `pippo-fastjson` (jar)
+- Pippo XStream `pippo-xstream` (jar)
 - Pippo Freemarker `pippo-freemarker` (jar)
 - Pippo Jade `pippo-jade` (jar)
 - Pippo IoC `pippo-ioc` (jar)

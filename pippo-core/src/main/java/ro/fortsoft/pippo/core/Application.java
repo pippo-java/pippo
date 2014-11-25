@@ -43,6 +43,8 @@ public class Application {
 
     private PippoSettings pippoSettings;
     private TemplateEngine templateEngine;
+    private JsonEngine jsonEngine;
+    private XmlEngine xmlEngine;
     private RouteMatcher routeMatcher;
     private ExceptionHandler exceptionHandler;
     private RouteNotFoundHandler routeNotFoundHandler;
@@ -114,6 +116,30 @@ public class Application {
 
     public void setTemplateEngine(TemplateEngine templateEngine) {
         this.templateEngine = templateEngine;
+    }
+
+    public JsonEngine getJsonEngine() {
+        if (jsonEngine == null) {
+            jsonEngine = ServiceLocator.locate(JsonEngine.class);
+        }
+
+        return jsonEngine;
+    }
+
+    public void setJsonEngine(JsonEngine jsonEngine) {
+        this.jsonEngine = jsonEngine;
+    }
+
+    public XmlEngine getXmlEngine() {
+        if (xmlEngine == null) {
+            xmlEngine = ServiceLocator.locate(XmlEngine.class);
+        }
+
+        return xmlEngine;
+    }
+
+    public void setXmlEngine(XmlEngine xmlEngine) {
+        this.xmlEngine = xmlEngine;
     }
 
     public RouteMatcher getRouteMatcher() {

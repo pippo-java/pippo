@@ -15,7 +15,6 @@
  */
 package ro.fortsoft.pippo.core;
 
-import com.google.gson.Gson;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ro.fortsoft.pippo.core.util.IoUtils;
@@ -40,11 +39,15 @@ public class Response {
     private static final Logger log = LoggerFactory.getLogger(Response.class);
 
     private HttpServletResponse httpServletResponse;
+    private JsonEngine jsonEngine;
+    private XmlEngine xmlEngine;
     private TemplateEngine templateEngine;
     private Map<String, Object> locals;
 
-    Response(HttpServletResponse httpServletResponse, TemplateEngine templateEngine) {
+    Response(HttpServletResponse httpServletResponse, JsonEngine jsonEngine, XmlEngine xmlEngine, TemplateEngine templateEngine) {
         this.httpServletResponse = httpServletResponse;
+        this.jsonEngine = jsonEngine;
+        this.xmlEngine = xmlEngine;
         this.templateEngine = templateEngine;
     }
 
@@ -250,8 +253,21 @@ public class Response {
     }
 
     public void json(Object object) {
+        if (jsonEngine == null) {
+            log.error("You must set a json engine first");
+            return;
+        }
         header(HttpConstants.Header.CONTENT_TYPE, HttpConstants.ContentType.APPLICATION_JSON);
-        send(new Gson().toJson(object));
+        send(jsonEngine.toJson(object));
+    }
+
+    public void xml(Object object) {
+        if (xmlEngine == null) {
+            log.error("You must set an xml engine first");
+            return;
+        }
+        header(HttpConstants.Header.CONTENT_TYPE, HttpConstants.ContentType.APPLICATION_XML);
+        send(xmlEngine.toXml(object));
     }
 
     public void render(String templateName) {
