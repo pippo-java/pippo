@@ -163,7 +163,7 @@ public class StringValue implements Serializable {
     }
 
     public boolean isEmpty() {
-        return value == null || value.trim().isEmpty();
+        return StringUtils.isNullOrEmpty(value);
     }
 
 }
