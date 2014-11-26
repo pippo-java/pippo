@@ -42,6 +42,7 @@ public class Application {
     private static final Logger log = LoggerFactory.getLogger(Application.class);
 
     private PippoSettings pippoSettings;
+    private Languages languages;
     private TemplateEngine templateEngine;
     private JsonEngine jsonEngine;
     private XmlEngine xmlEngine;
@@ -79,6 +80,7 @@ public class Application {
 
     public Application(PippoSettings settings) {
         this.pippoSettings = settings;
+        this.languages = new Languages(settings);
     }
 
     public void init() {
@@ -104,6 +106,10 @@ public class Application {
 
     public String getApplicationVersion() {
         return pippoSettings.getString(PippoConstants.SETTING_APPLICATION_VERSION, "");
+    }
+
+    public Languages getLanguages() {
+        return languages;
     }
 
     public TemplateEngine getTemplateEngine() {
