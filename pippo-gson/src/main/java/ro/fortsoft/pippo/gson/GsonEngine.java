@@ -32,8 +32,8 @@ public class GsonEngine implements JsonEngine {
 	}
 
 	@Override
-	public <X> X fromJson(String json, Class<X> xClass) {
-		return new Gson().fromJson(json, xClass);
+	public <T> T fromJson(String json, Class<T> classOfT) {
+		return new Gson().fromJson(json, classOfT);
 	}
 
 }
