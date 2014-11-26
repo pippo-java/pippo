@@ -51,6 +51,7 @@ public class Response {
         this.jsonEngine = application.getJsonEngine();
         this.xmlEngine = application.getXmlEngine();
         this.templateEngine = application.getTemplateEngine();
+        this.httpServletResponse.setCharacterEncoding(StandardCharsets.UTF_8.toString());
     }
 
     public String getContentType() {
@@ -227,10 +228,6 @@ public class Response {
 
         if (getContentType() == null) {
             header(HttpConstants.Header.CONTENT_TYPE, HttpConstants.ContentType.TEXT_HTML);
-        }
-
-        if (getCharacterEncoding() == null) {
-            characterEncoding(StandardCharsets.UTF_8.toString());
         }
 
         write(content);
