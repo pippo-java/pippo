@@ -149,11 +149,8 @@ public class PippoFilter implements Filter {
         String relativePath = getRelativePath(httpServletRequest);
         log.debug("The relative path for '{}' is '{}'", requestUri, relativePath);
 
-        TemplateEngine templateEngine = application.getTemplateEngine();
-        JsonEngine jsonEngine = application.getJsonEngine();
-        XmlEngine xmlEngine = application.getXmlEngine();
         final Request request = new Request(httpServletRequest);
-        final Response response = new Response(httpServletResponse, jsonEngine, xmlEngine, templateEngine);
+        final Response response = new Response(httpServletResponse, application);
         try {
             RouteMatcher routeMatcher = application.getRouteMatcher();
             List<RouteMatch> routeMatches = routeMatcher.findRoutes(relativePath, requestMethod);

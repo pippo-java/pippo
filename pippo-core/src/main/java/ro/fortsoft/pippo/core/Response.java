@@ -44,11 +44,11 @@ public class Response {
     private TemplateEngine templateEngine;
     private Map<String, Object> locals;
 
-    Response(HttpServletResponse httpServletResponse, JsonEngine jsonEngine, XmlEngine xmlEngine, TemplateEngine templateEngine) {
+    Response(HttpServletResponse httpServletResponse, Application application) {
         this.httpServletResponse = httpServletResponse;
-        this.jsonEngine = jsonEngine;
-        this.xmlEngine = xmlEngine;
-        this.templateEngine = templateEngine;
+        this.jsonEngine = application.getJsonEngine();
+        this.xmlEngine = application.getXmlEngine();
+        this.templateEngine = application.getTemplateEngine();
     }
 
     public String getContentType() {
