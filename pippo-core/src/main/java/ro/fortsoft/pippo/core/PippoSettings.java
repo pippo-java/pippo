@@ -104,6 +104,22 @@ public class PippoSettings {
         this.overrides = new Properties();
     }
 
+    public RuntimeMode getRuntimeMode() {
+        return runtimeMode;
+    }
+
+    public boolean isDev() {
+        return RuntimeMode.DEV == runtimeMode;
+    }
+
+    public boolean isTest() {
+        return RuntimeMode.TEST == runtimeMode;
+    }
+
+    public boolean isProd() {
+        return RuntimeMode.PROD == runtimeMode;
+    }
+
     private URL getPropertiesUrl() {
         URL url = null;
         try {

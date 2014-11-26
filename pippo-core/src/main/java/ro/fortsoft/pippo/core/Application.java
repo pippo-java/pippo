@@ -91,7 +91,7 @@ public class Application {
      * The runtime mode. Must currently be either DEV, TEST, or PROD.
      */
     public RuntimeMode getRuntimeMode() {
-        return RuntimeMode.getCurrent();
+        return pippoSettings.getRuntimeMode();
     }
 
     public PippoSettings getPippoSettings() {
