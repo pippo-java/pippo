@@ -43,6 +43,7 @@ public class Application {
 
     private PippoSettings pippoSettings;
     private Languages languages;
+    private Messages messages;
     private TemplateEngine templateEngine;
     private JsonEngine jsonEngine;
     private XmlEngine xmlEngine;
@@ -81,6 +82,7 @@ public class Application {
     public Application(PippoSettings settings) {
         this.pippoSettings = settings;
         this.languages = new Languages(settings);
+        this.messages = new Messages(languages);
     }
 
     public void init() {
@@ -110,6 +112,10 @@ public class Application {
 
     public Languages getLanguages() {
         return languages;
+    }
+
+    public Messages getMessages() {
+        return messages;
     }
 
     public TemplateEngine getTemplateEngine() {

@@ -94,8 +94,17 @@ public class SimpleApplication extends Application {
 
             @Override
             public void handle(Request request, Response response, RouteHandlerChain chain) {
+            	String message;
+
+            	String lang = request.getParameter("lang").toString();
+            	if (lang == null) {
+            		message = getMessages().get("pippo.greeting", request, response);
+            	} else {
+            		message = getMessages().get("pippo.greeting", lang);
+            	}
+
                 Map<String, Object> model = new HashMap<>();
-                model.put("greeting", "Hello my friend");
+                model.put("greeting", message);
                 response.render("hello.ftl", model);
             }
 
