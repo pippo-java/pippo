@@ -145,24 +145,12 @@ public class Response {
         return this;
     }
 
-    private Map<String, Cookie> getCookieMap() {
-        if (cookies == null) {
-            cookies = new HashMap<String, Cookie>();
-        }
-        return cookies;
-    }
-
-    private void addCookie(Cookie cookie) {
-        getCookieMap().put(cookie.getName(), cookie);
-    }
-
     public Collection<Cookie> getCookies() {
         return getCookieMap().values();
     }
 
     public Cookie getCookie(String name) {
-        Cookie cookie = getCookieMap().get(name);
-        return cookie;
+        return getCookieMap().get(name);
     }
 
     public Response removeCookie(String name) {
@@ -217,26 +205,8 @@ public class Response {
 
     public void send(CharSequence content) {
         checkCommitted();
-
-        for (Cookie cookie : getCookies()) {
-            httpServletResponse.addCookie(cookie);
-        }
-
-        if (getStatus() == 0) {
-            status(HttpConstants.StatusCode.OK);
-        }
-
-        if (getContentType() == null) {
-            header(HttpConstants.Header.CONTENT_TYPE, HttpConstants.ContentType.TEXT_HTML);
-        }
-
         write(content);
-
-        try {
-            httpServletResponse.flushBuffer();
-        } catch (IOException e) {
-            throw new PippoRuntimeException(e);
-        }
+        commit();
     }
 
     public void file(File file) {
@@ -249,14 +219,6 @@ public class Response {
 
     public void file(String filename, InputStream input) {
         checkCommitted();
-
-        for (Cookie cookie : getCookies()) {
-            httpServletResponse.addCookie(cookie);
-        }
-
-        if (getStatus() == 0) {
-            status(HttpConstants.StatusCode.OK);
-        }
 
 //        if (isHeaderEmpty(HttpConstants.Header.CONTENT_TYPE)) {
             header(HttpConstants.Header.CONTENT_TYPE, HttpConstants.ContentType.APPLICATION_OCTET_STREAM);
@@ -278,7 +240,7 @@ public class Response {
                 contentLength(length);
             }
 
-            httpServletResponse.flushBuffer();
+            commit();
         } catch (Exception e) {
             throw new PippoRuntimeException(e);
         } finally {
@@ -291,6 +253,7 @@ public class Response {
             log.error("You must set a json engine first");
             return;
         }
+
         header(HttpConstants.Header.CONTENT_TYPE, HttpConstants.ContentType.APPLICATION_JSON);
         send(jsonEngine.toJson(object));
     }
@@ -300,12 +263,14 @@ public class Response {
             log.error("You must set an xml engine first");
             return;
         }
+
         header(HttpConstants.Header.CONTENT_TYPE, HttpConstants.ContentType.APPLICATION_XML);
         send(xmlEngine.toXml(object));
     }
 
     public Response bind(String name, Object model) {
         getLocals().put(name, model);
+
         return this;
     }
 
@@ -342,7 +307,6 @@ public class Response {
         return locals;
     }
 
-
     private boolean isHeaderEmpty(String name) {
         String value = getHttpServletResponse().getHeader(name);
         return (value == null) || value.isEmpty();
@@ -351,6 +315,41 @@ public class Response {
     private void checkCommitted() {
         if (isCommitted()) {
             throw new PippoRuntimeException("The response has already been committed");
+        }
+    }
+
+    private Map<String, Cookie> getCookieMap() {
+        if (cookies == null) {
+            cookies = new HashMap<>();
+        }
+
+        return cookies;
+    }
+
+    private void addCookie(Cookie cookie) {
+        getCookieMap().put(cookie.getName(), cookie);
+    }
+
+    private void commit() {
+        // add cookies
+        for (Cookie cookie : getCookies()) {
+            httpServletResponse.addCookie(cookie);
+        }
+
+        // set status to OK if it's not set
+        if (getStatus() == 0) {
+            status(HttpConstants.StatusCode.OK);
+        }
+
+        // content type to TEXT_HTML if it's not set
+        if (getContentType() == null) {
+            header(HttpConstants.Header.CONTENT_TYPE, HttpConstants.ContentType.TEXT_HTML);
+        }
+
+        try {
+            httpServletResponse.flushBuffer();
+        } catch (IOException e) {
+            throw new PippoRuntimeException(e);
         }
     }
 
