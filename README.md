@@ -950,7 +950,7 @@ CrudDemo is a <b>C</b>reate <b>R</b>etrieve <b>U</b>pdate <b>D</b>elete demo (wi
     
 Mailing list
 --------------
-Much of the conversation between developers and users is managed through [mailing list] (http://groups.google.com/group/pippo).
+Much of the conversation between developers and users is managed through [mailing list] (http://groups.google.com/group/pippo-java).
 
 Versioning
 ------------
