@@ -42,6 +42,8 @@ public class Application {
     private static final Logger log = LoggerFactory.getLogger(Application.class);
 
     private PippoSettings pippoSettings;
+    private Languages languages;
+    private Messages messages;
     private TemplateEngine templateEngine;
     private JsonEngine jsonEngine;
     private XmlEngine xmlEngine;
@@ -79,6 +81,8 @@ public class Application {
 
     public Application(PippoSettings settings) {
         this.pippoSettings = settings;
+        this.languages = new Languages(settings);
+        this.messages = new Messages(languages);
     }
 
     public void init() {
@@ -91,7 +95,7 @@ public class Application {
      * The runtime mode. Must currently be either DEV, TEST, or PROD.
      */
     public RuntimeMode getRuntimeMode() {
-        return RuntimeMode.getCurrent();
+        return pippoSettings.getRuntimeMode();
     }
 
     public PippoSettings getPippoSettings() {
@@ -104,6 +108,14 @@ public class Application {
 
     public String getApplicationVersion() {
         return pippoSettings.getString(PippoConstants.SETTING_APPLICATION_VERSION, "");
+    }
+
+    public Languages getLanguages() {
+        return languages;
+    }
+
+    public Messages getMessages() {
+        return messages;
     }
 
     public TemplateEngine getTemplateEngine() {

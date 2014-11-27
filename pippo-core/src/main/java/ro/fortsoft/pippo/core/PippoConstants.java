@@ -31,6 +31,10 @@ public final class PippoConstants {
 
     public static final String SETTING_APPLICATION_VERSION = "application.version";
 
+    public static final String SETTING_APPLICATION_LANGUAGES = "application.languages";
+
+    public static final String SETTING_APPLICATION_COOKIE_PREFIX = "application.cookie.prefix";
+
     public static final String SETTING_SERVER_PORT = "server.port";
 
     public static final String SETTING_SERVER_HOST = "server.host";

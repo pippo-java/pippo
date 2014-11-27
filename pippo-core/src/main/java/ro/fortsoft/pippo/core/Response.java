@@ -28,6 +28,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringWriter;
 import java.nio.charset.StandardCharsets;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -43,12 +44,14 @@ public class Response {
     private XmlEngine xmlEngine;
     private TemplateEngine templateEngine;
     private Map<String, Object> locals;
+    private Map<String, Cookie> cookies;
 
     Response(HttpServletResponse httpServletResponse, Application application) {
         this.httpServletResponse = httpServletResponse;
         this.jsonEngine = application.getJsonEngine();
         this.xmlEngine = application.getXmlEngine();
         this.templateEngine = application.getTemplateEngine();
+        this.httpServletResponse.setCharacterEncoding(StandardCharsets.UTF_8.toString());
     }
 
     public String getContentType() {
@@ -110,8 +113,15 @@ public class Response {
         }
     }
 
+    public Response cookie(Cookie cookie) {
+        addCookie(cookie);
+
+        return this;
+    }
+
     public Response cookie(String name, String value) {
-        httpServletResponse.addCookie(new Cookie(name, value));
+        Cookie cookie = new Cookie(name, value);
+        addCookie(cookie);
 
         return this;
     }
@@ -119,7 +129,7 @@ public class Response {
     public Response cookie(String name, String value, int maxAge) {
         Cookie cookie = new Cookie(name, value);
         cookie.setMaxAge(maxAge);
-        httpServletResponse.addCookie(cookie);
+        addCookie(cookie);
 
         return this;
     }
@@ -130,15 +140,35 @@ public class Response {
         cookie.setDomain(domain);
         cookie.setMaxAge(maxAge);
         cookie.setSecure(secure);
-        httpServletResponse.addCookie(cookie);
+        addCookie(cookie);
 
         return this;
+    }
+
+    private Map<String, Cookie> getCookieMap() {
+        if (cookies == null) {
+            cookies = new HashMap<String, Cookie>();
+        }
+        return cookies;
+    }
+
+    private void addCookie(Cookie cookie) {
+        getCookieMap().put(cookie.getName(), cookie);
+    }
+
+    public Collection<Cookie> getCookies() {
+        return getCookieMap().values();
+    }
+
+    public Cookie getCookie(String name) {
+        Cookie cookie = getCookieMap().get(name);
+        return cookie;
     }
 
     public Response removeCookie(String name) {
         Cookie cookie = new Cookie(name, "");
         cookie.setMaxAge(0);
-        httpServletResponse.addCookie(cookie);
+        addCookie(cookie);
 
         return this;
     }
@@ -188,16 +218,16 @@ public class Response {
     public void send(CharSequence content) {
         checkCommitted();
 
+        for (Cookie cookie : getCookies()) {
+            httpServletResponse.addCookie(cookie);
+        }
+
         if (getStatus() == 0) {
             status(HttpConstants.StatusCode.OK);
         }
 
         if (getContentType() == null) {
             header(HttpConstants.Header.CONTENT_TYPE, HttpConstants.ContentType.TEXT_HTML);
-        }
-
-        if (getCharacterEncoding() == null) {
-            characterEncoding(StandardCharsets.UTF_8.toString());
         }
 
         write(content);
@@ -219,6 +249,10 @@ public class Response {
 
     public void file(String filename, InputStream input) {
         checkCommitted();
+
+        for (Cookie cookie : getCookies()) {
+            httpServletResponse.addCookie(cookie);
+        }
 
         if (getStatus() == 0) {
             status(HttpConstants.StatusCode.OK);

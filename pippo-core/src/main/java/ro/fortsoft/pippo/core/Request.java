@@ -16,13 +16,16 @@
 package ro.fortsoft.pippo.core;
 
 import java.lang.reflect.Field;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.servlet.http.Part;
@@ -221,6 +224,23 @@ public class Request {
         }
 
         return allParameters;
+    }
+
+    public List<Cookie> getCookies() {
+        Cookie [] cookies = httpServletRequest.getCookies();
+        if (cookies == null) {
+            return Collections.emptyList();
+        }
+        return Arrays.asList(cookies);
+    }
+
+    public Cookie getCookie(String name) {
+        for (Cookie cookie : getCookies()) {
+            if (cookie.getName().equals(name)) {
+                return cookie;
+            }
+        }
+        return null;
     }
 
 }
