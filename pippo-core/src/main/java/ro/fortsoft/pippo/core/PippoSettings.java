@@ -458,7 +458,7 @@ public class PippoSettings {
         if (value != null) {
             return value.trim();
         }
-        throw new PippoRuntimeException("Setting '" + name + "' has not been configured!");
+        throw new PippoRuntimeException("Setting '{}' has not been configured!", name);
     }
 
     /**
@@ -787,7 +787,7 @@ public class PippoSettings {
             TimeUnit timeUnit = TimeUnit.valueOf(s[1].trim().toUpperCase());
             return timeUnit;
         } catch (Exception ex) {
-            throw new PippoRuntimeException(name + " must have format '<n> <TimeUnit>' where <TimeUnit> is one of 'MILLISECONDS', 'SECONDS', 'MINUTES', 'HOURS', 'DAYS'");
+            throw new PippoRuntimeException("{} must have format '<n> <TimeUnit>' where <TimeUnit> is one of 'MILLISECONDS', 'SECONDS', 'MINUTES', 'HOURS', 'DAYS'", name);
         }
     }
 

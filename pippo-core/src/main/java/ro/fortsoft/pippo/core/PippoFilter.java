@@ -271,8 +271,8 @@ public class PippoFilter implements Filter {
             if (filterMapping.equals("/*")) {
                 filterMapping = "";
             } else if (!filterMapping.startsWith("/") || !filterMapping.endsWith("/*")) {
-                throw new PippoRuntimeException("Your " + FILTER_MAPPING_PARAM +
-                        " must start with \"/\" and end with \"/*\". It is: " + filterMapping);
+                throw new PippoRuntimeException("Your {} must start with \"/\" and end with \"/*\". It is: ",
+                        FILTER_MAPPING_PARAM, filterMapping);
             } else {
                 // remove leading "/" and trailing "*"
                 filterMapping = filterMapping.substring(1, filterMapping.length() - 1);
@@ -289,7 +289,7 @@ public class PippoFilter implements Filter {
         int size = mappings.size();
 
         if (size > 1) {
-            throw new PippoRuntimeException("Expected one filter path for '" + filterName + "' but found multiple");
+            throw new PippoRuntimeException("Expected one filter path for '{}' but found multiple", filterName);
         }
 
         if (size == 1) {
@@ -378,7 +378,8 @@ public class PippoFilter implements Filter {
 
         } catch (Exception e) {
             //this should not happen. Never.
-            throw new PippoRuntimeException("Something is wrong with your build. Cannot find resource " + PippoConstants.LOCATION_OF_PIPPO_BUILTIN_PROPERTIES);
+            throw new PippoRuntimeException("Something is wrong with your build. Cannot find resource {}",
+                    PippoConstants.LOCATION_OF_PIPPO_BUILTIN_PROPERTIES);
         }
 
         return pippoVersion;

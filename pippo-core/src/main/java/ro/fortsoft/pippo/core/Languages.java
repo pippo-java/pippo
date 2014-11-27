@@ -169,8 +169,7 @@ public class Languages {
             Cookie cookie = generateLanguageCookie(language);
             response.cookie(cookie);
         } else {
-            throw new PippoRuntimeException(String.format(
-                    "%s is not a registered language!", language));
+            throw new PippoRuntimeException("'{}' is not a registered language!", language);
         }
     }
 

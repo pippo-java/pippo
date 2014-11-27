@@ -41,10 +41,10 @@ public class ControllerHandler implements RouteHandler {
         this.controllerClass = controllerClass;
         this.methodName = methodName;
         try {
-            this.method = controllerClass.getMethod(methodName, new Class[]{});
+            this.method = controllerClass.getMethod(methodName, new Class[] {});
         } catch (NoSuchMethodException e) {
-            throw new PippoRuntimeException(String.format("Failed to find controller method '%s.%s'",
-                    controllerClass.getSimpleName(), methodName), e);
+            throw new PippoRuntimeException("Failed to find controller method '{}.{}'", e,
+                    controllerClass.getSimpleName(), methodName);
         }
     }
 

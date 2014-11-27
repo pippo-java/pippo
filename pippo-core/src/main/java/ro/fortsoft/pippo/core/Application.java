@@ -68,7 +68,7 @@ public class Application {
     public static Application get() {
         Application application = ThreadContext.getApplication();
         if (application == null) {
-            throw new PippoRuntimeException("There is no application attached to current thread " +
+            throw new PippoRuntimeException("There is no application attached to current thread '{}'",
                     Thread.currentThread().getName());
         }
 
