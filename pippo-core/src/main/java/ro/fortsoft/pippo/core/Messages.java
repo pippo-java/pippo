@@ -185,8 +185,6 @@ public class Messages {
      *
      * @param key
      * @param defaultMessage
-     * @param request
-     * @param response
      * @param parameters
      * @return the message or the key if the key does not exist
      */
