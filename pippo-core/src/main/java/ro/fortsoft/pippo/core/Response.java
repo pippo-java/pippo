@@ -113,6 +113,19 @@ public class Response {
         }
     }
 
+    /**
+     * Send a not found (404 status code).
+     *
+     */
+    public void notFound() {
+        httpServletResponse.setStatus(HttpConstants.StatusCode.NOT_FOUND);
+        try {
+            httpServletResponse.sendError(HttpConstants.StatusCode.NOT_FOUND);
+        } catch (IOException e) {
+            throw new PippoRuntimeException(e);
+        }
+    }
+
     public Response cookie(Cookie cookie) {
         addCookie(cookie);
 

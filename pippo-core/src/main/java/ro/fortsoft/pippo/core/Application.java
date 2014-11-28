@@ -22,6 +22,7 @@ import ro.fortsoft.pippo.core.controller.ControllerHandler;
 import ro.fortsoft.pippo.core.controller.ControllerInitializationListenerList;
 import ro.fortsoft.pippo.core.controller.ControllerInstantiationListenerList;
 import ro.fortsoft.pippo.core.controller.ControllerInvokeListenerList;
+import ro.fortsoft.pippo.core.route.ClasspathResourceHandler;
 import ro.fortsoft.pippo.core.route.DefaultRouteMatcher;
 import ro.fortsoft.pippo.core.route.DefaultRouteNotFoundHandler;
 import ro.fortsoft.pippo.core.route.Route;
@@ -164,6 +165,10 @@ public class Application {
 
     public void setRouteMatcher(RouteMatcher routeMatcher) {
         this.routeMatcher = routeMatcher;
+    }
+
+    public void GET(ClasspathResourceHandler resourceHandler) {
+        addRoute(resourceHandler.getUrlPattern(), HttpConstants.Method.GET, resourceHandler);
     }
 
     public void GET(String urlPattern, RouteHandler routeHandler) {

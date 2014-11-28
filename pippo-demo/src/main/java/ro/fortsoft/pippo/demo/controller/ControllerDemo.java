@@ -16,6 +16,8 @@
 package ro.fortsoft.pippo.demo.controller;
 
 import ro.fortsoft.pippo.core.Pippo;
+import ro.fortsoft.pippo.core.route.PublicResourceHandler;
+import ro.fortsoft.pippo.core.route.WebjarsResourceHandler;
 
 /**
  * @author Decebal Suiu
@@ -24,7 +26,8 @@ public class ControllerDemo {
 
     public static void main(String[] args) {
         Pippo pippo = new Pippo();
-        pippo.getServer().getSettings().staticFilesLocation("/public");
+        pippo.getApplication().GET(new WebjarsResourceHandler());
+        pippo.getApplication().GET(new PublicResourceHandler());
         pippo.getApplication().GET("/", ContactsController.class, "index");
         pippo.getApplication().GET("/contacts/{id}", ContactsController.class, "urlFor");
         pippo.start();
