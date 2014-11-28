@@ -29,6 +29,7 @@ import ro.fortsoft.pippo.core.route.Route;
 import ro.fortsoft.pippo.core.route.RouteHandler;
 import ro.fortsoft.pippo.core.route.RouteMatcher;
 import ro.fortsoft.pippo.core.route.RouteNotFoundHandler;
+import ro.fortsoft.pippo.core.util.MimeTypes;
 import ro.fortsoft.pippo.core.util.ServiceLocator;
 
 import java.util.HashMap;
@@ -45,6 +46,7 @@ public class Application {
     private PippoSettings pippoSettings;
     private Languages languages;
     private Messages messages;
+    private MimeTypes mimeTypes;
     private TemplateEngine templateEngine;
     private JsonEngine jsonEngine;
     private XmlEngine xmlEngine;
@@ -84,6 +86,7 @@ public class Application {
         this.pippoSettings = settings;
         this.languages = new Languages(settings);
         this.messages = new Messages(languages);
+        this.mimeTypes = new MimeTypes(settings);
     }
 
     public void init() {
@@ -117,6 +120,10 @@ public class Application {
 
     public Messages getMessages() {
         return messages;
+    }
+
+    public MimeTypes getMimeTypes() {
+        return mimeTypes;
     }
 
     public TemplateEngine getTemplateEngine() {
@@ -168,6 +175,7 @@ public class Application {
     }
 
     public void GET(ClasspathResourceHandler resourceHandler) {
+        resourceHandler.setMimeTypes(mimeTypes);
         addRoute(resourceHandler.getUrlPattern(), HttpConstants.Method.GET, resourceHandler);
     }
 

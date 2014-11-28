@@ -222,6 +222,27 @@ public class Response {
         commit();
     }
 
+    public void resource(InputStream input) {
+        checkCommitted();
+
+        if (isHeaderEmpty(HttpConstants.Header.CONTENT_TYPE)) {
+            header(HttpConstants.Header.CONTENT_TYPE, HttpConstants.ContentType.APPLICATION_OCTET_STREAM);
+        }
+
+        try {
+            long length = IoUtils.copy(input, httpServletResponse.getOutputStream());
+            if (isHeaderEmpty(HttpConstants.Header.CONTENT_LENGTH)) {
+                contentLength(length);
+            }
+
+            commit();
+        } catch (Exception e) {
+            throw new PippoRuntimeException(e);
+        } finally {
+            IoUtils.close(input);
+        }
+    }
+
     public void file(File file) {
         try {
             file(file.getName(), new FileInputStream(file));

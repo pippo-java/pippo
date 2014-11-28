@@ -45,6 +45,8 @@ public class ClasspathResourceHandler implements RouteHandler {
 
     private final String resourceBasePath;
 
+    private MimeTypes mimeTypes;
+
     public ClasspathResourceHandler(String urlPath, String resourceBasePath) {
         this.urlPattern = String.format("/%s/{%s: .*}", getNormalizedPath(urlPath), PATH_PARAMETER);
         this.resourceBasePath = getNormalizedPath(resourceBasePath);
@@ -52,6 +54,10 @@ public class ClasspathResourceHandler implements RouteHandler {
 
     public String getUrlPattern() {
         return urlPattern;
+    }
+
+    public void setMimeTypes(MimeTypes mimeTypes) {
+        this.mimeTypes = mimeTypes;
     }
 
     @Override
@@ -97,9 +103,23 @@ public class ClasspathResourceHandler implements RouteHandler {
             URLConnection urlConnection = url.openConnection();
             String filename = url.getFile();
 
-            // stream the file
-            log.debug("Streaming as file '{}'", url);
-            response.file(filename, urlConnection.getInputStream());
+            // Try to set the mimetype:
+            String mimeType = mimeTypes.getContentType(request, response, filename);
+
+            if (!StringUtils.isNullOrEmpty(mimeType)) {
+
+                // stream the resource
+                log.debug("Streaming as resource '{}'", url);
+                response.contentType(mimeType);
+                response.resource(urlConnection.getInputStream());
+
+            } else {
+
+                // stream the file
+                log.debug("Streaming as file '{}'", url);
+                response.file(filename, urlConnection.getInputStream());
+
+            }
 
         } catch (Exception e) {
             throw new PippoRuntimeException("Failed to stream classpath resource " + url, e);
