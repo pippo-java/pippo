@@ -47,6 +47,8 @@ public class ClasspathResourceHandler implements RouteHandler {
 
     private MimeTypes mimeTypes;
 
+    private HttpCacheToolkit httpCacheToolkit;
+
     public ClasspathResourceHandler(String urlPath, String resourceBasePath) {
         this.urlPattern = String.format("/%s/{%s: .*}", getNormalizedPath(urlPath), PATH_PARAMETER);
         this.resourceBasePath = getNormalizedPath(resourceBasePath);
@@ -58,6 +60,10 @@ public class ClasspathResourceHandler implements RouteHandler {
 
     public void setMimeTypes(MimeTypes mimeTypes) {
         this.mimeTypes = mimeTypes;
+    }
+
+    public void setHttpCacheToolkit(HttpCacheToolkit httpCacheToolkit) {
+        this.httpCacheToolkit = httpCacheToolkit;
     }
 
     @Override
@@ -101,24 +107,32 @@ public class ClasspathResourceHandler implements RouteHandler {
         try {
 
             URLConnection urlConnection = url.openConnection();
-            String filename = url.getFile();
+            long lastModified = urlConnection.getLastModified();
+            httpCacheToolkit.addEtag(request, response, lastModified);
 
-            // Try to set the mimetype:
-            String mimeType = mimeTypes.getContentType(request, response, filename);
-
-            if (!StringUtils.isNullOrEmpty(mimeType)) {
-
-                // stream the resource
-                log.debug("Streaming as resource '{}'", url);
-                response.contentType(mimeType);
-                response.resource(urlConnection.getInputStream());
-
+            if (response.getStatus() == HttpConstants.StatusCode.NOT_MODIFIED) {
+                // Do not stream anything out. Simply return 304
+                response.commit();
             } else {
+                String filename = url.getFile();
 
-                // stream the file
-                log.debug("Streaming as file '{}'", url);
-                response.file(filename, urlConnection.getInputStream());
+                // Try to set the mimetype:
+                String mimeType = mimeTypes.getContentType(request, response, filename);
 
+                if (!StringUtils.isNullOrEmpty(mimeType)) {
+
+                    // stream the resource
+                    log.debug("Streaming as resource '{}'", url);
+                    response.contentType(mimeType);
+                    response.resource(urlConnection.getInputStream());
+
+                } else {
+
+                    // stream the file
+                    log.debug("Streaming as file '{}'", url);
+                    response.file(filename, urlConnection.getInputStream());
+
+                }
             }
 
         } catch (Exception e) {

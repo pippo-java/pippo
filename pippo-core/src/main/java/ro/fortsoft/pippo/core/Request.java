@@ -165,6 +165,10 @@ public class Request {
         return httpServletRequest.getRequestURI();
     }
 
+    public String getMethod() {
+        return httpServletRequest.getMethod();
+    }
+
     public HttpServletRequest getHttpServletRequest() {
         return httpServletRequest;
     }

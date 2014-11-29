@@ -82,11 +82,13 @@ public final class HttpConstants {
         public static final String CONTENT_MD5 = "Content-MD5";
         public static final String CONTENT_DISPOSITION = "Content-Disposition";
         public static final String DATE = "Date";
+        public static final String ETAG = "Etag";
         public static final String IF_MATCH = "If-Match";
         public static final String IF_MODIFIED_SINCE = "If-Modified-Since";
         public static final String IF_NONE_MATCH = "If-None-Match";
         public static final String USER_AGENT = "User-Agent";
         public static final String HOST = "Host";
+        public static final String LAST_MODIFIED = "Last-Modified";
         public static final String LOCATION = "Location";
 
         private Header() {

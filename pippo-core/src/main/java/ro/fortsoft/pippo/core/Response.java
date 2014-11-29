@@ -364,7 +364,7 @@ public class Response {
         getCookieMap().put(cookie.getName(), cookie);
     }
 
-    private void commit() {
+    public void commit() {
         // add cookies
         for (Cookie cookie : getCookies()) {
             httpServletResponse.addCookie(cookie);

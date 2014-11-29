@@ -37,6 +37,10 @@ public final class PippoConstants {
 
     public static final String SETTING_APPLICATION_COOKIE_PREFIX = "application.cookie.prefix";
 
+    public static final String SETTING_HTTP_CACHE_CONTROL = "http.cacheControl";
+
+    public static final String SETTING_HTTP_USE_ETAG = "http.useETag";
+
     public static final String SETTING_MIMETYPE_PREFIX = "mimetype.";
 
     public static final String SETTING_SERVER_PORT = "server.port";
