@@ -16,6 +16,8 @@
 package ro.fortsoft.pippo.demo.crud;
 
 import ro.fortsoft.pippo.core.Pippo;
+import ro.fortsoft.pippo.core.route.PublicResourceHandler;
+import ro.fortsoft.pippo.core.route.WebjarsResourceHandler;
 
 /**
  * @author Decebal Suiu
@@ -26,7 +28,9 @@ public class CrudDemo {
 //        new Pippo().start(); // run the default web server with the default web server settings
 
         Pippo pippo = new Pippo(new CrudApplication());
-        pippo.getServer().getSettings().staticFilesLocation("/public");
+        pippo.getApplication().GET(new WebjarsResourceHandler());
+        pippo.getApplication().GET(new PublicResourceHandler());
+
         pippo.start();
     }
 
