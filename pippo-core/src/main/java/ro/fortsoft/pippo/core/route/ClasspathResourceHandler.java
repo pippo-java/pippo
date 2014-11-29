@@ -67,7 +67,7 @@ public class ClasspathResourceHandler implements RouteHandler {
     @Override
     public void handle(Request request, Response response, RouteHandlerChain chain) {
         String path = getRequestedPath(request);
-        log.debug("classpath resource request for '{}'", path);
+        log.debug("Request for '{}'", path);
 
         URL url = this.getClass().getClassLoader().getResource(path);
         if (url == null) {
@@ -107,6 +107,7 @@ public class ClasspathResourceHandler implements RouteHandler {
 
             if (response.getStatus() == HttpConstants.StatusCode.NOT_MODIFIED) {
                 // Do not stream anything out. Simply return 304
+                log.debug("Unmodified resource '{}'", url);
                 response.commit();
             } else {
                 String filename = url.getFile();
