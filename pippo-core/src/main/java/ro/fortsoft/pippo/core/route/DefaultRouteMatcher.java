@@ -36,6 +36,17 @@ public class DefaultRouteMatcher extends AbstractRouteMatcher {
 
     private static final Logger log = LoggerFactory.getLogger(DefaultRouteMatcher.class);
 
+    //Matches: {id} AND {id: .*?}
+    // group(1) extracts the name of the group (in that case "id").
+    // group(3) extracts the regex if defined
+    final Pattern PATTERN_FOR_VARIABLE_PARTS_OF_ROUTE
+        = Pattern.compile("\\{(.*?)(:\\s(.*?))?\\}");
+
+    /**
+     * This regex matches everything in between path slashes.
+     */
+    final String VARIABLE_ROUTES_DEFAULT_REGEX = "([^/]*)";
+
     private Map<String, List<PatternBinding>> bindingsCache; // key = request method
 
     public DefaultRouteMatcher() {
@@ -77,18 +88,6 @@ public class DefaultRouteMatcher extends AbstractRouteMatcher {
         return (binding != null) ? urlFor(binding, parameters) : null;
     }
 
-    @Override
-    protected void validateRoute(Route route) throws Exception {
-        super.validateRoute(route);
-
-        String urlPattern = route.getUrlPattern();
-        if (urlPattern.matches("^/[A-z0-9\\.\\-:\\*/]{0,}")) {
-            return;
-        }
-
-        throw new Exception("Invalid url pattern: " + urlPattern);
-    }
-
     private void addBinding(Route route) {
         String urlPattern = route.getUrlPattern();
         // TODO improve (it's possible to have the same urlPattern for many routes => same pattern)
@@ -103,48 +102,72 @@ public class DefaultRouteMatcher extends AbstractRouteMatcher {
         bindingsCache.get(requestMethod).add(binding);
     }
 
+    /**
+     * Transforms an url pattern like "/{name}/id/*" into a regex like "/([^/]*)/id/*."
+     *
+     * Also handles regular expressions if defined inside routes:
+     * For instance "/users/{username: [a-zA-Z][a-zA-Z_0-9]}" becomes
+     * "/users/([a-zA-Z][a-zA-Z_0-9])"
+     *
+     * @return The converted regex with default matching regex - or the regex
+     *          specified by the user.
+     */
     private String getRegex(String urlPattern) {
-        String tmp = urlPattern;
-        if (urlPattern.endsWith("*")) {
-            tmp = tmp.substring(0, tmp.lastIndexOf("*")) + ".+";
+        Matcher matcher = PATTERN_FOR_VARIABLE_PARTS_OF_ROUTE.matcher(urlPattern);
+
+        StringBuffer stringBuffer = new StringBuffer();
+
+        while (matcher.find()) {
+
+            // By convention group 3 is the regex if provided by the user.
+            // If it is not provided by the user the group 3 is null.
+            String namedVariablePartOfRoute = matcher.group(3);
+            String namedVariablePartOfORouteReplacedWithRegex;
+
+            if (namedVariablePartOfRoute != null) {
+                // we convert that into a regex matcher group itself
+                namedVariablePartOfORouteReplacedWithRegex
+                    = "(" + Matcher.quoteReplacement(namedVariablePartOfRoute) + ")";
+            } else {
+                // we convert that into the default namedVariablePartOfRoute regex group
+                namedVariablePartOfORouteReplacedWithRegex
+                    = VARIABLE_ROUTES_DEFAULT_REGEX;
+            }
+            // we replace the current namedVariablePartOfRoute group
+            matcher.appendReplacement(stringBuffer, namedVariablePartOfORouteReplacedWithRegex);
+
         }
-        tmp = tmp.replaceAll("\\*", "[^/]+");
-        tmp = tmp.replaceAll(":[^/]+", "([^/]+)");
 
-        StringBuilder regex = new StringBuilder();
-        regex.append('^'); // the beginning of a line
-        regex.append(tmp);
-        regex.append("$"); // the end of a line
+        // .. and we append the tail to complete the stringBuffer
+        matcher.appendTail(stringBuffer);
 
-        return regex.toString();
+        return stringBuffer.toString();
     }
 
+    /**
+    *
+    * Extracts the name of the parameters from a route
+    *
+    * /{my_id}/{my_name}
+    *
+    * would return a List with "my_id" and "my_name"
+    *
+    * @param urlPattern
+    * @return a list with the names of all parameters in the url pattern
+    */
     private List<String> getParameterNames(String urlPattern) {
-        if (!urlPattern.matches("[^:]+:[^/]+.*")) {
-            return Collections.emptyList();
+        List<String> list = new ArrayList<String>();
+
+        Matcher m = PATTERN_FOR_VARIABLE_PARTS_OF_ROUTE.matcher(urlPattern);
+
+        while (m.find()) {
+            // group(1) is the name of the group. Must be always there...
+            // "/assets/{file}" and "/assets/{file: [a-zA-Z][a-zA-Z_0-9]}"
+            // will return file.
+            list.add(m.group(1));
         }
 
-        String regex = urlPattern;
-        if (regex.endsWith("*")) {
-            regex = regex.substring(0, regex.lastIndexOf("*")) + ".+";
-        }
-        regex = regex.replaceAll("\\*", "[^/]+");
-        regex = regex.replaceAll(":[^/]+", ":([^/]+)");
-
-        Pattern pattern = Pattern.compile(regex);
-        Matcher matcher = pattern.matcher(urlPattern);
-        matcher.matches();
-        int groupCount = matcher.groupCount();
-        if (groupCount > 0) {
-            List<String> parameterNames = new ArrayList<>();
-            for (int i = 1; i <= groupCount; i++) {
-                parameterNames.add(matcher.group(i));
-            }
-
-            return parameterNames;
-        }
-
-        return Collections.emptyList();
+        return list;
     }
 
     private Map<String, String> getParameters(PatternBinding binding, String requestUri) {

@@ -22,12 +22,15 @@ import ro.fortsoft.pippo.core.controller.ControllerHandler;
 import ro.fortsoft.pippo.core.controller.ControllerInitializationListenerList;
 import ro.fortsoft.pippo.core.controller.ControllerInstantiationListenerList;
 import ro.fortsoft.pippo.core.controller.ControllerInvokeListenerList;
+import ro.fortsoft.pippo.core.route.ClasspathResourceHandler;
 import ro.fortsoft.pippo.core.route.DefaultRouteMatcher;
 import ro.fortsoft.pippo.core.route.DefaultRouteNotFoundHandler;
 import ro.fortsoft.pippo.core.route.Route;
 import ro.fortsoft.pippo.core.route.RouteHandler;
 import ro.fortsoft.pippo.core.route.RouteMatcher;
 import ro.fortsoft.pippo.core.route.RouteNotFoundHandler;
+import ro.fortsoft.pippo.core.util.HttpCacheToolkit;
+import ro.fortsoft.pippo.core.util.MimeTypes;
 import ro.fortsoft.pippo.core.util.ServiceLocator;
 
 import java.util.HashMap;
@@ -44,6 +47,8 @@ public class Application {
     private PippoSettings pippoSettings;
     private Languages languages;
     private Messages messages;
+    private MimeTypes mimeTypes;
+    private HttpCacheToolkit httpCacheToolkit;
     private TemplateEngine templateEngine;
     private JsonEngine jsonEngine;
     private XmlEngine xmlEngine;
@@ -83,6 +88,8 @@ public class Application {
         this.pippoSettings = settings;
         this.languages = new Languages(settings);
         this.messages = new Messages(languages);
+        this.mimeTypes = new MimeTypes(settings);
+        this.httpCacheToolkit = new HttpCacheToolkit(settings);
     }
 
     public void init() {
@@ -116,6 +123,14 @@ public class Application {
 
     public Messages getMessages() {
         return messages;
+    }
+
+    public MimeTypes getMimeTypes() {
+        return mimeTypes;
+    }
+
+    public HttpCacheToolkit getHttpCacheToolkit() {
+        return httpCacheToolkit;
     }
 
     public TemplateEngine getTemplateEngine() {
@@ -164,6 +179,12 @@ public class Application {
 
     public void setRouteMatcher(RouteMatcher routeMatcher) {
         this.routeMatcher = routeMatcher;
+    }
+
+    public void GET(ClasspathResourceHandler resourceHandler) {
+        resourceHandler.setMimeTypes(mimeTypes);
+        resourceHandler.setHttpCacheToolkit(httpCacheToolkit);
+        addRoute(resourceHandler.getUrlPattern(), HttpConstants.Method.GET, resourceHandler);
     }
 
     public void GET(String urlPattern, RouteHandler routeHandler) {

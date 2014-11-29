@@ -231,14 +231,14 @@ The route that is defined first takes precedence over other matching routes. So 
 Each defined route has an __urlPattern__.
 The route can be static or dynamic:
 - static ("/", "/hello", "/contacts/1")
-- dynamic (regex: "/*" or parameterized: "/contact/:id")
+- dynamic (regex: "/.*" or parameterized: "/contact/{id}", "/contact/{id: [0-9]+}")
 
-As you can see, it's easy to create routes with parameters. A parameter is preceded by a `:`. 
+As you can see, it's easy to create routes with parameters. A parameter is wrapped by curly braces `{name}` and can optionally specify a regular expression. 
 
 You can retrieve the path parameter value for a request in type safe mode using:
 
 ```java
-GET("/contact/:id", (request, response, chain) -> {
+GET("/contact/{id: [0-9]+}", (request, response, chain) -> {
     int id = request.getParameter("id").toInt(0);    
     String action = request.getParameter("action").toString("new");
     
@@ -261,7 +261,7 @@ You can see a filter as a RouteHandler that does not commit the response. A filt
 
 ```java
 // audit filter
-GET("/*", (request, response, chain) -> {
+GET("/.*", (request, response, chain) -> {
     System.out.println("Url: '" + request.getUrl());
     System.out.println("Uri: '" + request.getUri());
     System.out.println("Parameters: " + request.getParameters());
@@ -300,7 +300,7 @@ POST("/contact", (request, response, chain) -> {
 });                    
 ```
 
-For now, Pippo comes with a constrain. The types for entity's fields that will be binding must be String, Boolean, Integer, Long, Float or Double.  
+For now, Pippo comes with a constraint. The types for entity's fields that will be binding must be String, Boolean, Integer, Long, Float or Double.  
 
 An __Application__ is a class which associates with an instance of PippoFilter to serve pages over the HTTP protocol. Usually I subclass this class and add my routes in `init()` method.
 
@@ -398,7 +398,7 @@ One answer is that reversing is often more descriptive than hard-coding the URLs
 
 If you create a route like (the Controller aproach):
 ```java
-GET("/contacts/:id", ContactsController.class, "show");
+GET("/contacts/{id}", ContactsController.class, "show");
 ```
 
 This route will take requests such as `/contacts/1` and map it to the __show__ method on the __Contacts__ controller.
@@ -414,7 +414,7 @@ And now the link created should be something like `/contacts/1?action=new`.
 
 The same can be applied to non controller routes:
 ```java
-GET("/contacts/:id", (request, response, chain) -> {...}
+GET("/contacts/{id}", (request, response, chain) -> {...}
 ```
 
 Now we can use `Application.urlFor(String urlPattern, Map<String, Object> parameters)` method to retrieves the URL:
@@ -454,7 +454,7 @@ GET("/contact*", (request, response, chain) -> {
 });
 
 // just consume 'contacts' in template 
-GET("/contact*", (request, response, chain) -> {
+GET("/contact.*", (request, response, chain) -> {
     response.render("crud/contacts.ftl");
 });
 ```
@@ -533,7 +533,7 @@ I will show you a simple implementation for a security filter.
 
 ```java
 // authentication filter
-GET("/contact*", (request, response, chain) -> {
+GET("/contact.*", (request, response, chain) -> {
     if (request.getSession().getAttribute("username") == null) {
         request.getSession().setAttribute("originalDestination", request.getUri());
         response.redirect("/login");
@@ -546,7 +546,7 @@ GET("/contact*", (request, response, chain) -> {
 GET("/contacts", (request, response, chain) -> response.send("contacts.ftl"));
 
 // show contact page for the contact with id specified as path parameter 
-GET("/contact/:id", (request, response, chain) -> response.send("contact.ftl"));
+GET("/contact/{id}", (request, response, chain) -> response.send("contact.ftl"));
 
 // show login page
 GET("/login", request, response, chain) -> {
@@ -710,7 +710,7 @@ from `Response` class.
 
 Bellow is a code snippet about how you can use a template as response to a request:
 ```java
-GET("/contact/:id", (request, response, chain) -> {
+GET("/contact/{id}", (request, response, chain) -> {
     int id = request.getParameter("id").toInt(0);    
     String action = request.getParameter("action").toString("new");
     
@@ -880,7 +880,7 @@ public class ContactInitializer implements Initializer {
         application.GET("/contacts", (request, response, chain) -> response.send("contacts.ftl"));
         
         // show contact page for the contact with id specified as path parameter 
-        application.GET("/contact/:id", (request, response, chain) -> response.send("contact.ftl"));
+        application.GET("/contact/{id}", (request, response, chain) -> response.send("contact.ftl"));
     }
 
     @Override
@@ -901,7 +901,7 @@ public class ContactInitializer implements Initializer {
         application.GET("/users", (request, response, chain) -> response.send("users.ftl"));
         
         // show user page for the user with id specified as path parameter 
-        application.GET("/user/:id", (request, response, chain) -> response.send("user.ftl"));
+        application.GET("/user/{id}", (request, response, chain) -> response.send("user.ftl"));
     }
 
     @Override

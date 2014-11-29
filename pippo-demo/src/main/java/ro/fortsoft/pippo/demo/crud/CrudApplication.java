@@ -48,7 +48,7 @@ public class CrudApplication extends Application {
         contactService = new InMemoryContactService();
 
         // audit filter
-        GET("/*", new RouteHandler() {
+        GET("/.*", new RouteHandler() {
 
             @Override
             public void handle(Request request, Response response, RouteHandlerChain chain) {
@@ -59,7 +59,7 @@ public class CrudApplication extends Application {
         });
 
         // authentication filter
-        GET("/contact*", new RouteHandler() {
+        GET("/contact.*", new RouteHandler() {
 
             @Override
             public void handle(Request request, Response response, RouteHandlerChain chain) {
@@ -99,7 +99,7 @@ public class CrudApplication extends Application {
 
         });
 
-        GET("/contact/:id", new RouteHandler() {
+        GET("/contact/{id}", new RouteHandler() {
 
             @Override
             public void handle(Request request, Response response, RouteHandlerChain chain) {

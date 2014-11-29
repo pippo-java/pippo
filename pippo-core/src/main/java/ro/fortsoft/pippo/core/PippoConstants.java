@@ -17,6 +17,8 @@ package ro.fortsoft.pippo.core;
 
 public final class PippoConstants {
 
+    public static final String LOCATION_OF_PIPPO_MIMETYPE_PROPERTIES = "pippo/mime-types.properties";
+
     public static final String LOCATION_OF_PIPPO_BUILTIN_PROPERTIES = "pippo/pippo-builtin.properties";
 
     public static final String LOCATION_OF_PIPPO_CLASSPATH_PROPERTIES = "conf/application.properties";
@@ -34,6 +36,12 @@ public final class PippoConstants {
     public static final String SETTING_APPLICATION_LANGUAGES = "application.languages";
 
     public static final String SETTING_APPLICATION_COOKIE_PREFIX = "application.cookie.prefix";
+
+    public static final String SETTING_HTTP_CACHE_CONTROL = "http.cacheControl";
+
+    public static final String SETTING_HTTP_USE_ETAG = "http.useETag";
+
+    public static final String SETTING_MIMETYPE_PREFIX = "mimetype.";
 
     public static final String SETTING_SERVER_PORT = "server.port";
 

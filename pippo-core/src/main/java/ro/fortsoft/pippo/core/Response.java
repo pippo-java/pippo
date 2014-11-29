@@ -113,6 +113,19 @@ public class Response {
         }
     }
 
+    /**
+     * Send a not found (404 status code).
+     *
+     */
+    public void notFound() {
+        httpServletResponse.setStatus(HttpConstants.StatusCode.NOT_FOUND);
+        try {
+            httpServletResponse.sendError(HttpConstants.StatusCode.NOT_FOUND);
+        } catch (IOException e) {
+            throw new PippoRuntimeException(e);
+        }
+    }
+
     public Response cookie(Cookie cookie) {
         addCookie(cookie);
 
@@ -207,6 +220,27 @@ public class Response {
         checkCommitted();
         write(content);
         commit();
+    }
+
+    public void resource(InputStream input) {
+        checkCommitted();
+
+        if (isHeaderEmpty(HttpConstants.Header.CONTENT_TYPE)) {
+            header(HttpConstants.Header.CONTENT_TYPE, HttpConstants.ContentType.APPLICATION_OCTET_STREAM);
+        }
+
+        try {
+            long length = IoUtils.copy(input, httpServletResponse.getOutputStream());
+            if (isHeaderEmpty(HttpConstants.Header.CONTENT_LENGTH)) {
+                contentLength(length);
+            }
+
+            commit();
+        } catch (Exception e) {
+            throw new PippoRuntimeException(e);
+        } finally {
+            IoUtils.close(input);
+        }
     }
 
     public void file(File file) {
@@ -330,7 +364,7 @@ public class Response {
         getCookieMap().put(cookie.getName(), cookie);
     }
 
-    private void commit() {
+    public void commit() {
         // add cookies
         for (Cookie cookie : getCookies()) {
             httpServletResponse.addCookie(cookie);
