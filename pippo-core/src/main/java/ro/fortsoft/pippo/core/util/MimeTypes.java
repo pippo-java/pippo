@@ -35,7 +35,7 @@ import org.slf4j.LoggerFactory;
  */
 public class MimeTypes {
 
-    private final Logger log = LoggerFactory.getLogger(MimeTypes.class);
+    private static final Logger log = LoggerFactory.getLogger(MimeTypes.class);
 
     private final Properties mimetypes;
     private final Pattern extPattern;
@@ -47,11 +47,11 @@ public class MimeTypes {
         this.extPattern = Pattern.compile("^.*\\.([^.]+)$");
 
         mimetypes = new Properties();
-        initMimetypes();
+        init();
     }
 
     /**
-     * return the mimetype from a file name
+     * Returns the mimetype from a file name
      *
      * @param filename
      *            the file name
@@ -62,7 +62,7 @@ public class MimeTypes {
     }
 
     /**
-     * return the mimetype from a file name.<br/>
+     * Returns the mimetype from a file name.<br/>
      *
      * @param filename
      *            the file name
@@ -82,13 +82,15 @@ public class MimeTypes {
             if (mimeType == null) {
                 return defaultMimeType;
             }
+
             return mimeType;
         }
+
         return defaultMimeType;
     }
 
     /**
-     * return the content-type from a file name. If none is found returning
+     * Returns the content-type from a file name. If none is found returning
      * application/octet-stream<br/>
      * For a text-based content-type, also return the encoding suffix eg.
      * <em>"text/plain; charset=utf-8"</em>
@@ -104,7 +106,7 @@ public class MimeTypes {
     }
 
     /**
-     * return the content-type from a file name.<br/>
+     * Returns the content-type from a file name.<br/>
      * For a text-based content-type, also return the encoding suffix eg.
      * <em>"text/plain; charset=utf-8"</em>
      *
@@ -126,11 +128,12 @@ public class MimeTypes {
             // UTF-8 is fixed for now as Pippo only supports utf-8 in files...
             return contentType + "; charset=utf-8";
         }
+
         return contentType;
     }
 
     /**
-     * check the mimetype is referenced in the mimetypes database
+     * Check the mimetype is referenced in the mimetypes database.
      *
      * @param mimeType
      *            the mimeType to verify
@@ -145,8 +148,7 @@ public class MimeTypes {
         }
     }
 
-    private void initMimetypes() {
-
+    private void init() {
         // Load default mimetypes from the framework
         URL url = ClasspathUtils.locateOnClasspath(PippoConstants.LOCATION_OF_PIPPO_MIMETYPE_PROPERTIES);
         if (url == null) {
@@ -155,14 +157,13 @@ public class MimeTypes {
             try (InputStream is = url.openStream()) {
                 mimetypes.load(is);
 
-            } catch (Exception ex) {
-                log.warn(ex.getMessage());
+            } catch (Exception e) {
+                log.warn(e.getMessage());
             }
         }
 
         // Load custom mimetypes from the application configuration
         List<String> settingNames = pippoSettings.getSettingNames(PippoConstants.SETTING_MIMETYPE_PREFIX);
-
         for (String key : settingNames) {
             String type = key.substring(PippoConstants.SETTING_MIMETYPE_PREFIX.length()).toLowerCase();
             String value = pippoSettings.getString(key, null);

@@ -15,12 +15,10 @@
  */
 package ro.fortsoft.pippo.core.route;
 
-
 /**
  * Serves Webjars classpath resources.
  *
  * @author James Moger
- *
  */
 public class WebjarsResourceHandler extends ClasspathResourceHandler {
 
@@ -31,4 +29,5 @@ public class WebjarsResourceHandler extends ClasspathResourceHandler {
     public WebjarsResourceHandler(String urlPath) {
         super(urlPath, "META-INF/resources/webjars");
     }
+
 }

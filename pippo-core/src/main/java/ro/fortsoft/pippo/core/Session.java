@@ -17,6 +17,8 @@ package ro.fortsoft.pippo.core;
 
 import javax.servlet.http.HttpSession;
 import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @author Decebal Suiu
@@ -55,6 +57,10 @@ public class Session {
 
     public boolean isNew() {
         return httpSession.isNew();
+    }
+
+    public Map<String, Object> getMessages() {
+        return new HashMap<String, Object>();
     }
 
     public HttpSession getHttpSession() {

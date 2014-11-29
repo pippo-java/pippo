@@ -32,7 +32,7 @@ import org.slf4j.LoggerFactory;
  */
 public class HttpCacheToolkit {
 
-    private static final Logger logger = LoggerFactory.getLogger(HttpCacheToolkit.class);
+    private static final Logger log = LoggerFactory.getLogger(HttpCacheToolkit.class);
 
     private final PippoSettings pippoSettings;
 
@@ -41,38 +41,29 @@ public class HttpCacheToolkit {
     }
 
     public boolean isModified(String etag, long lastModified, Request request, Response response) {
-
         final String browserEtag = request.getHeader(HttpConstants.Header.IF_NONE_MATCH);
-
         if (browserEtag != null && !StringUtils.isNullOrEmpty(etag)) {
-            if (browserEtag.equals(etag)) {
-                return false;
-            } else {
-                return true;
-            }
+            return !(browserEtag.equals(etag));
         }
 
         final String ifModifiedSince = request.getHeader(HttpConstants.Header.IF_MODIFIED_SINCE);
-
         if ((lastModified > 0) && !StringUtils.isNullOrEmpty(ifModifiedSince)) {
             try {
-                Date browserDate = DateUtil.parseHttpDateFormat(ifModifiedSince);
+                Date browserDate = DateUtils.parseHttpDateFormat(ifModifiedSince);
                 if (browserDate.getTime() >= lastModified) {
                     return false;
                 }
-            } catch (ParseException ex) {
-                logger.warn("Can't parse HTTP date", ex);
+            } catch (ParseException e) {
+                log.warn("Can't parse HTTP date", e);
             }
-            return true;
         }
+
         return true;
     }
 
     public void addEtag(Request request, Response response, long lastModified) {
-
         if (pippoSettings.isProd()) {
             String maxAge = pippoSettings.getString(PippoConstants.SETTING_HTTP_CACHE_CONTROL, "3600");
-
             if (maxAge.equals("0")) {
                 response.header(HttpConstants.Header.CACHE_CONTROL, "no-cache");
             } else {
@@ -84,25 +75,20 @@ public class HttpCacheToolkit {
 
         // Use etag on demand:
         String etag = null;
-        boolean useEtag = pippoSettings.getBoolean(PippoConstants.SETTING_HTTP_USE_ETAG, true);
 
+        boolean useEtag = pippoSettings.getBoolean(PippoConstants.SETTING_HTTP_USE_ETAG, true);
         if (useEtag) {
             // ETag right now is only lastModified long.
             // maybe we change that in the future.
             etag = "\"" + lastModified + "\"";
             response.header(HttpConstants.Header.ETAG, etag);
-
         }
 
         if (isModified(etag, lastModified, request, response)) {
-
-            response.header(HttpConstants.Header.LAST_MODIFIED, DateUtil.formatForHttpHeader(lastModified));
+            response.header(HttpConstants.Header.LAST_MODIFIED, DateUtils.formatForHttpHeader(lastModified));
         } else if (request.getMethod().equalsIgnoreCase(HttpConstants.Method.GET)) {
-
             response.status(HttpConstants.StatusCode.NOT_MODIFIED);
-
         }
-
     }
 
 }

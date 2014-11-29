@@ -15,12 +15,10 @@
  */
 package ro.fortsoft.pippo.core.route;
 
-
 /**
  * Serves resources from the "public" directory within your classpath.
  *
  * @author James Moger
- *
  */
 public class PublicResourceHandler extends ClasspathResourceHandler {
 
@@ -31,4 +29,5 @@ public class PublicResourceHandler extends ClasspathResourceHandler {
     public PublicResourceHandler(String urlPath) {
         super(urlPath, "public");
     }
+
 }

@@ -33,16 +33,14 @@ import org.slf4j.LoggerFactory;
  * Serves classpath resources.
  *
  * @author James Moger
- *
  */
 public class ClasspathResourceHandler implements RouteHandler {
 
+    private static final Logger log = LoggerFactory.getLogger(ClasspathResourceHandler.class);
+
     protected static String PATH_PARAMETER = "path";
 
-    private final Logger log = LoggerFactory.getLogger(ClasspathResourceHandler.class);
-
     private final String urlPattern;
-
     private final String resourceBasePath;
 
     private MimeTypes mimeTypes;
@@ -68,7 +66,6 @@ public class ClasspathResourceHandler implements RouteHandler {
 
     @Override
     public void handle(Request request, Response response, RouteHandlerChain chain) {
-
         String path = getRequestedPath(request);
         log.debug("classpath resource request for '{}'", path);
 
@@ -94,18 +91,16 @@ public class ClasspathResourceHandler implements RouteHandler {
         if ('/' == path.charAt(path.length() - 1)) {
             path = path.substring(0, path.length() - 1);
         }
+
         return path;
     }
 
     protected String getFilename(String path) {
-        String filename = path.substring(path.lastIndexOf('/') + 1);
-        return filename;
+        return path.substring(path.lastIndexOf('/') + 1);
     }
 
     protected void streamClasspathResource(URL url, Request request, Response response) {
-
         try {
-
             URLConnection urlConnection = url.openConnection();
             long lastModified = urlConnection.getLastModified();
             httpCacheToolkit.addEtag(request, response, lastModified);
@@ -120,23 +115,19 @@ public class ClasspathResourceHandler implements RouteHandler {
                 String mimeType = mimeTypes.getContentType(request, response, filename);
 
                 if (!StringUtils.isNullOrEmpty(mimeType)) {
-
                     // stream the resource
                     log.debug("Streaming as resource '{}'", url);
                     response.contentType(mimeType);
                     response.resource(urlConnection.getInputStream());
-
                 } else {
-
                     // stream the file
                     log.debug("Streaming as file '{}'", url);
                     response.file(filename, urlConnection.getInputStream());
-
                 }
             }
-
         } catch (Exception e) {
             throw new PippoRuntimeException("Failed to stream classpath resource " + url, e);
         }
     }
+
 }

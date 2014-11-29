@@ -24,7 +24,7 @@ import java.util.Locale;
 /**
  * DateUtil adapted from Ninja Web Framework
  */
-public class DateUtil {
+public class DateUtils {
 
     /** From here: http://www.ietf.org/rfc/rfc1123.txt */
     static DateFormat getRFC1123_DateFormat() {
@@ -53,13 +53,12 @@ public class DateUtil {
      * It can be used to generate something like: Date: Wed, 05 Sep 2012
      * 09:16:19 GMT Expires: Thu, 01 Jan 1970 00:00:00 GMT
      *
-     * @param date
+     * @param unixTime
      *            The long (unixtime) to format
      * @return a http header compatible string like
      *         "Thu, 01 Jan 1970 00:00:00 GMT"
      */
     public static String formatForHttpHeader(long unixTime) {
-
         return getRFC1123_DateFormat().format(new Date(unixTime));
     }
 
@@ -77,9 +76,7 @@ public class DateUtil {
      *             If something goes wrong.
      */
     public static Date parseHttpDateFormat(String httpDateFormat) throws ParseException {
-
         return parseHttpDateFormatToDateTime(httpDateFormat);
-
     }
 
     /**
@@ -94,9 +91,7 @@ public class DateUtil {
      *             If something goes wrong.
      */
     public static Date parseHttpDateFormatToDateTime(String httpDateFormat) throws ParseException {
-
         return getRFC1123_DateFormat().parse(httpDateFormat);
-
     }
 
 }
