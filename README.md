@@ -23,6 +23,7 @@ Artifacts
 - Pippo XStream `pippo-xstream` (jar)
 - Pippo Freemarker `pippo-freemarker` (jar)
 - Pippo Jade `pippo-jade` (jar)
+- Pippo Pebble `pippo-pebble` (jar)
 - Pippo Trimou `pippo-trimou` (jar)
 - Pippo IoC `pippo-ioc` (jar)
 - Pippo Spring `pippo-spring` (jar)
@@ -945,6 +946,7 @@ The demo application is in pippo-demo module. The demo module contains some demo
 - Crud
 - Upload
 - Jade
+- Pebble
 - Trimou
 - Guice
 - Spring

@@ -105,6 +105,7 @@
         <module>pippo-jetty</module>
         <module>pippo-freemarker</module>
         <module>pippo-jade</module>
+        <module>pippo-pebble</module>
         <module>pippo-trimou</module>
         <module>pippo-ioc</module>
         <module>pippo-spring</module>
