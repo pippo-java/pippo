@@ -23,6 +23,7 @@ Artifacts
 - Pippo XStream `pippo-xstream` (jar)
 - Pippo Freemarker `pippo-freemarker` (jar)
 - Pippo Jade `pippo-jade` (jar)
+- Pippo Trimou `pippo-trimou` (jar)
 - Pippo IoC `pippo-ioc` (jar)
 - Pippo Spring `pippo-spring` (jar)
 - Pippo Guice `pippo-guice` (jar)
@@ -944,6 +945,8 @@ The demo application is in pippo-demo module. The demo module contains some demo
 - Crud
 - Upload
 - Jade
+- Trimou
+- Guice
 - Spring
   
 CrudDemo is a <b>C</b>reate <b>R</b>etrieve <b>U</b>pdate <b>D</b>elete demo (with twitter bootstrap as static resources). 
