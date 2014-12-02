@@ -104,6 +104,7 @@
         <module>pippo-core</module>
         <module>pippo-jetty</module>
         <module>pippo-freemarker</module>
+        <module>pippo-groovy</module>
         <module>pippo-jade</module>
         <module>pippo-pebble</module>
         <module>pippo-trimou</module>

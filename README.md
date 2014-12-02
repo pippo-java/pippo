@@ -22,6 +22,7 @@ Artifacts
 - Pippo Fastjson `pippo-fastjson` (jar)
 - Pippo XStream `pippo-xstream` (jar)
 - Pippo Freemarker `pippo-freemarker` (jar)
+- Pippo Groovy `pippo-groovy` (jar)
 - Pippo Jade `pippo-jade` (jar)
 - Pippo Pebble `pippo-pebble` (jar)
 - Pippo Trimou `pippo-trimou` (jar)
@@ -945,6 +946,7 @@ The demo application is in pippo-demo module. The demo module contains some demo
 - Simple
 - Crud
 - Upload
+- Groovy
 - Jade
 - Pebble
 - Trimou

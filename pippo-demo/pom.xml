@@ -46,6 +46,12 @@
 
         <dependency>
             <groupId>ro.fortsoft.pippo</groupId>
+            <artifactId>pippo-groovy</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>ro.fortsoft.pippo</groupId>
             <artifactId>pippo-spring</artifactId>
             <version>${project.version}</version>
         </dependency>
