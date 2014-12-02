@@ -15,22 +15,32 @@
  */
 package ro.fortsoft.pippo.freemarker;
 
+import java.io.Writer;
+import java.util.Locale;
+import java.util.Map;
+
+import ro.fortsoft.pippo.core.Languages;
+import ro.fortsoft.pippo.core.Messages;
+import ro.fortsoft.pippo.core.PippoConstants;
+import ro.fortsoft.pippo.core.PippoRuntimeException;
+import ro.fortsoft.pippo.core.PippoSettings;
+import ro.fortsoft.pippo.core.TemplateEngine;
+import ro.fortsoft.pippo.core.util.StringUtils;
 import freemarker.log.Logger;
 import freemarker.template.Configuration;
-import ro.fortsoft.pippo.core.PippoRuntimeException;
-import ro.fortsoft.pippo.core.RuntimeMode;
-import ro.fortsoft.pippo.core.TemplateEngine;
-
-import java.io.Writer;
-import java.util.Map;
+import freemarker.template.Template;
 
 /**
  * @author Decebal Suiu
  */
 public class FreemarkerTemplateEngine implements TemplateEngine {
 
-    private static final String defaultPathPrefix = "/templates";
+    public static final String FTL = "ftl";
 
+    public static final String FILE_SUFFIX = "." + FTL;
+
+    private Languages languages;
+    private Messages messages;
     private Configuration configuration;
 
     static {
@@ -41,20 +51,35 @@ public class FreemarkerTemplateEngine implements TemplateEngine {
         }
     }
 
-    public FreemarkerTemplateEngine() {
-        this(defaultPathPrefix);
-    }
+    @Override
+    public void init(PippoSettings pippoSettings, Languages languages, Messages messages) {
+        this.languages = languages;
+        this.messages = messages;
 
-    public FreemarkerTemplateEngine(String pathPrefix) {
-        configuration = new Configuration();
+        String pathPrefix = pippoSettings.getString(PippoConstants.SETTING_TEMPLATE_PATH_PREFIX, defaultPathPrefix);
+        configuration = new Configuration(Configuration.VERSION_2_3_21);
+        configuration.setDefaultEncoding(PippoConstants.UTF8);
+        configuration.setOutputEncoding(PippoConstants.UTF8);
+        configuration.setLocalizedLookup(true);
         configuration.setClassForTemplateLoading(FreemarkerTemplateEngine.class, pathPrefix);
-        if (RuntimeMode.getCurrent() == RuntimeMode.DEV) {
-            configuration.setTemplateUpdateDelay(0); // disable cache
-        }
-    }
 
-    public FreemarkerTemplateEngine(Configuration configuration) {
-        this.configuration = configuration;
+        // We also do not want Freemarker to chose a platform dependent
+        // number formatting. Eg "1000" could be printed out by FTL as "1,000"
+        // on some platforms.
+        // See also:
+        // http://freemarker.sourceforge.net/docs/app_faq.html#faq_number_grouping
+        configuration.setNumberFormat("0.######"); // now it will print 1000000
+
+        if (pippoSettings.isDev()) {
+            configuration.setTemplateUpdateDelay(0); // disable cache
+        } else {
+            // never update the templates in production or while testing...
+            configuration.setTemplateUpdateDelay(Integer.MAX_VALUE);
+
+            // Hold 20 templates as strong references as recommended by:
+            // http://freemarker.sourceforge.net/docs/pgui_config_templateloading.html
+            configuration.setCacheStorage(new freemarker.cache.MruCacheStorage(20, Integer.MAX_VALUE));
+        }
     }
 
     public Configuration getConfiguration() {
@@ -63,8 +88,27 @@ public class FreemarkerTemplateEngine implements TemplateEngine {
 
     @Override
     public void render(String templateName, Map<String, Object> model, Writer writer) {
+        // prepare the locale-aware i18n method
+        String language = (String) model.get(PippoConstants.REQUEST_PARAMETER_LANG);
+        if (StringUtils.isNullOrEmpty(language)) {
+            language = languages.getLanguageOrDefault(null);
+        }
+        model.put("i18n", new I18nMethod(messages, language));
+
+        // prepare the locale-aware prettyTime method
+        Locale locale = (Locale) model.get(PippoConstants.REQUEST_PARAMETER_LOCALE);
+        if (locale == null) {
+            locale = languages.getLocaleOrDefault(language);
+        }
+        model.put("prettyTime", new PrettyTimeMethod(locale));
+        model.put("formatTime", new FormatTimeMethod(locale));
+
         try {
-            configuration.getTemplate(templateName).process(model, writer);
+            if (templateName.indexOf('.') == -1) {
+                templateName += FILE_SUFFIX;
+            }
+            Template template = configuration.getTemplate(templateName, locale);
+            template.process(model, writer);
         } catch (Exception e) {
             throw new PippoRuntimeException(e);
         }

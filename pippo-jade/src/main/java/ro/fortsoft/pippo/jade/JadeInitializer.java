@@ -13,20 +13,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package ro.fortsoft.pippo.core;
+package ro.fortsoft.pippo.jade;
 
-import java.io.Writer;
-import java.util.Map;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import ro.fortsoft.pippo.core.Application;
+import ro.fortsoft.pippo.core.Initializer;
 
 /**
  * @author Decebal Suiu
  */
-public interface TemplateEngine {
+public class JadeInitializer implements Initializer {
 
-    public final static String defaultPathPrefix = "/templates";
+    private static final Logger log = LoggerFactory.getLogger(JadeInitializer.class);
 
-    public void init(PippoSettings pippoSettings, Languages languages, Messages messages);
+    @Override
+    public void init(Application application) {
+    }
 
-    public void render(String templateName, Map<String, Object> model, Writer writer);
+    @Override
+    public void destroy(Application application) {
+    }
 
 }

@@ -43,9 +43,17 @@ public final class PippoConstants {
 
     public static final String SETTING_MIMETYPE_PREFIX = "mimetype.";
 
+    public static final String SETTING_TEMPLATE_PATH_PREFIX = "template.pathPrefix";
+
     public static final String SETTING_SERVER_PORT = "server.port";
 
     public static final String SETTING_SERVER_HOST = "server.host";
+
+    public static final String REQUEST_PARAMETER_LANG = "lang";
+
+    public static final String REQUEST_PARAMETER_LOCALE = "locale";
+
+    public static final String UTF8 = "UTF-8";
 
     private PippoConstants() {
         // restrict instantiation

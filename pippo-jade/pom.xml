@@ -31,6 +31,13 @@
             <artifactId>jade4j</artifactId>
             <version>${jade4j.version}</version>
         </dependency>
+
+        <!--  PrettyTime -->
+        <dependency>
+            <groupId>org.ocpsoft.prettytime</groupId>
+            <artifactId>prettytime</artifactId>
+        </dependency>
+
     </dependencies>
 
 </project>

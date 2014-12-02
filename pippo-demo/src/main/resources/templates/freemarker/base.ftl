@@ -1,6 +1,6 @@
 <#macro page title>
 <!DOCTYPE html>
-<html>
+<html lang="${lang}">
     <head>
         <meta charset="utf-8">
         <meta content="IE=edge" http-equiv="X-UA-Compatible">
@@ -8,16 +8,19 @@
 
         <title>${title}</title>
 
-        <link href="/public/css/style.css" rel="stylesheet">
         <link href="/webjars/bootstrap/3.3.1/css/bootstrap.min.css" rel="stylesheet">
+        <link href="/webjars/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
     </head>
     <body>
         <div class="container">
             <#nested/>
-
-            <script src="/webjars/jquery/1.11.1/jquery.min.js"></script>
-            <script src="/webjars/bootstrap/3.3.1/js/bootstrap.min.js"></script>
+            
+            <hr/>
+            <p><i>Freemarker Template Engine (${mode})</i></p>
         </div>
+        
+        <script src="/webjars/jquery/1.11.1/jquery.min.js"></script>
+        <script src="/webjars/bootstrap/3.3.1/js/bootstrap.min.js"></script>
     </body>
 </html>
 </#macro>

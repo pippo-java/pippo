@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package ro.fortsoft.pippo.demo.jade;
+package ro.fortsoft.pippo.demo.freemarker;
 
 import ro.fortsoft.pippo.core.Application;
 import ro.fortsoft.pippo.core.Request;
@@ -22,7 +22,7 @@ import ro.fortsoft.pippo.core.route.RouteHandler;
 import ro.fortsoft.pippo.core.route.RouteHandlerChain;
 import ro.fortsoft.pippo.core.route.WebjarsResourceHandler;
 import ro.fortsoft.pippo.demo.DemoRequestLanguageFilter;
-import ro.fortsoft.pippo.jade.JadeTemplateEngine;
+import ro.fortsoft.pippo.freemarker.FreemarkerTemplateEngine;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -30,16 +30,16 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * @author Decebal Suiu
+ * @author James Moger
  */
-public class JadeApplication extends Application {
+public class FreemarkerApplication extends Application {
 
     @Override
     public void init() {
         super.init();
 
-        // set the Jade template engine
-        setTemplateEngine(new JadeTemplateEngine());
+        // set the Groovy template engine
+        setTemplateEngine(new FreemarkerTemplateEngine());
 
         // add a WebJars resource handler
         GET(new WebjarsResourceHandler());
@@ -58,8 +58,8 @@ public class JadeApplication extends Application {
                 model.put("testDate", testDate);
                 model.put("mode", getRuntimeMode());
 
-                // .jade is the default file extension
-                response.render("jade/hello", model);
+                // .ftl is the default file extension
+                response.render("freemarker/hello", model);
             }
 
         });

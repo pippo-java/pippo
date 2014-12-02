@@ -13,20 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package ro.fortsoft.pippo.core;
+package ro.fortsoft.pippo.demo.freemarker;
 
-import java.io.Writer;
-import java.util.Map;
+import ro.fortsoft.pippo.core.Pippo;
 
 /**
- * @author Decebal Suiu
+ * @author James Moger
  */
-public interface TemplateEngine {
+public class FreemarkerDemo {
 
-    public final static String defaultPathPrefix = "/templates";
+    public static void main(String[] args) {
+//        new Pippo().start(); // run the default web server with the default web server settings
 
-    public void init(PippoSettings pippoSettings, Languages languages, Messages messages);
-
-    public void render(String templateName, Map<String, Object> model, Writer writer);
+        Pippo pippo = new Pippo(new FreemarkerApplication());
+        pippo.start();
+    }
 
 }
