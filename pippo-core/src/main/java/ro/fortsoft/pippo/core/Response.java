@@ -15,12 +15,8 @@
  */
 package ro.fortsoft.pippo.core;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import ro.fortsoft.pippo.core.util.IoUtils;
 
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -31,6 +27,12 @@ import java.nio.charset.StandardCharsets;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletResponse;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author Decebal Suiu
@@ -59,7 +61,7 @@ public class Response {
     }
 
     public Response contentType(String contentType) {
-        httpServletResponse.getContentType();
+        httpServletResponse.setContentType(contentType);
 
         return this;
     }
