@@ -204,7 +204,7 @@ public class DefaultRouteMatcher extends AbstractRouteMatcher {
         String urlPattern = binding.getRoute().getUrlPattern();
 
         // remove wildcards
-        String url = urlPattern.replaceAll("\\*", "");
+        String url = urlPattern.replaceAll("\\.\\*", "");
 
         List<String> parameterNames = binding.getParameterNames();
         if (!parameters.keySet().containsAll(parameterNames)) {
@@ -214,7 +214,7 @@ public class DefaultRouteMatcher extends AbstractRouteMatcher {
         Map<String, Object> queryParameters = new HashMap<>(parameters);
         for (String parameterName : parameterNames) {
             // replace parameter name with parameter value
-            url = url.replaceAll(":" + parameterName, parameters.get(parameterName).toString());
+            url = url.replace("{" + parameterName + "}", parameters.get(parameterName).toString());
             queryParameters.remove(parameterName);
         }
 
