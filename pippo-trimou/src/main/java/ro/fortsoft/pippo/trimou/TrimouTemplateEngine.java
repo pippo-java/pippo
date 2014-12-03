@@ -49,7 +49,7 @@ public class TrimouTemplateEngine implements TemplateEngine {
 
     public static final String FILE_SUFFIX = "." + MUSTACHE;
 
-    private final Logger log = LoggerFactory.getLogger(TrimouTemplateEngine.class);
+    private static final Logger log = LoggerFactory.getLogger(TrimouTemplateEngine.class);
 
     private Languages languages;
     private ThreadLocalLocaleSupport localeSupport;
@@ -119,7 +119,7 @@ public class TrimouTemplateEngine implements TemplateEngine {
             }
 
             if (template == null) {
-                throw new PippoRuntimeException(String.format("Template '%s' not found!", templateName));
+                throw new PippoRuntimeException("Template '{}' not found!", templateName);
             }
 
             template.render(writer, model);
