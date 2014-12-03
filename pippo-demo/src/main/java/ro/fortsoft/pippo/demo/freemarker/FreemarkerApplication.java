@@ -38,7 +38,7 @@ public class FreemarkerApplication extends Application {
     public void init() {
         super.init();
 
-        // set the Groovy template engine
+        // set the Freemarker template engine
         setTemplateEngine(new FreemarkerTemplateEngine());
 
         // add a WebJars resource handler

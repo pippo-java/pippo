@@ -53,8 +53,8 @@ public class RequestLanguageFilter implements RouteHandler {
 
     @Override
     public void handle(Request request, Response response, RouteHandlerChain chain) {
-        String language = enableQueryParameter ? request.getParameter(PippoConstants.REQUEST_PARAMETER_LANG).toString(
-                null) : null;
+        String language = enableQueryParameter ? request.getParameter(PippoConstants.REQUEST_PARAMETER_LANG).toString()
+                : null;
 
         if (StringUtils.isNullOrEmpty(language)) {
             language = languages.getLanguageOrDefault(request, response);
