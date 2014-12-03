@@ -61,7 +61,7 @@ public class PippoHelper {
         return messageValue;
     }
 
-    public String formatDate(Object input, String styleOrPattern) {
+    public String formatTime(Object input, String styleOrPattern) {
         int type = parseStyle(styleOrPattern);
         DateFormat df;
         if (type == -1) {
