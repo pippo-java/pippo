@@ -20,8 +20,12 @@ import ro.fortsoft.pippo.core.Request;
 import ro.fortsoft.pippo.core.Response;
 import ro.fortsoft.pippo.core.route.RouteHandler;
 import ro.fortsoft.pippo.core.route.RouteHandlerChain;
+import ro.fortsoft.pippo.core.route.WebjarsResourceHandler;
+import ro.fortsoft.pippo.demo.DemoRequestLanguageFilter;
 import ro.fortsoft.pippo.jade.JadeTemplateEngine;
 
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -34,15 +38,28 @@ public class JadeApplication extends Application {
     public void init() {
         super.init();
 
+        // set the Jade template engine
         setTemplateEngine(new JadeTemplateEngine());
+
+        // add a WebJars resource handler
+        GET(new WebjarsResourceHandler());
+
+        // filter all requests and setup the language and locale
+        GET("/.*", new DemoRequestLanguageFilter(getLanguages(), true));
 
         GET("/", new RouteHandler() {
 
             @Override
             public void handle(Request request, Response response, RouteHandlerChain chain) {
+            	Calendar c = Calendar.getInstance();
+            	c.add(Calendar.DATE, -5);
+            	Date testDate = c.getTime();
                 Map<String, Object> model = new HashMap<>();
-                model.put("greeting", "Hello my friend");
-                response.render("jade/hello.jade", model);
+                model.put("testDate", testDate);
+                model.put("mode", getRuntimeMode());
+
+                // .jade is the default file extension
+                response.render("jade/hello", model);
             }
 
         });

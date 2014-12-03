@@ -17,6 +17,7 @@ package ro.fortsoft.pippo.freemarker;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import ro.fortsoft.pippo.core.Application;
 import ro.fortsoft.pippo.core.Initializer;
 
@@ -29,7 +30,6 @@ public class FreemarkerInitializer implements Initializer {
 
     @Override
     public void init(Application application) {
-//        application.setTemplateEngine(new FreemarkerTemplateEngine());
     }
 
     @Override

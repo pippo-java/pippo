@@ -23,6 +23,10 @@ import java.util.Map;
  */
 public interface TemplateEngine {
 
+    public final static String defaultPathPrefix = "/templates";
+
+    public void init(PippoSettings pippoSettings, Languages languages, Messages messages);
+
     public void render(String templateName, Map<String, Object> model, Writer writer);
 
 }

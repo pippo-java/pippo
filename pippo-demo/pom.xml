@@ -34,6 +34,24 @@
 
         <dependency>
             <groupId>ro.fortsoft.pippo</groupId>
+            <artifactId>pippo-trimou</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>ro.fortsoft.pippo</groupId>
+            <artifactId>pippo-pebble</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>ro.fortsoft.pippo</groupId>
+            <artifactId>pippo-groovy</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>ro.fortsoft.pippo</groupId>
             <artifactId>pippo-spring</artifactId>
             <version>${project.version}</version>
         </dependency>
@@ -77,9 +95,15 @@
         </dependency>
 
         <dependency>
-        	<groupId>org.webjars</groupId>
-        	<artifactId>bootstrap</artifactId>
-        	<version>3.0.2</version>
+            <groupId>org.webjars</groupId>
+            <artifactId>bootstrap</artifactId>
+            <version>3.3.1</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.webjars</groupId>
+            <artifactId>font-awesome</artifactId>
+            <version>4.2.0</version>
         </dependency>
 
         <!-- Validation -->

@@ -15,6 +15,8 @@
  */
 package ro.fortsoft.pippo.core;
 
+import java.nio.charset.StandardCharsets;
+
 public final class PippoConstants {
 
     public static final String LOCATION_OF_PIPPO_MIMETYPE_PROPERTIES = "pippo/mime-types.properties";
@@ -43,9 +45,17 @@ public final class PippoConstants {
 
     public static final String SETTING_MIMETYPE_PREFIX = "mimetype.";
 
+    public static final String SETTING_TEMPLATE_PATH_PREFIX = "template.pathPrefix";
+
     public static final String SETTING_SERVER_PORT = "server.port";
 
     public static final String SETTING_SERVER_HOST = "server.host";
+
+    public static final String REQUEST_PARAMETER_LANG = "lang";
+
+    public static final String REQUEST_PARAMETER_LOCALE = "locale";
+
+    public static final String UTF8 = StandardCharsets.UTF_8.toString();
 
     private PippoConstants() {
         // restrict instantiation

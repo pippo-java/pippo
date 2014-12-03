@@ -135,13 +135,17 @@ public class Application {
 
     public TemplateEngine getTemplateEngine() {
         if (templateEngine == null) {
-            templateEngine = ServiceLocator.locate(TemplateEngine.class);
+            TemplateEngine engine = ServiceLocator.locate(TemplateEngine.class);
+            setTemplateEngine(engine);
         }
 
         return templateEngine;
     }
 
     public void setTemplateEngine(TemplateEngine templateEngine) {
+        // initialize the engine first
+        templateEngine.init(pippoSettings, languages, messages);
+
         this.templateEngine = templateEngine;
     }
 

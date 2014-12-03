@@ -15,7 +15,7 @@
     <description>Freemarker template engine</description>
 
     <properties>
-        <freemarker.version>2.3.20</freemarker.version>
+        <freemarker.version>2.3.21</freemarker.version>
     </properties>
 
     <dependencies>
@@ -31,6 +31,13 @@
             <artifactId>freemarker</artifactId>
             <version>${freemarker.version}</version>
         </dependency>
+
+        <!--  PrettyTime -->
+        <dependency>
+            <groupId>org.ocpsoft.prettytime</groupId>
+            <artifactId>prettytime</artifactId>
+        </dependency>
+
     </dependencies>
 
 </project>

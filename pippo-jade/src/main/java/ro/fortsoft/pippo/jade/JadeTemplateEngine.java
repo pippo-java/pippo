@@ -15,43 +15,47 @@
  */
 package ro.fortsoft.pippo.jade;
 
-import de.neuland.jade4j.JadeConfiguration;
-import de.neuland.jade4j.template.JadeTemplate;
-import de.neuland.jade4j.template.TemplateLoader;
-import ro.fortsoft.pippo.core.PippoRuntimeException;
-import ro.fortsoft.pippo.core.RuntimeMode;
-import ro.fortsoft.pippo.core.TemplateEngine;
-
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.Writer;
+import java.util.Locale;
 import java.util.Map;
+
+import ro.fortsoft.pippo.core.Languages;
+import ro.fortsoft.pippo.core.Messages;
+import ro.fortsoft.pippo.core.PippoConstants;
+import ro.fortsoft.pippo.core.PippoRuntimeException;
+import ro.fortsoft.pippo.core.PippoSettings;
+import ro.fortsoft.pippo.core.TemplateEngine;
+import ro.fortsoft.pippo.core.util.StringUtils;
+import de.neuland.jade4j.Jade4J.Mode;
+import de.neuland.jade4j.JadeConfiguration;
+import de.neuland.jade4j.template.JadeTemplate;
+import de.neuland.jade4j.template.TemplateLoader;
 
 /**
  * @author Decebal Suiu
  */
 public class JadeTemplateEngine implements TemplateEngine {
 
-    private static final String defaultPathPrefix = "/templates";
-
+    private Languages languages;
+    private Messages messages;
     private JadeConfiguration configuration;
 
-    public JadeTemplateEngine() {
-        this(defaultPathPrefix);
-    }
+    @Override
+    public void init(PippoSettings pippoSettings, Languages languages, Messages messages) {
+        this.languages = languages;
+        this.messages = messages;
 
-    public JadeTemplateEngine(String pathPrefix) {
+        String pathPrefix = pippoSettings.getString(PippoConstants.SETTING_TEMPLATE_PATH_PREFIX, defaultPathPrefix);
         configuration = new JadeConfiguration();
         configuration.setTemplateLoader(new ClassTemplateLoader(JadeTemplateEngine.class, pathPrefix));
-        configuration.setPrettyPrint(true);
-        if (RuntimeMode.getCurrent() == RuntimeMode.DEV) {
+        configuration.setMode(Mode.HTML);
+        if (pippoSettings.isDev()) {
+            configuration.setPrettyPrint(true);
             configuration.setCaching(false); // disable cache
         }
-    }
-
-    public JadeTemplateEngine(JadeConfiguration configuration) {
-        this.configuration = configuration;
     }
 
     public JadeConfiguration getConfiguration() {
@@ -60,9 +64,23 @@ public class JadeTemplateEngine implements TemplateEngine {
 
     @Override
     public void render(String templateName, Map<String, Object> model, Writer writer) {
+        // prepare the locale-aware i18n method
+        String language = (String) model.get(PippoConstants.REQUEST_PARAMETER_LANG);
+        if (StringUtils.isNullOrEmpty(language)) {
+            language = languages.getLanguageOrDefault(null);
+        }
+
+        // prepare the locale-aware prettyTime method
+        Locale locale = (Locale) model.get(PippoConstants.REQUEST_PARAMETER_LOCALE);
+        if (locale == null) {
+            locale = languages.getLocaleOrDefault(language);
+        }
+
+        model.put("pippo", new PippoHelper(messages, language, locale));
         try {
             JadeTemplate template = configuration.getTemplate(templateName);
             configuration.renderTemplate(template, model, writer);
+            writer.flush();
         } catch (Exception e) {
             throw new PippoRuntimeException(e);
         }
@@ -72,10 +90,10 @@ public class JadeTemplateEngine implements TemplateEngine {
 
         private static final String suffix = ".jade";
 
-        private Class clazz;
+        private Class<?> clazz;
         private String pathPrefix;
 
-        public ClassTemplateLoader(Class clazz, String pathPrefix) {
+        public ClassTemplateLoader(Class<?> clazz, String pathPrefix) {
             this.clazz = clazz;
 
             pathPrefix = pathPrefix.replace('\\', '/');
@@ -87,6 +105,7 @@ public class JadeTemplateEngine implements TemplateEngine {
             this.pathPrefix = pathPrefix;
         }
 
+        @Override
         public long getLastModified(String name) {
             return -1;
         }
@@ -99,7 +118,7 @@ public class JadeTemplateEngine implements TemplateEngine {
 
             String fullPath = pathPrefix + name;
 
-            return new InputStreamReader(clazz.getResourceAsStream(fullPath), "UTF-8");
+            return new InputStreamReader(clazz.getResourceAsStream(fullPath), PippoConstants.UTF8);
         }
 
     }
