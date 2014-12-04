@@ -192,6 +192,10 @@ public class Application {
     }
 
     public void GET(ClasspathResourceHandler resourceHandler) {
+        if (getUrlBuilder().urlPatternFor(resourceHandler.getClass()) != null) {
+            throw new PippoRuntimeException("You may only register one route for {}",
+                    resourceHandler.getClass().getSimpleName());
+        }
         resourceHandler.setMimeTypes(mimeTypes);
         resourceHandler.setHttpCacheToolkit(httpCacheToolkit);
         addRoute(resourceHandler.getUrlPattern(), HttpConstants.Method.GET, resourceHandler);
