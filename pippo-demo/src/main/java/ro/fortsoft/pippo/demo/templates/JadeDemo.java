@@ -13,9 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package ro.fortsoft.pippo.demo.jade;
+package ro.fortsoft.pippo.demo.templates;
 
 import ro.fortsoft.pippo.core.Pippo;
+import ro.fortsoft.pippo.jade.JadeTemplateEngine;
 
 /**
  * @author Decebal Suiu
@@ -23,9 +24,8 @@ import ro.fortsoft.pippo.core.Pippo;
 public class JadeDemo {
 
     public static void main(String[] args) {
-//        new Pippo().start(); // run the default web server with the default web server settings
-
-        Pippo pippo = new Pippo(new JadeApplication());
+        // .jade is the default file extension
+        Pippo pippo = new Pippo(new TemplateDemoApplication(new JadeTemplateEngine(), "jade/hello"));
         pippo.start();
     }
 

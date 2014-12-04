@@ -7,8 +7,9 @@ html(lang=lang)
     
     title=pippo.i18n("pippo.welcome")
 
-    link(href="webjars/bootstrap/3.3.1/css/bootstrap.min.css", rel="stylesheet")
-    link(href="webjars/font-awesome/4.2.0/css/font-awesome.min.css", rel="stylesheet")
+    link(href=pippo.webjarsAt('bootstrap/3.3.1/css/bootstrap.min.css'), rel="stylesheet")
+    link(href=pippo.webjarsAt('font-awesome/4.2.0/css/font-awesome.min.css'), rel="stylesheet")
+    link(href=pippo.publicAt('css/style.css'), rel="stylesheet")
 
   body
     #container.container
@@ -19,5 +20,5 @@ html(lang=lang)
       p
         i Jade Template Engine (#{mode})
 
-    script(src="webjars/jquery/1.11.1/jquery.min.js")
-    script(src="webjars/bootstrap/3.3.1/js/bootstrap.min.js")
+    script(src=pippo.webjarsAt('jquery/1.11.1/jquery.min.js'))
+    script(src=pippo.webjarsAt('bootstrap/3.3.1/js/bootstrap.min.js'))
