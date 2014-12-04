@@ -58,6 +58,38 @@ You can also automatically format localized dates using standard Java date forma
     {{ myDate | formatTime('HH:mm') }}
     {{ myDate | formatTime('dd-MM-yyyy HH:mm') }}
 
+### webjarsAt & publicAt
+
+pippo-pebble supports context-aware url generation for your classpath resources using the `webjarsAt` and `publicAt` extensions.
+
+```html
+<!-- Stylesheets -->
+<link href="{{ webjarsAt('bootstrap/3.3.1/css/bootstrap.min.css') }}" rel="stylesheet">
+<link href="{{ webjarsAt('font-awesome/4.2.0/css/font-awesome.min.css') }}" rel="stylesheet">
+<link href="{{ publicAt('css/style.css') }}" rel="stylesheet">
+
+<!-- Scripts -->
+<script src="{{ webjarsAt('jquery/1.11.1/jquery.min.js') }}"></script>
+<script src="{{ webjarsAt('bootstrap/3.3.1/js/bootstrap.min.js') }}"></script>
+<script src="{{ publicAt('js/main.js') }}"></script>
+```
+
+**NOTE:** Use of these methods require that you have registered a `WebjarsResourceHandler` and/or a `PublicResourcehandler`.
+
+```java
+public class MyApplication extends Application {
+ @Override
+    public void init() {
+        super.init();
+
+        // add classpath resource handlers
+        GET(new WebjarsResourceHandler());
+        GET(new PublicResourceHandler());
+        ...
+    }
+}
+```
+
 ### AngularJS
 
 Pebble and AngularJS both use the double-brace notation.

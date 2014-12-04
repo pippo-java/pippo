@@ -79,6 +79,8 @@ public class PebbleTemplateEngine implements TemplateEngine {
         engine.addExtension(new FormatTimeExtension());
         engine.addExtension(new PrettyTimeExtension());
         engine.addExtension(new AngularJSExtension());
+        engine.addExtension(new WebjarsAtExtension(urlBuilder));
+        engine.addExtension(new PublicAtExtension(urlBuilder));
 
         if (pippoSettings.isDev()) {
             // do not cache templates in dev mode
