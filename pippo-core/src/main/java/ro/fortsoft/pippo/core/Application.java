@@ -15,8 +15,6 @@
  */
 package ro.fortsoft.pippo.core;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import ro.fortsoft.pippo.core.controller.Controller;
 import ro.fortsoft.pippo.core.controller.ControllerHandler;
 import ro.fortsoft.pippo.core.controller.ControllerInitializationListenerList;
@@ -29,13 +27,16 @@ import ro.fortsoft.pippo.core.route.Route;
 import ro.fortsoft.pippo.core.route.RouteHandler;
 import ro.fortsoft.pippo.core.route.RouteMatcher;
 import ro.fortsoft.pippo.core.route.RouteNotFoundHandler;
+import ro.fortsoft.pippo.core.route.UrlBuilder;
 import ro.fortsoft.pippo.core.util.HttpCacheToolkit;
 import ro.fortsoft.pippo.core.util.MimeTypes;
 import ro.fortsoft.pippo.core.util.ServiceLocator;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author Decebal Suiu
@@ -53,6 +54,7 @@ public class Application {
     private JsonEngine jsonEngine;
     private XmlEngine xmlEngine;
     private RouteMatcher routeMatcher;
+    private UrlBuilder urlBuilder;
     private ExceptionHandler exceptionHandler;
     private RouteNotFoundHandler routeNotFoundHandler;
 
@@ -183,6 +185,10 @@ public class Application {
 
     public void setRouteMatcher(RouteMatcher routeMatcher) {
         this.routeMatcher = routeMatcher;
+    }
+
+    public void setContextPath(String contextPath) {
+        getUrlBuilder().setContextPath(contextPath);
     }
 
     public void GET(ClasspathResourceHandler resourceHandler) {
@@ -330,30 +336,11 @@ public class Application {
         return locals;
     }
 
-    public String urlFor(Class<? extends Controller> controllerClass, String methodName, Map<String, Object> parameters) {
-        Route route = getRoute(controllerClass, methodName);
-
-        return (route != null) ? urlFor(route.getUrlPattern(), parameters) : null;
-    }
-
-    public String urlFor(String urlPattern, Map<String, Object> parameters) {
-        return getRouteMatcher().urlFor(urlPattern, parameters);
-    }
-
-    private Route getRoute(Class<? extends Controller> controllerClass, String methodName) {
-        List<Route> routes = routeMatcher.getRoutes();
-        for (Route route : routes) {
-            RouteHandler routeHandler = route.getRouteHandler();
-            if (routeHandler instanceof ControllerHandler) {
-                ControllerHandler controllerHandler = (ControllerHandler) routeHandler;
-                if (controllerClass == controllerHandler.getControllerClass()
-                        && methodName.equals(controllerHandler.getMethodName())) {
-                    return route;
-                }
-            }
+    public UrlBuilder getUrlBuilder() {
+        if (urlBuilder == null) {
+            urlBuilder = new UrlBuilder(getRouteMatcher());
         }
-
-        return null;
+        return urlBuilder;
     }
 
     @Override
