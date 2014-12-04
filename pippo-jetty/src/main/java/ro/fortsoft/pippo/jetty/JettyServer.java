@@ -179,11 +179,10 @@ public class JettyServer extends AbstractWebServer {
         long maxFileSize = pippoFilter.getApplication().getMaximumUploadSize();
         MultipartConfigElement multipartConfig = new MultipartConfigElement(location, maxFileSize, -1L, 0);
         ServletContextHandler handler = new PippoHandler(ServletContextHandler.SESSIONS, multipartConfig);
+        handler.setContextPath(settings.getContextPath());
 
         String filterPath = pippoFilter.getFilterPath();
-        // TODO (other better option?)
         if (filterPath == null) {
-//            filterPath = "/app/*"; // default value
             filterPath = "/*"; // default value
         }
 

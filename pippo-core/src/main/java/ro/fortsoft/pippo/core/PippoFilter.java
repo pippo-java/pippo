@@ -22,6 +22,7 @@ import ro.fortsoft.pippo.core.route.RouteMatch;
 import ro.fortsoft.pippo.core.route.RouteMatcher;
 import ro.fortsoft.pippo.core.route.RouteNotFoundHandler;
 import ro.fortsoft.pippo.core.util.ClasspathUtils;
+import ro.fortsoft.pippo.core.util.StringUtils;
 
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
@@ -109,6 +110,9 @@ public class PippoFilter implements Filter {
 
             log.debug("Initializing application '{}'", application);
             application.init();
+
+            String contextPath = StringUtils.addStart(filterConfig.getServletContext().getContextPath(), "/");
+            log.debug("Serving application on context path {}", contextPath);
 
             String runtimeMode = application.getRuntimeMode().toString().toUpperCase();
             log.info("Pippo started ({})", runtimeMode);

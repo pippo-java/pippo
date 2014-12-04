@@ -21,7 +21,7 @@
       </button>    
       <ul class="dropdown-menu" role="menu" aria-labelledby="languageMenu">
         <#list languageChoices as choice>
-          <li role="presentation"><a role="menuitem" tabindex="-1" href="/?lang=${choice}">${choice}</a></li>
+          <li role="presentation"><a role="menuitem" tabindex="-1" href="?lang=${choice}">${choice}</a></li>
         </#list>
       </ul>
     </div>
