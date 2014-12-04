@@ -156,7 +156,9 @@ public class PippoFilter implements Filter {
             List<RouteMatch> routeMatches = routeMatcher.findRoutes(relativePath, requestMethod);
             if (!routeMatches.isEmpty()) {
                 new DefaultRouteHandlerChain(request, response, routeMatches).next();
-            } else {
+            }
+
+            if (!response.isCommitted()) {
                 log.warn("Cannot find a route for '{} {}'", requestMethod, requestUri);
                 RouteNotFoundHandler routeNotFoundHandler = application.getRouteNotFoundHandler();
                 if (routeNotFoundHandler != null) {
