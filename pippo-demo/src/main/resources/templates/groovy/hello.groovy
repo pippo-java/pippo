@@ -12,7 +12,11 @@ layout 'groovy/base.groovy',
 lang: lang,
 mode: mode,
 pageBody: contents {
-    h1 ( i18n('pippo.greeting') )
+    h1 {
+        yield i18n('pippo.greeting')
+        yieldUnescaped '&nbsp;'
+        i(class:'fa fa-smile-o') {}
+    }
     p {
         yieldUnescaped i18n('pippo.yourLanguageAndLocale', lang, locale)
     }

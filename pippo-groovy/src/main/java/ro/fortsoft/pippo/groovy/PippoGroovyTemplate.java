@@ -28,6 +28,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicReference;
 
 import org.ocpsoft.prettytime.PrettyTime;
 import org.slf4j.Logger;
@@ -37,6 +38,10 @@ import ro.fortsoft.pippo.core.Languages;
 import ro.fortsoft.pippo.core.Messages;
 import ro.fortsoft.pippo.core.PippoConstants;
 import ro.fortsoft.pippo.core.PippoRuntimeException;
+import ro.fortsoft.pippo.core.route.ClasspathResourceHandler;
+import ro.fortsoft.pippo.core.route.PublicResourceHandler;
+import ro.fortsoft.pippo.core.route.UrlBuilder;
+import ro.fortsoft.pippo.core.route.WebjarsResourceHandler;
 import ro.fortsoft.pippo.core.util.StringUtils;
 
 /**
@@ -65,12 +70,18 @@ public abstract class PippoGroovyTemplate extends BaseTemplate {
 
     PrettyTime prettyTime;
 
+    AtomicReference<String> webjarsPatternRef;
+
+    AtomicReference<String> publicPatternRef;
+
     public PippoGroovyTemplate(final MarkupTemplateEngine templateEngine, final Map model,
             final Map<String, String> modelTypes, final TemplateConfiguration configuration) {
         super(templateEngine, model, modelTypes, configuration);
 
         this.modelTypes = modelTypes;
         this.engine = templateEngine;
+        this.webjarsPatternRef = new AtomicReference<>();
+        this.publicPatternRef = new AtomicReference<>();
     }
 
     @SuppressWarnings("unchecked")
@@ -98,6 +109,33 @@ public abstract class PippoGroovyTemplate extends BaseTemplate {
 
     public void ln() throws IOException {
         newLine();
+    }
+
+    public String webjarsAt(String path) {
+        return classpathResourceAt(path, webjarsPatternRef, WebjarsResourceHandler.class);
+    }
+
+    public String publicAt(String path) {
+        return classpathResourceAt(path, publicPatternRef, PublicResourceHandler.class);
+    }
+
+    private String classpathResourceAt(String path, AtomicReference<String> patternRef,
+                                       Class<? extends ClasspathResourceHandler> resourceHandlerClass) {
+
+        if (patternRef.get() == null) {
+            String pattern = urlBuilder.urlPatternFor(resourceHandlerClass);
+            if (pattern == null) {
+                throw new PippoRuntimeException("You must register a route for {}",
+                        resourceHandlerClass.getSimpleName());
+            }
+
+            patternRef.set(pattern);
+        }
+
+        Map<String, Object> parameters = new HashMap<>();
+        parameters.put(ClasspathResourceHandler.PATH_PARAMETER, path);
+        String url = urlBuilder.urlFor(patternRef.get(), parameters);
+        return url;
     }
 
     public String i18n(String messageKey) throws IOException {

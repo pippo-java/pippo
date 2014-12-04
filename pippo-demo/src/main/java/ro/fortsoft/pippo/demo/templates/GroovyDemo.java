@@ -13,9 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package ro.fortsoft.pippo.demo.groovy;
+package ro.fortsoft.pippo.demo.templates;
 
 import ro.fortsoft.pippo.core.Pippo;
+import ro.fortsoft.pippo.groovy.GroovyTemplateEngine;
 
 /**
  * @author James Moger
@@ -23,7 +24,8 @@ import ro.fortsoft.pippo.core.Pippo;
 public class GroovyDemo {
 
     public static void main(String[] args) {
-        Pippo pippo = new Pippo(new GroovyApplication());
+        // .groovy is the default file extension
+        Pippo pippo = new Pippo(new TemplateDemoApplication(new GroovyTemplateEngine(), "groovy/hello"));
         pippo.start();
     }
 
