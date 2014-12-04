@@ -113,4 +113,70 @@ public class StringUtils {
         }
         return str;
     }
+
+    /**
+     * <p>Adds a substring only if the source string does not already start with the substring,
+     * otherwise returns the source string.</p>
+     *
+     * <p>A {@code null} source string will return {@code null}.
+     * An empty ("") source string will return the empty string.
+     * A {@code null} search string will return the source string.</p>
+     *
+     * <pre>
+     * StringUtils.addStart(null, *)      = *
+     * StringUtils.addStart("", *)        = *
+     * StringUtils.addStart(*, null)      = *
+     * StringUtils.addStart("domain.com", "www.")  = "www.domain.com"
+     * StringUtils.addStart("abc123", "abc")    = "abc123"
+     * </pre>
+     *
+     * @param str  the source String to search, may be null
+     * @param add  the String to search for and add, may be null
+     * @return the substring with the string added if required
+     */
+    public static String addStart(String str, String add) {
+        if (isNullOrEmpty(add)) {
+            return str;
+        }
+        if (isNullOrEmpty(str)) {
+            return add;
+        }
+        if (!str.startsWith(add)) {
+            return add + str;
+        }
+        return str;
+    }
+
+    /**
+     * <p>Adds a substring only if the source string does not already end with the substring,
+     * otherwise returns the source string.</p>
+     *
+     * <p>A {@code null} source string will return {@code null}.
+     * An empty ("") source string will return the empty string.
+     * A {@code null} search string will return the source string.</p>
+     *
+     * <pre>
+     * StringUtils.addEnd(null, *)      = *
+     * StringUtils.addEnd("", *)        = *
+     * StringUtils.addEnd(*, null)      = *
+     * StringUtils.addEnd("www.", "domain.com")  = "www.domain.com"
+     * StringUtils.addEnd("123abc", "abc")    = "123abc"
+     * </pre>
+     *
+     * @param str  the source String to search, may be null
+     * @param add  the String to search for and add, may be null
+     * @return the substring with the string added if required
+     */
+    public static String addEnd(String str, String add) {
+        if (isNullOrEmpty(add)) {
+            return str;
+        }
+        if (isNullOrEmpty(str)) {
+            return add;
+        }
+        if (!str.endsWith(add)) {
+            return str + add;
+        }
+        return str;
+    }
 }

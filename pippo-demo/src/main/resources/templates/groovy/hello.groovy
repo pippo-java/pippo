@@ -33,7 +33,7 @@ pageBody: contents {
         ul(class: 'dropdown-menu', role: 'menu', 'aria-labelledby': 'languageMenu') {
             languageChoices.each { choice ->
                 li(role: 'presentation') {
-                    a(role: 'menuitem', tabindex: '-1', href: "/?lang=$choice") { yield choice }
+                    a(role: 'menuitem', tabindex: '-1', href: "?lang=$choice") { yield choice }
                 }
             }
         }

@@ -28,6 +28,7 @@ public class WebServerSettings implements Serializable {
 
     private String host = "localhost";
     private int port = defaultPort;
+    private String contextPath = "/";
     private String staticFilesLocation;
     private String externalStaticFilesLocation;
     private String keystoreFile;
@@ -41,6 +42,7 @@ public class WebServerSettings implements Serializable {
     public WebServerSettings(PippoSettings pippoSettings) {
         this.port = pippoSettings.getInteger(PippoConstants.SETTING_SERVER_PORT, defaultPort);
         this.host = pippoSettings.getString(PippoConstants.SETTING_SERVER_HOST, host);
+        this.contextPath = pippoSettings.getString(PippoConstants.SETTING_SERVER_CONTEXT_PATH, contextPath);
     }
 
     public String getHost() {
@@ -59,6 +61,16 @@ public class WebServerSettings implements Serializable {
 
     public WebServerSettings port(int port) {
         this.port = port;
+
+        return this;
+    }
+
+    public String getContextPath() {
+        return contextPath;
+    }
+
+    public WebServerSettings contextPath(String contextPath) {
+        this.contextPath = contextPath;
 
         return this;
     }

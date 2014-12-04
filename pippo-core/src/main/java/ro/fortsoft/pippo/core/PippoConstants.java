@@ -51,6 +51,8 @@ public final class PippoConstants {
 
     public static final String SETTING_SERVER_HOST = "server.host";
 
+    public static final String SETTING_SERVER_CONTEXT_PATH = "server.contextPath";
+
     public static final String REQUEST_PARAMETER_LANG = "lang";
 
     public static final String REQUEST_PARAMETER_LOCALE = "locale";

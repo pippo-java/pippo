@@ -6,8 +6,8 @@ html(lang="$lang") {
         meta(content:'IE=edge', 'http-equiv':'X-UA-Compatible')
         meta(name:'viewport', content:'"width=device-width, initial-scale=1.0')
 
-        link(href:'/webjars/bootstrap/3.3.1/css/bootstrap.min.css', rel:'stylesheet')
-        link(href:'/webjars/font-awesome/4.2.0/css/font-awesome.min.css', rel:'stylesheet')
+        link(href:'webjars/bootstrap/3.3.1/css/bootstrap.min.css', rel:'stylesheet')
+        link(href:'webjars/font-awesome/4.2.0/css/font-awesome.min.css', rel:'stylesheet')
     }
 
     body {
@@ -18,7 +18,7 @@ html(lang="$lang") {
             p { i { yield "Groovy Template Engine ($mode)" } }
         }
 
-        script(src:'/webjars/jquery/1.11.1/jquery.min.js') {}
-        script(src:'/webjars/bootstrap/3.3.1/js/bootstrap.min.js') {}
+        script(src:'webjars/jquery/1.11.1/jquery.min.js') {}
+        script(src:'webjars/bootstrap/3.3.1/js/bootstrap.min.js') {}
     }
 }
