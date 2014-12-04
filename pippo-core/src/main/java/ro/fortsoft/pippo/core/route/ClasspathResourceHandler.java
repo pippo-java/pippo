@@ -38,7 +38,7 @@ public class ClasspathResourceHandler implements RouteHandler {
 
     private static final Logger log = LoggerFactory.getLogger(ClasspathResourceHandler.class);
 
-    protected static String PATH_PARAMETER = "path";
+    public static String PATH_PARAMETER = "path";
 
     private final String urlPattern;
     private final String resourceBasePath;

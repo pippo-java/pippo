@@ -13,20 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package ro.fortsoft.pippo.demo.freemarker;
+package ro.fortsoft.pippo.freemarker;
 
-import ro.fortsoft.pippo.core.Pippo;
+import ro.fortsoft.pippo.core.route.UrlBuilder;
+import ro.fortsoft.pippo.core.route.WebjarsResourceHandler;
 
 /**
+ * Method for handling webjar resource url generation from a Freemarker template.
+ *
  * @author James Moger
  */
-public class FreemarkerDemo {
+public class WebjarsAtMethod extends ClasspathResourceMethod<WebjarsResourceHandler> {
 
-    public static void main(String[] args) {
-//        new Pippo().start(); // run the default web server with the default web server settings
-
-        Pippo pippo = new Pippo(new FreemarkerApplication());
-        pippo.start();
+    public WebjarsAtMethod(UrlBuilder urlBuilder) {
+        super(urlBuilder, WebjarsResourceHandler.class);
     }
 
 }

@@ -13,16 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package ro.fortsoft.pippo.demo.freemarker;
+package ro.fortsoft.pippo.demo.templates;
 
 import ro.fortsoft.pippo.core.Application;
 import ro.fortsoft.pippo.core.Request;
 import ro.fortsoft.pippo.core.Response;
+import ro.fortsoft.pippo.core.TemplateEngine;
+import ro.fortsoft.pippo.core.route.PublicResourceHandler;
 import ro.fortsoft.pippo.core.route.RouteHandler;
 import ro.fortsoft.pippo.core.route.RouteHandlerChain;
 import ro.fortsoft.pippo.core.route.WebjarsResourceHandler;
 import ro.fortsoft.pippo.demo.DemoRequestLanguageFilter;
-import ro.fortsoft.pippo.freemarker.FreemarkerTemplateEngine;
+import ro.fortsoft.pippo.trimou.TrimouTemplateEngine;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -32,17 +34,26 @@ import java.util.Map;
 /**
  * @author James Moger
  */
-public class FreemarkerApplication extends Application {
+public class TemplateDemoApplication extends Application {
+
+    private final TemplateEngine engine;
+    private final String template;
+
+    public TemplateDemoApplication(TemplateEngine engine, String template) {
+        this.engine = engine;
+        this.template = template;
+    }
 
     @Override
     public void init() {
         super.init();
 
-        // set the Freemarker template engine
-        setTemplateEngine(new FreemarkerTemplateEngine());
+        // set the template engine
+        setTemplateEngine(engine);
 
-        // add a WebJars resource handler
+        // add classpath resource handlers
         GET(new WebjarsResourceHandler());
+        GET(new PublicResourceHandler());
 
         // filter all requests and setup the language and locale
         GET("/.*", new DemoRequestLanguageFilter(getLanguages(), true));
@@ -58,8 +69,8 @@ public class FreemarkerApplication extends Application {
                 model.put("testDate", testDate);
                 model.put("mode", getRuntimeMode());
 
-                // .ftl is the default file extension
-                response.render("freemarker/hello", model);
+                // .mustache is the default file extension
+                response.render(template, model);
             }
 
         });

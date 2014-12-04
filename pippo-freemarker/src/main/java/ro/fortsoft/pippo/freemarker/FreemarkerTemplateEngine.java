@@ -43,6 +43,8 @@ public class FreemarkerTemplateEngine implements TemplateEngine {
 
     private Languages languages;
     private Messages messages;
+    private WebjarsAtMethod webjarResourcesMethod;
+    private PublicAtMethod publicResourcesMethod;
     private Configuration configuration;
 
     static {
@@ -86,6 +88,9 @@ public class FreemarkerTemplateEngine implements TemplateEngine {
         // set global template variables
         configuration.setSharedVariable("contextPath", new SimpleScalar(urlBuilder.getContextPath()));
 
+        webjarResourcesMethod = new WebjarsAtMethod(urlBuilder);
+        publicResourcesMethod = new PublicAtMethod(urlBuilder);
+
     }
 
     public Configuration getConfiguration() {
@@ -108,6 +113,8 @@ public class FreemarkerTemplateEngine implements TemplateEngine {
         }
         model.put("prettyTime", new PrettyTimeMethod(locale));
         model.put("formatTime", new FormatTimeMethod(locale));
+        model.put("webjarsAt", webjarResourcesMethod);
+        model.put("publicAt", publicResourcesMethod);
 
         try {
             if (templateName.indexOf('.') == -1) {
