@@ -949,15 +949,20 @@ After above steps a folder _target_ is created for each module and all goodies a
 Demo
 -------------------
 The demo application is in pippo-demo module. The demo module contains some demo applications: 
-- Simple
-- Crud
-- Upload
-- Groovy
-- Jade
-- Pebble
-- Trimou
-- Guice
-- Spring
+- General
+     - Simple
+     - Crud
+     - Upload
+     - Validation (based on JSR 303 and Hibernate Validator)
+- Template Engine
+     - Groovy
+     - Freemarker
+     - Jade
+     - Pebble
+     - Trimou
+- IoC/DI
+     - Guice
+     - Spring
   
 CrudDemo is a <b>C</b>reate <b>R</b>etrieve <b>U</b>pdate <b>D</b>elete demo (with twitter bootstrap as static resources). 
     
