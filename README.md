@@ -132,7 +132,7 @@ public class SimpleApplication extends Application {
         GET("/template", (request, response, chain) -> {
             Map<String, Object> model = new HashMap<>();
             model.put("greeting", "Hello my friend");
-            response.render("hello.ftl", model);
+            response.render("hello", model);
         });
 
         GET("/error", (request, response, chain) -> { throw new RuntimeException("Error"); });
@@ -168,7 +168,7 @@ Defining a new controller is simple:
 public class ContactsController extends Controller {
 
     public void index() {
-        getResponse().render("crud/contacts.ftl");
+        getResponse().render("crud/contacts");
     }
 
 }
@@ -254,7 +254,7 @@ GET("/contact/{id: [0-9]+}", (request, response, chain) -> {
     Map<String, Object> model = new HashMap<>();
     model.put("id", id);
     model.put("action", action)
-    response.render("crud/contact.ftl", model);
+    response.render("crud/contact", model);
 });
 ```
 
@@ -447,12 +447,12 @@ GET("/contacts", (request, response, chain) -> {
     // variant 1 (with model)
     Map<String, Object> model = new HashMap<>();
     model.put("contacts", contactService.getContacts());
-    response.render("crud/contacts.ftl", model);
+    response.render("crud/contacts", model);
     */
 
     // variant 2 (with locals)
     response.getLocals().put("contacts", contactService.getContacts());
-    response.render("crud/contacts.ftl");
+    response.render("crud/contacts");
 ```
 
 Another scenario for locals:
@@ -464,11 +464,11 @@ GET("/contact*", (request, response, chain) -> {
 
 // just consume 'contacts' in template 
 GET("/contact.*", (request, response, chain) -> {
-    response.render("crud/contacts.ftl");
+    response.render("crud/contacts");
 });
 ```
 
-The snippet for contacts.ftl (show a list with all contacts' name):
+The snippet for contacts (show a list with all contacts' name):
 ```html
 <html>
     <body>
@@ -495,7 +495,7 @@ public static void main(String[] args) {
     application.setUploadLocation("upload");
     application.setMaximumUploadSize(100 * 1024); // 100k
 
-    application.GET("/", (request, response, chain) -> response.render("upload.ftl"));
+    application.GET("/", (request, response, chain) -> response.render("upload"));
 
     application.POST("/upload", (request, response, chain) -> {
         // retrieves the value for 'file' input
@@ -517,7 +517,7 @@ public static void main(String[] args) {
 }
 ```
 
-The content for 'upload.ftl' is:
+The content for 'upload' is:
 ```html
 <html>
     <head>
@@ -552,10 +552,10 @@ GET("/contact.*", (request, response, chain) -> {
 });
 
 // show contacts page
-GET("/contacts", (request, response, chain) -> response.send("contacts.ftl"));
+GET("/contacts", (request, response, chain) -> response.send("contacts"));
 
 // show contact page for the contact with id specified as path parameter 
-GET("/contact/{id}", (request, response, chain) -> response.send("contact.ftl"));
+GET("/contact/{id}", (request, response, chain) -> response.send("contact"));
 
 // show login page
 GET("/login", request, response, chain) -> {
@@ -565,7 +565,7 @@ GET("/login", request, response, chain) -> {
     if (error != null) {
         model.put("error", error);
     }
-    response.render("crud/login.ftl", model);
+    response.render("crud/login", model);
 });
 
 // process login submit
@@ -588,7 +588,7 @@ private boolean authenticate(String username, String password) {
 }
 ```
 
-The content for login.ftl can be:
+The content for login can be:
 ```html
 <html>
     <head>
@@ -726,7 +726,7 @@ GET("/contact/{id}", (request, response, chain) -> {
     Map<String, Object> model = new HashMap<>();
     model.put("id", id);
     model.put("action", action)
-    response.render("crud/contact.ftl", model);
+    response.render("crud/contact", model);
 });
 ```
 
@@ -791,7 +791,7 @@ public class ContactsController extends Controller {
 
     public void index() {
         getResponse().getLocals().put("contacts", contactService.getContacts());
-        getResponse().render("crud/contacts.ftl");
+        getResponse().render("crud/contacts");
     }
 
 }
@@ -886,10 +886,10 @@ public class ContactInitializer implements Initializer {
     @Override
     public void init(Application application) {
         // show contacts page
-        application.GET("/contacts", (request, response, chain) -> response.send("contacts.ftl"));
+        application.GET("/contacts", (request, response, chain) -> response.send("contacts"));
         
         // show contact page for the contact with id specified as path parameter 
-        application.GET("/contact/{id}", (request, response, chain) -> response.send("contact.ftl"));
+        application.GET("/contact/{id}", (request, response, chain) -> response.send("contact"));
     }
 
     @Override
@@ -907,10 +907,10 @@ public class ContactInitializer implements Initializer {
     @Override
     public void init(Application application) {
         // show users page
-        application.GET("/users", (request, response, chain) -> response.send("users.ftl"));
+        application.GET("/users", (request, response, chain) -> response.send("users"));
         
         // show user page for the user with id specified as path parameter 
-        application.GET("/user/{id}", (request, response, chain) -> response.send("user.ftl"));
+        application.GET("/user/{id}", (request, response, chain) -> response.send("user"));
     }
 
     @Override
