@@ -19,7 +19,7 @@ Artifacts
 - Core
      - Pippo Core `pippo-core` (jar)
 - Web Server
-     - [Pippo Jetty](https://github.com/decebals/pippo/tree/master/pippo-jade) `pippo-jetty` (jar)
+     - Pippo Jetty `pippo-jetty` (jar)
 - JSON
      - Pippo Gson `pippo-gson` (jar)
      - Pippo Fastjson `pippo-fastjson` (jar)
@@ -90,7 +90,7 @@ You may want to check for the latest released version using [Maven Search](http:
 
 How to use
 -------------------
-I provide a pippo-demo module that contains two demo applications: SimpleDemo and CrudDemo.
+I provide a pippo-demo module that contains many demo applications: SimpleDemo and CrudDemo are some.
 
 For SimpleDemo you have two java files: SimpleDemo.java and SimpleApplication.java
 
@@ -431,7 +431,7 @@ Now we can use `Application.urlFor(String urlPattern, Map<String, Object> parame
 Map<String, Object> parameters = new HashMap<>();
 parameters.put("id", 1);
 parameters.put("action", "new");
-String url = getApplication().urlFor("/contacts/:id", parameters);
+String url = getApplication().urlFor("/contacts/{id}", parameters);
 ```
 
 In conclusion if you want to create links to routes or controllers you must use `Application.urlFor` methods.
