@@ -29,6 +29,7 @@ import ro.fortsoft.pippo.core.PippoConstants;
 import ro.fortsoft.pippo.core.PippoRuntimeException;
 import ro.fortsoft.pippo.core.PippoSettings;
 import ro.fortsoft.pippo.core.TemplateEngine;
+import ro.fortsoft.pippo.core.route.UrlBuilder;
 import ro.fortsoft.pippo.core.util.StringUtils;
 
 import com.google.common.base.Strings;
@@ -59,7 +60,7 @@ public class PebbleTemplateEngine implements TemplateEngine {
     private PebbleEngine engine;
 
     @Override
-    public void init(PippoSettings pippoSettings, Languages languages, Messages messages) {
+    public void init(PippoSettings pippoSettings, Languages languages, Messages messages, UrlBuilder urlBuilder) {
         this.languages = languages;
 
         String pathPrefix = pippoSettings.getString(PippoConstants.SETTING_TEMPLATE_PATH_PREFIX, defaultPathPrefix);
@@ -84,6 +85,10 @@ public class PebbleTemplateEngine implements TemplateEngine {
             engine.setTemplateCache(null);
             engine.addExtension(new DebugExtension());
         }
+
+        // set global template variables
+        engine.getGlobalVariables().put("contextPath", urlBuilder.getContextPath());
+
     }
 
     @Override

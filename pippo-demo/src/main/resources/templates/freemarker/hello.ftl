@@ -12,6 +12,7 @@
 <@base.page title= i18n("pippo.welcome")>
     <h1>${i18n("pippo.greeting")} <i class='fa fa-smile-o'></i></h1>
     <p> ${i18n("pippo.yourLanguageAndLocale", lang, locale)}</p>
+    <p> ${i18n("pippo.theContextPath", contextPath)}</p>
     <p>${formatTime(testDate, "full")} (${prettyTime(testDate)})</p>
     
     <div class="dropdown">

@@ -103,6 +103,10 @@ public class PippoFilter implements Filter {
         ThreadContext.setApplication(application);
 
         try {
+            String contextPath = StringUtils.addStart(filterConfig.getServletContext().getContextPath(), "/");
+            application.setContextPath(contextPath);
+            log.debug("Serving application on context path '{}'", contextPath);
+
             initializers = getInitializers();
             for (Initializer initializer : initializers) {
                 initializer.init(application);
@@ -110,9 +114,6 @@ public class PippoFilter implements Filter {
 
             log.debug("Initializing application '{}'", application);
             application.init();
-
-            String contextPath = StringUtils.addStart(filterConfig.getServletContext().getContextPath(), "/");
-            log.debug("Serving application on context path {}", contextPath);
 
             String runtimeMode = application.getRuntimeMode().toString().toUpperCase();
             log.info("Pippo started ({})", runtimeMode);

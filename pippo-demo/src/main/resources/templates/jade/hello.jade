@@ -18,6 +18,8 @@ block content
   p
     !=pippo.i18n("pippo.yourLanguageAndLocale", lang, locale)
   p
+    !=pippo.i18n("pippo.theContextPath", contextPath)
+  p
     span=pippo.formatTime(testDate, 'full')
     | (
     span=pippo.prettyTime(testDate)

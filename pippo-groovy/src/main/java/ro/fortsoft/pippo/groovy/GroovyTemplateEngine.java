@@ -32,6 +32,7 @@ import ro.fortsoft.pippo.core.PippoConstants;
 import ro.fortsoft.pippo.core.PippoRuntimeException;
 import ro.fortsoft.pippo.core.PippoSettings;
 import ro.fortsoft.pippo.core.TemplateEngine;
+import ro.fortsoft.pippo.core.route.UrlBuilder;
 import ro.fortsoft.pippo.core.util.StringUtils;
 
 /**
@@ -55,7 +56,7 @@ public class GroovyTemplateEngine implements TemplateEngine {
     private MarkupTemplateEngine engine;
 
     @Override
-    public void init(PippoSettings pippoSettings, Languages languages, Messages messages) {
+    public void init(PippoSettings pippoSettings, Languages languages, Messages messages, UrlBuilder urlBuilder) {
         this.languages = languages;
         this.messages = messages;
 

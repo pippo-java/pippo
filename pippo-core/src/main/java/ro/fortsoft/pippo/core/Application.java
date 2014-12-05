@@ -146,7 +146,7 @@ public class Application {
 
     public void setTemplateEngine(TemplateEngine templateEngine) {
         // initialize the engine first
-        templateEngine.init(pippoSettings, languages, messages);
+        templateEngine.init(pippoSettings, languages, messages, getUrlBuilder());
 
         this.templateEngine = templateEngine;
     }
@@ -187,7 +187,7 @@ public class Application {
         this.routeMatcher = routeMatcher;
     }
 
-    public void setContextPath(String contextPath) {
+    void setContextPath(String contextPath) {
         getUrlBuilder().setContextPath(contextPath);
     }
 
