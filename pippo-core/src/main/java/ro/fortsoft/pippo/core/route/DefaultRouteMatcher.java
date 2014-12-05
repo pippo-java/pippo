@@ -15,17 +15,18 @@
  */
 package ro.fortsoft.pippo.core.route;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * The routes are matched in the order they are defined.
@@ -36,18 +37,19 @@ public class DefaultRouteMatcher extends AbstractRouteMatcher {
 
     private static final Logger log = LoggerFactory.getLogger(DefaultRouteMatcher.class);
 
-    //Matches: {id} AND {id: .*?}
+    // Matches: {id} AND {id: .*?}
     // group(1) extracts the name of the group (in that case "id").
     // group(3) extracts the regex if defined
-    final Pattern PATTERN_FOR_VARIABLE_PARTS_OF_ROUTE
-        = Pattern.compile("\\{(.*?)(:\\s(.*?))?\\}");
+    private final Pattern PATTERN_FOR_VARIABLE_PARTS_OF_ROUTE = Pattern.compile("\\{(.*?)(:\\s(.*?))?\\}");
 
-    /**
-     * This regex matches everything in between path slashes.
-     */
-    final String VARIABLE_ROUTES_DEFAULT_REGEX = "([^/]*)";
+    // This regex matches everything in between path slashes.
+    private final String VARIABLE_ROUTES_DEFAULT_REGEX = "([^/]*)";
 
-    private Map<String, List<PatternBinding>> bindingsCache; // key = request method
+    // This regex works for both {myParam} AND {myParam: .*}
+    private final String VARIABLE_PART_PATTERN_WITH_PLACEHOLDER = "\\{(%s)(:\\s(.*))?\\}";
+
+    // key = request method
+    private Map<String, List<PatternBinding>> bindingsCache;
 
     public DefaultRouteMatcher() {
         super();
@@ -126,12 +128,10 @@ public class DefaultRouteMatcher extends AbstractRouteMatcher {
 
             if (namedVariablePartOfRoute != null) {
                 // we convert that into a regex matcher group itself
-                namedVariablePartOfORouteReplacedWithRegex
-                    = "(" + Matcher.quoteReplacement(namedVariablePartOfRoute) + ")";
+                namedVariablePartOfORouteReplacedWithRegex = "(" + Matcher.quoteReplacement(namedVariablePartOfRoute) + ")";
             } else {
                 // we convert that into the default namedVariablePartOfRoute regex group
-                namedVariablePartOfORouteReplacedWithRegex
-                    = VARIABLE_ROUTES_DEFAULT_REGEX;
+                namedVariablePartOfORouteReplacedWithRegex = VARIABLE_ROUTES_DEFAULT_REGEX;
             }
             // we replace the current namedVariablePartOfRoute group
             matcher.appendReplacement(stringBuffer, namedVariablePartOfORouteReplacedWithRegex);
@@ -145,16 +145,16 @@ public class DefaultRouteMatcher extends AbstractRouteMatcher {
     }
 
     /**
-    *
-    * Extracts the name of the parameters from a route
-    *
-    * /{my_id}/{my_name}
-    *
-    * would return a List with "my_id" and "my_name"
-    *
-    * @param urlPattern
-    * @return a list with the names of all parameters in the url pattern
-    */
+     *
+     * Extracts the name of the parameters from a route
+     *
+     * /{my_id}/{my_name}
+     *
+     * would return a List with "my_id" and "my_name"
+     *
+     * @param urlPattern
+     * @return a list with the names of all parameters in the url pattern
+     */
     private List<String> getParameterNames(String urlPattern) {
         List<String> list = new ArrayList<String>();
 
@@ -201,34 +201,54 @@ public class DefaultRouteMatcher extends AbstractRouteMatcher {
     }
 
     private String urlFor(PatternBinding binding, Map<String, Object> parameters) {
-        String urlPattern = binding.getRoute().getUrlPattern();
-
-        // remove wildcards
-        String url = urlPattern.replaceAll("\\.\\*", "");
+        String url = binding.getRoute().getUrlPattern();
 
         List<String> parameterNames = binding.getParameterNames();
         if (!parameters.keySet().containsAll(parameterNames)) {
             log.error("You must provide values for all path parameters. {} vs {}", parameterNames, parameters.keySet());
         }
 
-        Map<String, Object> queryParameters = new HashMap<>(parameters);
-        for (String parameterName : parameterNames) {
-            // replace parameter name with parameter value
-            url = url.replace("{" + parameterName + "}", parameters.get(parameterName).toString());
-            queryParameters.remove(parameterName);
+        Map<String, Object> queryParameters = new HashMap<>(parameters.size());
+
+        for (Entry<String, Object> parameterPair : parameters.entrySet()) {
+
+            boolean foundAsPathParameter = false;
+
+            StringBuffer sb = new StringBuffer();
+            String buffer = String.format(VARIABLE_PART_PATTERN_WITH_PLACEHOLDER, parameterPair.getKey());
+
+            Pattern pattern = Pattern.compile(buffer);
+            Matcher matcher = pattern.matcher(url);
+            while (matcher.find()) {
+                String pathValue = parameterPair.getValue().toString();
+                matcher.appendReplacement(sb, pathValue);
+                foundAsPathParameter = true;
+            }
+
+            matcher.appendTail(sb);
+            url = sb.toString();
+
+            if (!foundAsPathParameter) {
+                queryParameters.put(parameterPair.getKey(), parameterPair.getValue());
+            }
         }
 
+        // now prepare the query string for this url if we got some query params
         if (!queryParameters.isEmpty()) {
             // add remaining parameters as query parameters
             StringBuilder query = new StringBuilder();
-            Iterator<String> iterator = queryParameters.keySet().iterator();
+            Iterator<Entry<String, Object>> iterator = queryParameters.entrySet().iterator();
             while (iterator.hasNext()) {
-                String parameterName = iterator.next();
-                Object parameterValue =  queryParameters.get(parameterName);
+                Entry<String, Object> parameterEntry = iterator.next();
+                String parameterName = parameterEntry.getKey();
+                Object parameterValue =  parameterEntry.getValue();
+                // TODO consider using URLEncoder on the parameter value
                 query.append(parameterName).append("=").append(parameterValue.toString());
+
                 if (iterator.hasNext()) {
                     query.append("&");
                 }
+
             }
 
             url += "?" + query;
