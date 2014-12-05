@@ -15,6 +15,8 @@
  */
 package ro.fortsoft.pippo.core;
 
+import ro.fortsoft.pippo.core.route.UrlBuilder;
+
 import java.io.Writer;
 import java.util.Map;
 
@@ -25,7 +27,7 @@ public interface TemplateEngine {
 
     public final static String defaultPathPrefix = "/templates";
 
-    public void init(PippoSettings pippoSettings, Languages languages, Messages messages);
+    public void init(PippoSettings pippoSettings, Languages languages, Messages messages, UrlBuilder urlBuilder);
 
     public void render(String templateName, Map<String, Object> model, Writer writer);
 

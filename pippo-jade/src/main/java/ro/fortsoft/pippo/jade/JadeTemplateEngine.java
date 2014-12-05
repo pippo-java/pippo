@@ -28,6 +28,7 @@ import ro.fortsoft.pippo.core.PippoConstants;
 import ro.fortsoft.pippo.core.PippoRuntimeException;
 import ro.fortsoft.pippo.core.PippoSettings;
 import ro.fortsoft.pippo.core.TemplateEngine;
+import ro.fortsoft.pippo.core.route.UrlBuilder;
 import ro.fortsoft.pippo.core.util.StringUtils;
 import de.neuland.jade4j.Jade4J.Mode;
 import de.neuland.jade4j.JadeConfiguration;
@@ -44,7 +45,7 @@ public class JadeTemplateEngine implements TemplateEngine {
     private JadeConfiguration configuration;
 
     @Override
-    public void init(PippoSettings pippoSettings, Languages languages, Messages messages) {
+    public void init(PippoSettings pippoSettings, Languages languages, Messages messages, UrlBuilder urlBuilder) {
         this.languages = languages;
         this.messages = messages;
 
@@ -56,6 +57,9 @@ public class JadeTemplateEngine implements TemplateEngine {
             configuration.setPrettyPrint(true);
             configuration.setCaching(false); // disable cache
         }
+
+        // set global template variables
+        configuration.getSharedVariables().put("contextPath", urlBuilder.getContextPath());
     }
 
     public JadeConfiguration getConfiguration() {

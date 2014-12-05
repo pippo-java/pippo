@@ -53,6 +53,8 @@ public abstract class PippoGroovyTemplate extends BaseTemplate {
 
     private final MarkupTemplateEngine engine;
 
+    UrlBuilder urlBuilder;
+
     String language;
 
     Locale locale;
@@ -71,9 +73,14 @@ public abstract class PippoGroovyTemplate extends BaseTemplate {
         this.engine = templateEngine;
     }
 
-    public void setup(Languages languages, Messages messages) {
+    @SuppressWarnings("unchecked")
+    public void setup(Languages languages, Messages messages, UrlBuilder urlBuilder) {
         this.languages = languages;
         this.messages = messages;
+        this.urlBuilder = urlBuilder;
+
+        // set global template variables
+        getModel().put("contextPath",  urlBuilder.getContextPath());
 
         String language = (String) getModel().get(PippoConstants.REQUEST_PARAMETER_LANG);
         if (StringUtils.isNullOrEmpty(language)) {
@@ -184,7 +191,7 @@ public abstract class PippoGroovyTemplate extends BaseTemplate {
         URL resource = engine.resolveTemplate(templateName);
         PippoGroovyTemplate template = (PippoGroovyTemplate) engine
                 .createTypeCheckedModelTemplate(resource, modelTypes).make(submodel);
-        template.setup(languages, messages);
+        template.setup(languages, messages, urlBuilder);
         template.writeTo(getOut());
         return this;
     }

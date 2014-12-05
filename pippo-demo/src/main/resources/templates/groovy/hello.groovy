@@ -17,6 +17,9 @@ pageBody: contents {
         yieldUnescaped i18n('pippo.yourLanguageAndLocale', lang, locale)
     }
     p {
+        yieldUnescaped i18n('pippo.theContextPath', contextPath)
+    }
+    p {
         yield formatTime(testDate, 'full')
         yield ' ('
         yield prettyTime(testDate)

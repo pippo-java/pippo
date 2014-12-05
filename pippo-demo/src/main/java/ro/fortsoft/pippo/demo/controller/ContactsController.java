@@ -43,7 +43,7 @@ public class ContactsController extends Controller {
         Map<String, Object> parameters = new HashMap<>();
         parameters.put("id", id);
         parameters.put("action", "new");
-        String url = getApplication().urlFor(ContactsController.class, "urlFor", parameters);
+        String url = getApplication().getUrlBuilder().urlFor(ContactsController.class, "urlFor", parameters);
 
         getResponse().send("id = " + id + "; url = " + url);
     }

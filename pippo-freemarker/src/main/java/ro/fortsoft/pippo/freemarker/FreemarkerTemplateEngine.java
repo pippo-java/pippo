@@ -25,9 +25,11 @@ import ro.fortsoft.pippo.core.PippoConstants;
 import ro.fortsoft.pippo.core.PippoRuntimeException;
 import ro.fortsoft.pippo.core.PippoSettings;
 import ro.fortsoft.pippo.core.TemplateEngine;
+import ro.fortsoft.pippo.core.route.UrlBuilder;
 import ro.fortsoft.pippo.core.util.StringUtils;
 import freemarker.log.Logger;
 import freemarker.template.Configuration;
+import freemarker.template.SimpleScalar;
 import freemarker.template.Template;
 
 /**
@@ -52,7 +54,7 @@ public class FreemarkerTemplateEngine implements TemplateEngine {
     }
 
     @Override
-    public void init(PippoSettings pippoSettings, Languages languages, Messages messages) {
+    public void init(PippoSettings pippoSettings, Languages languages, Messages messages, UrlBuilder urlBuilder) {
         this.languages = languages;
         this.messages = messages;
 
@@ -80,6 +82,10 @@ public class FreemarkerTemplateEngine implements TemplateEngine {
             // http://freemarker.sourceforge.net/docs/pgui_config_templateloading.html
             configuration.setCacheStorage(new freemarker.cache.MruCacheStorage(20, Integer.MAX_VALUE));
         }
+
+        // set global template variables
+        configuration.setSharedVariable("contextPath", new SimpleScalar(urlBuilder.getContextPath()));
+
     }
 
     public Configuration getConfiguration() {
