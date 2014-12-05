@@ -27,7 +27,7 @@ This engine includes some useful Pippo integration features and conveniences lik
 
 ### i18n
 
-You can access your translation resources using the i18n helper.
+You can access your translation resources using the i18n method.
 
     pippo.i18n("key.name")
 
@@ -37,7 +37,7 @@ You can supply arguments to your *MessageFormat* translation resources too.
 
 ### prettytime (relative time)
 
-pippo-groovy supports automatically localized [prettytime][prettytime] out-of-the-box and it is very easy to use.
+pippo-jade supports automatically localized [prettytime][prettytime] out-of-the-box and it is very easy to use.
 
 Assuming you are providing a `java.util.Date` instance to prettyTime...
 
@@ -59,6 +59,38 @@ You can also automatically format localized dates using standard Java date forma
     pippo.formatTime(now, "HH:mm")
     pippo.formatTime(now, "dd-MM-yyyy HH:mm")
     pippo.formatTime(now, "dd-MM-yyyy HH:mm")
+
+### webjarsAt & publicAt
+
+pippo-jade supports context-aware url generation for your classpath resources using the `webjarsAt` and `publicAt` methods.
+
+```jade
+// Stylesheets
+link(href=pippo.webjarsAt('bootstrap/3.3.1/css/bootstrap.min.css'), rel="stylesheet")
+link(href=pippo.webjarsAt('font-awesome/4.2.0/css/font-awesome.min.css'), rel="stylesheet")
+link(href=pippo.publicAt('css/style.css'), rel="stylesheet")
+
+// Scripts
+script(src=pippo.webjarsAt('jquery/1.11.1/jquery.min.js'))
+script(src=pippo.webjarsAt('bootstrap/3.3.1/js/bootstrap.min.js'))
+script(src=pippo.publicAt('js/main.js'))
+```
+
+**NOTE:** Use of these methods require that you have registered a `WebjarsResourceHandler` and/or a `PublicResourcehandler`.
+
+```java
+public class MyApplication extends Application {
+ @Override
+    public void init() {
+        super.init();
+
+        // add classpath resource handlers
+        GET(new WebjarsResourceHandler());
+        GET(new PublicResourceHandler());
+        ...
+    }
+}
+```
 
 [jade]: http://jade-lang.com
 [jade4j]: https://github.com/neuland/jade4j

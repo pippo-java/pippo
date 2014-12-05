@@ -13,6 +13,7 @@ extends ./base
 block content
   h1
     =pippo.i18n("pippo.greeting")
+    &nbsp;
     i(class='fa fa-smile-o')
 
   p
@@ -28,6 +29,7 @@ block content
   div(class="dropdown")
     button(class="btn btn-default dropdown-toggle", type="button", id="languageMenu", data-toggle="dropdown", aria-expanded="true")
       =pippo.i18n("pippo.languageChoices")
+      &nbsp;
       span(class="caret")
               
     ul(class="dropdown-menu", role="menu", aria-labelledby="languageMenu")

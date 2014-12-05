@@ -13,18 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package ro.fortsoft.pippo.demo.pebble;
+package ro.fortsoft.pippo.freemarker;
 
-import ro.fortsoft.pippo.core.Pippo;
+import ro.fortsoft.pippo.core.route.UrlBuilder;
+import ro.fortsoft.pippo.core.route.WebjarsResourceHandler;
 
 /**
+ * Method for handling webjar resource url generation from a Freemarker template.
+ *
  * @author James Moger
  */
-public class PebbleDemo {
+public class WebjarsAtMethod extends ClasspathResourceMethod<WebjarsResourceHandler> {
 
-    public static void main(String[] args) {
-        Pippo pippo = new Pippo(new PebbleApplication());
-        pippo.start();
+    public WebjarsAtMethod(UrlBuilder urlBuilder) {
+        super(urlBuilder, WebjarsResourceHandler.class);
     }
 
 }

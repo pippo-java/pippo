@@ -68,6 +68,8 @@ public class TrimouTemplateEngine implements TemplateEngine {
         builder.registerHelper("i18n", new I18nHelper(messages));
         builder.registerHelper("formatTime", new DateTimeFormatHelper());
         builder.registerHelper("prettyTime", new PrettyTimeHelper());
+        builder.registerHelper("webjarsAt", new WebjarsAtHelper(urlBuilder));
+        builder.registerHelper("publicAt", new PublicAtHelper(urlBuilder));
         builder.registerHelpers(HelpersBuilder.extra().build());
 
         String pathPrefix = pippoSettings.getString(PippoConstants.SETTING_TEMPLATE_PATH_PREFIX, defaultPathPrefix);

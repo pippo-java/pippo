@@ -53,12 +53,15 @@ public class GroovyTemplateEngine implements TemplateEngine {
 
     private Messages messages;
 
+    private UrlBuilder urlBuilder;
+
     private MarkupTemplateEngine engine;
 
     @Override
     public void init(PippoSettings pippoSettings, Languages languages, Messages messages, UrlBuilder urlBuilder) {
         this.languages = languages;
         this.messages = messages;
+        this.urlBuilder = urlBuilder;
 
         TemplateConfiguration configuration = new TemplateConfiguration();
 
@@ -102,7 +105,7 @@ public class GroovyTemplateEngine implements TemplateEngine {
         try {
 
             PippoGroovyTemplate gt = ((PippoGroovyTemplate) groovyTemplate.make(model));
-            gt.setup(languages, messages);
+            gt.setup(languages, messages, urlBuilder);
             gt.writeTo(writer);
 
         } catch (Exception e) {

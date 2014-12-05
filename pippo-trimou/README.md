@@ -59,6 +59,38 @@ You can also automatically format localized dates using standard Java date forma
     {{formatTime now pattern="HH:mm"}}
     {{formatTime now pattern="dd-MM-yyyy HH:mm"}}
 
+### webjarsAt & publicAt
+
+pippo-trimou supports context-aware url generation for your classpath resources using the `webjarsAt` and `publicAt` helpers.
+
+```html
+<!-- Stylesheets -->
+<link href="{{ webjarsAt 'bootstrap/3.3.1/css/bootstrap.min.css' }}" rel="stylesheet">
+<link href="{{ webjarsAt 'font-awesome/4.2.0/css/font-awesome.min.css' }}" rel="stylesheet">
+<link href="{{ publicAt 'css/style.css' }}" rel="stylesheet">
+
+<!-- Scripts -->
+<script src="{{ webjarsAt 'jquery/1.11.1/jquery.min.js' }}"></script>
+<script src="{{ webjarsAt 'bootstrap/3.3.1/js/bootstrap.min.js' }}"></script>
+<script src="{{ publicAt 'js/main.js' }}"></script>
+```
+
+**NOTE:** Use of these methods require that you have registered a `WebjarsResourceHandler` and/or a `PublicResourcehandler`.
+
+```java
+public class MyApplication extends Application {
+ @Override
+    public void init() {
+        super.init();
+
+        // add classpath resource handlers
+        GET(new WebjarsResourceHandler());
+        GET(new PublicResourceHandler());
+        ...
+    }
+}
+```
+
 ### AngularJS
 
 Mustache and AngularJS both use the double-brace notation.  There are several options on how to use both technologies together as outlined [here](https://github.com/trimou/trimou/wiki/How-to-render-a-template-with-braces-delimiters).

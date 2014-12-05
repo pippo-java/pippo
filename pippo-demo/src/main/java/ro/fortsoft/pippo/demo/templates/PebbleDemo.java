@@ -13,17 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package ro.fortsoft.pippo.demo.groovy;
+package ro.fortsoft.pippo.demo.templates;
 
 import ro.fortsoft.pippo.core.Pippo;
+import ro.fortsoft.pippo.pebble.PebbleTemplateEngine;
 
 /**
  * @author James Moger
  */
-public class GroovyDemo {
+public class PebbleDemo {
 
     public static void main(String[] args) {
-        Pippo pippo = new Pippo(new GroovyApplication());
+        // .peb is the default file extension
+        Pippo pippo = new Pippo(new TemplateDemoApplication(new PebbleTemplateEngine(), "pebble/hello"));
         pippo.start();
     }
 

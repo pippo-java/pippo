@@ -13,20 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package ro.fortsoft.pippo.demo.trimou;
+package ro.fortsoft.pippo.trimou;
 
-import ro.fortsoft.pippo.core.Pippo;
+import ro.fortsoft.pippo.core.route.PublicResourceHandler;
+import ro.fortsoft.pippo.core.route.UrlBuilder;
+import ro.fortsoft.pippo.core.route.WebjarsResourceHandler;
 
 /**
+ * Helper for handling public resource url generation from a Trimou template.
+ *
  * @author James Moger
- */
-public class TrimouDemo {
+  */
+public class PublicAtHelper extends ClasspathResourceHelper<PublicResourceHandler> {
 
-    public static void main(String[] args) {
-//        new Pippo().start(); // run the default web server with the default web server settings
-
-        Pippo pippo = new Pippo(new TrimouApplication());
-        pippo.start();
+    public PublicAtHelper(UrlBuilder urlBuilder) {
+        super(urlBuilder, PublicResourceHandler.class);
     }
 
 }

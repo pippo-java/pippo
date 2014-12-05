@@ -42,12 +42,14 @@ public class JadeTemplateEngine implements TemplateEngine {
 
     private Languages languages;
     private Messages messages;
+    private UrlBuilder urlBuilder;
     private JadeConfiguration configuration;
 
     @Override
     public void init(PippoSettings pippoSettings, Languages languages, Messages messages, UrlBuilder urlBuilder) {
         this.languages = languages;
         this.messages = messages;
+        this.urlBuilder = urlBuilder;
 
         String pathPrefix = pippoSettings.getString(PippoConstants.SETTING_TEMPLATE_PATH_PREFIX, defaultPathPrefix);
         configuration = new JadeConfiguration();
@@ -80,7 +82,7 @@ public class JadeTemplateEngine implements TemplateEngine {
             locale = languages.getLocaleOrDefault(language);
         }
 
-        model.put("pippo", new PippoHelper(messages, language, locale));
+        model.put("pippo", new PippoHelper(messages, language, locale, urlBuilder));
         try {
             JadeTemplate template = configuration.getTemplate(templateName);
             configuration.renderTemplate(template, model, writer);
