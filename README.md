@@ -16,19 +16,25 @@ The framework is based on Java Servlet 3.0 and requires Java 7.
 
 Artifacts
 -------------------
-- Pippo Core `pippo-core` (jar)
-- Pippo Jetty `pippo-jetty` (jar)
-- Pippo Gson `pippo-gson` (jar)
-- Pippo Fastjson `pippo-fastjson` (jar)
-- Pippo XStream `pippo-xstream` (jar)
-- Pippo Freemarker `pippo-freemarker` (jar)
-- Pippo Groovy `pippo-groovy` (jar)
-- Pippo Jade `pippo-jade` (jar)
-- Pippo Pebble `pippo-pebble` (jar)
-- Pippo Trimou `pippo-trimou` (jar)
-- Pippo IoC `pippo-ioc` (jar)
-- Pippo Spring `pippo-spring` (jar)
-- Pippo Guice `pippo-guice` (jar)
+- Core
+     - Pippo Core `pippo-core` (jar)
+- Web Server
+     - [Pippo Jetty](https://github.com/decebals/pippo/tree/master/pippo-jade) `pippo-jetty` (jar)
+- JSON
+     - Pippo Gson `pippo-gson` (jar)
+     - Pippo Fastjson `pippo-fastjson` (jar)
+- XML
+     - Pippo XStream `pippo-xstream` (jar)
+- Template Engine
+     - [Pippo Freemarker](https://github.com/decebals/pippo/tree/master/pippo-freemarker) `pippo-freemarker` (jar)
+     - [Pippo Groovy](https://github.com/decebals/pippo/tree/master/pippo-groovy) `pippo-groovy` (jar)
+     - [Pippo Jade](https://github.com/decebals/pippo/tree/master/pippo-jade) `pippo-jade` (jar)
+     - [Pippo Pebble](https://github.com/decebals/pippo/tree/master/pippo-pebble) `pippo-pebble` (jar)
+     - [Pippo Trimou](https://github.com/decebals/pippo/tree/master/pippo-trimou) `pippo-trimou` (jar)
+- IoC/DI
+     - Pippo IoC `pippo-ioc` (jar)
+     - Pippo Spring `pippo-spring` (jar)
+     - Pippo Guice `pippo-guice` (jar)
 
 Using Maven
 -------------------
