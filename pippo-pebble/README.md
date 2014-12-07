@@ -100,5 +100,13 @@ pippo-pebble comes with out-of-the-box support for the following syntax:
 
 Anything after the `ng` will be re-injected into the template during the compilation phase.
 
+### Error Templates
+
+pippo-pebble will render special templates for routing problems and excepions.  You may override these templates 
+within your own application.
+
+- `templates/pippo/404notFound.peb`
+- `templates/pippo/500interalError.peb`
+
 [pebble]: http://www.mitchellbosecke.com/pebble/home
 [prettytime]: http://ocpsoft.org/prettytime
