@@ -100,5 +100,13 @@ pippo-groovy comes with out-of-the-box support for the following syntax:
 
 The string passed to '`ng` will produce `{{something | or | other}}` in your generated template.
 
+### Error Templates
+
+pippo-groovy will render special templates for routing problems and excepions.  You may override these templates 
+within your own application.
+
+- `templates/pippo/404notFound.groovy`
+- `templates/pippo/500interalError.groovy`
+
 [groovy]: http://groovy-lang.org/docs/latest/html/documentation/markup-template-engine.html
 [prettytime]: http://ocpsoft.org/prettytime
