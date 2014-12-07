@@ -101,6 +101,14 @@ pippo-trimou comes with out-of-the-box support for the following syntax:
 
 Anything after the `ng` will be re-injected into the template during the compilation phase.
 
+### Error Templates
+
+pippo-trimou will render special templates for routing problems and excepions.  You may override these templates 
+within your own application.
+
+- `templates/pippo/404notFound.mustache`
+- `templates/pippo/500interalError.mustache`
+
 [trimou]: http://trimou.org
 [mustache]: https://mustache.github.io/mustache.5.html
 [prettytime]: http://ocpsoft.org/prettytime
