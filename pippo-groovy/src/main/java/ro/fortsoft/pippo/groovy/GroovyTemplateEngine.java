@@ -77,7 +77,7 @@ public class GroovyTemplateEngine implements TemplateEngine {
             configuration.setAutoIndentString("  ");
         }
 
-        String pathPrefix = pippoSettings.getString(PippoConstants.SETTING_TEMPLATE_PATH_PREFIX, defaultPathPrefix);
+        String pathPrefix = pippoSettings.getString(PippoConstants.SETTING_TEMPLATE_PATH_PREFIX, DEFAULT_PATH_PREFIX);
         pathPrefix = StringUtils.removeStart(pathPrefix, "/");
         pathPrefix = StringUtils.removeEnd(pathPrefix, "/");
 

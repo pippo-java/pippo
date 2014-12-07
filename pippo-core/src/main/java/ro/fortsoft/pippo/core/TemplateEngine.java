@@ -25,11 +25,10 @@ import java.util.Map;
  */
 public interface TemplateEngine {
 
-    public final static String defaultPathPrefix = "/templates";
+    public final static String DEFAULT_PATH_PREFIX = "/templates";
 
-    public final static String notFound_404 = "pippo/404notFound";
-
-    public final static String internalError_500 = "pippo/500internalError";
+    public final static String NOT_FOUND_404 = "pippo/404notFound";
+    public final static String INTERNAL_ERROR_500 = "pippo/500internalError";
 
     public void init(PippoSettings pippoSettings, Languages languages, Messages messages, UrlBuilder urlBuilder);
 

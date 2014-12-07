@@ -44,7 +44,7 @@ public class DefaultExceptionHandler implements ExceptionHandler {
             try {
                 renderTemplate(exception, request, response);
             } catch (Exception e) {
-                log.error("Unexpected error rendering your '{}' template!", TemplateEngine.internalError_500, e);
+                log.error("Unexpected error rendering your '{}' template!", TemplateEngine.INTERNAL_ERROR_500, e);
                 renderDirectly(exception, request, response);
             }
         }
@@ -94,7 +94,7 @@ public class DefaultExceptionHandler implements ExceptionHandler {
        if (application.getPippoSettings().isDev()) {
            response.bind("stacktrace", stackTrace);
        }
-       response.render(TemplateEngine.internalError_500);
+       response.render(TemplateEngine.INTERNAL_ERROR_500);
    }
 
 }

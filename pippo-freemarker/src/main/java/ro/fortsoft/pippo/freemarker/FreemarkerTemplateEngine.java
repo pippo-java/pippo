@@ -60,7 +60,7 @@ public class FreemarkerTemplateEngine implements TemplateEngine {
         this.languages = languages;
         this.messages = messages;
 
-        String pathPrefix = pippoSettings.getString(PippoConstants.SETTING_TEMPLATE_PATH_PREFIX, defaultPathPrefix);
+        String pathPrefix = pippoSettings.getString(PippoConstants.SETTING_TEMPLATE_PATH_PREFIX, DEFAULT_PATH_PREFIX);
         configuration = new Configuration(Configuration.VERSION_2_3_21);
         configuration.setDefaultEncoding(PippoConstants.UTF8);
         configuration.setOutputEncoding(PippoConstants.UTF8);

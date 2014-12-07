@@ -49,7 +49,7 @@ public class DefaultRouteNotFoundHandler implements RouteNotFoundHandler {
             try {
                 renderTemplate(requestMethod, requestUri, request, response);
             } catch (Exception e) {
-                log.error("Unexpected error rendering your '{}' template!", TemplateEngine.notFound_404, e);
+                log.error("Unexpected error rendering your '{}' template!", TemplateEngine.NOT_FOUND_404, e);
                 application.getExceptionHandler().handle(e, request, response);
             }
         }
@@ -106,7 +106,7 @@ public class DefaultRouteNotFoundHandler implements RouteNotFoundHandler {
         response.bind("statusMessage", application.getMessages().get(messageKey, request, response));
         response.bind("requestMethod", requestMethod);
         response.bind("requestUri", requestUri);
-        response.render(TemplateEngine.notFound_404);
+        response.render(TemplateEngine.NOT_FOUND_404);
     }
 
 }
