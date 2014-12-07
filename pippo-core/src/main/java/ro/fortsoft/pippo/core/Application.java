@@ -146,7 +146,7 @@ public class Application {
 
     public void setTemplateEngine(TemplateEngine templateEngine) {
         // initialize the engine first
-        templateEngine.init(pippoSettings, languages, messages, getUrlBuilder());
+        templateEngine.init(this);
 
         this.templateEngine = templateEngine;
     }

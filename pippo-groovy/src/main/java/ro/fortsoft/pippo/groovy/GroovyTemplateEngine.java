@@ -26,6 +26,7 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import ro.fortsoft.pippo.core.Application;
 import ro.fortsoft.pippo.core.Languages;
 import ro.fortsoft.pippo.core.Messages;
 import ro.fortsoft.pippo.core.PippoConstants;
@@ -39,32 +40,29 @@ import ro.fortsoft.pippo.core.util.StringUtils;
  * Groovy template engine for Pippo.
  *
  * @author James Moger
- *
  */
 public class GroovyTemplateEngine implements TemplateEngine {
 
-    public static final String GROOVY = "groovy";
+    private static final Logger log = LoggerFactory.getLogger(GroovyTemplateEngine.class);
 
+    public static final String GROOVY = "groovy";
     public static final String FILE_SUFFIX = "." + GROOVY;
 
-    private final Logger logger = LoggerFactory.getLogger(GroovyTemplateEngine.class);
-
     private Languages languages;
-
     private Messages messages;
-
     private UrlBuilder urlBuilder;
 
     private MarkupTemplateEngine engine;
 
     @Override
-    public void init(PippoSettings pippoSettings, Languages languages, Messages messages, UrlBuilder urlBuilder) {
-        this.languages = languages;
-        this.messages = messages;
-        this.urlBuilder = urlBuilder;
+    public void init(Application application) {
+        this.languages = application.getLanguages();
+        this.messages = application.getMessages();
+        this.urlBuilder = application.getUrlBuilder();
+
+        PippoSettings pippoSettings = application.getPippoSettings();
 
         TemplateConfiguration configuration = new TemplateConfiguration();
-
         configuration.setBaseTemplateClass(PippoGroovyTemplate.class);
         configuration.setAutoEscape(true);
 
@@ -89,29 +87,26 @@ public class GroovyTemplateEngine implements TemplateEngine {
 
     @Override
     public void render(String templateName, Map<String, Object> model, Writer writer) {
-
         if (templateName.indexOf('.') == -1) {
             templateName += FILE_SUFFIX;
         }
-        Template groovyTemplate = null;
 
+        Template groovyTemplate;
         try {
             groovyTemplate = engine.createTemplateByPath(templateName);
         } catch (ClassNotFoundException | IOException | RuntimeException e) {
-            logger.error("Error reading Groovy template {} ", templateName, e);
+            log.error("Error reading Groovy template {} ", templateName, e);
             throw new PippoRuntimeException(e);
         }
 
         try {
-
             PippoGroovyTemplate gt = ((PippoGroovyTemplate) groovyTemplate.make(model));
             gt.setup(languages, messages, urlBuilder);
             gt.writeTo(writer);
-
         } catch (Exception e) {
-            logger.error("Error processing Groovy template {} ", templateName, e);
+            log.error("Error processing Groovy template {} ", templateName, e);
             throw new PippoRuntimeException(e);
         }
-
     }
+
 }

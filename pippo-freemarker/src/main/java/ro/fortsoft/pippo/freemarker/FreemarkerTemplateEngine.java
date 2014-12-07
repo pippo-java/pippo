@@ -19,6 +19,7 @@ import java.io.Writer;
 import java.util.Locale;
 import java.util.Map;
 
+import ro.fortsoft.pippo.core.Application;
 import ro.fortsoft.pippo.core.Languages;
 import ro.fortsoft.pippo.core.Messages;
 import ro.fortsoft.pippo.core.PippoConstants;
@@ -38,11 +39,11 @@ import freemarker.template.Template;
 public class FreemarkerTemplateEngine implements TemplateEngine {
 
     public static final String FTL = "ftl";
-
     public static final String FILE_SUFFIX = "." + FTL;
 
     private Languages languages;
     private Messages messages;
+
     private WebjarsAtMethod webjarResourcesMethod;
     private PublicAtMethod publicResourcesMethod;
     private Configuration configuration;
@@ -56,9 +57,12 @@ public class FreemarkerTemplateEngine implements TemplateEngine {
     }
 
     @Override
-    public void init(PippoSettings pippoSettings, Languages languages, Messages messages, UrlBuilder urlBuilder) {
-        this.languages = languages;
-        this.messages = messages;
+    public void init(Application application) {
+        this.languages = application.getLanguages();
+        this.messages = application.getMessages();
+
+        UrlBuilder urlBuilder = application.getUrlBuilder();
+        PippoSettings pippoSettings = application.getPippoSettings();
 
         String pathPrefix = pippoSettings.getString(PippoConstants.SETTING_TEMPLATE_PATH_PREFIX, DEFAULT_PATH_PREFIX);
         configuration = new Configuration(Configuration.VERSION_2_3_21);
@@ -90,7 +94,6 @@ public class FreemarkerTemplateEngine implements TemplateEngine {
 
         webjarResourcesMethod = new WebjarsAtMethod(urlBuilder);
         publicResourcesMethod = new PublicAtMethod(urlBuilder);
-
     }
 
     public Configuration getConfiguration() {

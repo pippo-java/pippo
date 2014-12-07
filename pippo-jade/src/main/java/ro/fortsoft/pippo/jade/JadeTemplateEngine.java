@@ -22,6 +22,7 @@ import java.io.Writer;
 import java.util.Locale;
 import java.util.Map;
 
+import ro.fortsoft.pippo.core.Application;
 import ro.fortsoft.pippo.core.Languages;
 import ro.fortsoft.pippo.core.Messages;
 import ro.fortsoft.pippo.core.PippoConstants;
@@ -46,10 +47,12 @@ public class JadeTemplateEngine implements TemplateEngine {
     private JadeConfiguration configuration;
 
     @Override
-    public void init(PippoSettings pippoSettings, Languages languages, Messages messages, UrlBuilder urlBuilder) {
-        this.languages = languages;
-        this.messages = messages;
-        this.urlBuilder = urlBuilder;
+    public void init(Application application) {
+        this.languages = application.getLanguages();
+        this.messages = application.getMessages();
+        this.urlBuilder = application.getUrlBuilder();
+
+        PippoSettings pippoSettings = application.getPippoSettings();
 
         String pathPrefix = pippoSettings.getString(PippoConstants.SETTING_TEMPLATE_PATH_PREFIX, DEFAULT_PATH_PREFIX);
         configuration = new JadeConfiguration();

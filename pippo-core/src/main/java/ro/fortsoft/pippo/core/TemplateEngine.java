@@ -30,7 +30,7 @@ public interface TemplateEngine {
     public final static String NOT_FOUND_404 = "pippo/404notFound";
     public final static String INTERNAL_ERROR_500 = "pippo/500internalError";
 
-    public void init(PippoSettings pippoSettings, Languages languages, Messages messages, UrlBuilder urlBuilder);
+    public void init(Application application);
 
     public void render(String templateName, Map<String, Object> model, Writer writer);
 

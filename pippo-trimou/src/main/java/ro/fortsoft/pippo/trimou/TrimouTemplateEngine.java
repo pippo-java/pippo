@@ -15,10 +15,6 @@
  */
 package ro.fortsoft.pippo.trimou;
 
-import java.io.Writer;
-import java.util.Locale;
-import java.util.Map;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.trimou.Mustache;
@@ -29,15 +25,18 @@ import org.trimou.handlebars.HelpersBuilder;
 import org.trimou.handlebars.i18n.DateTimeFormatHelper;
 import org.trimou.minify.Minify;
 import org.trimou.prettytime.PrettyTimeHelper;
-
+import ro.fortsoft.pippo.core.Application;
 import ro.fortsoft.pippo.core.Languages;
-import ro.fortsoft.pippo.core.Messages;
 import ro.fortsoft.pippo.core.PippoConstants;
 import ro.fortsoft.pippo.core.PippoRuntimeException;
 import ro.fortsoft.pippo.core.PippoSettings;
 import ro.fortsoft.pippo.core.TemplateEngine;
 import ro.fortsoft.pippo.core.route.UrlBuilder;
 import ro.fortsoft.pippo.core.util.StringUtils;
+
+import java.io.Writer;
+import java.util.Locale;
+import java.util.Map;
 
 /**
  * Trimou template engine for Pippo.
@@ -46,26 +45,28 @@ import ro.fortsoft.pippo.core.util.StringUtils;
  */
 public class TrimouTemplateEngine implements TemplateEngine {
 
-    public static final String MUSTACHE = "mustache";
-
-    public static final String FILE_SUFFIX = "." + MUSTACHE;
-
     private static final Logger log = LoggerFactory.getLogger(TrimouTemplateEngine.class);
+
+    public static final String MUSTACHE = "mustache";
+    public static final String FILE_SUFFIX = "." + MUSTACHE;
 
     private Languages languages;
     private ThreadLocalLocaleSupport localeSupport;
     private MustacheEngine engine;
 
     @Override
-    public void init(PippoSettings pippoSettings, Languages languages, Messages messages, UrlBuilder urlBuilder) {
-        this.languages = languages;
+    public void init(Application application) {
+        this.languages = application.getLanguages();
         this.localeSupport = new ThreadLocalLocaleSupport();
+
+        UrlBuilder urlBuilder = application.getUrlBuilder();
+        PippoSettings pippoSettings = application.getPippoSettings();
 
         MustacheEngineBuilder builder = MustacheEngineBuilder.newBuilder();
         builder.setLocaleSupport(localeSupport);
         builder.setProperty(EngineConfigurationKey.DEFAULT_FILE_ENCODING, PippoConstants.UTF8);
         builder.registerHelper("ng", new AngularJsHelper());
-        builder.registerHelper("i18n", new I18nHelper(messages));
+        builder.registerHelper("i18n", new I18nHelper(application.getMessages()));
         builder.registerHelper("formatTime", new DateTimeFormatHelper());
         builder.registerHelper("prettyTime", new PrettyTimeHelper());
         builder.registerHelper("webjarsAt", new WebjarsAtHelper(urlBuilder));

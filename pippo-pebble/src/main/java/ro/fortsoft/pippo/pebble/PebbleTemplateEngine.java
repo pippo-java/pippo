@@ -23,6 +23,7 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import ro.fortsoft.pippo.core.Application;
 import ro.fortsoft.pippo.core.Languages;
 import ro.fortsoft.pippo.core.Messages;
 import ro.fortsoft.pippo.core.PippoConstants;
@@ -49,24 +50,25 @@ import com.mitchellbosecke.pebble.template.PebbleTemplate;
  */
 public class PebbleTemplateEngine implements TemplateEngine {
 
-    public static final String PEBBLE = "peb";
-
-    public static final String FILE_SUFFIX = "." + PEBBLE;
-
     private final Logger log = LoggerFactory.getLogger(PebbleTemplateEngine.class);
+
+    public static final String PEBBLE = "peb";
+    public static final String FILE_SUFFIX = "." + PEBBLE;
 
     private Languages languages;
 
     private PebbleEngine engine;
 
     @Override
-    public void init(PippoSettings pippoSettings, Languages languages, Messages messages, UrlBuilder urlBuilder) {
-        this.languages = languages;
+    public void init(Application application) {
+        this.languages = application.getLanguages();
+
+        UrlBuilder urlBuilder = application.getUrlBuilder();
+        PippoSettings pippoSettings = application.getPippoSettings();
 
         String pathPrefix = pippoSettings.getString(PippoConstants.SETTING_TEMPLATE_PATH_PREFIX, DEFAULT_PATH_PREFIX);
 
         List<Loader> loaders = Lists.newArrayList();
-
         PippoTemplateLoader templateLoader = new PippoTemplateLoader();
         templateLoader.setCharset(PippoConstants.UTF8);
         templateLoader.setPrefix(pathPrefix);
@@ -75,7 +77,7 @@ public class PebbleTemplateEngine implements TemplateEngine {
 
         engine = new PebbleEngine(new DelegatingLoader(loaders));
         engine.setStrictVariables(false);
-        engine.addExtension(new I18nExtension(messages));
+        engine.addExtension(new I18nExtension(application.getMessages()));
         engine.addExtension(new FormatTimeExtension());
         engine.addExtension(new PrettyTimeExtension());
         engine.addExtension(new AngularJSExtension());
@@ -90,7 +92,6 @@ public class PebbleTemplateEngine implements TemplateEngine {
 
         // set global template variables
         engine.getGlobalVariables().put("contextPath", urlBuilder.getContextPath());
-
     }
 
     @Override
@@ -137,7 +138,10 @@ public class PebbleTemplateEngine implements TemplateEngine {
                 template = engine.getTemplate(localizedName);
             }
         } catch (LoaderException e) {
+            log.error(e.getMessage(), e);
         }
+
         return template;
     }
+
 }
