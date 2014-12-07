@@ -92,6 +92,14 @@ public class MyApplication extends Application {
 }
 ```
 
+### Error Templates
+
+pippo-jade will render special templates for routing problems and excepions.  You may override these templates 
+within your own application.
+
+- `templates/pippo/404notFound.jade`
+- `templates/pippo/500interalError.jade`
+
 [jade]: http://jade-lang.com
 [jade4j]: https://github.com/neuland/jade4j
 [prettytime]: http://ocpsoft.org/prettytime
