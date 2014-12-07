@@ -31,7 +31,7 @@ import org.slf4j.LoggerFactory;
  */
 public class DefaultRouteNotFoundHandler implements RouteNotFoundHandler {
 
-    private final Logger log = LoggerFactory.getLogger(DefaultRouteNotFoundHandler.class);
+    private static final Logger log = LoggerFactory.getLogger(DefaultRouteNotFoundHandler.class);
 
     private Application application;
 
@@ -41,7 +41,6 @@ public class DefaultRouteNotFoundHandler implements RouteNotFoundHandler {
 
     @Override
     public void handle(String requestMethod, String requestUri, Request request, Response response) {
-
         response.status(HttpConstants.StatusCode.NOT_FOUND);
 
         if (application.getTemplateEngine() == null) {
@@ -50,7 +49,7 @@ public class DefaultRouteNotFoundHandler implements RouteNotFoundHandler {
             try {
                 renderTemplate(requestMethod, requestUri, request, response);
             } catch (Exception e) {
-                log.error(String.format("Unexpected error rendering your '%s' template!", TemplateEngine.notFound_404), e);
+                log.error("Unexpected error rendering your '{}' template!", TemplateEngine.notFound_404, e);
                 application.getExceptionHandler().handle(e, request, response);
             }
         }

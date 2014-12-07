@@ -84,8 +84,8 @@ public class TemplateDemoApplication extends Application {
             public void handle(Request request, Response response, RouteHandlerChain chain) {
                 throw new PippoRuntimeException("Exception \"&nbsp;\" <#{}>", ++counter);
             }
-        });
 
+        });
     }
 
 }

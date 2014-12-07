@@ -41,21 +41,18 @@ import org.slf4j.LoggerFactory;
  * This class is based on MessagesImpl.java from the Ninja Web Framework.
  *
  * @author James Moger
- *
  */
 public class Messages {
 
-    private static Logger log = LoggerFactory.getLogger(Messages.class);
+    private static final Logger log = LoggerFactory.getLogger(Messages.class);
 
     private final Map<String, Properties> languageMessages;
 
     private final Languages languages;
 
     public Messages(Languages languages) {
-
         this.languages = languages;
         this.languageMessages = loadRegisteredMessageResources();
-
     }
 
     /**
@@ -85,12 +82,9 @@ public class Messages {
      * @param parameters
      * @return the message or the key if the key does not exist
      */
-    public String get(String key, Request request, Response response,
-            Object... parameters) {
-
+    public String get(String key, Request request, Response response, Object... parameters) {
         String language = languages.getLanguageOrDefault(request, response);
         return get(key, language, parameters);
-
     }
 
     /**
@@ -117,10 +111,8 @@ public class Messages {
      * @return the message or the key if the key does not exist
      */
     public String get(String key, String language, Object... parameters) {
-
         Properties messages = getMessagesForLanguage(language);
         String value = messages.getProperty(key);
-
         if (value != null) {
             String message = formatMessage(value, language, parameters);
             return message;
@@ -128,7 +120,6 @@ public class Messages {
             log.warn("Failed to find '{}' in Messages", key);
             return key;
         }
-
     }
 
     /**
@@ -161,11 +152,8 @@ public class Messages {
      */
     public String getWithDefault(String key, String defaultMessage,
             Request request, Response response, Object... parameters) {
-
         String language = languages.getLanguageOrDefault(request, response);
-
         return getWithDefault(key, defaultMessage, language, parameters);
-
     }
 
     /**
@@ -190,11 +178,8 @@ public class Messages {
      * @param parameters
      * @return the message or the key if the key does not exist
      */
-    public String getWithDefault(String key, String defaultMessage,
-            String language, Object... parameters) {
-
+    public String getWithDefault(String key, String defaultMessage, String language, Object... parameters) {
         String value = get(key, language, parameters);
-
         if (value.equals(key)) {
             // key does not exist, format default message
             value = formatMessage(defaultMessage, language, parameters);
@@ -221,10 +206,8 @@ public class Messages {
      * @return all localized messages
      */
     public Map<String, String> getAll(Request request, Response response) {
-
         String language = languages.getLanguageOrDefault(request, response);
         return getAll(language);
-
     }
 
     /**
@@ -240,14 +223,13 @@ public class Messages {
      * @return all localized messages
      */
     public Map<String, String> getAll(String language) {
-
         Properties messages = getMessagesForLanguage(language);
         Map<String, String> map = new TreeMap<>();
         for (Map.Entry<Object, Object> entry : messages.entrySet()) {
             map.put(entry.getKey().toString(), entry.getValue().toString());
         }
-        return map;
 
+        return map;
     }
 
     /**
@@ -289,12 +271,10 @@ public class Messages {
      * Loads all registered message resources.
      */
     private Map<String, Properties> loadRegisteredMessageResources(String name) {
-
         Map<String, Properties> messageResources = new TreeMap<>();
 
         // Load default messages
         Properties defaultMessages = loadMessages(String.format(name, ""));
-
         if (defaultMessages == null) {
             log.error("Could not locate the default messages resource '{}', please create it.",
                     String.format(name, ""));
@@ -305,7 +285,6 @@ public class Messages {
         // Load the registered language resources
         List<String> registeredLanguages = languages.getRegisteredLanguages();
         for (String language : registeredLanguages) {
-
             // First step: Load complete language eg. en-US
             Properties messages = loadMessages(String.format(name, "_" + language));
 
@@ -315,15 +294,12 @@ public class Messages {
             // the language. For example missing keys in en-US will
             // be filled-in by the default language.
             String langComponent = languages.getLanguageComponent(language);
-
             if (!langComponent.equals(language)) {
                 // see if we have already loaded the language messages
                 messagesLangOnly = messageResources.get(langComponent);
-
                 if (messagesLangOnly == null) {
                     // load the language messages
-                    messagesLangOnly = loadMessages(String.format(
-                            name, "_" + langComponent));
+                    messagesLangOnly = loadMessages(String.format(name, "_" + langComponent));
                 }
             }
 
@@ -334,9 +310,7 @@ public class Messages {
                         "Could not locate the '{}' messages resource '{}' specified in '{}'.",
                         language, String.format(name, "_" + language),
                         PippoConstants.SETTING_APPLICATION_LANGUAGES);
-
             } else {
-
                 // add a new language
 
                 // start with the default messages
@@ -344,7 +318,6 @@ public class Messages {
 
                 // put all the language component messages "en"
                 if (messagesLangOnly != null) {
-
                     compositeMessages.putAll(messagesLangOnly);
 
                     // cache language component messages
@@ -362,11 +335,9 @@ public class Messages {
                 // mapping.
                 messageResources.put(language.toLowerCase(), compositeMessages);
             }
-
         }
 
         return Collections.unmodifiableMap(messageResources);
-
     }
 
     /**
@@ -380,7 +351,7 @@ public class Messages {
                 messages.load(is);
                 return messages;
             } catch (IOException e) {
-                log.error("Failed to load " + fileOrUrl, e);
+                log.error("Failed to load {}", fileOrUrl, e);
             }
         }
 
@@ -398,16 +369,13 @@ public class Messages {
      * @return The messages for the requested language or the default messages.
      */
     private Properties getMessagesForLanguage(String language) {
-
         if (StringUtils.isNullOrEmpty(language)) {
             return languageMessages.get("");
         }
 
         String supportedLanguage = languages.getLanguageOrDefault(language);
         if (StringUtils.isNullOrEmpty(supportedLanguage)) {
-            log.debug(
-                    "Messages for '{}' were requested. Using default messages.",
-                    language);
+            log.debug("Messages for '{}' were requested. Using default messages.", language);
             return languageMessages.get("");
         }
 
@@ -418,8 +386,7 @@ public class Messages {
         }
 
         // check the supported language component
-        String langComponent = languages
-                .getLanguageComponent(supportedLanguage);
+        String langComponent = languages.getLanguageComponent(supportedLanguage);
 
         messages = languageMessages.get(langComponent);
         if (messages != null) {
@@ -428,7 +395,6 @@ public class Messages {
 
         // return the default messages resource
         return languageMessages.get("");
-
     }
 
     /**
@@ -440,9 +406,7 @@ public class Messages {
      * @param parameters
      * @return the message
      */
-    private String formatMessage(String message, String language,
-            Object... parameters) {
-
+    private String formatMessage(String message, String language, Object... parameters) {
         if (parameters != null && parameters.length > 0) {
             // only format a message if we have parameters
             Locale locale = languages.getLocaleOrDefault(language);
@@ -452,4 +416,5 @@ public class Messages {
 
         return message;
     }
+
 }

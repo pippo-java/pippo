@@ -26,7 +26,7 @@ import org.slf4j.LoggerFactory;
  */
 public class DefaultExceptionHandler implements ExceptionHandler {
 
-    private final Logger log = LoggerFactory.getLogger(DefaultExceptionHandler.class);
+    private static final Logger log = LoggerFactory.getLogger(DefaultExceptionHandler.class);
 
     private Application application;
 
@@ -44,7 +44,7 @@ public class DefaultExceptionHandler implements ExceptionHandler {
             try {
                 renderTemplate(exception, request, response);
             } catch (Exception e) {
-                log.error(String.format("Unexpected error rendering your '%s' template!", TemplateEngine.internalError_500), e);
+                log.error("Unexpected error rendering your '{}' template!", TemplateEngine.internalError_500, e);
                 renderDirectly(exception, request, response);
             }
         }
@@ -95,5 +95,6 @@ public class DefaultExceptionHandler implements ExceptionHandler {
            response.bind("stacktrace", stackTrace);
        }
        response.render(TemplateEngine.internalError_500);
-    }
+   }
+
 }

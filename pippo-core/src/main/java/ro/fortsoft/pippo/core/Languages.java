@@ -35,11 +35,10 @@ import org.slf4j.LoggerFactory;
  * This class is based on LangImpl.java from the Ninja Web Framework.
  *
  * @author James Moger
- *
  */
 public class Languages {
 
-    private static Logger log = LoggerFactory.getLogger(Languages.class);
+    private static final Logger log = LoggerFactory.getLogger(Languages.class);
 
     private final String applicationCookiePrefix;
 
@@ -52,7 +51,6 @@ public class Languages {
     private final Map<String, String> languageLookup;
 
     public Languages(PippoSettings pippoSettings) {
-
         this.pippoSettings = pippoSettings;
 
         this.applicationCookiePrefix = pippoSettings.getString(
@@ -64,17 +62,14 @@ public class Languages {
                 .getStrings(PippoConstants.SETTING_APPLICATION_LANGUAGES);
 
         for (String language : languages) {
-
             String lang = language.toLowerCase();
             String langComponent = getLanguageComponent(lang);
             languageLookup.put(lang, language);
             languageLookup.put(langComponent, language);
-
         }
 
         this.defaultLanguage = getDefaultLanguage(languages);
         log.info("Using '{}' as default language.", defaultLanguage);
-
     }
 
     /**
@@ -138,8 +133,7 @@ public class Languages {
      * @return a list of registered languages
      */
     public List<String> getRegisteredLanguages() {
-        return pippoSettings
-                .getStrings(PippoConstants.SETTING_APPLICATION_LANGUAGES);
+        return pippoSettings.getStrings(PippoConstants.SETTING_APPLICATION_LANGUAGES);
     }
 
     /**
@@ -183,9 +177,7 @@ public class Languages {
      * @return the language for the request
      */
     public String getLanguageOrDefault(Request request, Response response) {
-
-        final String cookieName = generateLanguageCookie(defaultLanguage)
-                .getName();
+        final String cookieName = generateLanguageCookie(defaultLanguage).getName();
 
         // Step 1: Look for a Response cookie.
         // The Response always has priority over the Request because it may have
@@ -259,9 +251,7 @@ public class Languages {
      * @return the language or the default language
      */
     public String getLanguageOrDefault(String language) {
-
         if (!StringUtils.isNullOrEmpty(language)) {
-
             // Check if we get a registered mapping for the language input
             // string. The language may be either 'language-country' or
             // 'language'.
@@ -301,9 +291,7 @@ public class Languages {
      * @return the default language
      */
     private String getDefaultLanguage(List<String> applicationLanguages) {
-
         if (applicationLanguages.isEmpty()) {
-
             String NO_LANGUAGES_TEXT = "Please specify the supported languages in 'application.properties'."
                     + " For example 'application.languages=en, ro, de, pt-BR' makes 'en' your default language.";
 
