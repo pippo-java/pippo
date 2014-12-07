@@ -260,7 +260,7 @@ public class Application {
 
     public ExceptionHandler getExceptionHandler() {
         if (exceptionHandler == null) {
-            exceptionHandler = new DefaultExceptionHandler();
+            exceptionHandler = new DefaultExceptionHandler(this);
         }
 
         return exceptionHandler;

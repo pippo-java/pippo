@@ -16,6 +16,7 @@
 package ro.fortsoft.pippo.demo.templates;
 
 import ro.fortsoft.pippo.core.Application;
+import ro.fortsoft.pippo.core.PippoRuntimeException;
 import ro.fortsoft.pippo.core.Request;
 import ro.fortsoft.pippo.core.Response;
 import ro.fortsoft.pippo.core.TemplateEngine;
@@ -24,7 +25,6 @@ import ro.fortsoft.pippo.core.route.RouteHandler;
 import ro.fortsoft.pippo.core.route.RouteHandlerChain;
 import ro.fortsoft.pippo.core.route.WebjarsResourceHandler;
 import ro.fortsoft.pippo.demo.DemoRequestLanguageFilter;
-import ro.fortsoft.pippo.trimou.TrimouTemplateEngine;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -73,6 +73,17 @@ public class TemplateDemoApplication extends Application {
                 response.render(template, model);
             }
 
+        });
+
+        // throw an exception to demonstrate the template exception renderer
+        GET("/exception", new RouteHandler() {
+
+            int counter;
+
+            @Override
+            public void handle(Request request, Response response, RouteHandlerChain chain) {
+                throw new PippoRuntimeException("Exception \"&nbsp;\" <#{}>", ++counter);
+            }
         });
 
     }
