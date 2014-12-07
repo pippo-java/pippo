@@ -15,25 +15,39 @@ block content
     =pippo.i18n("pippo.greeting")
     &nbsp;
     i(class='fa fa-smile-o')
+  div(class="row")
+    div(class="col-sm-7")
+      p
+        !=pippo.i18n("pippo.yourLanguageAndLocale", lang, locale)
+      p
+        !=pippo.i18n("pippo.theContextPath", contextPath)
+      p
+        span=pippo.formatTime(testDate, 'full')
+        | (
+        span=pippo.prettyTime(testDate)
+        | )
 
-  p
-    !=pippo.i18n("pippo.yourLanguageAndLocale", lang, locale)
-  p
-    !=pippo.i18n("pippo.theContextPath", contextPath)
-  p
-    span=pippo.formatTime(testDate, 'full')
-    | (
-    span=pippo.prettyTime(testDate)
-    | )
-
-  div(class="dropdown")
-    button(class="btn btn-default dropdown-toggle", type="button", id="languageMenu", data-toggle="dropdown", aria-expanded="true")
-      =pippo.i18n("pippo.languageChoices")
-      &nbsp;
-      span(class="caret")
+      div(class="dropdown")
+        button(class="btn btn-default dropdown-toggle", type="button", id="languageMenu", data-toggle="dropdown", aria-expanded="true")
+          =pippo.i18n("pippo.languageChoices")
+          &nbsp;
+          span(class="caret")
               
-    ul(class="dropdown-menu", role="menu", aria-labelledby="languageMenu")
-      each choice in languageChoices
-        li(role="presentation")
-          a(role="menuitem", tabindex="-1", href="?lang=#{choice}")
-            =choice
+        ul(class="dropdown-menu", role="menu", aria-labelledby="languageMenu")
+          each choice in languageChoices
+            li(role="presentation")
+              a(role="menuitem", tabindex="-1", href="?lang=#{choice}")
+                =choice
+    div(class="col-sm-5")
+      div(class="panel panel-default")
+        div(class="panel-heading")
+          h3(class="panel-title")
+            =pippo.i18n("pippo.demonstrations")
+        div(class="panel-body")
+          ul
+            li
+              a(href="satisfaction?lang=#{lang}")
+                =pippo.i18n("pippo.unmatchedRoute")
+            li
+              a(href="exception?lang=#{lang}")
+                =pippo.i18n("pippo.exceptionHandling")

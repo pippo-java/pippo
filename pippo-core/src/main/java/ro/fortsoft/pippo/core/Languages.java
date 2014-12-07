@@ -209,7 +209,14 @@ public class Languages {
             }
         }
 
-        // Step 3: Look for a language in the Accept-Language header.
+        // Step 3: Look for a lang parameter in the response locals
+        if (response.getLocals().containsKey(PippoConstants.REQUEST_PARAMETER_LANG)) {
+            String language = response.getLocals().get(PippoConstants.REQUEST_PARAMETER_LANG).toString();
+            language = getLanguageOrDefault(language);
+            return language;
+        }
+
+        // Step 4: Look for a language in the Accept-Language header.
         String acceptLanguage = request.getHeader(Header.ACCEPT_LANGUAGE);
         String language = getLanguageOrDefault(acceptLanguage);
 

@@ -19,13 +19,19 @@ import ro.fortsoft.pippo.core.Application;
 import ro.fortsoft.pippo.core.HttpConstants;
 import ro.fortsoft.pippo.core.Request;
 import ro.fortsoft.pippo.core.Response;
+import ro.fortsoft.pippo.core.TemplateEngine;
 
 import java.util.List;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author Decebal Suiu
  */
 public class DefaultRouteNotFoundHandler implements RouteNotFoundHandler {
+
+    private final Logger log = LoggerFactory.getLogger(DefaultRouteNotFoundHandler.class);
 
     private Application application;
 
@@ -35,6 +41,30 @@ public class DefaultRouteNotFoundHandler implements RouteNotFoundHandler {
 
     @Override
     public void handle(String requestMethod, String requestUri, Request request, Response response) {
+
+        response.status(HttpConstants.StatusCode.NOT_FOUND);
+
+        if (application.getTemplateEngine() == null) {
+            renderDirectly(requestMethod, requestUri, request, response);
+        } else {
+            try {
+                renderTemplate(requestMethod, requestUri, request, response);
+            } catch (Exception e) {
+                log.error(String.format("Unexpected error rendering your '%s' template!", TemplateEngine.notFound_404), e);
+                application.getExceptionHandler().handle(e, request, response);
+            }
+        }
+    }
+
+    /**
+     * Render the result directly.
+     *
+     * @param requestMethod
+     * @param requestUri
+     * @param request
+     * @param response
+     */
+    protected void renderDirectly(String requestMethod, String requestUri, Request request, Response response) {
         StringBuilder content = new StringBuilder();
         content.append("<html><body>");
         content.append("<div>");
@@ -56,8 +86,28 @@ public class DefaultRouteNotFoundHandler implements RouteNotFoundHandler {
         content.append("</ul>");
         content.append("</body></html>");
 
-        response.status(HttpConstants.StatusCode.NOT_FOUND);
         response.send(content);
+    }
+
+    /**
+     * Render the result with the template engine.
+     *
+     * @param requestMethod
+     * @param requestUri
+     * @param request
+     * @param response
+     */
+    protected void renderTemplate(String requestMethod, String requestUri, Request request, Response response) {
+        String messageKey = "pippo.statusCode" + HttpConstants.StatusCode.NOT_FOUND;
+
+        response.bind("applicationName", application.getApplicationName());
+        response.bind("applicationVersion", application.getApplicationVersion());
+        response.bind("runtimeMode", application.getPippoSettings().getRuntimeMode());
+        response.bind("statusCode", HttpConstants.StatusCode.NOT_FOUND);
+        response.bind("statusMessage", application.getMessages().get(messageKey, request, response));
+        response.bind("requestMethod", requestMethod);
+        response.bind("requestUri", requestUri);
+        response.render(TemplateEngine.notFound_404);
     }
 
 }
