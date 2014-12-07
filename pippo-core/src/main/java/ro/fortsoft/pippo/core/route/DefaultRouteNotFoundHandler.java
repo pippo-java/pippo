@@ -106,6 +106,9 @@ public class DefaultRouteNotFoundHandler implements RouteNotFoundHandler {
         response.bind("statusMessage", application.getMessages().get(messageKey, request, response));
         response.bind("requestMethod", requestMethod);
         response.bind("requestUri", requestUri);
+        if (application.getPippoSettings().isDev()) {
+            response.bind("routes", application.getRouteMatcher().getRoutes());
+        }
         response.render(TemplateEngine.NOT_FOUND_404);
     }
 
