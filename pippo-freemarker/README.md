@@ -92,5 +92,13 @@ public class MyApplication extends Application {
 }
 ```
 
+### Error Templates
+
+pippo-freemarker will render special templates for routing problems and excepions.  You may override these templates 
+within your own application.
+
+- `templates/pippo/404notFound.ftl`
+- `templates/pippo/500interalError.ftl`
+
 [freemarker]: http://freemarker.org
 [prettytime]: http://ocpsoft.org/prettytime
