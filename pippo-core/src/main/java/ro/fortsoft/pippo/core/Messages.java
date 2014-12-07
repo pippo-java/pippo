@@ -23,10 +23,12 @@ import java.io.InputStream;
 import java.net.URL;
 import java.text.MessageFormat;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Properties;
+import java.util.Set;
 import java.util.TreeMap;
 
 import org.slf4j.Logger;
@@ -249,17 +251,53 @@ public class Messages {
     }
 
     /**
-     * Loads all registered message resources.
+     * Loads Pippo internal messages & application messages and returns the merger.
+     *
+     * @return all messages
      */
     private Map<String, Properties> loadRegisteredMessageResources() {
+        Map<String, Properties> internalMessages = loadRegisteredMessageResources("pippo/pippo-messages%s.properties");
+        Map<String, Properties> applicationMessages = loadRegisteredMessageResources("conf/messages%s.properties");
+        Map<String, Properties> allMessages = new TreeMap<>();
+
+        Set<String> merged = new HashSet<>();
+        // create aggregate messages
+        for (Map.Entry<String, Properties> entry : internalMessages.entrySet()) {
+            String language = entry.getKey();
+            Properties messages = entry.getValue();
+            allMessages.put(language, messages);
+
+            if (applicationMessages.containsKey(language)) {
+                // override internal messages with application messages
+                messages.putAll(applicationMessages.get(language));
+            }
+
+            merged.add(language);
+        }
+
+        // bring in the application languages which do not have an internal counterpart
+        Set<String> unmerged = new HashSet<>(applicationMessages.keySet());
+        unmerged.removeAll(merged);
+        for (String language : unmerged) {
+            allMessages.put(language, applicationMessages.get(language));
+        }
+
+        return allMessages;
+    }
+
+    /**
+     * Loads all registered message resources.
+     */
+    private Map<String, Properties> loadRegisteredMessageResources(String name) {
 
         Map<String, Properties> messageResources = new TreeMap<>();
 
         // Load default messages
-        Properties defaultMessages = loadMessages("conf/messages.properties");
+        Properties defaultMessages = loadMessages(String.format(name, ""));
 
         if (defaultMessages == null) {
-            log.error("Could not locate the default messages resource 'conf/messages.properties', please create it.");
+            log.error("Could not locate the default messages resource '{}', please create it.",
+                    String.format(name, ""));
         } else {
             messageResources.put("", defaultMessages);
         }
@@ -269,8 +307,7 @@ public class Messages {
         for (String language : registeredLanguages) {
 
             // First step: Load complete language eg. en-US
-            Properties messages = loadMessages(String.format(
-                    "conf/messages_%s.properties", language));
+            Properties messages = loadMessages(String.format(name, "_" + language));
 
             Properties messagesLangOnly = null;
 
@@ -286,7 +323,7 @@ public class Messages {
                 if (messagesLangOnly == null) {
                     // load the language messages
                     messagesLangOnly = loadMessages(String.format(
-                            "conf/messages_%s.properties", langComponent));
+                            name, "_" + langComponent));
                 }
             }
 
@@ -294,8 +331,8 @@ public class Messages {
             // be there.
             if (messages == null) {
                 log.error(
-                        "Could not locate the '{}' messages resource 'conf/messages_{}.properties' specified in '{}'.",
-                        language, language,
+                        "Could not locate the '{}' messages resource '{}' specified in '{}'.",
+                        language, String.format(name, "_" + language),
                         PippoConstants.SETTING_APPLICATION_LANGUAGES);
 
             } else {
