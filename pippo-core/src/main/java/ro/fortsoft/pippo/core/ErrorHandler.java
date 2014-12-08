@@ -13,16 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package ro.fortsoft.pippo.core.route;
+package ro.fortsoft.pippo.core;
 
-import ro.fortsoft.pippo.core.Request;
-import ro.fortsoft.pippo.core.Response;
 
 /**
  * @author Decebal Suiu
  */
-public interface RouteNotFoundHandler {
+public interface ErrorHandler {
 
-    public void handle(String requestMethod, String requestUri, Request request, Response response);
+    public void handle(int statusCode, Request request, Response response);
+
+    public void handle(Exception exception, Request request, Response response);
 
 }
