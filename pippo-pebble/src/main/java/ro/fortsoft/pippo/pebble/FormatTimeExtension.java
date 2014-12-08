@@ -30,7 +30,6 @@ import ro.fortsoft.pippo.core.PippoRuntimeException;
 
 import com.mitchellbosecke.pebble.extension.AbstractExtension;
 import com.mitchellbosecke.pebble.extension.Filter;
-import com.mitchellbosecke.pebble.extension.LocaleAware;
 import com.mitchellbosecke.pebble.template.EvaluationContext;
 
 public class FormatTimeExtension extends AbstractExtension {
@@ -45,16 +44,7 @@ public class FormatTimeExtension extends AbstractExtension {
         return filters;
     }
 
-    public class FormatTimeFilter implements Filter, LocaleAware {
-
-        // waiting for Pebble 1.2.0 release
-        @Deprecated
-        private Locale notThreadSafeLocale;
-
-        @Override
-        public void setLocale(Locale locale) {
-            this.notThreadSafeLocale = locale;
-        }
+    public class FormatTimeFilter implements Filter {
 
         @Override
         public List<String> getArgumentNames() {
@@ -70,11 +60,8 @@ public class FormatTimeExtension extends AbstractExtension {
                 return null;
             }
 
-            Locale locale = notThreadSafeLocale;
             EvaluationContext context = (EvaluationContext) args.get("_context");
-            if (context != null) {
-                locale = context.getLocale();
-            }
+            Locale locale = context.getLocale();
 
             DateFormat existingFormat = null;
             DateFormat intendedFormat = null;

@@ -16,6 +16,7 @@
 package ro.fortsoft.pippo.pebble;
 
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -29,7 +30,6 @@ import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
 import com.mitchellbosecke.pebble.extension.AbstractExtension;
 import com.mitchellbosecke.pebble.extension.Filter;
-import com.mitchellbosecke.pebble.extension.LocaleAware;
 import com.mitchellbosecke.pebble.template.EvaluationContext;
 
 public class PrettyTimeExtension extends AbstractExtension {
@@ -52,20 +52,11 @@ public class PrettyTimeExtension extends AbstractExtension {
         return filters;
     }
 
-    public class PrettyTimeFilter implements Filter, LocaleAware {
-
-        // waiting for Pebble 1.2.0 release
-        @Deprecated
-        private Locale notThreadSafeLocale;
-
-        @Override
-        public void setLocale(Locale locale) {
-            this.notThreadSafeLocale = locale;
-        }
+    public class PrettyTimeFilter implements Filter {
 
         @Override
         public List<String> getArgumentNames() {
-            return null;
+            return Collections.emptyList();
         }
 
         @Override
@@ -74,11 +65,8 @@ public class PrettyTimeExtension extends AbstractExtension {
                 return null;
             }
 
-            Locale locale = notThreadSafeLocale;
             EvaluationContext context = (EvaluationContext) args.get("_context");
-            if (context != null) {
-                locale = context.getLocale();
-            }
+            Locale locale = context.getLocale();
 
             String result = prettyTimeCache.getUnchecked(locale).format(getFormattableObject(input));
 
