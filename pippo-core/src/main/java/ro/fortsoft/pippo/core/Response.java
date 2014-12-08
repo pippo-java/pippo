@@ -280,6 +280,11 @@ public class Response {
         }
     }
 
+    public void text(Object object) {
+        header(HttpConstants.Header.CONTENT_TYPE, HttpConstants.ContentType.TEXT_PLAIN);
+        send(object.toString());
+    }
+
     public void json(Object object) {
         represent(object, HttpConstants.ContentType.APPLICATION_JSON);
     }
