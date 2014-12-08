@@ -94,6 +94,8 @@ public class Application {
         this.mimeTypes = new MimeTypes(settings);
         this.httpCacheToolkit = new HttpCacheToolkit(settings);
         this.engines = new TreeMap<>();
+
+        registerContentTypeEngine(TextPlainEngine.class);
     }
 
     public void init() {

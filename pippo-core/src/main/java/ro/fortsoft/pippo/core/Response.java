@@ -216,6 +216,10 @@ public class Response {
         return httpServletResponse.isCommitted();
     }
 
+    public void text(Object object) {
+        send(object, HttpConstants.ContentType.TEXT_PLAIN);
+    }
+
     public void json(Object object) {
         send(object, HttpConstants.ContentType.APPLICATION_JSON);
     }
