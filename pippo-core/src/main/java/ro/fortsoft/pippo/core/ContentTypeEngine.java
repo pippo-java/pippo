@@ -19,10 +19,9 @@ package ro.fortsoft.pippo.core;
 /**
  * @author James Moger
  */
-public interface JsonEngine {
+public interface ContentTypeEngine {
 
-    public String toJson(Object object);
+    public void init(Application application);
 
-    public <X> X fromJson(String json, Class<X> xClass);
-
+    public String getContentType();
 }

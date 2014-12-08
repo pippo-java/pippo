@@ -15,6 +15,10 @@
  */
 package ro.fortsoft.pippo.trimou;
 
+import java.io.Writer;
+import java.util.Locale;
+import java.util.Map;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.trimou.Mustache;
@@ -25,6 +29,7 @@ import org.trimou.handlebars.HelpersBuilder;
 import org.trimou.handlebars.i18n.DateTimeFormatHelper;
 import org.trimou.minify.Minify;
 import org.trimou.prettytime.PrettyTimeHelper;
+
 import ro.fortsoft.pippo.core.Application;
 import ro.fortsoft.pippo.core.Languages;
 import ro.fortsoft.pippo.core.PippoConstants;
@@ -34,16 +39,12 @@ import ro.fortsoft.pippo.core.TemplateEngine;
 import ro.fortsoft.pippo.core.route.UrlBuilder;
 import ro.fortsoft.pippo.core.util.StringUtils;
 
-import java.io.Writer;
-import java.util.Locale;
-import java.util.Map;
-
 /**
  * Trimou template engine for Pippo.
  *
  * @author James Moger
  */
-public class TrimouTemplateEngine implements TemplateEngine {
+public class TrimouTemplateEngine extends TemplateEngine {
 
     private static final Logger log = LoggerFactory.getLogger(TrimouTemplateEngine.class);
 

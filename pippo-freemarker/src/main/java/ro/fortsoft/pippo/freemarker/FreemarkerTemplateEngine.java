@@ -36,7 +36,7 @@ import freemarker.template.Template;
 /**
  * @author Decebal Suiu
  */
-public class FreemarkerTemplateEngine implements TemplateEngine {
+public class FreemarkerTemplateEngine extends TemplateEngine {
 
     public static final String FTL = "ftl";
     public static final String FILE_SUFFIX = "." + FTL;

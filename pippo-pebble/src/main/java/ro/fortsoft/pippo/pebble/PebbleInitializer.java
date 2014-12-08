@@ -30,6 +30,7 @@ public class PebbleInitializer implements Initializer {
 
     @Override
     public void init(Application application) {
+        application.registerContentTypeEngine(PebbleTemplateEngine.class);
     }
 
     @Override

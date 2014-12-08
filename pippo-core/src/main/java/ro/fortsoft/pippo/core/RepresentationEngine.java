@@ -19,10 +19,10 @@ package ro.fortsoft.pippo.core;
 /**
  * @author James Moger
  */
-public interface XmlEngine {
+public interface RepresentationEngine extends ContentTypeEngine {
 
-    public String toXml(Object object);
+    public abstract String toRepresentation(Object object);
 
-    public <X> X fromXml(String xml, Class<X> xClass);
+    public abstract <X> X fromRepresentation(String representation, Class<X> xClass);
 
 }

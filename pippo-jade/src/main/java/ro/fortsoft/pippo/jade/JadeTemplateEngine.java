@@ -39,7 +39,7 @@ import de.neuland.jade4j.template.TemplateLoader;
 /**
  * @author Decebal Suiu
  */
-public class JadeTemplateEngine implements TemplateEngine {
+public class JadeTemplateEngine extends TemplateEngine {
 
     private Languages languages;
     private Messages messages;

@@ -30,6 +30,7 @@ public class FreemarkerInitializer implements Initializer {
 
     @Override
     public void init(Application application) {
+        application.registerContentTypeEngine(FreemarkerTemplateEngine.class);
     }
 
     @Override

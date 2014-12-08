@@ -30,10 +30,12 @@ import ro.fortsoft.pippo.core.route.RouteNotFoundHandler;
 import ro.fortsoft.pippo.core.route.UrlBuilder;
 import ro.fortsoft.pippo.core.util.HttpCacheToolkit;
 import ro.fortsoft.pippo.core.util.MimeTypes;
-import ro.fortsoft.pippo.core.util.ServiceLocator;
+import ro.fortsoft.pippo.core.util.StringUtils;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.TreeMap;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -50,9 +52,7 @@ public class Application {
     private Messages messages;
     private MimeTypes mimeTypes;
     private HttpCacheToolkit httpCacheToolkit;
-    private TemplateEngine templateEngine;
-    private JsonEngine jsonEngine;
-    private XmlEngine xmlEngine;
+    private Map<String, ContentTypeEngine> engines;
     private RouteMatcher routeMatcher;
     private UrlBuilder urlBuilder;
     private ExceptionHandler exceptionHandler;
@@ -92,6 +92,7 @@ public class Application {
         this.messages = new Messages(languages);
         this.mimeTypes = new MimeTypes(settings);
         this.httpCacheToolkit = new HttpCacheToolkit(settings);
+        this.engines = new TreeMap<>();
     }
 
     public void init() {
@@ -135,44 +136,71 @@ public class Application {
         return httpCacheToolkit;
     }
 
-    public TemplateEngine getTemplateEngine() {
-        if (templateEngine == null) {
-            TemplateEngine engine = ServiceLocator.locate(TemplateEngine.class);
-            setTemplateEngine(engine);
+    public Map<String, ContentTypeEngine> getContentTypeEngines() {
+        return Collections.unmodifiableMap(engines);
+    }
+
+    public boolean hasContentTypeEngine(String contentType) {
+        return engines.containsKey(contentType);
+    }
+
+    /**
+     * Registers a content type engine if no other engine has been registered
+     * for the content type.
+     *
+     * @param engineClass
+     */
+    public void registerContentTypeEngine(Class<? extends ContentTypeEngine> engineClass) {
+        ContentTypeEngine engine = null;
+        try {
+            engine = engineClass.newInstance();
+        } catch (Exception e) {
+            throw new PippoRuntimeException("Failed to instantiate '{}'", e, engineClass.getName());
+        }
+        if (!engines.containsKey(engine.getContentType())) {
+            setContentTypeEngine(engine);
+        } else {
+            log.debug("'{}' engine already registered, ignoring {}", HttpConstants.ContentType.TEXT_HTML,
+                    engineClass.getName());
+        }
+    }
+
+    /**
+     * Returns the first matching content type engine for a simple content type
+     * or a complex accept header like:
+     *
+     * <pre>
+     * text/html,application/xhtml+xml,application/xml;q=0.9,image/webp
+     * </pre>
+     *
+     * @param contentType
+     * @return null or the first matching content type engine
+     */
+    public ContentTypeEngine getContentTypeEngine(String contentType) {
+        if (StringUtils.isNullOrEmpty(contentType)) {
+            return null;
         }
 
-        return templateEngine;
-    }
+        String [] types = contentType.split(",");
+        for (String type : types) {
+            if (type.contains(";")) {
+                // drop ;q=0.8 quality scores
+                type = type.substring(type.indexOf(';'));
+            }
 
-    public void setTemplateEngine(TemplateEngine templateEngine) {
-        // initialize the engine first
-        templateEngine.init(this);
-
-        this.templateEngine = templateEngine;
-    }
-
-    public JsonEngine getJsonEngine() {
-        if (jsonEngine == null) {
-            jsonEngine = ServiceLocator.locate(JsonEngine.class);
+            ContentTypeEngine engine = engines.get(type);
+            if (engine != null) {
+                return engine;
+            }
         }
 
-        return jsonEngine;
+        return null;
     }
 
-    public void setJsonEngine(JsonEngine jsonEngine) {
-        this.jsonEngine = jsonEngine;
-    }
-
-    public XmlEngine getXmlEngine() {
-        if (xmlEngine == null) {
-            xmlEngine = ServiceLocator.locate(XmlEngine.class);
-        }
-
-        return xmlEngine;
-    }
-
-    public void setXmlEngine(XmlEngine xmlEngine) {
-        this.xmlEngine = xmlEngine;
+    public void setContentTypeEngine(ContentTypeEngine engine) {
+        engine.init(this);
+        engines.put(engine.getContentType(), engine);
+        log.debug("'{}' content engine is {}", engine.getContentType(), engine.getClass().getName());
     }
 
     public RouteMatcher getRouteMatcher() {

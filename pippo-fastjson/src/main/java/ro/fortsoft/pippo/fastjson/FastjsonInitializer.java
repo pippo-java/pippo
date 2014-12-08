@@ -30,6 +30,7 @@ public class FastjsonInitializer implements Initializer {
 
     @Override
     public void init(Application application) {
+        application.registerContentTypeEngine(FastjsonEngine.class);
     }
 
     @Override

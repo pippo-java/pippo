@@ -41,7 +41,7 @@ import ro.fortsoft.pippo.core.util.StringUtils;
  *
  * @author James Moger
  */
-public class GroovyTemplateEngine implements TemplateEngine {
+public class GroovyTemplateEngine extends TemplateEngine {
 
     private static final Logger log = LoggerFactory.getLogger(GroovyTemplateEngine.class);
 

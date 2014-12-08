@@ -30,6 +30,7 @@ public class JadeInitializer implements Initializer {
 
     @Override
     public void init(Application application) {
+        application.registerContentTypeEngine(JadeTemplateEngine.class);
     }
 
     @Override

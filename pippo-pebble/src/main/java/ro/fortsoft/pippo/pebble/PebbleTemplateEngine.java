@@ -25,7 +25,6 @@ import org.slf4j.LoggerFactory;
 
 import ro.fortsoft.pippo.core.Application;
 import ro.fortsoft.pippo.core.Languages;
-import ro.fortsoft.pippo.core.Messages;
 import ro.fortsoft.pippo.core.PippoConstants;
 import ro.fortsoft.pippo.core.PippoRuntimeException;
 import ro.fortsoft.pippo.core.PippoSettings;
@@ -48,7 +47,7 @@ import com.mitchellbosecke.pebble.template.PebbleTemplate;
  *
  * @author James Moger
  */
-public class PebbleTemplateEngine implements TemplateEngine {
+public class PebbleTemplateEngine extends TemplateEngine {
 
     private final Logger log = LoggerFactory.getLogger(PebbleTemplateEngine.class);
 
