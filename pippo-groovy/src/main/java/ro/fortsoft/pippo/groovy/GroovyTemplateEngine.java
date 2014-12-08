@@ -33,7 +33,7 @@ import ro.fortsoft.pippo.core.PippoConstants;
 import ro.fortsoft.pippo.core.PippoRuntimeException;
 import ro.fortsoft.pippo.core.PippoSettings;
 import ro.fortsoft.pippo.core.TemplateEngine;
-import ro.fortsoft.pippo.core.route.UrlBuilder;
+import ro.fortsoft.pippo.core.route.Router;
 import ro.fortsoft.pippo.core.util.StringUtils;
 
 /**
@@ -50,7 +50,7 @@ public class GroovyTemplateEngine extends TemplateEngine {
 
     private Languages languages;
     private Messages messages;
-    private UrlBuilder urlBuilder;
+    private Router router;
 
     private MarkupTemplateEngine engine;
 
@@ -58,7 +58,7 @@ public class GroovyTemplateEngine extends TemplateEngine {
     public void init(Application application) {
         this.languages = application.getLanguages();
         this.messages = application.getMessages();
-        this.urlBuilder = application.getUrlBuilder();
+        this.router = application.getRouter();
 
         PippoSettings pippoSettings = application.getPippoSettings();
 
@@ -101,7 +101,7 @@ public class GroovyTemplateEngine extends TemplateEngine {
 
         try {
             PippoGroovyTemplate gt = ((PippoGroovyTemplate) groovyTemplate.make(model));
-            gt.setup(languages, messages, urlBuilder);
+            gt.setup(languages, messages, router);
             gt.writeTo(writer);
         } catch (Exception e) {
             log.error("Error processing Groovy template {} ", templateName, e);

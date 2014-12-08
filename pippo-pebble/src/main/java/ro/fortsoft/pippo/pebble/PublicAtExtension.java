@@ -15,13 +15,14 @@
  */
 package ro.fortsoft.pippo.pebble;
 
-import com.mitchellbosecke.pebble.extension.AbstractExtension;
-import com.mitchellbosecke.pebble.extension.Function;
-import ro.fortsoft.pippo.core.route.PublicResourceHandler;
-import ro.fortsoft.pippo.core.route.UrlBuilder;
-
 import java.util.HashMap;
 import java.util.Map;
+
+import ro.fortsoft.pippo.core.route.PublicResourceHandler;
+import ro.fortsoft.pippo.core.route.Router;
+
+import com.mitchellbosecke.pebble.extension.AbstractExtension;
+import com.mitchellbosecke.pebble.extension.Function;
 
 /**
  * Extension for handling public resource url generation from a Pebble template.
@@ -32,8 +33,8 @@ public class PublicAtExtension extends AbstractExtension {
 
     final Function function;
 
-    public PublicAtExtension(UrlBuilder urlBuilder) {
-        this.function = new PublicResourceFunction(urlBuilder);
+    public PublicAtExtension(Router router) {
+        this.function = new PublicResourceFunction(router);
     }
 
     @Override
@@ -45,8 +46,8 @@ public class PublicAtExtension extends AbstractExtension {
 
     class PublicResourceFunction extends ClasspathResourceFunction<PublicResourceHandler> {
 
-        protected PublicResourceFunction(UrlBuilder urlBuilder) {
-            super(urlBuilder, PublicResourceHandler.class);
+        protected PublicResourceFunction(Router router) {
+            super(router, PublicResourceHandler.class);
         }
     }
 

@@ -29,7 +29,7 @@ import ro.fortsoft.pippo.core.PippoConstants;
 import ro.fortsoft.pippo.core.PippoRuntimeException;
 import ro.fortsoft.pippo.core.PippoSettings;
 import ro.fortsoft.pippo.core.TemplateEngine;
-import ro.fortsoft.pippo.core.route.UrlBuilder;
+import ro.fortsoft.pippo.core.route.Router;
 import ro.fortsoft.pippo.core.util.StringUtils;
 import de.neuland.jade4j.Jade4J.Mode;
 import de.neuland.jade4j.JadeConfiguration;
@@ -43,14 +43,14 @@ public class JadeTemplateEngine extends TemplateEngine {
 
     private Languages languages;
     private Messages messages;
-    private UrlBuilder urlBuilder;
+    private Router router;
     private JadeConfiguration configuration;
 
     @Override
     public void init(Application application) {
         this.languages = application.getLanguages();
         this.messages = application.getMessages();
-        this.urlBuilder = application.getUrlBuilder();
+        this.router = application.getRouter();
 
         PippoSettings pippoSettings = application.getPippoSettings();
 
@@ -64,7 +64,7 @@ public class JadeTemplateEngine extends TemplateEngine {
         }
 
         // set global template variables
-        configuration.getSharedVariables().put("contextPath", urlBuilder.getContextPath());
+        configuration.getSharedVariables().put("contextPath", router.getContextPath());
     }
 
     public JadeConfiguration getConfiguration() {
@@ -85,7 +85,7 @@ public class JadeTemplateEngine extends TemplateEngine {
             locale = languages.getLocaleOrDefault(language);
         }
 
-        model.put("pippo", new PippoHelper(messages, language, locale, urlBuilder));
+        model.put("pippo", new PippoHelper(messages, language, locale, router));
         try {
             JadeTemplate template = configuration.getTemplate(templateName);
             configuration.renderTemplate(template, model, writer);

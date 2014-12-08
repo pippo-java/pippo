@@ -107,7 +107,7 @@ public class DefaultErrorHandler implements ErrorHandler {
         content.append("'</div>");
         content.append("<div>Available routes:</div>");
         content.append("<ul style=\" list-style-type: none; margin: 0; \">");
-        List<Route> routes = application.getRouteMatcher().getRoutes();
+        List<Route> routes = application.getRouter().getRoutes();
         for (Route route : routes) {
             content.append("<li>");
             content.append(route.getRequestMethod());
@@ -141,7 +141,7 @@ public class DefaultErrorHandler implements ErrorHandler {
         locals.put("requestUri", request.getUri());
 
         if (application.getPippoSettings().isDev()) {
-            locals.put("routes", application.getRouteMatcher().getRoutes());
+            locals.put("routes", application.getRouter().getRoutes());
         }
 
         return locals;

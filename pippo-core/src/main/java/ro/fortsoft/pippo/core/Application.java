@@ -21,11 +21,10 @@ import ro.fortsoft.pippo.core.controller.ControllerInitializationListenerList;
 import ro.fortsoft.pippo.core.controller.ControllerInstantiationListenerList;
 import ro.fortsoft.pippo.core.controller.ControllerInvokeListenerList;
 import ro.fortsoft.pippo.core.route.ClasspathResourceHandler;
-import ro.fortsoft.pippo.core.route.DefaultRouteMatcher;
+import ro.fortsoft.pippo.core.route.DefaultRouter;
 import ro.fortsoft.pippo.core.route.Route;
 import ro.fortsoft.pippo.core.route.RouteHandler;
-import ro.fortsoft.pippo.core.route.RouteMatcher;
-import ro.fortsoft.pippo.core.route.UrlBuilder;
+import ro.fortsoft.pippo.core.route.Router;
 import ro.fortsoft.pippo.core.util.HttpCacheToolkit;
 import ro.fortsoft.pippo.core.util.MimeTypes;
 import ro.fortsoft.pippo.core.util.StringUtils;
@@ -51,8 +50,7 @@ public class Application {
     private MimeTypes mimeTypes;
     private HttpCacheToolkit httpCacheToolkit;
     private Map<String, ContentTypeEngine> engines;
-    private RouteMatcher routeMatcher;
-    private UrlBuilder urlBuilder;
+    private Router router;
     private ErrorHandler errorHandler;
 
     private String uploadLocation = System.getProperty("java.io.tmpdir");
@@ -200,24 +198,24 @@ public class Application {
         log.debug("'{}' content engine is {}", engine.getContentType(), engine.getClass().getName());
     }
 
-    public RouteMatcher getRouteMatcher() {
-        if (routeMatcher == null) {
-            routeMatcher = new DefaultRouteMatcher();
+    public Router getRouter() {
+        if (router == null) {
+            router = new DefaultRouter();
         }
 
-        return routeMatcher;
+        return router;
     }
 
-    public void setRouteMatcher(RouteMatcher routeMatcher) {
-        this.routeMatcher = routeMatcher;
+    public void setRouter(Router router) {
+        this.router = router;
     }
 
     void setContextPath(String contextPath) {
-        getUrlBuilder().setContextPath(contextPath);
+        getRouter().setContextPath(contextPath);
     }
 
     public void GET(ClasspathResourceHandler resourceHandler) {
-        if (getUrlBuilder().urlPatternFor(resourceHandler.getClass()) != null) {
+        if (getRouter().urlPatternFor(resourceHandler.getClass()) != null) {
             throw new PippoRuntimeException("You may only register one route for {}",
                     resourceHandler.getClass().getSimpleName());
         }
@@ -277,7 +275,7 @@ public class Application {
     public void addRoute(String urlPattern, String requestMethod, RouteHandler routeHandler) {
         Route route = new Route(urlPattern, requestMethod, routeHandler);
         try {
-            getRouteMatcher().addRoute(route);
+            getRouter().addRoute(route);
         } catch (Exception e) {
             log.error("Cannot add route '{}'", route, e);
         }
@@ -351,13 +349,6 @@ public class Application {
         }
 
         return locals;
-    }
-
-    public UrlBuilder getUrlBuilder() {
-        if (urlBuilder == null) {
-            urlBuilder = new UrlBuilder(getRouteMatcher());
-        }
-        return urlBuilder;
     }
 
     @Override

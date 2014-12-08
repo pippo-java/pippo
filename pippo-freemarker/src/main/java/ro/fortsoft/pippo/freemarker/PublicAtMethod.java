@@ -16,7 +16,7 @@
 package ro.fortsoft.pippo.freemarker;
 
 import ro.fortsoft.pippo.core.route.PublicResourceHandler;
-import ro.fortsoft.pippo.core.route.UrlBuilder;
+import ro.fortsoft.pippo.core.route.Router;
 
 /**
  * Method for handling public resource url generation from a Freemarker template.
@@ -26,8 +26,8 @@ import ro.fortsoft.pippo.core.route.UrlBuilder;
 
 public class PublicAtMethod extends ClasspathResourceMethod<PublicResourceHandler> {
 
-    public PublicAtMethod(UrlBuilder urlBuilder) {
-        super(urlBuilder, PublicResourceHandler.class);
+    public PublicAtMethod(Router router) {
+        super(router, PublicResourceHandler.class);
     }
 
 }

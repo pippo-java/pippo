@@ -15,13 +15,14 @@
  */
 package ro.fortsoft.pippo.pebble;
 
-import com.mitchellbosecke.pebble.extension.AbstractExtension;
-import com.mitchellbosecke.pebble.extension.Function;
-import ro.fortsoft.pippo.core.route.UrlBuilder;
-import ro.fortsoft.pippo.core.route.WebjarsResourceHandler;
-
 import java.util.HashMap;
 import java.util.Map;
+
+import ro.fortsoft.pippo.core.route.Router;
+import ro.fortsoft.pippo.core.route.WebjarsResourceHandler;
+
+import com.mitchellbosecke.pebble.extension.AbstractExtension;
+import com.mitchellbosecke.pebble.extension.Function;
 
 /**
  * Extension for handling webjar resource url generation from a Pebble template.
@@ -32,8 +33,8 @@ public class WebjarsAtExtension extends AbstractExtension {
 
     final Function function;
 
-    public WebjarsAtExtension(UrlBuilder urlBuilder) {
-        this.function = new WebjarResourceFunction(urlBuilder);
+    public WebjarsAtExtension(Router router) {
+        this.function = new WebjarResourceFunction(router);
     }
 
     @Override
@@ -45,8 +46,8 @@ public class WebjarsAtExtension extends AbstractExtension {
 
     class WebjarResourceFunction extends ClasspathResourceFunction<WebjarsResourceHandler> {
 
-        protected WebjarResourceFunction(UrlBuilder urlBuilder) {
-            super(urlBuilder, WebjarsResourceHandler.class);
+        protected WebjarResourceFunction(Router router) {
+            super(router, WebjarsResourceHandler.class);
         }
     }
 
