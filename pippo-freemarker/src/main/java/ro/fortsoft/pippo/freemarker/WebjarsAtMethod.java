@@ -15,7 +15,7 @@
  */
 package ro.fortsoft.pippo.freemarker;
 
-import ro.fortsoft.pippo.core.route.UrlBuilder;
+import ro.fortsoft.pippo.core.route.Router;
 import ro.fortsoft.pippo.core.route.WebjarsResourceHandler;
 
 /**
@@ -25,8 +25,8 @@ import ro.fortsoft.pippo.core.route.WebjarsResourceHandler;
  */
 public class WebjarsAtMethod extends ClasspathResourceMethod<WebjarsResourceHandler> {
 
-    public WebjarsAtMethod(UrlBuilder urlBuilder) {
-        super(urlBuilder, WebjarsResourceHandler.class);
+    public WebjarsAtMethod(Router router) {
+        super(router, WebjarsResourceHandler.class);
     }
 
 }

@@ -17,7 +17,7 @@ package ro.fortsoft.pippo.core;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 
-import ro.fortsoft.pippo.core.route.DefaultRouteMatcher;
+import ro.fortsoft.pippo.core.route.DefaultRouter;
 import ro.fortsoft.pippo.core.route.Route;
 import ro.fortsoft.pippo.core.route.RouteMatch;
 import ro.fortsoft.pippo.core.route.WebjarsResourceHandler;
@@ -38,14 +38,14 @@ import org.junit.rules.ExpectedException;
  */
 public class DefaultRouteMatcherTest extends Assert {
 
-    private DefaultRouteMatcher routeMatcher;
+    private DefaultRouter routeMatcher;
 
     @Rule
     public ExpectedException thrown = ExpectedException.none();
 
     @Before
     public void before() {
-        routeMatcher = new DefaultRouteMatcher();
+        routeMatcher = new DefaultRouter();
     }
 
     @After
@@ -341,7 +341,7 @@ public class DefaultRouteMatcherTest extends Assert {
         assertEquals(0, routeMatcher.findRoutes("/customers/12ab", HttpConstants.Method.GET).size());
 
         // regex with escaped construct in a route with variable parts
-        routeMatcher = new DefaultRouteMatcher();
+        routeMatcher = new DefaultRouter();
         routeMatcher.addRoute(new Route("/customers/{id: \\d+}", HttpConstants.Method.GET, new EmptyRouteHandler()));
 
         assertEquals(1, routeMatcher.findRoutes("/customers/1234", HttpConstants.Method.GET).size());

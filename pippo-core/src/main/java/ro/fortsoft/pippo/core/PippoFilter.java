@@ -17,7 +17,7 @@ package ro.fortsoft.pippo.core;
 
 import ro.fortsoft.pippo.core.route.DefaultRouteHandlerChain;
 import ro.fortsoft.pippo.core.route.RouteMatch;
-import ro.fortsoft.pippo.core.route.RouteMatcher;
+import ro.fortsoft.pippo.core.route.Router;
 import ro.fortsoft.pippo.core.util.ClasspathUtils;
 import ro.fortsoft.pippo.core.util.StringUtils;
 
@@ -158,8 +158,8 @@ public class PippoFilter implements Filter {
         final Request request = new Request(httpServletRequest);
         final Response response = new Response(httpServletResponse, application);
         try {
-            RouteMatcher routeMatcher = application.getRouteMatcher();
-            List<RouteMatch> routeMatches = routeMatcher.findRoutes(relativePath, requestMethod);
+            Router router = application.getRouter();
+            List<RouteMatch> routeMatches = router.findRoutes(relativePath, requestMethod);
             if (!routeMatches.isEmpty()) {
                 new DefaultRouteHandlerChain(request, response, routeMatches).next();
             }

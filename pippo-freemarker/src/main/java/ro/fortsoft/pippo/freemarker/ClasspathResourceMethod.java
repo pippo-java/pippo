@@ -25,12 +25,11 @@ import org.slf4j.LoggerFactory;
 
 import ro.fortsoft.pippo.core.PippoRuntimeException;
 import ro.fortsoft.pippo.core.route.ClasspathResourceHandler;
-import ro.fortsoft.pippo.core.route.UrlBuilder;
+import ro.fortsoft.pippo.core.route.Router;
 import freemarker.template.SimpleScalar;
 import freemarker.template.TemplateMethodModelEx;
 import freemarker.template.TemplateModel;
 import freemarker.template.TemplateModelException;
-import ro.fortsoft.pippo.core.route.WebjarsResourceHandler;
 
 /**
  * Base class for handling classpath resource url generation from a Freemarker template.
@@ -42,14 +41,14 @@ abstract class ClasspathResourceMethod<X extends ClasspathResourceHandler> imple
 
     public final Logger log = LoggerFactory.getLogger(getClass());
 
-    final UrlBuilder urlBuilder;
+    final Router router;
 
     final Class<X> resourceHandlerClass;
 
     final AtomicReference<String> urlPattern;
 
-    public ClasspathResourceMethod(UrlBuilder urlBuilder, Class<X> resourceHandlerClass) {
-        this.urlBuilder = urlBuilder;
+    public ClasspathResourceMethod(Router router, Class<X> resourceHandlerClass) {
+        this.router = router;
         this.resourceHandlerClass = resourceHandlerClass;
         this.urlPattern = new AtomicReference<>(null);
     }
@@ -58,7 +57,7 @@ abstract class ClasspathResourceMethod<X extends ClasspathResourceHandler> imple
     public TemplateModel exec(List args) throws TemplateModelException {
 
         if (urlPattern.get() == null) {
-            String pattern = urlBuilder.urlPatternFor(resourceHandlerClass);
+            String pattern = router.urlPatternFor(resourceHandlerClass);
             if (pattern == null) {
                 throw new PippoRuntimeException("You must register a route for {}",
                         resourceHandlerClass.getSimpleName());
@@ -70,7 +69,7 @@ abstract class ClasspathResourceMethod<X extends ClasspathResourceHandler> imple
         String path = args.get(0).toString();
         Map<String, Object> parameters = new HashMap<>();
         parameters.put(ClasspathResourceHandler.PATH_PARAMETER, path);
-        String url = urlBuilder.urlFor(urlPattern.get(), parameters);
+        String url = router.urlFor(urlPattern.get(), parameters);
         return new SimpleScalar(url);
 
     }

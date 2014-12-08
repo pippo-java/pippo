@@ -17,7 +17,11 @@ package ro.fortsoft.pippo.jade;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Locale;
+import java.util.Map;
 import java.util.concurrent.atomic.AtomicReference;
 
 import org.ocpsoft.prettytime.PrettyTime;
@@ -28,7 +32,7 @@ import ro.fortsoft.pippo.core.Messages;
 import ro.fortsoft.pippo.core.PippoRuntimeException;
 import ro.fortsoft.pippo.core.route.ClasspathResourceHandler;
 import ro.fortsoft.pippo.core.route.PublicResourceHandler;
-import ro.fortsoft.pippo.core.route.UrlBuilder;
+import ro.fortsoft.pippo.core.route.Router;
 import ro.fortsoft.pippo.core.route.WebjarsResourceHandler;
 
 /**
@@ -44,16 +48,16 @@ public class PippoHelper {
     final Messages messages;
     final String language;
     final Locale locale;
-    final UrlBuilder urlBuilder;
+    final Router router;
     final PrettyTime prettyTime;
     final AtomicReference<String> webjarsPatternRef;
     final AtomicReference<String> publicPatternRef;
 
-    public PippoHelper(Messages messages, String language, Locale locale, UrlBuilder urlBuilder) {
+    public PippoHelper(Messages messages, String language, Locale locale, Router router) {
         this.messages = messages;
         this.language = language;
         this.locale = locale;
-        this.urlBuilder = urlBuilder;
+        this.router = router;
         this.prettyTime = new PrettyTime(locale);
         this.webjarsPatternRef = new AtomicReference<>();
         this.publicPatternRef = new AtomicReference<>();
@@ -71,7 +75,7 @@ public class PippoHelper {
                                        Class<? extends ClasspathResourceHandler> resourceHandlerClass) {
 
         if (patternRef.get() == null) {
-            String pattern = urlBuilder.urlPatternFor(resourceHandlerClass);
+            String pattern = router.urlPatternFor(resourceHandlerClass);
             if (pattern == null) {
                 throw new PippoRuntimeException("You must register a route for {}",
                         resourceHandlerClass.getSimpleName());
@@ -82,7 +86,7 @@ public class PippoHelper {
 
         Map<String, Object> parameters = new HashMap<>();
         parameters.put(ClasspathResourceHandler.PATH_PARAMETER, path);
-        String url = urlBuilder.urlFor(patternRef.get(), parameters);
+        String url = router.urlFor(patternRef.get(), parameters);
         return url;
     }
 

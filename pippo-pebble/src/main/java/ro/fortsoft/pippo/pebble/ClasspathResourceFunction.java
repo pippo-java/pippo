@@ -15,16 +15,17 @@
  */
 package ro.fortsoft.pippo.pebble;
 
-import com.mitchellbosecke.pebble.extension.Function;
-import ro.fortsoft.pippo.core.PippoRuntimeException;
-import ro.fortsoft.pippo.core.route.ClasspathResourceHandler;
-import ro.fortsoft.pippo.core.route.UrlBuilder;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicReference;
+
+import ro.fortsoft.pippo.core.PippoRuntimeException;
+import ro.fortsoft.pippo.core.route.ClasspathResourceHandler;
+import ro.fortsoft.pippo.core.route.Router;
+
+import com.mitchellbosecke.pebble.extension.Function;
 
 /**
  * Base class for handling classpath resource url generation from a Pebble template.
@@ -34,12 +35,12 @@ import java.util.concurrent.atomic.AtomicReference;
  */
 abstract class ClasspathResourceFunction<X extends ClasspathResourceHandler> implements Function {
 
-        final UrlBuilder urlBuilder;
+        final Router router;
         final Class<X> resourceHandlerClass;
         final AtomicReference<String> patternRef;
 
-        protected ClasspathResourceFunction(UrlBuilder urlBuilder, Class<X> resourceHandlerClass) {
-            this.urlBuilder = urlBuilder;
+        protected ClasspathResourceFunction(Router router, Class<X> resourceHandlerClass) {
+            this.router = router;
             this.resourceHandlerClass = resourceHandlerClass;
             this.patternRef = new AtomicReference<>();
         }
@@ -54,7 +55,7 @@ abstract class ClasspathResourceFunction<X extends ClasspathResourceHandler> imp
         @Override
         public Object execute(Map<String, Object> args) {
             if (patternRef.get() == null) {
-                String pattern = urlBuilder.urlPatternFor(resourceHandlerClass);
+                String pattern = router.urlPatternFor(resourceHandlerClass);
                 if (pattern == null) {
                     throw new PippoRuntimeException("You must register a route for {}",
                             resourceHandlerClass.getSimpleName());
@@ -65,7 +66,7 @@ abstract class ClasspathResourceFunction<X extends ClasspathResourceHandler> imp
             String path = (String) args.get(ClasspathResourceHandler.PATH_PARAMETER);
             Map<String, Object> parameters = new HashMap<>();
             parameters.put(ClasspathResourceHandler.PATH_PARAMETER, path);
-            String url = urlBuilder.urlFor(patternRef.get(), parameters);
+            String url = router.urlFor(patternRef.get(), parameters);
             return url;
         }
 

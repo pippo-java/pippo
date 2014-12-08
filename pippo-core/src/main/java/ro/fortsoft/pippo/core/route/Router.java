@@ -15,6 +15,8 @@
  */
 package ro.fortsoft.pippo.core.route;
 
+import ro.fortsoft.pippo.core.controller.Controller;
+
 import java.util.List;
 import java.util.Map;
 
@@ -25,7 +27,21 @@ import java.util.Map;
  *
  * @author Decebal Suiu
  */
-public interface RouteMatcher {
+public interface Router {
+
+    /**
+     * Gets the current context path.
+     *
+     * @return the context path
+     */
+    public String getContextPath();
+
+    /**
+     * Sets the context path for url generation.
+     *
+     * @param contextPath
+     */
+    public void setContextPath(String contextPath);
 
     public void addRoute(Route route) throws Exception;
 
@@ -35,4 +51,9 @@ public interface RouteMatcher {
 
     public String urlFor(String urlPattern, Map<String, Object> parameters);
 
+    public String urlFor(Class<? extends Controller> controllerClass, String methodName, Map<String, Object> parameters);
+
+    public String urlPatternFor(Class<? extends Controller> controllerClass, String methodName);
+
+    public String urlPatternFor(Class<? extends ClasspathResourceHandler> resourceHandlerClass);
 }
