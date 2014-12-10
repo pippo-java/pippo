@@ -25,12 +25,11 @@ import org.slf4j.LoggerFactory;
 
 import ro.fortsoft.pippo.core.Application;
 import ro.fortsoft.pippo.core.Languages;
-import ro.fortsoft.pippo.core.Messages;
 import ro.fortsoft.pippo.core.PippoConstants;
 import ro.fortsoft.pippo.core.PippoRuntimeException;
 import ro.fortsoft.pippo.core.PippoSettings;
 import ro.fortsoft.pippo.core.TemplateEngine;
-import ro.fortsoft.pippo.core.route.UrlBuilder;
+import ro.fortsoft.pippo.core.route.Router;
 import ro.fortsoft.pippo.core.util.StringUtils;
 
 import com.google.common.base.Strings;
@@ -48,7 +47,7 @@ import com.mitchellbosecke.pebble.template.PebbleTemplate;
  *
  * @author James Moger
  */
-public class PebbleTemplateEngine implements TemplateEngine {
+public class PebbleTemplateEngine extends TemplateEngine {
 
     private final Logger log = LoggerFactory.getLogger(PebbleTemplateEngine.class);
 
@@ -63,7 +62,7 @@ public class PebbleTemplateEngine implements TemplateEngine {
     public void init(Application application) {
         this.languages = application.getLanguages();
 
-        UrlBuilder urlBuilder = application.getUrlBuilder();
+        Router router = application.getRouter();
         PippoSettings pippoSettings = application.getPippoSettings();
 
         String pathPrefix = pippoSettings.getString(PippoConstants.SETTING_TEMPLATE_PATH_PREFIX, DEFAULT_PATH_PREFIX);
@@ -81,8 +80,8 @@ public class PebbleTemplateEngine implements TemplateEngine {
         engine.addExtension(new FormatTimeExtension());
         engine.addExtension(new PrettyTimeExtension());
         engine.addExtension(new AngularJSExtension());
-        engine.addExtension(new WebjarsAtExtension(urlBuilder));
-        engine.addExtension(new PublicAtExtension(urlBuilder));
+        engine.addExtension(new WebjarsAtExtension(router));
+        engine.addExtension(new PublicAtExtension(router));
 
         if (pippoSettings.isDev()) {
             // do not cache templates in dev mode
@@ -91,7 +90,7 @@ public class PebbleTemplateEngine implements TemplateEngine {
         }
 
         // set global template variables
-        engine.getGlobalVariables().put("contextPath", urlBuilder.getContextPath());
+        engine.getGlobalVariables().put("contextPath", router.getContextPath());
     }
 
     @Override

@@ -15,11 +15,13 @@
  */
 package ro.fortsoft.pippo.core;
 
+
 /**
- * @author Decebal Suiu
+ * @author James Moger
  */
-public interface ExceptionHandler {
+public interface ContentTypeEngine {
 
-    public void handle(Exception exception, Request request, Response response);
+    public void init(Application application);
 
+    public String getContentType();
 }

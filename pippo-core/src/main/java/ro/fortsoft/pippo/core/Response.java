@@ -42,17 +42,13 @@ public class Response {
     private static final Logger log = LoggerFactory.getLogger(Response.class);
 
     private HttpServletResponse httpServletResponse;
-    private JsonEngine jsonEngine;
-    private XmlEngine xmlEngine;
-    private TemplateEngine templateEngine;
+    private Map<String, ContentTypeEngine> engines;
     private Map<String, Object> locals;
     private Map<String, Cookie> cookies;
 
     Response(HttpServletResponse httpServletResponse, Application application) {
         this.httpServletResponse = httpServletResponse;
-        this.jsonEngine = application.getJsonEngine();
-        this.xmlEngine = application.getXmlEngine();
-        this.templateEngine = application.getTemplateEngine();
+        this.engines = application.getContentTypeEngines();
         this.httpServletResponse.setCharacterEncoding(StandardCharsets.UTF_8.toString());
     }
 
@@ -284,24 +280,28 @@ public class Response {
         }
     }
 
-    public void json(Object object) {
-        if (jsonEngine == null) {
-            log.error("You must set a json engine first");
-            return;
-        }
+    public void text(Object object) {
+        header(HttpConstants.Header.CONTENT_TYPE, HttpConstants.ContentType.TEXT_PLAIN);
+        send(object.toString());
+    }
 
-        header(HttpConstants.Header.CONTENT_TYPE, HttpConstants.ContentType.APPLICATION_JSON);
-        send(jsonEngine.toJson(object));
+    public void json(Object object) {
+        represent(object, HttpConstants.ContentType.APPLICATION_JSON);
     }
 
     public void xml(Object object) {
-        if (xmlEngine == null) {
-            log.error("You must set an xml engine first");
+        represent(object, HttpConstants.ContentType.APPLICATION_XML);
+    }
+
+    public void represent(Object object, String contentType) {
+        RepresentationEngine jsonEngine = (RepresentationEngine) engines.get(contentType);
+        if (jsonEngine == null) {
+            log.error("You must set a representation engine for '{}'", contentType);
             return;
         }
 
-        header(HttpConstants.Header.CONTENT_TYPE, HttpConstants.ContentType.APPLICATION_XML);
-        send(xmlEngine.toXml(object));
+        header(HttpConstants.Header.CONTENT_TYPE, jsonEngine.getContentType());
+        send(jsonEngine.toRepresentation(object));
     }
 
     public Response bind(String name, Object model) {
@@ -315,6 +315,7 @@ public class Response {
     }
 
     public void render(String templateName, Map<String, Object> model) {
+        TemplateEngine templateEngine = (TemplateEngine) engines.get(HttpConstants.ContentType.TEXT_HTML);
         if (templateEngine == null) {
             log.error("You must set a template engine first");
             return;

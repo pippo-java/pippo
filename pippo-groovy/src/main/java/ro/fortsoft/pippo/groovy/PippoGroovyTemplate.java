@@ -40,7 +40,7 @@ import ro.fortsoft.pippo.core.PippoConstants;
 import ro.fortsoft.pippo.core.PippoRuntimeException;
 import ro.fortsoft.pippo.core.route.ClasspathResourceHandler;
 import ro.fortsoft.pippo.core.route.PublicResourceHandler;
-import ro.fortsoft.pippo.core.route.UrlBuilder;
+import ro.fortsoft.pippo.core.route.Router;
 import ro.fortsoft.pippo.core.route.WebjarsResourceHandler;
 import ro.fortsoft.pippo.core.util.StringUtils;
 
@@ -58,7 +58,7 @@ public abstract class PippoGroovyTemplate extends BaseTemplate {
 
     private final MarkupTemplateEngine engine;
 
-    UrlBuilder urlBuilder;
+    Router router;
 
     String language;
 
@@ -85,13 +85,13 @@ public abstract class PippoGroovyTemplate extends BaseTemplate {
     }
 
     @SuppressWarnings("unchecked")
-    public void setup(Languages languages, Messages messages, UrlBuilder urlBuilder) {
+    public void setup(Languages languages, Messages messages, Router router) {
         this.languages = languages;
         this.messages = messages;
-        this.urlBuilder = urlBuilder;
+        this.router = router;
 
         // set global template variables
-        getModel().put("contextPath",  urlBuilder.getContextPath());
+        getModel().put("contextPath",  router.getContextPath());
 
         String language = (String) getModel().get(PippoConstants.REQUEST_PARAMETER_LANG);
         if (StringUtils.isNullOrEmpty(language)) {
@@ -123,7 +123,7 @@ public abstract class PippoGroovyTemplate extends BaseTemplate {
                                        Class<? extends ClasspathResourceHandler> resourceHandlerClass) {
 
         if (patternRef.get() == null) {
-            String pattern = urlBuilder.urlPatternFor(resourceHandlerClass);
+            String pattern = router.urlPatternFor(resourceHandlerClass);
             if (pattern == null) {
                 throw new PippoRuntimeException("You must register a route for {}",
                         resourceHandlerClass.getSimpleName());
@@ -134,7 +134,7 @@ public abstract class PippoGroovyTemplate extends BaseTemplate {
 
         Map<String, Object> parameters = new HashMap<>();
         parameters.put(ClasspathResourceHandler.PATH_PARAMETER, path);
-        String url = urlBuilder.urlFor(patternRef.get(), parameters);
+        String url = router.urlFor(patternRef.get(), parameters);
         return url;
     }
 
@@ -229,7 +229,7 @@ public abstract class PippoGroovyTemplate extends BaseTemplate {
         URL resource = engine.resolveTemplate(templateName);
         PippoGroovyTemplate template = (PippoGroovyTemplate) engine
                 .createTypeCheckedModelTemplate(resource, modelTypes).make(submodel);
-        template.setup(languages, messages, urlBuilder);
+        template.setup(languages, messages, router);
         template.writeTo(getOut());
         return this;
     }

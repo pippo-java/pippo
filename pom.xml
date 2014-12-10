@@ -115,6 +115,7 @@
         <module>pippo-gson</module>
         <module>pippo-fastjson</module>
         <module>pippo-xstream</module>
+        <module>pippo-textplain</module>
     </modules>
 
 </project>

@@ -26,7 +26,7 @@ import ro.fortsoft.pippo.core.PippoConstants;
 import ro.fortsoft.pippo.core.PippoRuntimeException;
 import ro.fortsoft.pippo.core.PippoSettings;
 import ro.fortsoft.pippo.core.TemplateEngine;
-import ro.fortsoft.pippo.core.route.UrlBuilder;
+import ro.fortsoft.pippo.core.route.Router;
 import ro.fortsoft.pippo.core.util.StringUtils;
 import freemarker.log.Logger;
 import freemarker.template.Configuration;
@@ -36,7 +36,7 @@ import freemarker.template.Template;
 /**
  * @author Decebal Suiu
  */
-public class FreemarkerTemplateEngine implements TemplateEngine {
+public class FreemarkerTemplateEngine extends TemplateEngine {
 
     public static final String FTL = "ftl";
     public static final String FILE_SUFFIX = "." + FTL;
@@ -61,7 +61,7 @@ public class FreemarkerTemplateEngine implements TemplateEngine {
         this.languages = application.getLanguages();
         this.messages = application.getMessages();
 
-        UrlBuilder urlBuilder = application.getUrlBuilder();
+        Router router = application.getRouter();
         PippoSettings pippoSettings = application.getPippoSettings();
 
         String pathPrefix = pippoSettings.getString(PippoConstants.SETTING_TEMPLATE_PATH_PREFIX, DEFAULT_PATH_PREFIX);
@@ -90,10 +90,10 @@ public class FreemarkerTemplateEngine implements TemplateEngine {
         }
 
         // set global template variables
-        configuration.setSharedVariable("contextPath", new SimpleScalar(urlBuilder.getContextPath()));
+        configuration.setSharedVariable("contextPath", new SimpleScalar(router.getContextPath()));
 
-        webjarResourcesMethod = new WebjarsAtMethod(urlBuilder);
-        publicResourcesMethod = new PublicAtMethod(urlBuilder);
+        webjarResourcesMethod = new WebjarsAtMethod(router);
+        publicResourcesMethod = new PublicAtMethod(router);
     }
 
     public Configuration getConfiguration() {

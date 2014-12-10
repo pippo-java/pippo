@@ -28,7 +28,7 @@ import java.util.Map;
 /**
  * @author Decebal Suiu
  */
-public abstract class AbstractRouteMatcher implements RouteMatcher {
+public abstract class AbstractRouteMatcher implements Router {
 
     private static final Logger log = LoggerFactory.getLogger(AbstractRouteMatcher.class);
 

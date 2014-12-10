@@ -49,7 +49,7 @@ public class TemplateDemoApplication extends Application {
         super.init();
 
         // set the template engine
-        setTemplateEngine(engine);
+        setContentTypeEngine(engine);
 
         // add classpath resource handlers
         GET(new WebjarsResourceHandler());

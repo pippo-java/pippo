@@ -15,24 +15,12 @@
  */
 package ro.fortsoft.pippo.core;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import ro.fortsoft.pippo.core.route.DefaultRouteHandlerChain;
 import ro.fortsoft.pippo.core.route.RouteMatch;
-import ro.fortsoft.pippo.core.route.RouteMatcher;
-import ro.fortsoft.pippo.core.route.RouteNotFoundHandler;
+import ro.fortsoft.pippo.core.route.Router;
 import ro.fortsoft.pippo.core.util.ClasspathUtils;
 import ro.fortsoft.pippo.core.util.StringUtils;
 
-import javax.servlet.Filter;
-import javax.servlet.FilterChain;
-import javax.servlet.FilterConfig;
-import javax.servlet.FilterRegistration;
-import javax.servlet.ServletException;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -45,6 +33,19 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Properties;
 import java.util.Set;
+
+import javax.servlet.Filter;
+import javax.servlet.FilterChain;
+import javax.servlet.FilterConfig;
+import javax.servlet.FilterRegistration;
+import javax.servlet.ServletException;
+import javax.servlet.ServletRequest;
+import javax.servlet.ServletResponse;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author Decebal Suiu
@@ -157,25 +158,25 @@ public class PippoFilter implements Filter {
         final Request request = new Request(httpServletRequest);
         final Response response = new Response(httpServletResponse, application);
         try {
-            RouteMatcher routeMatcher = application.getRouteMatcher();
-            List<RouteMatch> routeMatches = routeMatcher.findRoutes(relativePath, requestMethod);
+            Router router = application.getRouter();
+            List<RouteMatch> routeMatches = router.findRoutes(relativePath, requestMethod);
             if (!routeMatches.isEmpty()) {
                 new DefaultRouteHandlerChain(request, response, routeMatches).next();
             }
 
             if (!response.isCommitted()) {
                 log.warn("Cannot find a route for '{} {}'", requestMethod, requestUri);
-                RouteNotFoundHandler routeNotFoundHandler = application.getRouteNotFoundHandler();
-                if (routeNotFoundHandler != null) {
-                    routeNotFoundHandler.handle(requestMethod, requestUri, request, response);
+                ErrorHandler errorHandler = application.getErrorHandler();
+                if (errorHandler != null) {
+                    errorHandler.handle(HttpConstants.StatusCode.NOT_FOUND, request, response);
                 }
             }
         } catch (Exception e) {
             log.error(e.getMessage(), e);
-            ExceptionHandler exceptionHandler = application.getExceptionHandler();
-            if (exceptionHandler != null) {
+            ErrorHandler errorHandler = application.getErrorHandler();
+            if (errorHandler != null) {
                 if (!response.isCommitted()) {
-                    exceptionHandler.handle(e, request, response);
+                    errorHandler.handle(e, request, response);
                 } else {
                     log.debug("The response has already been committed. Cannot use the exception handler.");
                 }

@@ -15,7 +15,9 @@
  */
 package ro.fortsoft.pippo.xstream;
 
-import ro.fortsoft.pippo.core.XmlEngine;
+import ro.fortsoft.pippo.core.Application;
+import ro.fortsoft.pippo.core.HttpConstants;
+import ro.fortsoft.pippo.core.RepresentationEngine;
 
 import com.thoughtworks.xstream.XStream;
 
@@ -24,15 +26,24 @@ import com.thoughtworks.xstream.XStream;
  *
  * @author James Moger
  */
-public class XstreamEngine implements XmlEngine {
+public class XstreamEngine implements RepresentationEngine {
 
 	@Override
-	public String toXml(Object object) {
+	public void init(Application application) {
+	}
+
+    @Override
+    public String getContentType() {
+        return HttpConstants.ContentType.APPLICATION_XML;
+    }
+
+	@Override
+	public String toRepresentation(Object object) {
 		return new XStream().toXML(object);
 	}
 
 	@Override
-	public <X> X fromXml(String xml, Class<X> xClass) {
+	public <X> X fromRepresentation(String xml, Class<X> xClass) {
 		Object o = new XStream().fromXML(xml);
 		return (X) o;
 	}

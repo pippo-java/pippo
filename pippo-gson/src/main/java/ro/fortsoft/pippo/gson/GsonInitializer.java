@@ -30,6 +30,7 @@ public class GsonInitializer implements Initializer {
 
     @Override
     public void init(Application application) {
+        application.registerContentTypeEngine(GsonEngine.class);
     }
 
     @Override

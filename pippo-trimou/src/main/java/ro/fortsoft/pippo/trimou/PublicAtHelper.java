@@ -16,8 +16,7 @@
 package ro.fortsoft.pippo.trimou;
 
 import ro.fortsoft.pippo.core.route.PublicResourceHandler;
-import ro.fortsoft.pippo.core.route.UrlBuilder;
-import ro.fortsoft.pippo.core.route.WebjarsResourceHandler;
+import ro.fortsoft.pippo.core.route.Router;
 
 /**
  * Helper for handling public resource url generation from a Trimou template.
@@ -26,8 +25,8 @@ import ro.fortsoft.pippo.core.route.WebjarsResourceHandler;
   */
 public class PublicAtHelper extends ClasspathResourceHelper<PublicResourceHandler> {
 
-    public PublicAtHelper(UrlBuilder urlBuilder) {
-        super(urlBuilder, PublicResourceHandler.class);
+    public PublicAtHelper(Router router) {
+        super(router, PublicResourceHandler.class);
     }
 
 }

@@ -15,6 +15,10 @@
  */
 package ro.fortsoft.pippo.core.route;
 
+import ro.fortsoft.pippo.core.controller.Controller;
+import ro.fortsoft.pippo.core.controller.ControllerHandler;
+import ro.fortsoft.pippo.core.util.StringUtils;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -32,10 +36,11 @@ import org.slf4j.LoggerFactory;
  * The routes are matched in the order they are defined.
  *
  * @author Decebal Suiu
+ * @author James Moger
  */
-public class DefaultRouteMatcher extends AbstractRouteMatcher {
+public class DefaultRouter extends AbstractRouteMatcher {
 
-    private static final Logger log = LoggerFactory.getLogger(DefaultRouteMatcher.class);
+    private static final Logger log = LoggerFactory.getLogger(DefaultRouter.class);
 
     // Matches: {id} AND {id: .*?}
     // group(1) extracts the name of the group (in that case "id").
@@ -51,10 +56,37 @@ public class DefaultRouteMatcher extends AbstractRouteMatcher {
     // key = request method
     private Map<String, List<PatternBinding>> bindingsCache;
 
-    public DefaultRouteMatcher() {
+    private String contextPath;
+
+    public DefaultRouter() {
         super();
 
         bindingsCache = new HashMap<>();
+        contextPath = "/";
+    }
+
+    @Override
+    public String getContextPath() {
+        return contextPath;
+    }
+
+    @Override
+    public void setContextPath(String contextPath) {
+        this.contextPath = StringUtils.addStart(contextPath, "/");
+    }
+
+    /**
+     * Prefix the given path with the context path.
+     *
+     * @param path
+     * @return an absolute path
+     */
+    private String prefixContextPath(String path) {
+        if ("/".equals(contextPath)) {
+            // context path is the root
+            return StringUtils.addStart(path, "/");
+        }
+        return contextPath + StringUtils.addStart(path, "/");
     }
 
     @Override
@@ -87,8 +119,60 @@ public class DefaultRouteMatcher extends AbstractRouteMatcher {
     public String urlFor(String urlPattern, Map<String, Object> parameters) {
         PatternBinding binding = getPatternBinding(urlPattern);
 
-        return (binding != null) ? urlFor(binding, parameters) : null;
+        return (binding != null) ? prefixContextPath(urlFor(binding, parameters)) : null;
     }
+
+    @Override
+    public String urlPatternFor(Class<? extends Controller> controllerClass, String methodName) {
+        Route route = getRoute(controllerClass, methodName);
+
+        return (route != null) ? route.getUrlPattern() : null;
+    }
+
+    @Override
+    public String urlFor(Class<? extends Controller> controllerClass, String methodName, Map<String, Object> parameters) {
+        Route route = getRoute(controllerClass, methodName);
+
+        return (route != null) ? prefixContextPath(urlFor(route.getUrlPattern(), parameters)) : null;
+    }
+
+    private Route getRoute(Class<? extends Controller> controllerClass, String methodName) {
+        List<Route> routes = getRoutes();
+        for (Route route : routes) {
+            RouteHandler routeHandler = route.getRouteHandler();
+            if (routeHandler instanceof ControllerHandler) {
+                ControllerHandler controllerHandler = (ControllerHandler) routeHandler;
+                if (controllerClass == controllerHandler.getControllerClass()
+                        && methodName.equals(controllerHandler.getMethodName())) {
+                    return route;
+                }
+            }
+        }
+
+        return null;
+    }
+
+    @Override
+    public String urlPatternFor(Class<? extends ClasspathResourceHandler> resourceHandlerClass) {
+        Route route = getRoute(resourceHandlerClass);
+
+        return (route != null) ? route.getUrlPattern() : null;
+    }
+
+    private Route getRoute(Class<? extends ClasspathResourceHandler> resourceHandlerClass) {
+        List<Route> routes = getRoutes();
+        for (Route route : routes) {
+            RouteHandler routeHandler = route.getRouteHandler();
+            if (resourceHandlerClass.isAssignableFrom(routeHandler.getClass())) {
+                ClasspathResourceHandler resourceHandler = (ClasspathResourceHandler) routeHandler;
+                if (resourceHandlerClass == resourceHandler.getClass()) {
+                    return route;
+                }
+            }
+        }
+        return null;
+    }
+
 
     private void addBinding(Route route) {
         String urlPattern = route.getUrlPattern();

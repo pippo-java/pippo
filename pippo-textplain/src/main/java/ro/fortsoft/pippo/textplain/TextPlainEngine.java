@@ -13,38 +13,38 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package ro.fortsoft.pippo.fastjson;
+package ro.fortsoft.pippo.textplain;
 
 import ro.fortsoft.pippo.core.Application;
 import ro.fortsoft.pippo.core.HttpConstants;
+import ro.fortsoft.pippo.core.PippoRuntimeException;
 import ro.fortsoft.pippo.core.RepresentationEngine;
 
-import com.alibaba.fastjson.JSON;
-
 /**
- * A JsonEngine based on Fastjson.
+ * A text/plain engine based on toString()
  *
  * @author James Moger
  */
-public class FastjsonEngine implements RepresentationEngine {
+public class TextPlainEngine implements RepresentationEngine {
 
-	@Override
-	public void init(Application application) {
-	}
+    @Override
+    public void init(Application application) {
+    }
 
     @Override
     public String getContentType() {
-        return HttpConstants.ContentType.APPLICATION_JSON;
+        return HttpConstants.ContentType.TEXT_PLAIN;
     }
 
-	@Override
-	public String toRepresentation(Object object) {
-		return JSON.toJSONString(object);
-	}
+    @Override
+    public String toRepresentation(Object object) {
+        return object.toString();
+    }
 
-	@Override
-	public <T> T fromRepresentation(String json, Class<T> classOfT) {
-		return JSON.parseObject(json, classOfT);
-	}
+    @Override
+    public <T> T fromRepresentation(String text, Class<T> classOfT) {
+        throw new PippoRuntimeException("Sorry, can not transform '{}' content to '{}'", getContentType(),
+                classOfT.getName());
+    }
 
 }

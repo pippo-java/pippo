@@ -21,19 +21,18 @@ import ro.fortsoft.pippo.core.controller.ControllerInitializationListenerList;
 import ro.fortsoft.pippo.core.controller.ControllerInstantiationListenerList;
 import ro.fortsoft.pippo.core.controller.ControllerInvokeListenerList;
 import ro.fortsoft.pippo.core.route.ClasspathResourceHandler;
-import ro.fortsoft.pippo.core.route.DefaultRouteMatcher;
-import ro.fortsoft.pippo.core.route.DefaultRouteNotFoundHandler;
+import ro.fortsoft.pippo.core.route.DefaultRouter;
 import ro.fortsoft.pippo.core.route.Route;
 import ro.fortsoft.pippo.core.route.RouteHandler;
-import ro.fortsoft.pippo.core.route.RouteMatcher;
-import ro.fortsoft.pippo.core.route.RouteNotFoundHandler;
-import ro.fortsoft.pippo.core.route.UrlBuilder;
+import ro.fortsoft.pippo.core.route.Router;
 import ro.fortsoft.pippo.core.util.HttpCacheToolkit;
 import ro.fortsoft.pippo.core.util.MimeTypes;
-import ro.fortsoft.pippo.core.util.ServiceLocator;
+import ro.fortsoft.pippo.core.util.StringUtils;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.TreeMap;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -50,13 +49,9 @@ public class Application {
     private Messages messages;
     private MimeTypes mimeTypes;
     private HttpCacheToolkit httpCacheToolkit;
-    private TemplateEngine templateEngine;
-    private JsonEngine jsonEngine;
-    private XmlEngine xmlEngine;
-    private RouteMatcher routeMatcher;
-    private UrlBuilder urlBuilder;
-    private ExceptionHandler exceptionHandler;
-    private RouteNotFoundHandler routeNotFoundHandler;
+    private Map<String, ContentTypeEngine> engines;
+    private Router router;
+    private ErrorHandler errorHandler;
 
     private String uploadLocation = System.getProperty("java.io.tmpdir");
     private long maximumUploadSize = -1L;
@@ -92,6 +87,7 @@ public class Application {
         this.messages = new Messages(languages);
         this.mimeTypes = new MimeTypes(settings);
         this.httpCacheToolkit = new HttpCacheToolkit(settings);
+        this.engines = new TreeMap<>();
     }
 
     public void init() {
@@ -135,64 +131,91 @@ public class Application {
         return httpCacheToolkit;
     }
 
-    public TemplateEngine getTemplateEngine() {
-        if (templateEngine == null) {
-            TemplateEngine engine = ServiceLocator.locate(TemplateEngine.class);
-            setTemplateEngine(engine);
+    public Map<String, ContentTypeEngine> getContentTypeEngines() {
+        return Collections.unmodifiableMap(engines);
+    }
+
+    public boolean hasContentTypeEngine(String contentType) {
+        return engines.containsKey(contentType);
+    }
+
+    /**
+     * Registers a content type engine if no other engine has been registered
+     * for the content type.
+     *
+     * @param engineClass
+     */
+    public void registerContentTypeEngine(Class<? extends ContentTypeEngine> engineClass) {
+        ContentTypeEngine engine = null;
+        try {
+            engine = engineClass.newInstance();
+        } catch (Exception e) {
+            throw new PippoRuntimeException("Failed to instantiate '{}'", e, engineClass.getName());
+        }
+        if (!engines.containsKey(engine.getContentType())) {
+            setContentTypeEngine(engine);
+        } else {
+            log.debug("'{}' engine already registered, ignoring {}", HttpConstants.ContentType.TEXT_HTML,
+                    engineClass.getName());
+        }
+    }
+
+    /**
+     * Returns the first matching content type engine for a simple content type
+     * or a complex accept header like:
+     *
+     * <pre>
+     * text/html,application/xhtml+xml,application/xml;q=0.9,image/webp
+     * </pre>
+     *
+     * @param contentType
+     * @return null or the first matching content type engine
+     */
+    public ContentTypeEngine getContentTypeEngine(String contentType) {
+        if (StringUtils.isNullOrEmpty(contentType)) {
+            return null;
         }
 
-        return templateEngine;
-    }
+        String [] types = contentType.split(",");
+        for (String type : types) {
+            if (type.contains(";")) {
+                // drop ;q=0.8 quality scores
+                type = type.substring(type.indexOf(';'));
+            }
 
-    public void setTemplateEngine(TemplateEngine templateEngine) {
-        // initialize the engine first
-        templateEngine.init(this);
-
-        this.templateEngine = templateEngine;
-    }
-
-    public JsonEngine getJsonEngine() {
-        if (jsonEngine == null) {
-            jsonEngine = ServiceLocator.locate(JsonEngine.class);
+            ContentTypeEngine engine = engines.get(type);
+            if (engine != null) {
+                return engine;
+            }
         }
 
-        return jsonEngine;
+        return null;
     }
 
-    public void setJsonEngine(JsonEngine jsonEngine) {
-        this.jsonEngine = jsonEngine;
+    public void setContentTypeEngine(ContentTypeEngine engine) {
+        engine.init(this);
+        engines.put(engine.getContentType(), engine);
+        log.debug("'{}' content engine is {}", engine.getContentType(), engine.getClass().getName());
     }
 
-    public XmlEngine getXmlEngine() {
-        if (xmlEngine == null) {
-            xmlEngine = ServiceLocator.locate(XmlEngine.class);
+    public Router getRouter() {
+        if (router == null) {
+            router = new DefaultRouter();
         }
 
-        return xmlEngine;
+        return router;
     }
 
-    public void setXmlEngine(XmlEngine xmlEngine) {
-        this.xmlEngine = xmlEngine;
-    }
-
-    public RouteMatcher getRouteMatcher() {
-        if (routeMatcher == null) {
-            routeMatcher = new DefaultRouteMatcher();
-        }
-
-        return routeMatcher;
-    }
-
-    public void setRouteMatcher(RouteMatcher routeMatcher) {
-        this.routeMatcher = routeMatcher;
+    public void setRouter(Router router) {
+        this.router = router;
     }
 
     void setContextPath(String contextPath) {
-        getUrlBuilder().setContextPath(contextPath);
+        getRouter().setContextPath(contextPath);
     }
 
     public void GET(ClasspathResourceHandler resourceHandler) {
-        if (getUrlBuilder().urlPatternFor(resourceHandler.getClass()) != null) {
+        if (getRouter().urlPatternFor(resourceHandler.getClass()) != null) {
             throw new PippoRuntimeException("You may only register one route for {}",
                     resourceHandler.getClass().getSimpleName());
         }
@@ -252,34 +275,22 @@ public class Application {
     public void addRoute(String urlPattern, String requestMethod, RouteHandler routeHandler) {
         Route route = new Route(urlPattern, requestMethod, routeHandler);
         try {
-            getRouteMatcher().addRoute(route);
+            getRouter().addRoute(route);
         } catch (Exception e) {
             log.error("Cannot add route '{}'", route, e);
         }
     }
 
-    public ExceptionHandler getExceptionHandler() {
-        if (exceptionHandler == null) {
-            exceptionHandler = new DefaultExceptionHandler(this);
+    public ErrorHandler getErrorHandler() {
+        if (errorHandler == null) {
+            errorHandler = new DefaultErrorHandler(this);
         }
 
-        return exceptionHandler;
+        return errorHandler;
     }
 
-    public void setExceptionHandler(ExceptionHandler exceptionHandler) {
-        this.exceptionHandler = exceptionHandler;
-    }
-
-    public RouteNotFoundHandler getRouteNotFoundHandler() {
-        if (routeNotFoundHandler == null) {
-            routeNotFoundHandler = new DefaultRouteNotFoundHandler(this);
-        }
-
-        return routeNotFoundHandler;
-    }
-
-    public void setRouteNotFoundHandler(RouteNotFoundHandler routeNotFoundHandler) {
-        this.routeNotFoundHandler = routeNotFoundHandler;
+    public void setErrorHandler(ErrorHandler errorHandler) {
+        this.errorHandler = errorHandler;
     }
 
     /**
@@ -338,13 +349,6 @@ public class Application {
         }
 
         return locals;
-    }
-
-    public UrlBuilder getUrlBuilder() {
-        if (urlBuilder == null) {
-            urlBuilder = new UrlBuilder(getRouteMatcher());
-        }
-        return urlBuilder;
     }
 
     @Override

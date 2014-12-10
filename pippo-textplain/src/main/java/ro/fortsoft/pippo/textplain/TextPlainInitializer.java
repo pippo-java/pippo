@@ -13,16 +13,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package ro.fortsoft.pippo.core;
+package ro.fortsoft.pippo.textplain;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import ro.fortsoft.pippo.core.Application;
+import ro.fortsoft.pippo.core.Initializer;
 
 /**
  * @author James Moger
  */
-public interface XmlEngine {
+public class TextPlainInitializer implements Initializer {
 
-    public String toXml(Object object);
+	private static final Logger log = LoggerFactory.getLogger(TextPlainInitializer.class);
 
-    public <X> X fromXml(String xml, Class<X> xClass);
+	@Override
+	public void init(Application application) {
+		application.registerContentTypeEngine(TextPlainEngine.class);
+	}
+
+	@Override
+	public void destroy(Application application) {
+	}
 
 }

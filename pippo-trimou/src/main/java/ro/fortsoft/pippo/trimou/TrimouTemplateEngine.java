@@ -15,6 +15,10 @@
  */
 package ro.fortsoft.pippo.trimou;
 
+import java.io.Writer;
+import java.util.Locale;
+import java.util.Map;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.trimou.Mustache;
@@ -25,25 +29,22 @@ import org.trimou.handlebars.HelpersBuilder;
 import org.trimou.handlebars.i18n.DateTimeFormatHelper;
 import org.trimou.minify.Minify;
 import org.trimou.prettytime.PrettyTimeHelper;
+
 import ro.fortsoft.pippo.core.Application;
 import ro.fortsoft.pippo.core.Languages;
 import ro.fortsoft.pippo.core.PippoConstants;
 import ro.fortsoft.pippo.core.PippoRuntimeException;
 import ro.fortsoft.pippo.core.PippoSettings;
 import ro.fortsoft.pippo.core.TemplateEngine;
-import ro.fortsoft.pippo.core.route.UrlBuilder;
+import ro.fortsoft.pippo.core.route.Router;
 import ro.fortsoft.pippo.core.util.StringUtils;
-
-import java.io.Writer;
-import java.util.Locale;
-import java.util.Map;
 
 /**
  * Trimou template engine for Pippo.
  *
  * @author James Moger
  */
-public class TrimouTemplateEngine implements TemplateEngine {
+public class TrimouTemplateEngine extends TemplateEngine {
 
     private static final Logger log = LoggerFactory.getLogger(TrimouTemplateEngine.class);
 
@@ -59,7 +60,7 @@ public class TrimouTemplateEngine implements TemplateEngine {
         this.languages = application.getLanguages();
         this.localeSupport = new ThreadLocalLocaleSupport();
 
-        UrlBuilder urlBuilder = application.getUrlBuilder();
+        Router router = application.getRouter();
         PippoSettings pippoSettings = application.getPippoSettings();
 
         MustacheEngineBuilder builder = MustacheEngineBuilder.newBuilder();
@@ -69,8 +70,8 @@ public class TrimouTemplateEngine implements TemplateEngine {
         builder.registerHelper("i18n", new I18nHelper(application.getMessages()));
         builder.registerHelper("formatTime", new DateTimeFormatHelper());
         builder.registerHelper("prettyTime", new PrettyTimeHelper());
-        builder.registerHelper("webjarsAt", new WebjarsAtHelper(urlBuilder));
-        builder.registerHelper("publicAt", new PublicAtHelper(urlBuilder));
+        builder.registerHelper("webjarsAt", new WebjarsAtHelper(router));
+        builder.registerHelper("publicAt", new PublicAtHelper(router));
         builder.registerHelpers(HelpersBuilder.extra().build());
 
         String pathPrefix = pippoSettings.getString(PippoConstants.SETTING_TEMPLATE_PATH_PREFIX, DEFAULT_PATH_PREFIX);
@@ -86,7 +87,7 @@ public class TrimouTemplateEngine implements TemplateEngine {
         }
 
         // set global template variables
-        builder.addGlobalData("contextPath", urlBuilder.getContextPath());
+        builder.addGlobalData("contextPath", router.getContextPath());
 
         engine = builder.build();
     }

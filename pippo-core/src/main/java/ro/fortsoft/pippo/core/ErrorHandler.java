@@ -17,12 +17,12 @@ package ro.fortsoft.pippo.core;
 
 
 /**
- * @author James Moger
+ * @author Decebal Suiu
  */
-public interface JsonEngine {
+public interface ErrorHandler {
 
-    public String toJson(Object object);
+    public void handle(int statusCode, Request request, Response response);
 
-    public <X> X fromJson(String json, Class<X> xClass);
+    public void handle(Exception exception, Request request, Response response);
 
 }
