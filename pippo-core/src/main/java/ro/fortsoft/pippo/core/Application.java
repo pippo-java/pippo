@@ -154,7 +154,7 @@ public class Application {
             engine = engineClass.newInstance();
             setTemplateEngine(engine);
         } catch (Exception e) {
-            throw new PippoRuntimeException("Failed to instantiate '{}'", e, engineClass.getName());
+            throw new PippoRuntimeException("Failed to instantiate '{}'", engineClass.getName(), e);
         }
     }
 
@@ -188,7 +188,7 @@ public class Application {
         try {
             engine = engineClass.newInstance();
         } catch (Exception e) {
-            throw new PippoRuntimeException("Failed to instantiate '{}'", e, engineClass.getName());
+            throw new PippoRuntimeException("Failed to instantiate '{}'", engineClass.getName(), e);
         }
         if (!engines.containsKey(engine.getContentType())) {
             setContentTypeEngine(engine);
