@@ -30,6 +30,7 @@ public class GroovyInitializer implements Initializer {
 
     @Override
     public void init(Application application) {
+        application.registerTemplateEngine(GroovyTemplateEngine.class);
     }
 
     @Override

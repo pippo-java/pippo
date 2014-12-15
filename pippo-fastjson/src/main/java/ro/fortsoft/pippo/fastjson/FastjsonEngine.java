@@ -15,7 +15,9 @@
  */
 package ro.fortsoft.pippo.fastjson;
 
-import ro.fortsoft.pippo.core.JsonEngine;
+import ro.fortsoft.pippo.core.Application;
+import ro.fortsoft.pippo.core.ContentTypeEngine;
+import ro.fortsoft.pippo.core.HttpConstants;
 
 import com.alibaba.fastjson.JSON;
 
@@ -24,16 +26,25 @@ import com.alibaba.fastjson.JSON;
  *
  * @author James Moger
  */
-public class FastjsonEngine implements JsonEngine {
+public class FastjsonEngine implements ContentTypeEngine {
 
 	@Override
-	public String toJson(Object object) {
+	public void init(Application application) {
+	}
+
+    @Override
+    public String getContentType() {
+        return HttpConstants.ContentType.APPLICATION_JSON;
+    }
+
+	@Override
+	public String toString(Object object) {
 		return JSON.toJSONString(object);
 	}
 
 	@Override
-	public <T> T fromJson(String json, Class<T> classOfT) {
-		return JSON.parseObject(json, classOfT);
+	public <T> T fromString(String content, Class<T> classOfT) {
+		return JSON.parseObject(content, classOfT);
 	}
 
 }

@@ -42,16 +42,14 @@ public class Response {
     private static final Logger log = LoggerFactory.getLogger(Response.class);
 
     private HttpServletResponse httpServletResponse;
-    private JsonEngine jsonEngine;
-    private XmlEngine xmlEngine;
+    private Map<String, ContentTypeEngine> contentTypeEngines;
     private TemplateEngine templateEngine;
     private Map<String, Object> locals;
     private Map<String, Cookie> cookies;
 
     Response(HttpServletResponse httpServletResponse, Application application) {
         this.httpServletResponse = httpServletResponse;
-        this.jsonEngine = application.getJsonEngine();
-        this.xmlEngine = application.getXmlEngine();
+        this.contentTypeEngines = application.getContentTypeEngines();
         this.templateEngine = application.getTemplateEngine();
         this.httpServletResponse.setCharacterEncoding(StandardCharsets.UTF_8.toString());
     }
@@ -218,6 +216,29 @@ public class Response {
         return httpServletResponse.isCommitted();
     }
 
+    public void json(Object object) {
+        send(object, HttpConstants.ContentType.APPLICATION_JSON);
+    }
+
+    public void xml(Object object) {
+        send(object, HttpConstants.ContentType.APPLICATION_XML);
+    }
+
+    public void send(Object object) {
+        send(object, getContentType());
+    }
+
+    public void send(Object object, String contentType) {
+        ContentTypeEngine contentTypeEngine = contentTypeEngines.get(contentType);
+        if (contentTypeEngine == null) {
+            log.error("You must set a content type engine for '{}'", contentType);
+            return;
+        }
+
+        header(HttpConstants.Header.CONTENT_TYPE, contentTypeEngine.getContentType());
+        send(contentTypeEngine.toString(object));
+    }
+
     public void send(CharSequence content) {
         checkCommitted();
         write(content);
@@ -282,26 +303,6 @@ public class Response {
         } finally {
             IoUtils.close(input);
         }
-    }
-
-    public void json(Object object) {
-        if (jsonEngine == null) {
-            log.error("You must set a json engine first");
-            return;
-        }
-
-        header(HttpConstants.Header.CONTENT_TYPE, HttpConstants.ContentType.APPLICATION_JSON);
-        send(jsonEngine.toJson(object));
-    }
-
-    public void xml(Object object) {
-        if (xmlEngine == null) {
-            log.error("You must set an xml engine first");
-            return;
-        }
-
-        header(HttpConstants.Header.CONTENT_TYPE, HttpConstants.ContentType.APPLICATION_XML);
-        send(xmlEngine.toXml(object));
     }
 
     public Response bind(String name, Object model) {

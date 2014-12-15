@@ -30,6 +30,7 @@ public class XstreamInitializer implements Initializer {
 
     @Override
     public void init(Application application) {
+        application.registerContentTypeEngine(XstreamEngine.class);
     }
 
     @Override
