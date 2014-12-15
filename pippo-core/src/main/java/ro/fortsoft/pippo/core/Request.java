@@ -15,6 +15,9 @@
  */
 package ro.fortsoft.pippo.core;
 
+import ro.fortsoft.pippo.core.util.IoUtils;
+import ro.fortsoft.pippo.core.util.StringValue;
+
 import java.lang.reflect.Field;
 import java.util.Arrays;
 import java.util.Collection;
@@ -32,9 +35,6 @@ import javax.servlet.http.Part;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import ro.fortsoft.pippo.core.util.IoUtils;
-import ro.fortsoft.pippo.core.util.StringValue;
 
 /**
  * Represents a server-side HTTP request. An instance of this class is created for each request.
@@ -135,6 +135,10 @@ public class Request {
 
     public String getScheme() {
         return httpServletRequest.getScheme();
+    }
+
+    public String getAcceptType() {
+        return httpServletRequest.getHeader(HttpConstants.Header.ACCEPT);
     }
 
     public String getBody() {

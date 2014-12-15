@@ -30,6 +30,7 @@ public class TrimouInitializer implements Initializer {
 
     @Override
     public void init(Application application) {
+        application.registerTemplateEngine(TrimouTemplateEngine.class);
     }
 
     @Override

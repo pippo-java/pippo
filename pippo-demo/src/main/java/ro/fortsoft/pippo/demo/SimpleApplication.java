@@ -89,6 +89,20 @@ public class SimpleApplication extends Application {
 
         });
 
+        // send text as response
+        GET("/text", new RouteHandler() {
+
+            @Override
+            public void handle(Request request, Response response, RouteHandlerChain chain) {
+                Contact contact = new Contact()
+                        .setName("John")
+                        .setPhone("0733434435")
+                        .setAddress("Sunflower Street, No. 6");
+                response.text(contact); // 2
+            }
+
+        });
+
         // send a template as response
         GET("/template", new RouteHandler() {
 

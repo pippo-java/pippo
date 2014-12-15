@@ -19,10 +19,14 @@ package ro.fortsoft.pippo.core;
 /**
  * @author James Moger
  */
-public interface XmlEngine {
+public interface ContentTypeEngine {
 
-    public String toXml(Object object);
+    public void init(Application application);
 
-    public <X> X fromXml(String xml, Class<X> xClass);
+    public String getContentType();
+
+    public String toString(Object object);
+
+    public <T> T fromString(String content, Class<T> classOfT);
 
 }
