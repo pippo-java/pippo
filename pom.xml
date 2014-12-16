@@ -119,6 +119,7 @@
         <module>pippo-metrics</module>
         <module>pippo-metrics-ganglia</module>
         <module>pippo-metrics-graphite</module>
+        <module>pippo-metrics-influxdb</module>
     </modules>
 
 </project>
