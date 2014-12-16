@@ -24,9 +24,7 @@ import com.codahale.metrics.MetricRegistry;
 import com.codahale.metrics.Timer;
 
 /**
- *
  * @author James Moger
- *
  */
 public class TimedRouteHandler implements RouteHandler {
 

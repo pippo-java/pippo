@@ -31,7 +31,6 @@ import java.lang.annotation.Target;
  *
  * @author James Moger
  */
-
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)
 public @interface Metered {

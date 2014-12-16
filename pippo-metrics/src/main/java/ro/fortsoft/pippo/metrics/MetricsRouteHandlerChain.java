@@ -114,4 +114,5 @@ public class MetricsRouteHandlerChain implements RouteHandlerChain {
             handler.handle(request, response, this);
         }
     }
+
 }

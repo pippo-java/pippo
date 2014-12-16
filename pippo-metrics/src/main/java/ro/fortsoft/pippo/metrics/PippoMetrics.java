@@ -68,7 +68,6 @@ public class PippoMetrics implements RouteHandlerChainFactory {
 
 	@Override
 	public void init(Application application) {
-
 		PippoSettings pippoSettings = application.getPippoSettings();
 		String applicationName = pippoSettings.getString(PippoConstants.SETTING_APPLICATION_NAME, "Pippo");
 
@@ -130,4 +129,5 @@ public class PippoMetrics implements RouteHandlerChainFactory {
 			}
 		}
 	}
+
 }

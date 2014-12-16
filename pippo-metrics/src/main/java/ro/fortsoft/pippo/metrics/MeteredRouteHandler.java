@@ -24,9 +24,7 @@ import com.codahale.metrics.Meter;
 import com.codahale.metrics.MetricRegistry;
 
 /**
- *
  * @author James Moger
- *
  */
 public class MeteredRouteHandler implements RouteHandler {
 

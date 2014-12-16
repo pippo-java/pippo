@@ -24,9 +24,7 @@ import com.codahale.metrics.Counter;
 import com.codahale.metrics.MetricRegistry;
 
 /**
- *
  * @author James Moger
- *
  */
 public class CountedRouteHandler implements RouteHandler {
 

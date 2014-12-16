@@ -22,11 +22,10 @@ import ro.fortsoft.pippo.core.PippoSettings;
 import com.codahale.metrics.MetricRegistry;
 
 /**
- *
  * @author James Moger
- *
  */
 public interface MetricsReporter extends Closeable {
 
 	public void start(PippoSettings pippoSettings, MetricRegistry metricRegistry);
+
 }
