@@ -38,6 +38,7 @@ Artifacts
 - Metric Collection
      - [Pippo Metrics](https://github.com/decebals/pippo/tree/master/pippo-metrics) `pippo-metrics` (jar)
      - [Pippo Metrics Ganglia Reporter](https://github.com/decebals/pippo/tree/master/pippo-metrics-ganglia) `pippo-metrics-ganglia` (jar)
+     - [Pippo Metrics Graphite Reporter](https://github.com/decebals/pippo/tree/master/pippo-metrics-graphite) `pippo-metrics-graphite` (jar)
 
 Using Maven
 -------------------

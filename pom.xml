@@ -118,6 +118,7 @@
         <module>pippo-xstream</module>
         <module>pippo-metrics</module>
         <module>pippo-metrics-ganglia</module>
+        <module>pippo-metrics-graphite</module>
     </modules>
 
 </project>
