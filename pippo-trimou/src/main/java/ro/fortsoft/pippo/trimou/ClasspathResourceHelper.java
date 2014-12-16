@@ -15,30 +15,31 @@
  */
 package ro.fortsoft.pippo.trimou;
 
-import org.trimou.handlebars.BasicValueHelper;
-import org.trimou.handlebars.Options;
-import ro.fortsoft.pippo.core.PippoRuntimeException;
-import ro.fortsoft.pippo.core.route.ClasspathResourceHandler;
-import ro.fortsoft.pippo.core.route.UrlBuilder;
-
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicReference;
+
+import org.trimou.handlebars.BasicValueHelper;
+import org.trimou.handlebars.Options;
+
+import ro.fortsoft.pippo.core.PippoRuntimeException;
+import ro.fortsoft.pippo.core.route.ClasspathResourceHandler;
+import ro.fortsoft.pippo.core.route.Router;
 
 /**
  * Base class for handling classpath resource url generation from a Trimou template.
  *
  * @author James Moger
- * @param <X>
+ * @param <T>
  */
-abstract class ClasspathResourceHelper<X extends ClasspathResourceHandler> extends BasicValueHelper {
+abstract class ClasspathResourceHelper<T extends ClasspathResourceHandler> extends BasicValueHelper {
 
-        final UrlBuilder urlBuilder;
-        final Class<X> resourceHandlerClass;
+        final Router router;
+        final Class<T> resourceHandlerClass;
         final AtomicReference<String> patternRef;
 
-        protected ClasspathResourceHelper(UrlBuilder urlBuilder, Class<X> resourceHandlerClass) {
-            this.urlBuilder = urlBuilder;
+        protected ClasspathResourceHelper(Router router, Class<T> resourceHandlerClass) {
+            this.router = router;
             this.resourceHandlerClass = resourceHandlerClass;
             this.patternRef = new AtomicReference<>();
         }
@@ -46,7 +47,7 @@ abstract class ClasspathResourceHelper<X extends ClasspathResourceHandler> exten
     @Override
     public void execute(Options options) {
             if (patternRef.get() == null) {
-                String pattern = urlBuilder.urlPatternFor(resourceHandlerClass);
+                String pattern = router.urlPatternFor(resourceHandlerClass);
                 if (pattern == null) {
                     throw new PippoRuntimeException("You must register a route for {}",
                             resourceHandlerClass.getSimpleName());
@@ -57,7 +58,7 @@ abstract class ClasspathResourceHelper<X extends ClasspathResourceHandler> exten
         String path = (String) options.getParameters().get(0);
             Map<String, Object> parameters = new HashMap<>();
             parameters.put(ClasspathResourceHandler.PATH_PARAMETER, path);
-            String url = urlBuilder.urlFor(patternRef.get(), parameters);
+            String url = router.urlFor(patternRef.get(), parameters);
         append(options, url);
 
     }

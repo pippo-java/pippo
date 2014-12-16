@@ -15,17 +15,8 @@
  */
 package ro.fortsoft.pippo.trimou;
 
-import org.trimou.handlebars.BasicValueHelper;
-import org.trimou.handlebars.Options;
-import org.trimou.handlebars.i18n.LocaleAwareValueHelper;
-import ro.fortsoft.pippo.core.Messages;
-import ro.fortsoft.pippo.core.route.ClasspathResourceHandler;
-import ro.fortsoft.pippo.core.route.UrlBuilder;
+import ro.fortsoft.pippo.core.route.Router;
 import ro.fortsoft.pippo.core.route.WebjarsResourceHandler;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
 
 /**
  * Helper for handling webjar resource url generation from a Trimou template.
@@ -34,8 +25,8 @@ import java.util.Locale;
  */
 public class WebjarsAtHelper extends ClasspathResourceHelper<WebjarsResourceHandler> {
 
-    public WebjarsAtHelper(UrlBuilder urlBuilder) {
-        super(urlBuilder, WebjarsResourceHandler.class);
+    public WebjarsAtHelper(Router router) {
+        super(router, WebjarsResourceHandler.class);
     }
 
 }
