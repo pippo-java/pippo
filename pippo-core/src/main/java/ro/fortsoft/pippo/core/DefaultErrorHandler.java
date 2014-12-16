@@ -53,13 +53,19 @@ public class DefaultErrorHandler implements ErrorHandler {
                 renderDirectly(request, response);
             } else {
                 String template = getTemplateForStatusCode(statusCode);
-                try {
-                    Map<String, Object> locals = prepareLocals(statusCode, request, response);
-                    response.getLocals().putAll(locals);
-                    response.render(template);
-                } catch (Exception e) {
-                    log.error("Unexpected error rendering your '{}' template!", template, e);
+                if (template == null) {
+                    log.debug("There is no {} template for status code '{}'",
+                            application.getTemplateEngine().getClass().getSimpleName(), statusCode);
                     renderDirectly(request, response);
+                } else {
+                    try {
+                        Map<String, Object> locals = prepareLocals(statusCode, request, response);
+                        response.getLocals().putAll(locals);
+                        response.render(template);
+                    } catch (Exception e) {
+                        log.error("Unexpected error rendering your '{}' template!", template, e);
+                        renderDirectly(request, response);
+                    }
                 }
             }
         } else {
