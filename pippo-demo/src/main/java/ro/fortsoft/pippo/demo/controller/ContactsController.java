@@ -18,6 +18,8 @@ package ro.fortsoft.pippo.demo.controller;
 import ro.fortsoft.pippo.core.controller.Controller;
 import ro.fortsoft.pippo.demo.crud.ContactService;
 import ro.fortsoft.pippo.demo.crud.InMemoryContactService;
+import ro.fortsoft.pippo.metrics.Metered;
+import ro.fortsoft.pippo.metrics.Timed;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -33,10 +35,12 @@ public class ContactsController extends Controller {
         contactService = new InMemoryContactService();
     }
 
+    @Metered
     public void index() {
         getResponse().bind("contacts", contactService.getContacts()).render("crud/contacts.ftl");
     }
 
+    @Timed
     public void urlFor() {
         int id = getRequest().getParameter("id").toInt();
 

@@ -15,10 +15,12 @@
  */
 package ro.fortsoft.pippo.core;
 
-import ro.fortsoft.pippo.core.route.DefaultRouteHandlerChain;
+import ro.fortsoft.pippo.core.route.DefaultRouteHandlerChainFactory;
+import ro.fortsoft.pippo.core.route.RouteHandlerChainFactory;
 import ro.fortsoft.pippo.core.route.RouteMatch;
 import ro.fortsoft.pippo.core.route.Router;
 import ro.fortsoft.pippo.core.util.ClasspathUtils;
+import ro.fortsoft.pippo.core.util.ServiceLocator;
 import ro.fortsoft.pippo.core.util.StringUtils;
 
 import java.io.IOException;
@@ -77,6 +79,7 @@ public class PippoFilter implements Filter {
             + " ) __/ _)(_  ) __/ ) __/ )(_)(   https://github.com/decebals/pippo\n"
             + "(__)  (____)(__)  (__)  (_____)  {}\n";
 
+    private RouteHandlerChainFactory routeHandlerChainFactory;
     private Application application;
     private List<Initializer> initializers;
     private Set<String> ignorePaths;
@@ -108,7 +111,13 @@ public class PippoFilter implements Filter {
             application.setContextPath(contextPath);
             log.debug("Serving application on context path '{}'", contextPath);
 
-            initializers = getInitializers();
+            initializers = new ArrayList<>();
+
+            routeHandlerChainFactory = getRouteHandlerChainFactory();
+            initializers.add(routeHandlerChainFactory);
+            log.debug("Route handler chain factory is '{}'", routeHandlerChainFactory.getClass().getName());
+
+            initializers.addAll(getInitializers());
             for (Initializer initializer : initializers) {
                 initializer.init(application);
             }
@@ -161,7 +170,7 @@ public class PippoFilter implements Filter {
             Router router = application.getRouter();
             List<RouteMatch> routeMatches = router.findRoutes(relativePath, requestMethod);
             if (!routeMatches.isEmpty()) {
-                new DefaultRouteHandlerChain(request, response, routeMatches).next();
+                routeHandlerChainFactory.createChain(request, response, routeMatches).next();
             }
 
             if (!response.isCommitted()) {
@@ -342,6 +351,14 @@ public class PippoFilter implements Filter {
         }
 
         return path;
+    }
+
+    private RouteHandlerChainFactory getRouteHandlerChainFactory() {
+        RouteHandlerChainFactory factory = ServiceLocator.locate(RouteHandlerChainFactory.class);
+        if (factory == null) {
+            factory = new DefaultRouteHandlerChainFactory();
+        }
+        return factory;
     }
 
     private List<Initializer> getInitializers() throws Exception {

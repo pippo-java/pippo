@@ -80,6 +80,12 @@
             <version>${project.version}</version>
         </dependency>
 
+        <dependency>
+            <groupId>ro.fortsoft.pippo</groupId>
+            <artifactId>pippo-metrics</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
         <!-- Spring framework -->
         <dependency>
             <groupId>org.springframework</groupId>

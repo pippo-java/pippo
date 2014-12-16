@@ -20,6 +20,7 @@ import ro.fortsoft.pippo.core.Request;
 import ro.fortsoft.pippo.core.Response;
 import ro.fortsoft.pippo.core.route.RouteHandler;
 import ro.fortsoft.pippo.core.route.RouteHandlerChain;
+import ro.fortsoft.pippo.metrics.Metered;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -84,6 +85,7 @@ public class CrudApplication extends Application {
 
         GET("/contacts", new RouteHandler() {
 
+            @Metered("getContactsList")
             @Override
             public void handle(Request request, Response response, RouteHandlerChain chain) {
                 /*
@@ -101,6 +103,7 @@ public class CrudApplication extends Application {
 
         GET("/contact/{id}", new RouteHandler() {
 
+            @Metered("getContact")
             @Override
             public void handle(Request request, Response response, RouteHandlerChain chain) {
                 int id = request.getParameter("id").toInt(0);

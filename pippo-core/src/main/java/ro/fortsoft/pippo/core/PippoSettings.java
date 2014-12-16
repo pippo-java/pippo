@@ -15,14 +15,19 @@
  */
 package ro.fortsoft.pippo.core;
 
+import ro.fortsoft.pippo.core.util.ClasspathUtils;
+import ro.fortsoft.pippo.core.util.StringUtils;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.InetAddress;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
+import java.net.UnknownHostException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -35,9 +40,6 @@ import java.util.concurrent.TimeUnit;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import ro.fortsoft.pippo.core.util.StringUtils;
-import ro.fortsoft.pippo.core.util.ClasspathUtils;
 
 /**
  * A simple properties-file based settings class for Pippo applications.
@@ -118,6 +120,31 @@ public class PippoSettings {
 
     public boolean isProd() {
         return RuntimeMode.PROD == runtimeMode;
+    }
+
+    public String getLocalHostname() {
+        // try InetAddress.LocalHost first;
+        // NOTE -- InetAddress.getLocalHost().getHostName() will not work in
+        // certain environments.
+        try {
+            String result = InetAddress.getLocalHost().getHostName();
+            if (!StringUtils.isNullOrEmpty(result))
+                return result;
+        } catch (UnknownHostException e) {
+            // failed; try alternate means.
+        }
+
+        // try environment properties.
+        //
+        String host = System.getenv("COMPUTERNAME");
+        if (host != null)
+            return host;
+        host = System.getenv("HOSTNAME");
+        if (host != null)
+            return host;
+
+        // undetermined.
+        return "Pippo";
     }
 
     private URL getPropertiesUrl() {

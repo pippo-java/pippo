@@ -10,7 +10,7 @@ The goal of this project is to create a micro web framework in Java that should 
 The concept it's not new (I was inspired by Sinatra, Express JS, Play Framework) but my intention is to provide a clean, easy to use and modular solution. Pippo can be used in small and medium applications and also in applications based on micro services architecture.   
 I believe in simplicity and I will try to develop this framework with these words in mind.  
 
-The core is very small (43k) and I intend to keep this module as small/simple as possible and to push new functionalities in pippo modules and third-party repositories/modules.
+The core is small (100k) and I intend to keep this module as small/simple as possible and to push new functionalities in pippo modules and third-party repositories/modules.
 
 The framework is based on Java Servlet 3.0 and requires Java 7. 
 
@@ -35,6 +35,12 @@ Artifacts
      - Pippo IoC `pippo-ioc` (jar)
      - Pippo Spring `pippo-spring` (jar)
      - Pippo Guice `pippo-guice` (jar)
+- Metric Collection
+     - [Pippo Metrics](https://github.com/decebals/pippo/tree/master/pippo-metrics) `pippo-metrics` (jar)
+     - [Pippo Metrics Ganglia Reporter](https://github.com/decebals/pippo/tree/master/pippo-metrics-ganglia) `pippo-metrics-ganglia` (jar)
+     - [Pippo Metrics Graphite Reporter](https://github.com/decebals/pippo/tree/master/pippo-metrics-graphite) `pippo-metrics-graphite` (jar)
+     - [Pippo Metrics InfluxDB Reporter](https://github.com/decebals/pippo/tree/master/pippo-metrics-influxdb) `pippo-metrics-influxdb` (jar)
+     - [Pippo Metrics Librato Reporter](https://github.com/decebals/pippo/tree/master/pippo-metrics-librato) `pippo-metrics-librato` (jar)
 
 Using Maven
 -------------------
