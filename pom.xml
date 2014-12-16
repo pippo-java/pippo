@@ -120,6 +120,7 @@
         <module>pippo-metrics-ganglia</module>
         <module>pippo-metrics-graphite</module>
         <module>pippo-metrics-influxdb</module>
+        <module>pippo-metrics-librato</module>
     </modules>
 
 </project>
