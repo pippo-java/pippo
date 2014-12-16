@@ -37,7 +37,7 @@ import freemarker.template.TemplateModelException;
  */
 public class I18nMethod implements TemplateMethodModelEx {
 
-    public final static Logger logger = LoggerFactory.getLogger(I18nMethod.class);
+    private final static Logger log = LoggerFactory.getLogger(I18nMethod.class);
 
     final Messages messages;
     final String language;
@@ -49,20 +49,15 @@ public class I18nMethod implements TemplateMethodModelEx {
 
     @Override
     public TemplateModel exec(List args) throws TemplateModelException {
-
         if (args.size() == 1) {
-
             String messageKey = ((SimpleScalar) args.get(0)).getAsString();
             String messageValue = messages.get(messageKey, language);
 
             return new SimpleScalar(messageValue);
-
         } else if (args.size() > 1) {
-
             List<Object> objects = new ArrayList<>();
 
             for (Object o : args) {
-
                 if (o instanceof SimpleScalar) {
                     objects.add(((SimpleScalar) o).getAsString());
                 } else if (o instanceof SimpleNumber) {
@@ -70,16 +65,14 @@ public class I18nMethod implements TemplateMethodModelEx {
                 } else if (o instanceof StringModel) {
                     objects.add(((StringModel) o).getWrappedObject());
                 }
-
             }
 
             String messageKey = objects.get(0).toString();
             String messageValue = messages.get(messageKey, language, objects.subList(1, objects.size()).toArray());
             return new SimpleScalar(messageValue);
-
         } else {
             throw new TemplateModelException("Please specify a message key for the i18n() method!");
         }
-
     }
+
 }

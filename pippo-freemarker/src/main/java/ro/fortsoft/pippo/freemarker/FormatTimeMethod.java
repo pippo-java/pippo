@@ -39,19 +39,16 @@ import freemarker.template.TemplateModelException;
  */
 public class FormatTimeMethod implements TemplateMethodModelEx {
 
-    public final static Logger logger = LoggerFactory.getLogger(FormatTimeMethod.class);
+    private final static Logger log = LoggerFactory.getLogger(FormatTimeMethod.class);
 
     private final Locale locale;
 
     public FormatTimeMethod(Locale locale) {
-
         this.locale = locale;
-
     }
 
     @Override
     public TemplateModel exec(List args) throws TemplateModelException {
-
         Date date = getFormattableObject(args.get(0));
         int type = parseStyle(args.get(1).toString());
         DateFormat df;
@@ -64,11 +61,9 @@ public class FormatTimeMethod implements TemplateMethodModelEx {
         String result = df.format(date);
 
         return new SimpleScalar(result);
-
     }
 
     private Date getFormattableObject(Object value) {
-
         if (value instanceof SimpleDate) {
             return ((SimpleDate) value).getAsDate();
         } else {
@@ -89,4 +84,5 @@ public class FormatTimeMethod implements TemplateMethodModelEx {
             return -1;
         }
     }
+
 }

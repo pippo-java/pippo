@@ -82,7 +82,7 @@ import org.slf4j.LoggerFactory;
  */
 public class PippoSettings {
 
-    private final Logger log = LoggerFactory.getLogger(PippoSettings.class);
+    private static final Logger log = LoggerFactory.getLogger(PippoSettings.class);
 
     private final String defaultListDelimiter = ",";
 

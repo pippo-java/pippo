@@ -35,19 +35,19 @@ import freemarker.template.TemplateModelException;
  * Base class for handling classpath resource url generation from a Freemarker template.
  *
  * @author James Moger
- * @param <X>
+ * @param <T>
  */
-abstract class ClasspathResourceMethod<X extends ClasspathResourceHandler> implements TemplateMethodModelEx {
+abstract class ClasspathResourceMethod<T extends ClasspathResourceHandler> implements TemplateMethodModelEx {
 
     public final Logger log = LoggerFactory.getLogger(getClass());
 
     final Router router;
 
-    final Class<X> resourceHandlerClass;
+    final Class<T> resourceHandlerClass;
 
     final AtomicReference<String> urlPattern;
 
-    public ClasspathResourceMethod(Router router, Class<X> resourceHandlerClass) {
+    public ClasspathResourceMethod(Router router, Class<T> resourceHandlerClass) {
         this.router = router;
         this.resourceHandlerClass = resourceHandlerClass;
         this.urlPattern = new AtomicReference<>(null);
@@ -55,7 +55,6 @@ abstract class ClasspathResourceMethod<X extends ClasspathResourceHandler> imple
 
     @Override
     public TemplateModel exec(List args) throws TemplateModelException {
-
         if (urlPattern.get() == null) {
             String pattern = router.urlPatternFor(resourceHandlerClass);
             if (pattern == null) {
@@ -71,7 +70,6 @@ abstract class ClasspathResourceMethod<X extends ClasspathResourceHandler> imple
         parameters.put(ClasspathResourceHandler.PATH_PARAMETER, path);
         String url = router.urlFor(urlPattern.get(), parameters);
         return new SimpleScalar(url);
-
     }
 
 }

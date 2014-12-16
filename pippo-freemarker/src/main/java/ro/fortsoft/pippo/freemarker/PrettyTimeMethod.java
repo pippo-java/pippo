@@ -35,37 +35,31 @@ import freemarker.template.TemplateModelException;
  * template.
  *
  * @author James Moger
- *
  */
 public class PrettyTimeMethod implements TemplateMethodModelEx {
 
-    public final static Logger logger = LoggerFactory.getLogger(PrettyTimeMethod.class);
+    private final static Logger log = LoggerFactory.getLogger(PrettyTimeMethod.class);
 
     private final PrettyTime prettyTime;
 
     public PrettyTimeMethod(Locale locale) {
-
         this.prettyTime = new PrettyTime(locale);
-
     }
 
     @Override
     public TemplateModel exec(List args) throws TemplateModelException {
-
         Date date = getFormattableObject(args.get(0));
-
         String result = prettyTime.format(date);
 
         return new SimpleScalar(result);
-
     }
 
     private Date getFormattableObject(Object value) {
-
         if (value instanceof SimpleDate) {
             return ((SimpleDate) value).getAsDate();
         } else {
             throw new PippoRuntimeException("Formattable object for PrettyTime not found!");
         }
     }
+
 }
