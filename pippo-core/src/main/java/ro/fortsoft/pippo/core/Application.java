@@ -141,7 +141,7 @@ public class Application {
      */
     public void registerTemplateEngine(Class<? extends TemplateEngine> engineClass) {
         if (templateEngine != null) {
-            log.debug("Template engine already registered, ignoring {}", engineClass.getName());
+            log.debug("Template engine already registered, ignoring '{}'", engineClass.getName());
             return;
         }
         TemplateEngine engine = null;
@@ -160,7 +160,7 @@ public class Application {
     public void setTemplateEngine(TemplateEngine templateEngine) {
         templateEngine.init(this);
         this.templateEngine = templateEngine;
-        log.debug("Template engine is {}", templateEngine.getClass().getName());
+        log.debug("Template engine is '{}'", templateEngine.getClass().getName());
 
     }
 
@@ -188,7 +188,7 @@ public class Application {
         if (!engines.containsKey(engine.getContentType())) {
             setContentTypeEngine(engine);
         } else {
-            log.debug("'{}' engine already registered, ignoring {}", engine.getContentType(), engineClass.getName());
+            log.debug("'{}' content engine already registered, ignoring '{}'", engine.getContentType(), engineClass.getName());
         }
     }
 
@@ -227,7 +227,7 @@ public class Application {
     public void setContentTypeEngine(ContentTypeEngine engine) {
         engine.init(this);
         engines.put(engine.getContentType(), engine);
-        log.debug("'{}' content engine is {}", engine.getContentType(), engine.getClass().getName());
+        log.debug("'{}' content engine is '{}'", engine.getContentType(), engine.getClass().getName());
     }
 
     public Router getRouter() {
