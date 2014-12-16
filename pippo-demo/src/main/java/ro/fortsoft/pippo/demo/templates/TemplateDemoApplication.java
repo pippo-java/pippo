@@ -25,6 +25,8 @@ import ro.fortsoft.pippo.core.route.RouteHandler;
 import ro.fortsoft.pippo.core.route.RouteHandlerChain;
 import ro.fortsoft.pippo.core.route.WebjarsResourceHandler;
 import ro.fortsoft.pippo.demo.DemoRequestLanguageFilter;
+import ro.fortsoft.pippo.metrics.Metered;
+import ro.fortsoft.pippo.metrics.Timed;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -60,6 +62,7 @@ public class TemplateDemoApplication extends Application {
 
         GET("/", new RouteHandler() {
 
+            @Metered("getRoot")
             @Override
             public void handle(Request request, Response response, RouteHandlerChain chain) {
             	Calendar c = Calendar.getInstance();
@@ -80,6 +83,7 @@ public class TemplateDemoApplication extends Application {
 
             int counter;
 
+            @Timed("getException")
             @Override
             public void handle(Request request, Response response, RouteHandlerChain chain) {
                 throw new PippoRuntimeException("Exception \"&nbsp;\" <#{}>", ++counter);
