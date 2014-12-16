@@ -155,9 +155,9 @@ public class DefaultRouter implements Router {
         validateRoute(route);
         routes.add(route);
 
-        List cacheEntry = cache.get(route.getRequestMethod());
+        List<Route> cacheEntry = cache.get(route.getRequestMethod());
         if (cacheEntry == null) {
-            cacheEntry = new ArrayList();
+            cacheEntry = new ArrayList<>();
         }
         cacheEntry.add(route);
         cache.put(route.getRequestMethod(), cacheEntry);

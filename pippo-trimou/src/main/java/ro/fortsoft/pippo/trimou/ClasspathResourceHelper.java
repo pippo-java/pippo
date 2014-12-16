@@ -30,15 +30,15 @@ import ro.fortsoft.pippo.core.route.Router;
  * Base class for handling classpath resource url generation from a Trimou template.
  *
  * @author James Moger
- * @param <X>
+ * @param <T>
  */
-abstract class ClasspathResourceHelper<X extends ClasspathResourceHandler> extends BasicValueHelper {
+abstract class ClasspathResourceHelper<T extends ClasspathResourceHandler> extends BasicValueHelper {
 
         final Router router;
-        final Class<X> resourceHandlerClass;
+        final Class<T> resourceHandlerClass;
         final AtomicReference<String> patternRef;
 
-        protected ClasspathResourceHelper(Router router, Class<X> resourceHandlerClass) {
+        protected ClasspathResourceHelper(Router router, Class<T> resourceHandlerClass) {
             this.router = router;
             this.resourceHandlerClass = resourceHandlerClass;
             this.patternRef = new AtomicReference<>();
