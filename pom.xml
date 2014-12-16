@@ -117,6 +117,7 @@
         <module>pippo-fastjson</module>
         <module>pippo-xstream</module>
         <module>pippo-metrics</module>
+        <module>pippo-metrics-ganglia</module>
     </modules>
 
 </project>
