@@ -119,7 +119,7 @@ public class SimpleApplication extends Application {
 
                 Map<String, Object> model = new HashMap<>();
                 model.put("greeting", message);
-                response.render("hello.ftl", model);
+                response.render("hello", model);
             }
 
         });

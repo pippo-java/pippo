@@ -92,11 +92,11 @@ public class CrudApplication extends Application {
                 // variant 1
                 Map<String, Object> model = new HashMap<>();
                 model.put("contacts", contactService.getContacts());
-                response.render("crud/contacts.ftl", model);
+                response.render("crud/contacts", model);
                 */
 
                 // variant 2
-                response.bind("contacts", contactService.getContacts()).render("crud/contacts.ftl");
+                response.bind("contacts", contactService.getContacts()).render("crud/contacts");
             }
 
         });
@@ -126,7 +126,7 @@ public class CrudApplication extends Application {
                 }
                 model.put("editAction", editAction);
                 model.put("backAction", "/contacts");
-                response.render("crud/contact.ftl", model);
+                response.render("crud/contact", model);
             }
 
         });
@@ -155,7 +155,7 @@ public class CrudApplication extends Application {
                 if (error != null) {
                     model.put("error", error);
                 }
-                response.render("crud/login.ftl", model);
+                response.render("crud/login", model);
             }
 
         });

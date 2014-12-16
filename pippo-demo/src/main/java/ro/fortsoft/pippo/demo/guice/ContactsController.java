@@ -30,7 +30,7 @@ public class ContactsController extends Controller {
 
     public void index() {
         getResponse().bind("contacts", contactService.getContacts());
-        getResponse().render("crud/contacts.ftl");
+        getResponse().render("crud/contacts");
     }
 
 }

@@ -37,7 +37,7 @@ public class ContactsController extends Controller {
 
     @Metered
     public void index() {
-        getResponse().bind("contacts", contactService.getContacts()).render("crud/contacts.ftl");
+        getResponse().bind("contacts", contactService.getContacts()).render("crud/contacts");
     }
 
     @Timed

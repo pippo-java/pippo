@@ -89,7 +89,7 @@ public class SpringDemo2 {
         public void index() {
             ContactService contactService = SpringApplication2.get().getContactService();
             getResponse().bind("contacts", contactService.getContacts());
-            getResponse().render("crud/contacts.ftl");
+            getResponse().render("crud/contacts");
         }
 
     }

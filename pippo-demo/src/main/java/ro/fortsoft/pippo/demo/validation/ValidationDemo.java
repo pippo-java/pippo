@@ -53,7 +53,7 @@ public class ValidationDemo {
                 Map<String, Object> model = new HashMap<>();
                 model.put("contact", contact);
 //                model.put("errors", Collections.emptyList());
-                response.render("validation/contact.ftl", model);
+                response.render("validation/contact", model);
             }
 
         });
@@ -75,7 +75,7 @@ public class ValidationDemo {
                     Map<String, Object> model = new HashMap<>();
                     model.put("contact", contact);
                     model.put("errors", errors);
-                    response.render("validation/contact.ftl", model);
+                    response.render("validation/contact", model);
                 }
             }
 

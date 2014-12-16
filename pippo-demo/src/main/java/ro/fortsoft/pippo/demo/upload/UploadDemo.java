@@ -28,7 +28,7 @@ public class UploadDemo {
 
             @Override
             public void handle(Request request, Response response, RouteHandlerChain chain) {
-                response.render("upload.ftl");
+                response.render("upload");
             }
 
         });

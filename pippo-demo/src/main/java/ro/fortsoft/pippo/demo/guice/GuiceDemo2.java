@@ -70,7 +70,7 @@ public class GuiceDemo2 {
         public void index() {
             ContactService contactService = GuiceApplication2.get().getContactService();
             getResponse().bind("contacts", contactService.getContacts());
-            getResponse().render("crud/contacts.ftl");
+            getResponse().render("crud/contacts");
         }
 
     }
