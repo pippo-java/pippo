@@ -15,8 +15,6 @@
  */
 package ro.fortsoft.pippo.core;
 
-import ro.fortsoft.pippo.core.route.UrlBuilder;
-
 import java.io.Writer;
 import java.util.Map;
 

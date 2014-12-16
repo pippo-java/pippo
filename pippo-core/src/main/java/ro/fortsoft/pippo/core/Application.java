@@ -22,11 +22,9 @@ import ro.fortsoft.pippo.core.controller.ControllerInstantiationListenerList;
 import ro.fortsoft.pippo.core.controller.ControllerInvokeListenerList;
 import ro.fortsoft.pippo.core.route.ClasspathResourceHandler;
 import ro.fortsoft.pippo.core.route.DefaultRouteMatcher;
-import ro.fortsoft.pippo.core.route.DefaultRouteNotFoundHandler;
 import ro.fortsoft.pippo.core.route.Route;
 import ro.fortsoft.pippo.core.route.RouteHandler;
 import ro.fortsoft.pippo.core.route.RouteMatcher;
-import ro.fortsoft.pippo.core.route.RouteNotFoundHandler;
 import ro.fortsoft.pippo.core.route.UrlBuilder;
 import ro.fortsoft.pippo.core.util.HttpCacheToolkit;
 import ro.fortsoft.pippo.core.util.MimeTypes;
@@ -56,8 +54,7 @@ public class Application {
     private Map<String, ContentTypeEngine> engines;
     private RouteMatcher routeMatcher;
     private UrlBuilder urlBuilder;
-    private ExceptionHandler exceptionHandler;
-    private RouteNotFoundHandler routeNotFoundHandler;
+    private ErrorHandler errorHandler;
 
     private String uploadLocation = System.getProperty("java.io.tmpdir");
     private long maximumUploadSize = -1L;
@@ -318,28 +315,16 @@ public class Application {
         }
     }
 
-    public ExceptionHandler getExceptionHandler() {
-        if (exceptionHandler == null) {
-            exceptionHandler = new DefaultExceptionHandler(this);
+    public ErrorHandler getErrorHandler() {
+        if (errorHandler == null) {
+            errorHandler = new DefaultErrorHandler(this);
         }
 
-        return exceptionHandler;
+        return errorHandler;
     }
 
-    public void setExceptionHandler(ExceptionHandler exceptionHandler) {
-        this.exceptionHandler = exceptionHandler;
-    }
-
-    public RouteNotFoundHandler getRouteNotFoundHandler() {
-        if (routeNotFoundHandler == null) {
-            routeNotFoundHandler = new DefaultRouteNotFoundHandler(this);
-        }
-
-        return routeNotFoundHandler;
-    }
-
-    public void setRouteNotFoundHandler(RouteNotFoundHandler routeNotFoundHandler) {
-        this.routeNotFoundHandler = routeNotFoundHandler;
+    public void setErrorHandler(ErrorHandler errorHandler) {
+        this.errorHandler = errorHandler;
     }
 
     /**
