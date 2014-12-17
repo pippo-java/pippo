@@ -75,15 +75,15 @@ public class MetricsRouteHandlerChain implements RouteHandlerChain {
             RouteHandler handler = route.getRouteHandler();
 
             try {
-            	Method method = route.getRouteHandler().getClass().getMethod("handle", Request.class, Response.class, RouteHandlerChain.class);
-            	String metricName;
-
+				Method method;
             	if (handler instanceof ControllerHandler) {
             		ControllerHandler controllerHandler = (ControllerHandler) handler;
-            		metricName = MetricRegistry.name(controllerHandler.getControllerClass(), controllerHandler.getMethodName());
+					method = controllerHandler.getMethod();
             	} else {
-            		metricName = MetricRegistry.name(method.getDeclaringClass(), method.getName());
+					method = route.getRouteHandler().getClass().getMethod("handle", Request.class, Response.class, RouteHandlerChain.class);
             	}
+
+				String metricName = MetricRegistry.name(method.getDeclaringClass(), method.getName());
 
             	if (method.isAnnotationPresent(Metered.class)) {
             		// route handler is Metered

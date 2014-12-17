@@ -56,6 +56,10 @@ public class ControllerHandler implements RouteHandler {
         return methodName;
     }
 
+    public Method getMethod() {
+        return method;
+    }
+
     @Override
     public void handle(Request request, Response response, RouteHandlerChain chain) {
         log.debug("Invoke method '{}' from '{}'", methodName, controllerClass.getName());
