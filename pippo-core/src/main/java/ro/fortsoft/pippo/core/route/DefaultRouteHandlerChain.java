@@ -31,9 +31,9 @@ public class DefaultRouteHandlerChain implements RouteHandlerChain {
 
     private static final Logger log = LoggerFactory.getLogger(DefaultRouteHandlerChain.class);
 
-    private Request request;
-    private Response response;
-    private Iterator<RouteMatch> iterator;
+    protected Request request;
+    protected Response response;
+    protected Iterator<RouteMatch> iterator;
 
     public DefaultRouteHandlerChain(Request request, Response response, List<RouteMatch> routeMatches) {
         this.request = request;
@@ -61,8 +61,12 @@ public class DefaultRouteHandlerChain implements RouteHandlerChain {
             iterator.remove();
 
             log.debug("Call handler for {}", route);
-            route.getRouteHandler().handle(request, response, this);
+            handleRoute(route);
         }
+    }
+
+    protected void handleRoute(Route route) {
+        route.getRouteHandler().handle(request, response, this);
     }
 
 }

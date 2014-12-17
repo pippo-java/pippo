@@ -23,6 +23,7 @@ import ro.fortsoft.pippo.core.Request;
 import ro.fortsoft.pippo.core.Response;
 import ro.fortsoft.pippo.core.route.RouteHandler;
 import ro.fortsoft.pippo.core.route.RouteHandlerChain;
+import ro.fortsoft.pippo.core.util.LangUtils;
 
 import java.lang.reflect.Method;
 
@@ -62,7 +63,7 @@ public class ControllerHandler implements RouteHandler {
 
     @Override
     public void handle(Request request, Response response, RouteHandlerChain chain) {
-        log.debug("Invoke method '{}' from '{}'", methodName, controllerClass.getName());
+        log.debug("Invoke method '{}'", LangUtils.toString(method));
         try {
             // create the controller instance
             Controller controller = controllerClass.newInstance();
