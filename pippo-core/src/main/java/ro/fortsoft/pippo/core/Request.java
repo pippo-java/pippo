@@ -100,8 +100,15 @@ public class Request {
                 if (!field.isAccessible()) {
                     field.setAccessible(true);
                 }
+
+                String pattern = null;
+                ParamPattern parameterPattern = field.getAnnotation(ParamPattern.class);
+                if (parameterPattern != null) {
+                    pattern = parameterPattern.value();
+                }
+
                 try {
-                    Object value = getAllParameters().get(field.getName()).to(field.getType());
+                    Object value = getAllParameters().get(field.getName()).to(field.getType(), pattern);
                     field.set(entity, value);
                 } catch (IllegalAccessException e) {
                     log.error("Cannot set value for field '{}'", field.getName(), e);
