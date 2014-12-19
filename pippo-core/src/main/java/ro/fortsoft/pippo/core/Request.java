@@ -104,7 +104,7 @@ public class Request {
                     field.set(entity, value);
                 } catch (IllegalAccessException e) {
                     log.error("Cannot set value for field '{}'", field.getName(), e);
-                } catch (Exception e) {
+                } catch (PippoRuntimeException e) {
                     log.error(e.getMessage(), e);
                 }
             }
