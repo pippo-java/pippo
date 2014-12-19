@@ -17,12 +17,12 @@ package ro.fortsoft.pippo.core.controller;
 
 import ro.fortsoft.pippo.core.Application;
 import ro.fortsoft.pippo.core.Param;
+import ro.fortsoft.pippo.core.ParameterValue;
 import ro.fortsoft.pippo.core.PippoRuntimeException;
 import ro.fortsoft.pippo.core.Request;
 import ro.fortsoft.pippo.core.Response;
 import ro.fortsoft.pippo.core.route.RouteHandlerChain;
 import ro.fortsoft.pippo.core.util.LangUtils;
-import ro.fortsoft.pippo.core.util.RequestValue;
 import ro.fortsoft.pippo.core.util.StringUtils;
 
 import java.lang.annotation.Annotation;
@@ -108,15 +108,15 @@ public class DefaultControllerHandler implements ControllerHandler {
                     for (int i = 0; i < types.length; i++) {
                         // confirm parameter type is supported
                         Class<?> type = types[i];
-                        RequestValue testValue = new RequestValue();
+                        ParameterValue testValue = new ParameterValue();
                         testValue.to(type);
 
                         // confirm parameter is named
                         String parameterName = getParameterName(controllerMethod, i);
                         if (StringUtils.isNullOrEmpty(parameterName)) {
                             throw new PippoRuntimeException(
-                                    "Controller method '{}.{}' parameter #{} of type '{}' does not specify a name!",
-                                    controllerClass.getSimpleName(), methodName, type.getSimpleName());
+                                    "Controller method '{}.{}' parameter {} of type '{}' does not specify a name!",
+                                    controllerClass.getSimpleName(), methodName, i, type.getSimpleName());
                         }
 
                         parameterNames[i] = parameterName;
@@ -144,7 +144,7 @@ public class DefaultControllerHandler implements ControllerHandler {
         for (int i = 0; i < args.length; i++) {
             Class<?> type = types[i];
             String name = parameterNames[i];
-            RequestValue requestValue = request.getParameter(name);
+            ParameterValue requestValue = request.getParameter(name);
             args[i] = requestValue.to(type);
         }
         return args;

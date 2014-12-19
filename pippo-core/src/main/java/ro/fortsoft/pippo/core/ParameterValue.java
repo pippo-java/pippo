@@ -13,9 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package ro.fortsoft.pippo.core.util;
+package ro.fortsoft.pippo.core;
 
-import ro.fortsoft.pippo.core.PippoRuntimeException;
+import ro.fortsoft.pippo.core.util.StringUtils;
 
 import java.io.Serializable;
 import java.lang.reflect.Array;
@@ -33,17 +33,17 @@ import java.util.Set;
 import java.util.UUID;
 
 /**
- * A RequestValue represents either a single-value path parameter or a
+ * A ParameterValue represents either a single-value path parameter or a
  * multi-valued query parameter.
  *
  * @author Decebal Suiu
  * @author James Moger
  */
-public class RequestValue implements Serializable {
+public class ParameterValue implements Serializable {
 
     private final String[] values;
 
-    public RequestValue(final String... values) {
+    public ParameterValue(final String... values) {
         this.values = values;
     }
 
@@ -291,12 +291,12 @@ public class RequestValue implements Serializable {
         if (classOfT.isArray()) {
             Class<?> componentType = classOfT.getComponentType();
             Object array = Array.newInstance(componentType, values.length);
-            // cheat by not instantiating a StringValue for every value
-            RequestValue sv = new RequestValue(new String[] { "PLACEHOLDER" });
+            // cheat by not instantiating a ParameterValue for every value
+            ParameterValue pv = new ParameterValue(new String[] { "PLACEHOLDER" });
             for (int i = 0; i < values.length; i++) {
                 String value = values[i];
-                sv.values[0] = value;
-                Object object = sv.toObject(componentType, pattern);
+                pv.values[0] = value;
+                Object object = pv.toObject(componentType, pattern);
                 Array.set(array, i, object);
             }
             return (T) array;
