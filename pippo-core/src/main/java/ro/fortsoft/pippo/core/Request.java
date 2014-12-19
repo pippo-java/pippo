@@ -96,7 +96,13 @@ public class Request {
 
     public <T> T updateEntityFromParameters(T entity) {
         for (Field field : entity.getClass().getDeclaredFields()) {
-            if (getAllParameters().containsKey(field.getName())) {
+            String parameterName = field.getName();
+            Param parameter = field.getAnnotation(Param.class);
+            if (parameter != null) {
+                parameterName = parameter.value();
+            }
+
+            if (getAllParameters().containsKey(parameterName)) {
                 if (!field.isAccessible()) {
                     field.setAccessible(true);
                 }
@@ -108,10 +114,10 @@ public class Request {
                 }
 
                 try {
-                    Object value = getAllParameters().get(field.getName()).to(field.getType(), pattern);
+                    Object value = getAllParameters().get(parameterName).to(field.getType(), pattern);
                     field.set(entity, value);
                 } catch (IllegalAccessException e) {
-                    log.error("Cannot set value for field '{}'", field.getName(), e);
+                    log.error("Cannot set value for field '{}' from parameter '{}'", field.getName(), parameterName, e);
                 } catch (PippoRuntimeException e) {
                     log.error(e.getMessage(), e);
                 }
