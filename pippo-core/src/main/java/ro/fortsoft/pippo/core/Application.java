@@ -16,10 +16,11 @@
 package ro.fortsoft.pippo.core;
 
 import ro.fortsoft.pippo.core.controller.Controller;
-import ro.fortsoft.pippo.core.controller.ControllerHandler;
+import ro.fortsoft.pippo.core.controller.ControllerHandlerFactory;
 import ro.fortsoft.pippo.core.controller.ControllerInitializationListenerList;
 import ro.fortsoft.pippo.core.controller.ControllerInstantiationListenerList;
 import ro.fortsoft.pippo.core.controller.ControllerInvokeListenerList;
+import ro.fortsoft.pippo.core.controller.DefaultControllerHandlerFactory;
 import ro.fortsoft.pippo.core.route.ClasspathResourceHandler;
 import ro.fortsoft.pippo.core.route.DefaultRouter;
 import ro.fortsoft.pippo.core.route.Route;
@@ -27,6 +28,7 @@ import ro.fortsoft.pippo.core.route.RouteHandler;
 import ro.fortsoft.pippo.core.route.Router;
 import ro.fortsoft.pippo.core.util.HttpCacheToolkit;
 import ro.fortsoft.pippo.core.util.MimeTypes;
+import ro.fortsoft.pippo.core.util.ServiceLocator;
 import ro.fortsoft.pippo.core.util.StringUtils;
 
 import java.util.Collections;
@@ -53,6 +55,7 @@ public class Application {
     private Map<String, ContentTypeEngine> engines;
     private Router router;
     private ErrorHandler errorHandler;
+    private ControllerHandlerFactory controllerHandlerFactory;
 
     private String uploadLocation = System.getProperty("java.io.tmpdir");
     private long maximumUploadSize = -1L;
@@ -261,7 +264,7 @@ public class Application {
     }
 
     public void GET(String urlPattern, Class<? extends Controller> controllerClass, String methodName) {
-        addRoute(urlPattern, HttpConstants.Method.GET, new ControllerHandler(controllerClass, methodName));
+        addRoute(urlPattern, HttpConstants.Method.GET, controllerClass, methodName);
     }
 
     public void POST(String urlPattern, RouteHandler routeHandler) {
@@ -269,7 +272,7 @@ public class Application {
     }
 
     public void POST(String urlPattern, Class<? extends Controller> controllerClass, String methodName) {
-        addRoute(urlPattern, HttpConstants.Method.POST, new ControllerHandler(controllerClass, methodName));
+        addRoute(urlPattern, HttpConstants.Method.POST, controllerClass, methodName);
     }
 
     public void DELETE(String urlPattern, RouteHandler routeHandler) {
@@ -277,7 +280,7 @@ public class Application {
     }
 
     public void DELETE(String urlPattern, Class<? extends Controller> controllerClass, String methodName) {
-        addRoute(urlPattern, HttpConstants.Method.DELETE, new ControllerHandler(controllerClass, methodName));
+        addRoute(urlPattern, HttpConstants.Method.DELETE, controllerClass, methodName);
     }
 
     public void HEAD(String urlPattern, RouteHandler routeHandler) {
@@ -285,7 +288,7 @@ public class Application {
     }
 
     public void HEAD(String urlPattern, Class<? extends Controller> controllerClass, String methodName) {
-        addRoute(urlPattern, HttpConstants.Method.HEAD, new ControllerHandler(controllerClass, methodName));
+        addRoute(urlPattern, HttpConstants.Method.HEAD, controllerClass, methodName);
     }
 
     public void PUT(String urlPattern, RouteHandler routeHandler) {
@@ -293,7 +296,7 @@ public class Application {
     }
 
     public void PUT(String urlPattern, Class<? extends Controller> controllerClass, String methodName) {
-        addRoute(urlPattern, HttpConstants.Method.PUT, new ControllerHandler(controllerClass, methodName));
+        addRoute(urlPattern, HttpConstants.Method.PUT, controllerClass, methodName);
     }
 
     public void PATCH(String urlPattern, RouteHandler routeHandler) {
@@ -301,7 +304,12 @@ public class Application {
     }
 
     public void PATCH(String urlPattern, Class<? extends Controller> controllerClass, String methodName) {
-        addRoute(urlPattern, HttpConstants.Method.PATCH, new ControllerHandler(controllerClass, methodName));
+        addRoute(urlPattern, HttpConstants.Method.PATCH, controllerClass, methodName);
+    }
+
+    public void addRoute(String urlPattern, String requestMethod, Class<? extends Controller> controllerClass, String methodName) {
+        RouteHandler routeHandler = getControllerHandlerFactory().createHandler(controllerClass, methodName);
+        addRoute(urlPattern, requestMethod, routeHandler);
     }
 
     public void addRoute(String urlPattern, String requestMethod, RouteHandler routeHandler) {
@@ -311,6 +319,19 @@ public class Application {
         } catch (Exception e) {
             log.error("Cannot add route '{}'", route, e);
         }
+    }
+
+    public ControllerHandlerFactory getControllerHandlerFactory() {
+        if (controllerHandlerFactory == null) {
+            ControllerHandlerFactory factory = ServiceLocator.locate(ControllerHandlerFactory.class);
+            if (factory == null) {
+                factory = new DefaultControllerHandlerFactory();
+            }
+            factory.init(this);
+            controllerHandlerFactory = factory;
+        }
+
+        return controllerHandlerFactory;
     }
 
     public ErrorHandler getErrorHandler() {
