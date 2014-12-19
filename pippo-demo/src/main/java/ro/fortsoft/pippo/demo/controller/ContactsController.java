@@ -15,6 +15,7 @@
  */
 package ro.fortsoft.pippo.demo.controller;
 
+import ro.fortsoft.pippo.core.Param;
 import ro.fortsoft.pippo.core.controller.Controller;
 import ro.fortsoft.pippo.demo.crud.ContactService;
 import ro.fortsoft.pippo.demo.crud.InMemoryContactService;
@@ -41,9 +42,7 @@ public class ContactsController extends Controller {
     }
 
     @Timed
-    public void urlFor() {
-        int id = getRequest().getParameter("id").toInt();
-
+    public void urlFor(@Param("id") int id) {
         Map<String, Object> parameters = new HashMap<>();
         parameters.put("id", id);
         parameters.put("action", "new");
