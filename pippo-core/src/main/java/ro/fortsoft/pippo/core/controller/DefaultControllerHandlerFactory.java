@@ -15,22 +15,27 @@
  */
 package ro.fortsoft.pippo.core.controller;
 
+import ro.fortsoft.pippo.core.Application;
 import ro.fortsoft.pippo.core.route.RouteHandler;
 
-import java.lang.reflect.Method;
-
 /**
- * Interface that declares a handler for controller methods.
+ * This factory constructs the default controller handler.
  *
  * @author James Moger
  *
  */
-public interface ControllerHandler extends RouteHandler {
+public class DefaultControllerHandlerFactory implements ControllerHandlerFactory {
 
-    public Class<? extends Controller> getControllerClass();
+    @Override
+    public RouteHandler createHandler(Class<? extends Controller> controllerClass, String methodName) {
+        return new DefaultControllerHandler(controllerClass, methodName);
+    }
 
-    public String getMethodName();
+    @Override
+    public void init(Application application) {
+    }
 
-    public Method getMethod();
-
+    @Override
+    public void destroy(Application application) {
+    }
 }

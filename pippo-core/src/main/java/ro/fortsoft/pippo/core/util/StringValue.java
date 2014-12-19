@@ -15,6 +15,8 @@
  */
 package ro.fortsoft.pippo.core.util;
 
+import ro.fortsoft.pippo.core.PippoRuntimeException;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -117,7 +119,7 @@ public class StringValue implements Serializable {
         return Arrays.asList(value.split(","));
     }
 
-    public Object to(Class<?> type) throws Exception {
+    public Object to(Class<?> type) {
         if (type == null) {
             return null;
         }
@@ -142,7 +144,7 @@ public class StringValue implements Serializable {
             return toDouble();
         }
 
-        throw new Exception("Cannot convert '" + toString() + "'to type '" + type + "'");
+        throw new PippoRuntimeException("Cannot convert '" + toString() + "'to type '" + type + "'");
     }
 
     @Override
