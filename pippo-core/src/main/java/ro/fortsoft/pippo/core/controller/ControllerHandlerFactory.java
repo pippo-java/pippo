@@ -15,22 +15,15 @@
  */
 package ro.fortsoft.pippo.core.controller;
 
+import ro.fortsoft.pippo.core.Initializer;
 import ro.fortsoft.pippo.core.route.RouteHandler;
 
-import java.lang.reflect.Method;
-
 /**
- * Interface that declares a handler for controller methods.
  *
  * @author James Moger
  *
  */
-public interface ControllerHandler extends RouteHandler {
+public interface ControllerHandlerFactory extends Initializer {
 
-    public Class<? extends Controller> getControllerClass();
-
-    public String getMethodName();
-
-    public Method getMethod();
-
+	public RouteHandler createHandler(Class<? extends Controller> controllerClass, String methodName);
 }

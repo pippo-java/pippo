@@ -29,7 +29,7 @@ public class ControllerDemo {
         pippo.getApplication().GET(new WebjarsResourceHandler());
         pippo.getApplication().GET(new PublicResourceHandler());
         pippo.getApplication().GET("/", ContactsController.class, "index");
-        pippo.getApplication().GET("/contacts/{id}", ContactsController.class, "urlFor");
+        pippo.getApplication().GET("/contact/{id}", ContactsController.class, "urlFor");
         pippo.start();
     }
 

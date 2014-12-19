@@ -16,7 +16,6 @@
 package ro.fortsoft.pippo.core;
 
 import ro.fortsoft.pippo.core.util.IoUtils;
-import ro.fortsoft.pippo.core.util.StringValue;
 
 import java.lang.reflect.Field;
 import java.util.Arrays;
@@ -46,9 +45,9 @@ public class Request {
     private static final Logger log = LoggerFactory.getLogger(Request.class);
 
     private HttpServletRequest httpServletRequest;
-    private Map<String, StringValue> parameters;
+    private Map<String, ParameterValue> parameters;
     private Map<String, String> pathParameters;
-    private Map<String, StringValue> allParameters; // parameters + pathParameters
+    private Map<String, ParameterValue> allParameters; // parameters + pathParameters
     private Map<String, FileItem> files;
     private Session session;
 
@@ -58,22 +57,23 @@ public class Request {
         this.httpServletRequest = servletRequest;
 
         // fill (query) parameters if any
-        Map<String, StringValue> tmp = new HashMap<>();
+        Map<String, ParameterValue> tmp = new HashMap<>();
         Enumeration<String> names = httpServletRequest.getParameterNames();
         while (names.hasMoreElements()) {
             String name = names.nextElement();
-            tmp.put(name, new StringValue(httpServletRequest.getParameter(name)));
+            String [] values = httpServletRequest.getParameterValues(name);
+            tmp.put(name, new ParameterValue(values));
         }
         parameters = Collections.unmodifiableMap(tmp);
     }
 
-    public Map<String, StringValue> getParameters() {
+    public Map<String, ParameterValue> getParameters() {
         return getAllParameters();
     }
 
-    public StringValue getParameter(String name) {
+    public ParameterValue getParameter(String name) {
         if (!getAllParameters().containsKey(name)) {
-            return new StringValue(null);
+            return new ParameterValue();
         }
 
         return getAllParameters().get(name);
@@ -95,16 +95,29 @@ public class Request {
 
     public <T> T updateEntityFromParameters(T entity) {
         for (Field field : entity.getClass().getDeclaredFields()) {
-            if (getAllParameters().containsKey(field.getName())) {
+            String parameterName = field.getName();
+            Param parameter = field.getAnnotation(Param.class);
+            if (parameter != null) {
+                parameterName = parameter.value();
+            }
+
+            if (getAllParameters().containsKey(parameterName)) {
                 if (!field.isAccessible()) {
                     field.setAccessible(true);
                 }
+
+                String pattern = null;
+                ParamPattern parameterPattern = field.getAnnotation(ParamPattern.class);
+                if (parameterPattern != null) {
+                    pattern = parameterPattern.value();
+                }
+
                 try {
-                    Object value = getAllParameters().get(field.getName()).to(field.getType());
+                    Object value = getAllParameters().get(parameterName).to(field.getType(), pattern);
                     field.set(entity, value);
                 } catch (IllegalAccessException e) {
-                    log.error("Cannot set value for field '{}'", field.getName(), e);
-                } catch (Exception e) {
+                    log.error("Cannot set value for field '{}' from parameter '{}'", field.getName(), parameterName, e);
+                } catch (PippoRuntimeException e) {
                     log.error(e.getMessage(), e);
                 }
             }
@@ -218,15 +231,15 @@ public class Request {
         allParameters = null; // invalidate and force recreate
     }
 
-    private Map<String, StringValue> getAllParameters() {
+    private Map<String, ParameterValue> getAllParameters() {
         if (allParameters == null) {
-            Map<String, StringValue> tmp = new HashMap<>();
+            Map<String, ParameterValue> tmp = new HashMap<>();
             // add query parameters
             tmp.putAll(parameters);
             // add path parameters
             Set<String> names = pathParameters.keySet();
             for (String name : names) {
-                tmp.put(name, new StringValue(pathParameters.get(name)));
+                tmp.put(name, new ParameterValue(pathParameters.get(name)));
             }
             allParameters = Collections.unmodifiableMap(tmp);
         }

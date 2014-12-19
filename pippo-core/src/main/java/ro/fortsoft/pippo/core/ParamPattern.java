@@ -13,24 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package ro.fortsoft.pippo.core.controller;
+package ro.fortsoft.pippo.core;
 
-import ro.fortsoft.pippo.core.route.RouteHandler;
-
-import java.lang.reflect.Method;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
 /**
- * Interface that declares a handler for controller methods.
+ * Annotation that defines a pattern for helping to convert a request String
+ * parameter into a Java object.
  *
  * @author James Moger
  *
  */
-public interface ControllerHandler extends RouteHandler {
-
-    public Class<? extends Controller> getControllerClass();
-
-    public String getMethodName();
-
-    public Method getMethod();
-
+@Retention(RetentionPolicy.RUNTIME)
+@Target({ ElementType.PARAMETER, ElementType.FIELD })
+public @interface ParamPattern {
+    String value();
 }
