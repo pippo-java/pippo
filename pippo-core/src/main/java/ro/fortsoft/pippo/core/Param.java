@@ -24,7 +24,6 @@ import java.lang.annotation.Target;
  * Annotation that defines a the request parameter name for mapping to a Java object.
  *
  * @author James Moger
- *
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ ElementType.PARAMETER, ElementType.FIELD })

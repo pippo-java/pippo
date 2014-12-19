@@ -18,12 +18,11 @@ package ro.fortsoft.pippo.core.controller;
 import ro.fortsoft.pippo.core.Initializer;
 import ro.fortsoft.pippo.core.route.RouteHandler;
 
-/**
- *
+/*
  * @author James Moger
- *
  */
 public interface ControllerHandlerFactory extends Initializer {
 
 	public RouteHandler createHandler(Class<? extends Controller> controllerClass, String methodName);
+
 }

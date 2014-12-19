@@ -292,11 +292,11 @@ public class ParameterValue implements Serializable {
             Class<?> componentType = classOfT.getComponentType();
             Object array = Array.newInstance(componentType, values.length);
             // cheat by not instantiating a ParameterValue for every value
-            ParameterValue pv = new ParameterValue(new String[] { "PLACEHOLDER" });
+            ParameterValue parameterValue = new ParameterValue(new String[] { "PLACEHOLDER" });
             for (int i = 0; i < values.length; i++) {
                 String value = values[i];
-                pv.values[0] = value;
-                Object object = pv.toObject(componentType, pattern);
+                parameterValue.values[0] = value;
+                Object object = parameterValue.toObject(componentType, pattern);
                 Array.set(array, i, object);
             }
             return (T) array;

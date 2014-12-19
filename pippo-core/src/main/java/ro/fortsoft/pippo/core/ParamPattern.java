@@ -25,7 +25,6 @@ import java.lang.annotation.Target;
  * parameter into a Java object.
  *
  * @author James Moger
- *
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ ElementType.PARAMETER, ElementType.FIELD })

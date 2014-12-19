@@ -23,7 +23,6 @@ import java.lang.reflect.Method;
  * Interface that declares a handler for controller methods.
  *
  * @author James Moger
- *
  */
 public interface ControllerHandler extends RouteHandler {
 

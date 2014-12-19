@@ -22,7 +22,6 @@ import ro.fortsoft.pippo.core.route.RouteHandler;
  * This factory constructs the default controller handler.
  *
  * @author James Moger
- *
  */
 public class DefaultControllerHandlerFactory implements ControllerHandlerFactory {
 
@@ -38,4 +37,5 @@ public class DefaultControllerHandlerFactory implements ControllerHandlerFactory
     @Override
     public void destroy(Application application) {
     }
+
 }

@@ -144,9 +144,10 @@ public class DefaultControllerHandler implements ControllerHandler {
         for (int i = 0; i < args.length; i++) {
             Class<?> type = types[i];
             String name = parameterNames[i];
-            ParameterValue requestValue = request.getParameter(name);
-            args[i] = requestValue.to(type);
+            ParameterValue value = request.getParameter(name);
+            args[i] = value.to(type);
         }
+
         return args;
     }
 
