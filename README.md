@@ -176,6 +176,12 @@ public class ContactsController extends Controller {
     public void index() {
         getResponse().render("crud/contacts");
     }
+    
+    public void getContact(@Param("id") int id) {
+        Contact contact = MyApplication.get().getContactService().get(id);
+        getResponse().bind("concact", contact);
+        getResponse().render("crud/contact");
+    }
 
 }
 ```
@@ -188,6 +194,7 @@ public class ControllerDemo {
     public static void main(String[] args) {
         Pippo pippo = new Pippo();
         pippo.getApplication().GET("/", ContactsController.class, "index");
+        pippo.getApplication().GET("/contact/{id: [0-9]+}", ContactsController.class, "getContact");
         pippo.start();
     }
 
@@ -315,7 +322,24 @@ POST("/contact", (request, response, chain) -> {
 });                    
 ```
 
-For now, Pippo comes with a constraint. The types for entity's fields that will be binding must be String, Boolean, Integer, Long, Float or Double.  
+Pippo supports the following request parameter and entity field types:
+
+- boolean/Boolean
+- byte/Byte
+- short/Short
+- int/Integer
+- long/Long
+- float/Float
+- double/Double
+- BigDecimal
+- char/Character
+- String
+- UUID
+- java.util.Date
+- java.sql.Date
+- java.sql.Time
+- java.sql.Timestamp
+- and simple arrays [] of all these types
 
 An __Application__ is a class which associates with an instance of PippoFilter to serve pages over the HTTP protocol. Usually I subclass this class and add my routes in `init()` method.
 
