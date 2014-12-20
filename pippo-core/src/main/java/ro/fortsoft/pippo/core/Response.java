@@ -42,7 +42,7 @@ public class Response {
     private static final Logger log = LoggerFactory.getLogger(Response.class);
 
     private HttpServletResponse httpServletResponse;
-    private Map<String, ContentTypeEngine> contentTypeEngines;
+    private ContentTypeEngines contentTypeEngines;
     private TemplateEngine templateEngine;
     private Map<String, Object> locals;
     private Map<String, Cookie> cookies;
@@ -236,7 +236,7 @@ public class Response {
         if (StringUtils.isNullOrEmpty(contentType)) {
             throw new PippoRuntimeException("You must specify a content type!");
         }
-        ContentTypeEngine contentTypeEngine = contentTypeEngines.get(contentType);
+        ContentTypeEngine contentTypeEngine = contentTypeEngines.getContentTypeEngine(contentType);
         if (contentTypeEngine == null) {
             throw new PippoRuntimeException("You must set a content type engine for '{}'", contentType);
         }
