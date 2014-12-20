@@ -2,17 +2,17 @@ Micro Java Web Framework
 =====================
      ____  ____  ____  ____  _____
     (  _ \(_  _)(  _ \(  _ \(  _  )
-     ) __/ _)(_  ) __/ ) __/ )(_)(
+     ) __/ _)(_  ) __/ ) __/ )(_)( 
     (__)  (____)(__)  (__)  (_____)
 
-It's an open source (Apache license) micro web framework in Java, with minimal dependencies and a quick learning curve.
-The goal of this project is to create a micro web framework in Java that should be easy to use and hack.
-The concept it's not new (I was inspired by Sinatra, Express JS, Play Framework) but my intention is to provide a clean, easy to use and modular solution. Pippo can be used in small and medium applications and also in applications based on micro services architecture.
-I believe in simplicity and I will try to develop this framework with these words in mind.
+It's an open source (Apache license) micro web framework in Java, with minimal dependencies and a quick learning curve.     
+The goal of this project is to create a micro web framework in Java that should be easy to use and hack.      
+The concept it's not new (I was inspired by Sinatra, Express JS, Play Framework) but my intention is to provide a clean, easy to use and modular solution. Pippo can be used in small and medium applications and also in applications based on micro services architecture.   
+I believe in simplicity and I will try to develop this framework with these words in mind.  
 
 The core is small (100k) and I intend to keep this module as small/simple as possible and to push new functionalities in pippo modules and third-party repositories/modules.
 
-The framework is based on Java Servlet 3.0 and requires Java 7.
+The framework is based on Java Servlet 3.0 and requires Java 7. 
 
 Artifacts
 -------------------
@@ -59,7 +59,7 @@ If you want to use pippo-core together with standard modules (Jetty, Freemarker 
 
 For a concrete example see pom.xml file from pippo-demo folder.
 
-On the other hand Pippo is write with modularity in mind.
+On the other hand Pippo is write with modularity in mind.   
 For example if you want the default template engine (Freemarker) in your project, you can add the dependency to this in your pom.xml:
 ```xml
 <dependency>
@@ -101,7 +101,7 @@ I provide a pippo-demo module that contains many demo applications: SimpleDemo a
 For SimpleDemo you have two java files: SimpleDemo.java and SimpleApplication.java
 
 > **NOTE**
-> Pippo is built using Java 1.7 (and NOT Java 1.8) but we will use lambdas in examples to show shorter code.
+> Pippo is built using Java 1.7 (and NOT Java 1.8) but we will use lambdas in examples to show shorter code. 
 
 ```java
 public class SimpleDemo {
@@ -145,7 +145,7 @@ public class SimpleApplication extends Application {
     }
 
 }
-```
+``` 
 
 where `Contact` is a simple POJO:
 ```java
@@ -155,13 +155,13 @@ public class Contact  {
     private String name;
     private String phone;
     private String address;
-
+    
     // getters ans setters
 
 }
 ```
 
-After run the application, open your internet browser and check the routes declared in Application (`http://localhost:8338/`,
+After run the application, open your internet browser and check the routes declared in Application (`http://localhost:8338/`, 
 `http://localhost:8338/file`, `http://localhost:8338/json`, `http://localhost:8338/error`).
 
 Controllers
@@ -176,7 +176,7 @@ public class ContactsController extends Controller {
     public void index() {
         getResponse().render("crud/contacts");
     }
-
+    
     public void getContact(@Param("id") int id) {
         Contact contact = MyApplication.get().getContactService().get(id);
         getResponse().bind("contact", contact);
@@ -203,11 +203,11 @@ public class ControllerDemo {
 
 Under the hood
 -------------------
-First, the framework is splits in modules (`pippo-core`, `pippo-jetty`, `pippo-freemarker`, ...) because I want to use only that modules that are usefully for me. For example if I develop a rest like application for a javascript frontend library (angular, ...) I don't want to use a template engine because my application connects to a database and it delivers only json.
-Also, maybe I want to use an external servlet container (Tomcat for example) and I don't want to use the web server supplied by Pippo. You can eliminate in this scenarios the jetty default server from Pippo (pippo-jetty module).
-Another scenarios is the case when you (as a web designer/developer) are not familiar with Freemarker (the default template engine from pippo) but you know Jade template engine because you have some experience with NodeJS applications. You can eliminate completely in this scenarios the Freemarker from Pippo (pippo-jetty module).
-How is it implemented the modularity in Pippo? Simple, using the ServiceLoader standard mechanism from Java.
-Also you can use the same mechanism to modularize your application using __ServiceLocator__ class from pippo-core.
+First, the framework is splits in modules (`pippo-core`, `pippo-jetty`, `pippo-freemarker`, ...) because I want to use only that modules that are usefully for me. For example if I develop a rest like application for a javascript frontend library (angular, ...) I don't want to use a template engine because my application connects to a database and it delivers only json.  
+Also, maybe I want to use an external servlet container (Tomcat for example) and I don't want to use the web server supplied by Pippo. You can eliminate in this scenarios the jetty default server from Pippo (pippo-jetty module).   
+Another scenarios is the case when you (as a web designer/developer) are not familiar with Freemarker (the default template engine from pippo) but you know Jade template engine because you have some experience with NodeJS applications. You can eliminate completely in this scenarios the Freemarker from Pippo (pippo-jetty module).   
+How is it implemented the modularity in Pippo? Simple, using the ServiceLoader standard mechanism from Java.  
+Also you can use the same mechanism to modularize your application using __ServiceLocator__ class from pippo-core.  
 
 In Pippo are few concepts that you would need to know them as simple user:
 - Application
@@ -225,10 +225,10 @@ If you want to extend Pippo (create new module, modify some default behaviors) y
 - ServiceLocator
 - Initializer
 
-The easy mode to run your application si to use Pippo wrapper class.
+The easy mode to run your application si to use Pippo wrapper class.  
 
-__Route__ are URL schema, which describe the interfaces for making requests to your web application. Combining an HTTP request method (a.k.a. HTTP verb) and a path pattern, you define URLs in your application.
-Each route has an associated __RouteHandler__, which does the job of performing any action in the application and sending the HTTP response.
+__Route__ are URL schema, which describe the interfaces for making requests to your web application. Combining an HTTP request method (a.k.a. HTTP verb) and a path pattern, you define URLs in your application.  
+Each route has an associated __RouteHandler__, which does the job of performing any action in the application and sending the HTTP response.  
 Routes are defined using an HTTP verb and a path pattern. Any request to the server that matches a route definition is routed to the associated route handler.
 
 ```java
@@ -248,22 +248,22 @@ GET("/", (request, response, chain) -> response.send("Hello World"));
 
 Routes in Pippo are created using methods named after HTTP verbs. For instance, in the previous example, we created a route to handle GET requests to the root of the website. You have a corresponding method in Application for all commonly used HTTP verbs (GET, POST, DELETE, HEAD, PUT). For a basic website, only GET and POST are likely to be used.
 
-The route that is defined first takes precedence over other matching routes. So the ordering of routes is crucial to the behavior of an application.
+The route that is defined first takes precedence over other matching routes. So the ordering of routes is crucial to the behavior of an application.   
 
 Each defined route has an __urlPattern__.
 The route can be static or dynamic:
 - static ("/", "/hello", "/contacts/1")
 - dynamic (regex: "/.*" or parameterized: "/contact/{id}", "/contact/{id: [0-9]+}")
 
-As you can see, it's easy to create routes with parameters. A parameter is wrapped by curly braces `{name}` and can optionally specify a regular expression.
+As you can see, it's easy to create routes with parameters. A parameter is wrapped by curly braces `{name}` and can optionally specify a regular expression. 
 
 You can retrieve the path parameter value for a request in type safe mode using:
 
 ```java
 GET("/contact/{id: [0-9]+}", (request, response, chain) -> {
-    int id = request.getParameter("id").toInt(0);
+    int id = request.getParameter("id").toInt(0);    
     String action = request.getParameter("action").toString("new");
-
+    
     Map<String, Object> model = new HashMap<>();
     model.put("id", id);
     model.put("action", action)
@@ -271,15 +271,15 @@ GET("/contact/{id: [0-9]+}", (request, response, chain) -> {
 });
 ```
 
-The __Response__ is a wrapper over HttpServletResponse from servlet API and it provides functionality for modifying the response. You can send a char sequence with `send` method, or a file with `file` method, or a json with `json` method. Also you can send a template file merged with a model using `render` method.
+The __Response__ is a wrapper over HttpServletResponse from servlet API and it provides functionality for modifying the response. You can send a char sequence with `send` method, or a file with `file` method, or a json with `json` method. Also you can send a template file merged with a model using `render` method.  
 
-The __Request__ is a wrapper over HttpServletRequest from servlet API.
+The __Request__ is a wrapper over HttpServletRequest from servlet API.  
 
-When a request is made to the server, which matches a route definition, the associated handlers are called. The __RouteMather__ contains a method `List<RouteMatch> findRoutes(String requestMethod, String requestUri)` that returns all routes which matches a route definition (String requestMethod, String requestUri).
-Why does RouterMatcher have the method findRoutes(...):List<RouteMatch> instead of findRoute(...):RouteMatch? My response is that I want to use the RouteHandler also to define the Filter concept. I don't want to define a new interface Filter with the same signature as the RouteHandler interface.
-A __RouteHandler__ has only one method `void handle(Request request, Response response, RouteHandlerChain chain)`. The __handle__ method can be an endpoint or not. A regular RouteHandler is an endpoint, that means that the response is committed in the handle method of that RouteHandler instance. A committed response has already had its status code and headers written. In Response class exists a method `isCommitted()` that tell you if the response is committed or not. The methods from Response that commit a response are: `send`, `json`, `file`, `render`. If you try to commit a response that was already committed (after content has been written) than a PippoRuntimeException will be thrown.
-You can reconize in a very simple mode if a response method sets the committed flag on true (it's an endpoint method) just by looking at its signature. The convension is that these methods return `void` unlike the other methods that return `Response` (you can set many fields at once).
-You can see a filter as a RouteHandler that does not commit the response. A filter is typically used to perform a particular piece of functionality either before or after the primary functionality (another RouteHandler) of a web application is performed. The filter might determine that the user does not have permissions to access a particular servlet, and it might send the user to an error page rather than to the requested resource.
+When a request is made to the server, which matches a route definition, the associated handlers are called. The __RouteMather__ contains a method `List<RouteMatch> findRoutes(String requestMethod, String requestUri)` that returns all routes which matches a route definition (String requestMethod, String requestUri).  
+Why does RouterMatcher have the method findRoutes(...):List<RouteMatch> instead of findRoute(...):RouteMatch? My response is that I want to use the RouteHandler also to define the Filter concept. I don't want to define a new interface Filter with the same signature as the RouteHandler interface.  
+A __RouteHandler__ has only one method `void handle(Request request, Response response, RouteHandlerChain chain)`. The __handle__ method can be an endpoint or not. A regular RouteHandler is an endpoint, that means that the response is committed in the handle method of that RouteHandler instance. A committed response has already had its status code and headers written. In Response class exists a method `isCommitted()` that tell you if the response is committed or not. The methods from Response that commit a response are: `send`, `json`, `file`, `render`. If you try to commit a response that was already committed (after content has been written) than a PippoRuntimeException will be thrown.  
+You can reconize in a very simple mode if a response method sets the committed flag on true (it's an endpoint method) just by looking at its signature. The convension is that these methods return `void` unlike the other methods that return `Response` (you can set many fields at once).  
+You can see a filter as a RouteHandler that does not commit the response. A filter is typically used to perform a particular piece of functionality either before or after the primary functionality (another RouteHandler) of a web application is performed. The filter might determine that the user does not have permissions to access a particular servlet, and it might send the user to an error page rather than to the requested resource.  
 
 ```java
 // audit filter
@@ -294,7 +294,7 @@ GET("/hello",(request, response, chain) -> response.send("Hello World"));
 
 You can see in the above example that I put an audit filter in front of all requests.
 
-From version 0.4, Pippo comes with a new very useful method `getEntityFromParameters` in __Request__. This method binding the request parameters values from PUT/POST/etc to Java objects (POJOs).
+From version 0.4, Pippo comes with a new very useful method `getEntityFromParameters` in __Request__. This method binding the request parameters values from PUT/POST/etc to Java objects (POJOs).  
 Let's see some code that shows in action this feature:
 ```java
 POST("/contact", (request, response, chain) -> {
@@ -319,7 +319,7 @@ POST("/contact", (request, response, chain) -> {
         contactService.save(contact);
         response.redirect("/contacts");
     }
-});
+});                    
 ```
 
 Pippo supports the following request parameter and entity field types:
@@ -360,13 +360,13 @@ public class MyApplication extends Application {
     public void init() {
         super.init();
 
-        GET("/", (request, response, chain) -> response.send("Hello World"));
+        GET("/", (request, response, chain) -> response.send("Hello World"));        
     }
 
 }
-```
+```     
 
-another approach is:
+another approach is:  
 
 ```java
 public class MyDemo {
@@ -385,7 +385,7 @@ public class MyDemo {
     }
 
 }
-```
+```     
 
 Static files
 -------------------
@@ -398,7 +398,7 @@ Pippo pippo = new Pippo();
 pippo.getServer().getSettings().staticFilesLocation("/public");
 ```
 
-or
+or 
 
 ```java
 Pippo pippo = new Pippo();
@@ -427,13 +427,13 @@ You can see that CrudDemo uses bootstrap framework. You can use the bootstrap cs
 </head>
 ```
 
-I want to point that the static files/resources are served directly by the embedded server (in case of pippo-jetty) and not by Pippo (through PippoFilter).
+I want to point that the static files/resources are served directly by the embedded server (in case of pippo-jetty) and not by Pippo (through PippoFilter). 
 
 Reverse routing
 -------------------
-Reverse routing is a feature in Pippo that is used to allow you to easily change your URL structure without having to modify all your code.
-Why would you want to build URLs instead of hard-coding them into your templates?
-One answer is that reversing is often more descriptive than hard-coding the URLs. More importantly, it allows you to change URLs in one go, without having to remember to change URLs all over the place.
+Reverse routing is a feature in Pippo that is used to allow you to easily change your URL structure without having to modify all your code.  
+Why would you want to build URLs instead of hard-coding them into your templates?  
+One answer is that reversing is often more descriptive than hard-coding the URLs. More importantly, it allows you to change URLs in one go, without having to remember to change URLs all over the place.  
 
 If you create a route like (the Controller aproach):
 ```java
@@ -492,7 +492,7 @@ GET("/contact*", (request, response, chain) -> {
     response.getLocals().put("contacts", contactService.getContacts());
 });
 
-// just consume 'contacts' in template
+// just consume 'contacts' in template 
 GET("/contact.*", (request, response, chain) -> {
     response.render("crud/contacts");
 });
@@ -513,7 +513,7 @@ The snippet for contacts (show a list with all contacts' name):
 
 Upload
 -------------------
-Pippo has builtin support for upload. For a perfect running example see UploadDemo from pippo-demo module.
+Pippo has builtin support for upload. For a perfect running example see UploadDemo from pippo-demo module.    
 
 In what follows I will show you how simple it is to work with uploads.
 
@@ -521,7 +521,7 @@ In what follows I will show you how simple it is to work with uploads.
 public static void main(String[] args) {
     Pippo pippo = new Pippo();
     Application application = pippo.getApplication();
-    // the following two lines are optional
+    // the following two lines are optional 
     application.setUploadLocation("upload");
     application.setMaximumUploadSize(100 * 1024); // 100k
 
@@ -564,8 +564,8 @@ The content for 'upload' is:
 
 Security
 -------------------
-You can secure your application or only some parts using a filter (a RouteHandler). Remember that routes are matched
-in the order they are added/defined so put your security filter in front of regular routes (regular routes are
+You can secure your application or only some parts using a filter (a RouteHandler). Remember that routes are matched 
+in the order they are added/defined so put your security filter in front of regular routes (regular routes are 
 endpoint routes for a request).
 
 I will show you a simple implementation for a security filter.
@@ -584,7 +584,7 @@ GET("/contact.*", (request, response, chain) -> {
 // show contacts page
 GET("/contacts", (request, response, chain) -> response.send("contacts"));
 
-// show contact page for the contact with id specified as path parameter
+// show contact page for the contact with id specified as path parameter 
 GET("/contact/{id}", (request, response, chain) -> response.send("contact"));
 
 // show login page
@@ -628,7 +628,7 @@ The content for login can be:
         <#if error??>
             ${error}
         </#if>
-
+        
         <form method="post" action="/login">
             <input placeholder="Username" name="username">
             <input placeholder="Password" name="password" type="password">
@@ -638,10 +638,10 @@ The content for login can be:
 </html>
 ```
 
-In above code I want to protect all pages (contacts, contact) for the Contact domain entity.
+In above code I want to protect all pages (contacts, contact) for the Contact domain entity.  
 The authentication tests to see if the 'username' attribute is present in the session object. If 'username' is present
 than call the regular route with `chain.next()` else redirect to the login page. I added 'originalDestination' attribute
-because after authentication process I want to continue with the original destination (original url).
+because after authentication process I want to continue with the original destination (original url). 
 
 Settings
 --------
@@ -650,7 +650,7 @@ mode-sensitive keys and recursive includes.
 
     # Include files serve as base settings which may be overridden in this file.
     include = /path/to/include.properties, /path/to/other.properties
-
+    
     application.name = Default Pippo Application
     %dev.application.name = Developing Pippo Application
     %test.application.name = Testing Pippo Application
@@ -671,12 +671,12 @@ within Pippo. This allows your Pippo application to be responsive without being 
 
 Embedded web server
 -------------------
-Most server-side Java applications (e.g. web or service-oriented) are intended to run within a container.
-The traditional way to package these apps for distribution is to bundle them as a WAR file.
-Of course you can use the above model for your application development or you can use the simple way.
+Most server-side Java applications (e.g. web or service-oriented) are intended to run within a container. 
+The traditional way to package these apps for distribution is to bundle them as a WAR file. 
+Of course you can use the above model for your application development or you can use the simple way. 
 Rather than your application being deployed to a container, an embedded container is deployed within the application itself.
 Pippo comes with Jetty as embedded web server. You can choose another container if you want (for example Tomcat).
-
+ 
 See below the classic `Hello World` in Pippo using the default web server:
 ```java
 public class HelloWorld {
@@ -690,8 +690,8 @@ public class HelloWorld {
 }
 ```
 
-You can run _HelloWorld_ class from your IDE (or command line) as a normal (desktop) application.
-The `default port` for embedded web server is __8338__ so open your internet browser and type `http://localhost:8338` to
+You can run _HelloWorld_ class from your IDE (or command line) as a normal (desktop) application. 
+The `default port` for embedded web server is __8338__ so open your internet browser and type `http://localhost:8338` to 
 see the result.
 
 You can change some aspects of the embedded web server using `WebServerSettings`:
@@ -703,7 +703,7 @@ pippo.start();
 
 In above snippet I changed the port to _8081_ and ai specify the static file location to _public_.
 
-If you need to create support for another embedded web server that is not implemented in Pippo or third-party modules
+If you need to create support for another embedded web server that is not implemented in Pippo or third-party modules 
 than all you need to do is to implement `WebServer` (or to extends `AbstractWebServer`).
 
 ```java
@@ -720,39 +720,39 @@ public interface WebServer {
     public void start();
 
     public void stop();
-
+    
 }
 ```
 
-If you want to make your embedded server plugable for Pippo than you must add file
-`ro.fortsoft.pippo.core.WebServer` in _src/main/resources/META-INF/services_ folder with your class name that implements
+If you want to make your embedded server plugable for Pippo than you must add file 
+`ro.fortsoft.pippo.core.WebServer` in _src/main/resources/META-INF/services_ folder with your class name that implements  
 WebServer as content (for an hypothetical Tomcat integration the content file should be _ro.fortsoft.pippo.tomcat.TomcatServer_).
 
 Templates
 -------------------
-Not all applications are REST based and you might need to generate some HTML.
-It is not productive to inline the HTML in strings in your code and concatenate them at request time.
+Not all applications are REST based and you might need to generate some HTML. 
+It is not productive to inline the HTML in strings in your code and concatenate them at request time. 
 Pippo ships with Freemarker template engine as default and Jade template engine as a builtin alternative. These engines
-are optional and Pippo detect automatically the template engine using __ServiceLocator__.
+are optional and Pippo detect automatically the template engine using __ServiceLocator__.  
 You can set programmatically the desired template engine using `setTemplateEngine(TemplateEngine templateEngine)` from
 __Appplication__.
 
-If you want to add support for other template engine in your application, please create a new module/project, add file
-`ro.fortsoft.pippo.core.TemplateEngine` in _src/main/resources/META-INF/services_ folder with your class name that implements
-TemplateEngine as content (for Jade the content file is _ro.fortsoft.pippo.jade.JadeTemplateEngine_).
+If you want to add support for other template engine in your application, please create a new module/project, add file 
+`ro.fortsoft.pippo.core.TemplateEngine` in _src/main/resources/META-INF/services_ folder with your class name that implements 
+TemplateEngine as content (for Jade the content file is _ro.fortsoft.pippo.jade.JadeTemplateEngine_).  
 
-The `TemplateEngine` interface contains only one method, `public void render(String templateName, Map<String, Object> model, Writer writer)`,
+The `TemplateEngine` interface contains only one method, `public void render(String templateName, Map<String, Object> model, Writer writer)`, 
 that must be implemented by your concrete template engine.
 
-The template engine is uses in `public void render(String templateName, Map<String, Object> model)` and `public void render(String templateName)`
+The template engine is uses in `public void render(String templateName, Map<String, Object> model)` and `public void render(String templateName)` 
 from `Response` class.
 
 Bellow is a code snippet about how you can use a template as response to a request:
 ```java
 GET("/contact/{id}", (request, response, chain) -> {
-    int id = request.getParameter("id").toInt(0);
+    int id = request.getParameter("id").toInt(0);    
     String action = request.getParameter("action").toString("new");
-
+    
     Map<String, Object> model = new HashMap<>();
     model.put("id", id);
     model.put("action", action)
@@ -761,8 +761,8 @@ GET("/contact/{id}", (request, response, chain) -> {
 ```
 
 Don't forget that `locals` variables from a response will be available automatically to all templates for the current request/response cycle.
-
-For each template engine we expose its configuration. For example __Freemarker__ works with `freemarker.template.Configuration` and __Jade__ works with `de.neuland.jade4j.JadeConfiguration`.
+ 
+For each template engine we expose its configuration. For example __Freemarker__ works with `freemarker.template.Configuration` and __Jade__ works with `de.neuland.jade4j.JadeConfiguration`.  
 In _Application.init_ you can create a new instance for a discovered template engine or you can modify its configuration.
 
 ```java
@@ -827,7 +827,7 @@ public class ContactsController extends Controller {
 }
 ```
 
-Pippo automatically creates the ContactsController instance and pippo-spring integration injects the ContactService service bean, so basically you don’t have to worry about any of that stuff yourself.
+Pippo automatically creates the ContactsController instance and pippo-spring integration injects the ContactService service bean, so basically you don’t have to worry about any of that stuff yourself. 
 
 To activate pippo-spring integration in your Application you must add `SpringControllerInjector`:
 ```java
@@ -839,12 +839,12 @@ public class MyApplication extends Application {
 
         // create spring application context
         ApplicationContext applicationContext = new AnnotationConfigApplicationContext(SpringConfiguration.class);
-
+        
         // registering SpringControllerInjector
         getControllerInstantiationListeners().add(new SpringControllerInjector(applicationContext));
 
         // add controller
-        GET("/", ContactsController.class, "index");
+        GET("/", ContactsController.class, "index");        
     }
 
 }
@@ -878,11 +878,11 @@ You can modify some settings for an embedded WebServer using _WebServerSettings_
 We chose Service Loader mechanism from Java as builtin module system in Pippo because is a standard easy to use mechanism
 You can create a modular application using `ServiceLocator` class (trivial wrapper over Service Loader concept).
 
-To improve the modularity mechanism, we added the concept of `Initializer`.
-When Pippo starts up an application, it scans the classpath roots, looking for files named `pippo.properties`. It reads
-every pippo.properties file it finds, and it instantiates and execute the initializers defined in those files.
+To improve the modularity mechanism, we added the concept of `Initializer`.  
+When Pippo starts up an application, it scans the classpath roots, looking for files named `pippo.properties`. It reads 
+every pippo.properties file it finds, and it instantiates and execute the initializers defined in those files. 
 
-To demonstrate the initializer concept I added a dump _FreemarkerInitializer_ in pippo-freemarker module. In our example,
+To demonstrate the initializer concept I added a dump _FreemarkerInitializer_ in pippo-freemarker module. In our example, 
 the _pippo.properties_ file (which should be packaged in the root of the classpath) contains only one line:
 ```properties
 initializer=ro.fortsoft.pippo.freemarker.FreemarkerInitializer
@@ -900,13 +900,13 @@ public class FreemarkerInitializer implements Initializer {
 
     @Override
     public void destroy(Application application) {
-        // do nothing
+        // do nothing    
     }
 
-}
+} 
  ```
 
-One scenario when I can use the _Initializer_ concept is when I split my application in several modules and each module
+One scenario when I can use the _Initializer_ concept is when I split my application in several modules and each module 
 wants to add some routes to the application.
 For example my application comes with two modules (two jars): _contacts_ and _users_.
 I can have _ContactInitializer.java_ with this content:
@@ -917,8 +917,8 @@ public class ContactInitializer implements Initializer {
     public void init(Application application) {
         // show contacts page
         application.GET("/contacts", (request, response, chain) -> response.send("contacts"));
-
-        // show contact page for the contact with id specified as path parameter
+        
+        // show contact page for the contact with id specified as path parameter 
         application.GET("/contact/{id}", (request, response, chain) -> response.send("contact"));
     }
 
@@ -938,8 +938,8 @@ public class ContactInitializer implements Initializer {
     public void init(Application application) {
         // show users page
         application.GET("/users", (request, response, chain) -> response.send("users"));
-
-        // show user page for the user with id specified as path parameter
+        
+        // show user page for the user with id specified as path parameter 
         application.GET("/user/{id}", (request, response, chain) -> response.send("user"));
     }
 
@@ -955,8 +955,8 @@ Runtime mode
 -------------------
 An application can run in three modes: __DEV__(development), __TEST__(testing) and __PROD__(production).
 
-You can change the runtime mode using the "pippo.mode" system property (`-Dpippo.mode=dev` in command line or `System.setProperty("pippo.mode", "dev")`).
-The default mode is __PROD__.
+You can change the runtime mode using the "pippo.mode" system property (`-Dpippo.mode=dev` in command line or `System.setProperty("pippo.mode", "dev")`).  
+The default mode is __PROD__.  
 
 For __DEV__ mode in pippo-jetty the cache for static resources is disabled and in pippo-freemarker the cache for templates is disabled also.
 
@@ -964,21 +964,21 @@ You can retrieves the current runtime mode using `RuntimeMode.getCurrent()`.
 
 How to build
 -------------------
-Requirements:
-- [Git](http://git-scm.com/)
+Requirements: 
+- [Git](http://git-scm.com/) 
 - JDK 1.7 (test with `java -version`)
 - [Apache Maven 3](http://maven.apache.org/) (test with `mvn -version`)
 
 Steps:
 - create a local clone of this repository (with `git clone https://github.com/decebals/pippo.git`)
-- go to project's folder (with `cd pippo`)
+- go to project's folder (with `cd pippo`) 
 - build the artifacts (with `mvn clean package` or `mvn clean install`)
 
 After above steps a folder _target_ is created for each module and all goodies are in that folder.
 
 Demo
 -------------------
-The demo application is in pippo-demo module. The demo module contains some demo applications:
+The demo application is in pippo-demo module. The demo module contains some demo applications: 
 - General
      - Simple
      - Crud
@@ -993,9 +993,9 @@ The demo application is in pippo-demo module. The demo module contains some demo
 - IoC/DI
      - Guice
      - Spring
-
-CrudDemo is a <b>C</b>reate <b>R</b>etrieve <b>U</b>pdate <b>D</b>elete demo (with twitter bootstrap as static resources).
-
+  
+CrudDemo is a <b>C</b>reate <b>R</b>etrieve <b>U</b>pdate <b>D</b>elete demo (with twitter bootstrap as static resources). 
+    
 Mailing list
 --------------
 Much of the conversation between developers and users is managed through [mailing list] (http://groups.google.com/group/pippo-java).
@@ -1018,13 +1018,4 @@ For more information on SemVer, please visit http://semver.org/.
 
 License
 --------------
-Copyright 2014 Decebal Suiu
-
-Licensed under the Apache License, Version 2.0 (the "License"); you may not use this work except in compliance with
-the License. You may obtain a copy of the License in the LICENSE file, or at:
-
-http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on
-an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the
-specific language governing permissions and limitations under the License.
+[Apache License](http://www.apache.org/licenses/LICENSE-2.0)
