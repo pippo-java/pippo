@@ -233,10 +233,12 @@ public class Response {
     }
 
     public void send(Object object, String contentType) {
+        if (StringUtils.isNullOrEmpty(contentType)) {
+            throw new PippoRuntimeException("You must specify a content type!");
+        }
         ContentTypeEngine contentTypeEngine = contentTypeEngines.get(contentType);
         if (contentTypeEngine == null) {
-            log.error("You must set a content type engine for '{}'", contentType);
-            return;
+            throw new PippoRuntimeException("You must set a content type engine for '{}'", contentType);
         }
 
         header(HttpConstants.Header.CONTENT_TYPE, contentTypeEngine.getContentType());
