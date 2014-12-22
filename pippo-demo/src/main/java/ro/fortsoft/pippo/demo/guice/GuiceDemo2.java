@@ -18,6 +18,8 @@ package ro.fortsoft.pippo.demo.guice;
 import ro.fortsoft.pippo.core.Application;
 import ro.fortsoft.pippo.core.Pippo;
 import ro.fortsoft.pippo.core.controller.Controller;
+import ro.fortsoft.pippo.core.route.PublicResourceHandler;
+import ro.fortsoft.pippo.core.route.WebjarsResourceHandler;
 import ro.fortsoft.pippo.demo.crud.ContactService;
 import ro.fortsoft.pippo.guice.GuiceControllerInjector;
 
@@ -38,8 +40,6 @@ public class GuiceDemo2 {
         application.getControllerInstantiationListeners().add(new GuiceControllerInjector(injector));
 
         Pippo pippo = new Pippo(application);
-        pippo.getServer().getSettings().staticFilesLocation("/public");
-
         pippo.start();
     }
 
@@ -51,6 +51,9 @@ public class GuiceDemo2 {
         @Override
         public void init() {
             super.init();
+
+            GET(new WebjarsResourceHandler());
+            GET(new PublicResourceHandler());
 
             GET("/", ContactsController2.class, "index");
         }

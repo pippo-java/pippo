@@ -16,6 +16,8 @@
 package ro.fortsoft.pippo.demo.guice;
 
 import ro.fortsoft.pippo.core.Pippo;
+import ro.fortsoft.pippo.core.route.PublicResourceHandler;
+import ro.fortsoft.pippo.core.route.WebjarsResourceHandler;
 import ro.fortsoft.pippo.guice.GuiceControllerInjector;
 
 import com.google.inject.Guice;
@@ -31,13 +33,15 @@ public class GuiceDemo {
 
     public static void main(String[] args) {
         Pippo pippo = new Pippo();
-        pippo.getServer().getSettings().staticFilesLocation("/public");
 
         // create guice injector
         Injector injector = Guice.createInjector(new GuiceModule());
 
         // registering GuiceControllerInjector
         pippo.getApplication().getControllerInstantiationListeners().add(new GuiceControllerInjector(injector));
+
+        pippo.getApplication().GET(new WebjarsResourceHandler());
+        pippo.getApplication().GET(new PublicResourceHandler());
 
         // add controller
         pippo.getApplication().GET("/", ContactsController.class, "index");

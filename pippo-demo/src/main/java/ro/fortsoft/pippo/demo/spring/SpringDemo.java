@@ -15,10 +15,13 @@
  */
 package ro.fortsoft.pippo.demo.spring;
 
+import ro.fortsoft.pippo.core.Pippo;
+import ro.fortsoft.pippo.core.route.PublicResourceHandler;
+import ro.fortsoft.pippo.core.route.WebjarsResourceHandler;
+import ro.fortsoft.pippo.spring.SpringControllerInjector;
+
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
-import ro.fortsoft.pippo.core.Pippo;
-import ro.fortsoft.pippo.spring.SpringControllerInjector;
 
 /**
  * This demo shows how to use Spring Framework to declare a bean and how to use
@@ -30,13 +33,15 @@ public class SpringDemo {
 
     public static void main(String[] args) {
         Pippo pippo = new Pippo();
-        pippo.getServer().getSettings().staticFilesLocation("/public");
 
         // create spring application context
         ApplicationContext applicationContext = new AnnotationConfigApplicationContext(SpringConfiguration.class);
 
         // registering SpringControllerInjector
         pippo.getApplication().getControllerInstantiationListeners().add(new SpringControllerInjector(applicationContext));
+
+        pippo.getApplication().GET(new WebjarsResourceHandler());
+        pippo.getApplication().GET(new PublicResourceHandler());
 
         // add controller
         pippo.getApplication().GET("/", ContactsController.class, "index");

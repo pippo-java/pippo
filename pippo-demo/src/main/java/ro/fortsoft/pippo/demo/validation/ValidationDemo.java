@@ -19,18 +19,21 @@ import ro.fortsoft.pippo.core.Application;
 import ro.fortsoft.pippo.core.Pippo;
 import ro.fortsoft.pippo.core.Request;
 import ro.fortsoft.pippo.core.Response;
+import ro.fortsoft.pippo.core.route.PublicResourceHandler;
 import ro.fortsoft.pippo.core.route.RouteHandler;
 import ro.fortsoft.pippo.core.route.RouteHandlerChain;
+import ro.fortsoft.pippo.core.route.WebjarsResourceHandler;
 
-import javax.validation.ConstraintViolation;
-import javax.validation.Validation;
-import javax.validation.Validator;
-import javax.validation.ValidatorFactory;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
+import javax.validation.ConstraintViolation;
+import javax.validation.Validation;
+import javax.validation.Validator;
+import javax.validation.ValidatorFactory;
 
 /**
  * @author Decebal Suiu
@@ -39,12 +42,15 @@ public class ValidationDemo {
 
     public static void main(String[] args) {
         Pippo pippo = new Pippo();
-        pippo.getServer().getSettings().staticFilesLocation("/public");
 
         ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
         final Validator validator = factory.getValidator();
 
         final Application application = pippo.getApplication();
+
+        application.GET(new WebjarsResourceHandler());
+        application.GET(new PublicResourceHandler());
+
         application.GET("/", new RouteHandler() {
 
             @Override

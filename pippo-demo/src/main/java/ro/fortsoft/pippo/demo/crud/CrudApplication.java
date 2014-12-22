@@ -36,16 +36,6 @@ public class CrudApplication extends Application {
     public void init() {
         super.init();
 
-        /*
-        FreemarkerTemplateEngine templateEngine = new FreemarkerTemplateEngine();
-        try {
-            templateEngine.getConfiguration().setDirectoryForTemplateLoading(new File("src/main/resources/templates/"));
-        } catch (IOException e) {
-            throw new PippoRuntimeException(e);
-        }
-        setTemplateEngine(templateEngine);
-        */
-
         contactService = new InMemoryContactService();
 
         // audit filter

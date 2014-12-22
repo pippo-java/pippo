@@ -15,17 +15,20 @@
  */
 package ro.fortsoft.pippo.demo.spring;
 
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.annotation.AnnotationConfigApplicationContext;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 import ro.fortsoft.pippo.core.Application;
 import ro.fortsoft.pippo.core.Pippo;
 import ro.fortsoft.pippo.core.controller.Controller;
+import ro.fortsoft.pippo.core.route.PublicResourceHandler;
+import ro.fortsoft.pippo.core.route.WebjarsResourceHandler;
 import ro.fortsoft.pippo.demo.crud.ContactService;
 import ro.fortsoft.pippo.demo.crud.InMemoryContactService;
 
 import javax.inject.Inject;
+
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 
 /**
  * This demo shows how to use Spring Framework to declare your Application as bean together with other beans and how
@@ -42,8 +45,6 @@ public class SpringDemo2 {
         Application application = (Application) applicationContext.getBean("application");
 
         Pippo pippo = new Pippo(application);
-        pippo.getServer().getSettings().staticFilesLocation("/public");
-
         pippo.start();
     }
 
@@ -71,6 +72,8 @@ public class SpringDemo2 {
         public void init() {
             super.init();
 
+            GET(new WebjarsResourceHandler());
+            GET(new PublicResourceHandler());
             GET("/", ContactsController2.class, "index");
         }
 

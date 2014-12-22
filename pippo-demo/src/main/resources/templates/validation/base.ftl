@@ -7,15 +7,15 @@
 
         <title>${title}</title>
 
-        <link href="/css/style.css" rel="stylesheet">
-        <link href="/css/bootstrap.min.css" rel="stylesheet">
+        <link href="${webjarsAt('bootstrap/3.3.1/css/bootstrap.min.css')}" rel="stylesheet">
+        <link href="${publicAt('css/style.css')}" rel="stylesheet">
     </head>
     <body>
         <div class="container">
             <#nested/>
 
-            <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
-            <script src="/js/bootstrap.min.js"></script>
+            <script src="${webjarsAt('jquery/1.11.1/jquery.min.js')}"></script>
+            <script src="${webjarsAt('bootstrap/3.3.1/js/bootstrap.min.js')}"></script>
         </div>
     </body>
 </html>

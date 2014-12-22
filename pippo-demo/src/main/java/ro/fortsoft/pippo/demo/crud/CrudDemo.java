@@ -25,8 +25,6 @@ import ro.fortsoft.pippo.core.route.WebjarsResourceHandler;
 public class CrudDemo {
 
     public static void main(String[] args) {
-//        new Pippo().start(); // run the default web server with the default web server settings
-
         Pippo pippo = new Pippo(new CrudApplication());
         pippo.getApplication().GET(new WebjarsResourceHandler());
         pippo.getApplication().GET(new PublicResourceHandler());
