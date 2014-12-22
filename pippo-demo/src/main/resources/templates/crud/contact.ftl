@@ -1,7 +1,7 @@
 <#import "base.ftl" as base/>
 <@base.page title="Contact">
     <div class="page-header">
-        <h2>Contact</h2>
+        <h2>Contact <small>POST with form url-encoding</small></h2>
     </div>
 
     <form class="form-horizontal" role="form" method="post" action="${editAction}">

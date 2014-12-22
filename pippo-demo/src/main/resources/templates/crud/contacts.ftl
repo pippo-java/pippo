@@ -5,7 +5,7 @@
     </div>
 
     <div class="buttons pull-right">
-        <a id="addContactButton" type="button" class="btn btn-primary" href="/contact/0?action=new"/">Add Contact</a>
+        <a id="addContactButton" type="button" class="btn btn-primary" href="/contact/0?action=new"><i class="fa fa-plus"></i> Add Contact</a>
     </div>
 
     <table class="table table-striped table-bordered table-hover">
@@ -14,8 +14,7 @@
             <th>#</th>
             <th>Name</th>
             <th>Phone</th>
-            <th>Address</th>
-            <th></th>
+            <th colspan='2'>Address</th>
         </tr>
         </thead>
         <tbody>
@@ -25,10 +24,12 @@
                 <td>${contact.name}</td>
                 <td>${contact.phone}</td>
                 <td>${contact.address}</td>
-            <#--
-            <td><a <a href="/contact?id=${contact.id}&action=edit">Edit</a>&nbsp;<a href="/contact?id=${contact.id}&action=delete">Delete</a>
-            -->
-                <td><a <a href="/contact/${contact.id}?action=edit">Edit</a>&nbsp;<a href="/contact/${contact.id}?action=delete">Delete</a>
+                <td style="text-align: right;">
+                    <div class="btn-group btn-group-xs">
+                        <a class="btn btn-default" href="/contact/${contact.id}?action=edit"><i class="fa fa-pencil"></i> Edit</a>
+                        <a class="btn btn-default" href="/contact/${contact.id}?action=delete"><i class="fa fa-trash"></i> Delete</a>
+                    </div>
+                </td>
             </tr>
             </#list>
         </tbody>
