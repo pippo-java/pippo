@@ -16,6 +16,7 @@
 package ro.fortsoft.pippo.core;
 
 import ro.fortsoft.pippo.core.route.Route;
+import ro.fortsoft.pippo.core.util.StringUtils;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
@@ -45,36 +46,61 @@ public class DefaultErrorHandler implements ErrorHandler {
         response.status(statusCode);
 
         String acceptType = request.getAcceptType();
-        ContentTypeEngine engine = application.getContentTypeEngine(acceptType);
+        if (StringUtils.isNullOrEmpty(acceptType)) {
+            acceptType = response.getContentType();
+        }
 
-        if (engine == null) {
-            log.warn("No registered content type engine for '{}'", acceptType);
-            if (application.getTemplateEngine() == null) {
-                renderDirectly(request, response);
+        if (StringUtils.isNullOrEmpty(acceptType)) {
+
+            log.warn("No content type specified!'");
+            renderHtml(statusCode, request, response);
+
+        } else if (acceptType.startsWith(HttpConstants.ContentType.TEXT_HTML)
+                || acceptType.startsWith(HttpConstants.ContentType.TEXT_XHTML)) {
+
+            // render an html page
+            renderHtml(statusCode, request, response);
+
+        } else {
+
+            // render an object representation
+            ContentTypeEngine engine = application.getContentTypeEngine(acceptType);
+
+            if (engine == null) {
+
+                log.warn("No registered content type engine for '{}'", acceptType);
+                renderHtml(statusCode, request, response);
+
             } else {
-                String template = getTemplateForStatusCode(statusCode);
-                if (template == null) {
-                    log.debug("There is no {} template for status code '{}'",
-                            application.getTemplateEngine().getClass().getSimpleName(), statusCode);
-                    renderDirectly(request, response);
-                } else {
-                    try {
-                        Map<String, Object> locals = prepareLocals(statusCode, request, response);
-                        response.getLocals().putAll(locals);
-                        response.render(template);
-                    } catch (Exception e) {
-                        log.error("Unexpected error rendering your '{}' template!", template, e);
-                        renderDirectly(request, response);
-                    }
+                try {
+                    Map<String, Object> locals = prepareLocals(statusCode, request, response);
+                    response.send(locals, engine.getContentType());
+                } catch (Exception e) {
+                    log.error("Unexpected error rendering generating '{}' representation!", acceptType, e);
+                    handle(e, request, response);
                 }
             }
+        }
+    }
+
+    protected void renderHtml(int statusCode, Request request, Response response) {
+        if (application.getTemplateEngine() == null) {
+            renderDirectly(request, response);
         } else {
-            try {
-                Map<String, Object> locals = prepareLocals(statusCode, request, response);
-                response.send(locals, engine.getContentType());
-            } catch (Exception e) {
-                log.error("Unexpected error rendering generating '{}' representation!", acceptType, e);
+            String template = getTemplateForStatusCode(statusCode);
+            if (template == null) {
+                log.debug("There is no {} template for status code '{}'", application.getTemplateEngine().getClass()
+                        .getSimpleName(), statusCode);
                 renderDirectly(request, response);
+            } else {
+                try {
+                    Map<String, Object> locals = prepareLocals(statusCode, request, response);
+                    response.getLocals().putAll(locals);
+                    response.render(template);
+                } catch (Exception e) {
+                    log.error("Unexpected error rendering your '{}' template!", template, e);
+                    handle(e, request, response);
+                }
             }
         }
     }
