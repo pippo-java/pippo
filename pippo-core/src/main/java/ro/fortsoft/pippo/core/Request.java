@@ -16,6 +16,7 @@
 package ro.fortsoft.pippo.core;
 
 import ro.fortsoft.pippo.core.util.IoUtils;
+import ro.fortsoft.pippo.core.util.StringUtils;
 
 import java.lang.reflect.Field;
 import java.util.Arrays;
@@ -45,6 +46,7 @@ public class Request {
     private static final Logger log = LoggerFactory.getLogger(Request.class);
 
     private HttpServletRequest httpServletRequest;
+    private ContentTypeEngines contentTypeEngines;
     private Map<String, ParameterValue> parameters;
     private Map<String, String> pathParameters;
     private Map<String, ParameterValue> allParameters; // parameters + pathParameters
@@ -53,8 +55,9 @@ public class Request {
 
     private String body; // cache
 
-    Request(HttpServletRequest servletRequest) {
+    Request(HttpServletRequest servletRequest, Application application) {
         this.httpServletRequest = servletRequest;
+        this.contentTypeEngines = application.getContentTypeEngines();
 
         // fill (query) parameters if any
         Map<String, ParameterValue> tmp = new HashMap<>();
@@ -126,6 +129,48 @@ public class Request {
         return entity;
     }
 
+    public <T> T createEntityFromBody(Class<T> entityClass) {
+        T entity = null;
+        try {
+            String body = getBody();
+            if (StringUtils.isNullOrEmpty(body)) {
+                log.warn("Can not create entity '{}' from null or empty request body!", entityClass.getName());
+                return null;
+            }
+
+            // try to determine the body content-type
+            String contentType = getContentType();
+            if (StringUtils.isNullOrEmpty(contentType)) {
+                // sloppy client, try the accept header
+                contentType = getAcceptType();
+            }
+
+            if (StringUtils.isNullOrEmpty(contentType)) {
+                throw new PippoRuntimeException(
+                        "Failed to create entity '{}' from request body because 'content-type' is not specified!",
+                        entityClass.getName());
+            }
+
+            ContentTypeEngine engine = contentTypeEngines.getContentTypeEngine(contentType);
+            if (engine == null) {
+                throw new PippoRuntimeException(
+                        "Failed to create entity '{}' from request body because a content engine for '{}' could not be found!",
+                        entityClass.getName(), contentType);
+            }
+
+            entity = engine.fromString(body, entityClass);
+
+        } catch (PippoRuntimeException e) {
+            // pass-through PippoRuntimeExceptions
+            throw e;
+        } catch (Exception e) {
+            // capture and re-throw all other exceptions
+            throw new PippoRuntimeException("Failed to create entity '{}' from request body!", e, entityClass.getName());
+        }
+
+        return entity;
+    }
+
     public String getHost() {
         return httpServletRequest.getHeader(HttpConstants.Header.HOST);
     }
@@ -152,6 +197,10 @@ public class Request {
 
     public String getAcceptType() {
         return httpServletRequest.getHeader(HttpConstants.Header.ACCEPT);
+    }
+
+    public String getContentType() {
+        return httpServletRequest.getHeader(HttpConstants.Header.CONTENT_TYPE);
     }
 
     public String getBody() {
