@@ -170,7 +170,7 @@ public class ParameterValue implements Serializable {
 
     @Override
     public String toString() {
-        return values[0];
+        return toString(null);
     }
 
     public String toString(String defaultValue) {
