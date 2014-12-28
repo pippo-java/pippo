@@ -47,12 +47,14 @@ public class Response {
     private TemplateEngine templateEngine;
     private Map<String, Object> locals;
     private Map<String, Cookie> cookies;
+    private String contextPath;
 
     Response(HttpServletResponse httpServletResponse, Application application) {
         this.httpServletResponse = httpServletResponse;
         this.contentTypeEngines = application.getContentTypeEngines();
         this.templateEngine = application.getTemplateEngine();
         this.httpServletResponse.setCharacterEncoding(StandardCharsets.UTF_8.toString());
+        this.contextPath = application.getRouter().getContextPath();
     }
 
     public String getContentType() {
@@ -88,15 +90,39 @@ public class Response {
     }
 
     /**
-     * A browser redirect.
+     * Redirect the browser to a location which may be...
+     * <ul>
+     * <li>relative to the current request
+     * <li>relative to the servlet container root (if location starts with '/')
+     * <li>an absolute url
+     * </ul>
+     * If you want a context-relative redirect, use the {@link redirectToContextPath}
+     * method.
      *
-     * @param location Where to redirect
+     * @param location
+     *            Where to redirect
      */
     public void redirect(String location) {
         try {
             httpServletResponse.sendRedirect(location);
         } catch (IOException e) {
             throw new PippoRuntimeException(e);
+        }
+    }
+
+    /**
+     * Redirects the browser to a path relative to the application context. For
+     * example, redirectToContextPath("/contacts") might redirect the browser to
+     * http://localhost/myContext/contacts
+     *
+     * @param path
+     */
+    public void redirectToContextPath(String path) {
+        if ("".equals(contextPath)) {
+            // context path is the root
+            redirect(path);
+        } else {
+            redirect(contextPath + StringUtils.addStart(path, "/"));
         }
     }
 
