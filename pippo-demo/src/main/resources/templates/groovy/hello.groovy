@@ -59,10 +59,10 @@ pageBody: contents {
                 div(class:'panel-body') {
                     ul {
                         li {
-                            a(href:"satisfaction?lang=$lang") { yield i18n('pippo.unmatchedRoute') }
+                            a(href:"$contextPath/satisfaction?lang=$lang") { yield i18n('pippo.unmatchedRoute') }
                         }
                         li {
-                            a(href:"exception?lang=$lang") { yield i18n('pippo.exceptionHandling') }
+                            a(href:"$contextPath/exception?lang=$lang") { yield i18n('pippo.exceptionHandling') }
                         }
                     }
                 }

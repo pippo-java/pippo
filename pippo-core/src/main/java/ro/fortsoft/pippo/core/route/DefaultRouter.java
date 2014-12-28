@@ -65,7 +65,7 @@ public class DefaultRouter implements Router {
         routes = new ArrayList<>();
         cache = new HashMap<>();
         bindingsCache = new HashMap<>();
-        contextPath = "/";
+        contextPath = "";
     }
 
     @Override
@@ -75,7 +75,11 @@ public class DefaultRouter implements Router {
 
     @Override
     public void setContextPath(String contextPath) {
-        this.contextPath = StringUtils.addStart(contextPath, "/");
+        if (StringUtils.isNullOrEmpty(contextPath) || "/".equals(contextPath.trim())) {
+            this.contextPath = "";
+        } else {
+            this.contextPath = StringUtils.addStart(contextPath, "/");
+        }
     }
 
     /**
@@ -85,10 +89,6 @@ public class DefaultRouter implements Router {
      * @return an absolute path
      */
     private String prefixContextPath(String path) {
-        if ("/".equals(contextPath)) {
-            // context path is the root
-            return StringUtils.addStart(path, "/");
-        }
         return contextPath + StringUtils.addStart(path, "/");
     }
 

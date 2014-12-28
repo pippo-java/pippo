@@ -5,7 +5,7 @@
     </div>
 
     <div class="buttons pull-right">
-        <a id="addContactButton" type="button" class="btn btn-primary" href="/contact/0?action=new"><i class="fa fa-plus"></i> Add Contact</a>
+        <a id="addContactButton" type="button" class="btn btn-primary" href="${contextPath}/contact/0?action=new"><i class="fa fa-plus"></i> Add Contact</a>
     </div>
 
     <table class="table table-striped table-bordered table-hover">
@@ -26,8 +26,8 @@
                 <td>${contact.address}</td>
                 <td style="text-align: right;">
                     <div class="btn-group btn-group-xs">
-                        <a class="btn btn-default" href="/contact/${contact.id}?action=edit"><i class="fa fa-pencil"></i> Edit</a>
-                        <a class="btn btn-default" href="/contact/${contact.id}?action=delete"><i class="fa fa-trash"></i> Delete</a>
+                        <a class="btn btn-default" href="${contextPath}/contact/${contact.id}?action=edit"><i class="fa fa-pencil"></i> Edit</a>
+                        <a class="btn btn-default" href="${contextPath}/contact/${contact.id}?action=delete"><i class="fa fa-trash"></i> Delete</a>
                     </div>
                 </td>
             </tr>
