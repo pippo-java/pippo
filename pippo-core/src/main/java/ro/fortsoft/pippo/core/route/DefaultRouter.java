@@ -114,10 +114,10 @@ public class DefaultRouter implements Router {
             throw new Exception("Invalid request method: " + route.getRequestMethod());
         }
 
-        // validate the url pattern
-        String urlPattern = route.getUrlPattern();
-        if (urlPattern == null || urlPattern.isEmpty()) {
-            throw new Exception("The url pattern cannot be null or empty");
+        // validate the uri pattern
+        String uriPattern = route.getUriPattern();
+        if (uriPattern == null || uriPattern.isEmpty()) {
+            throw new Exception("The uri pattern cannot be null or empty");
         }
     }
 
@@ -151,7 +151,7 @@ public class DefaultRouter implements Router {
 
     @Override
     public void addRoute(Route route) throws Exception {
-        log.debug("Add route for '{} {}'", route.getRequestMethod(), route.getUrlPattern());
+        log.debug("Add route for '{} {}'", route.getRequestMethod(), route.getUriPattern());
         validateRoute(route);
         routes.add(route);
 
@@ -166,24 +166,29 @@ public class DefaultRouter implements Router {
     }
 
     @Override
-    public String urlFor(String urlPattern, Map<String, Object> parameters) {
-        PatternBinding binding = getPatternBinding(urlPattern);
-
-        return (binding != null) ? prefixContextPath(urlFor(binding, parameters)) : null;
+    public String uriFor(String uri) {
+        return prefixContextPath(uri);
     }
 
     @Override
-    public String urlPatternFor(Class<? extends Controller> controllerClass, String methodName) {
-        Route route = getRoute(controllerClass, methodName);
+    public String uriFor(String uriPattern, Map<String, Object> parameters) {
+        PatternBinding binding = getPatternBinding(uriPattern);
 
-        return (route != null) ? route.getUrlPattern() : null;
+        return (binding != null) ? prefixContextPath(uriFor(binding, parameters)) : null;
     }
 
     @Override
-    public String urlFor(Class<? extends Controller> controllerClass, String methodName, Map<String, Object> parameters) {
+    public String uriFor(Class<? extends Controller> controllerClass, String methodName) {
         Route route = getRoute(controllerClass, methodName);
 
-        return (route != null) ? prefixContextPath(urlFor(route.getUrlPattern(), parameters)) : null;
+        return (route != null) ? route.getUriPattern() : null;
+    }
+
+    @Override
+    public String uriFor(Class<? extends Controller> controllerClass, String methodName, Map<String, Object> parameters) {
+        Route route = getRoute(controllerClass, methodName);
+
+        return (route != null) ? prefixContextPath(uriFor(route.getUriPattern(), parameters)) : null;
     }
 
     private Route getRoute(Class<? extends Controller> controllerClass, String methodName) {
@@ -203,10 +208,10 @@ public class DefaultRouter implements Router {
     }
 
     @Override
-    public String urlPatternFor(Class<? extends ClasspathResourceHandler> resourceHandlerClass) {
+    public String uriPatternFor(Class<? extends ClasspathResourceHandler> resourceHandlerClass) {
         Route route = getRoute(resourceHandlerClass);
 
-        return (route != null) ? route.getUrlPattern() : null;
+        return (route != null) ? route.getUriPattern() : null;
     }
 
     private Route getRoute(Class<? extends ClasspathResourceHandler> resourceHandlerClass) {
@@ -225,11 +230,11 @@ public class DefaultRouter implements Router {
 
 
     private void addBinding(Route route) {
-        String urlPattern = route.getUrlPattern();
+        String uriPattern = route.getUriPattern();
         // TODO improve (it's possible to have the same urlPattern for many routes => same pattern)
-        String regex = getRegex(urlPattern);
+        String regex = getRegex(uriPattern);
         Pattern pattern = Pattern.compile(regex);
-        List<String> parameterNames = getParameterNames(urlPattern);
+        List<String> parameterNames = getParameterNames(uriPattern);
         PatternBinding binding = new PatternBinding(pattern, route, parameterNames);
         String requestMethod = route.getRequestMethod();
         if (!bindingsCache.containsKey(requestMethod)) {
@@ -320,12 +325,12 @@ public class DefaultRouter implements Router {
         return parameters;
     }
 
-    private PatternBinding getPatternBinding(String urlPattern) {
+    private PatternBinding getPatternBinding(String uriPattern) {
         Iterator<List<PatternBinding>> iterator = bindingsCache.values().iterator();
         while (iterator.hasNext()) {
             List<PatternBinding> bindings = iterator.next();
             for (PatternBinding binding : bindings) {
-                if (urlPattern.equals(binding.getRoute().getUrlPattern())) {
+                if (uriPattern.equals(binding.getRoute().getUriPattern())) {
                     return binding;
                 }
             }
@@ -334,8 +339,8 @@ public class DefaultRouter implements Router {
         return null;
     }
 
-    private String urlFor(PatternBinding binding, Map<String, Object> parameters) {
-        String url = binding.getRoute().getUrlPattern();
+    private String uriFor(PatternBinding binding, Map<String, Object> parameters) {
+        String uri = binding.getRoute().getUriPattern();
 
         List<String> parameterNames = binding.getParameterNames();
         if (!parameters.keySet().containsAll(parameterNames)) {
@@ -352,7 +357,7 @@ public class DefaultRouter implements Router {
             String buffer = String.format(VARIABLE_PART_PATTERN_WITH_PLACEHOLDER, parameterPair.getKey());
 
             Pattern pattern = Pattern.compile(buffer);
-            Matcher matcher = pattern.matcher(url);
+            Matcher matcher = pattern.matcher(uri);
             while (matcher.find()) {
                 String pathValue = parameterPair.getValue().toString();
                 matcher.appendReplacement(sb, pathValue);
@@ -360,7 +365,7 @@ public class DefaultRouter implements Router {
             }
 
             matcher.appendTail(sb);
-            url = sb.toString();
+            uri = sb.toString();
 
             if (!foundAsPathParameter) {
                 queryParameters.put(parameterPair.getKey(), parameterPair.getValue());
@@ -385,10 +390,10 @@ public class DefaultRouter implements Router {
 
             }
 
-            url += "?" + query;
+            uri += "?" + query;
         }
 
-        return url;
+        return uri;
     }
 
     private class PatternBinding {

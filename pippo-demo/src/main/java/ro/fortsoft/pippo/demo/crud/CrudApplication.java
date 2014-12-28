@@ -25,10 +25,15 @@ import ro.fortsoft.pippo.metrics.Metered;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * @author Decebal Suiu
  */
 public class CrudApplication extends Application {
+
+    private final Logger log = LoggerFactory.getLogger(CrudApplication.class);
 
     private ContactService contactService;
 
@@ -43,7 +48,7 @@ public class CrudApplication extends Application {
 
             @Override
             public void handle(Request request, Response response, RouteHandlerChain chain) {
-                System.out.println("request.getUri() = " + request.getUri());
+                log.info("request.getUri() = {}", request.getUri());
                 chain.next();
             }
 
@@ -114,8 +119,8 @@ public class CrudApplication extends Application {
                     editAction.append("&id=");
                     editAction.append(id);
                 }
-                model.put("editAction", editAction);
-                model.put("backAction", "/contacts");
+                model.put("editAction", getRouter().uriFor(editAction.toString()));
+                model.put("backAction", getRouter().uriFor("/contacts"));
                 response.render("crud/contact", model);
             }
 

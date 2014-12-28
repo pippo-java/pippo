@@ -75,7 +75,7 @@ public class PippoHelper {
                                        Class<? extends ClasspathResourceHandler> resourceHandlerClass) {
 
         if (patternRef.get() == null) {
-            String pattern = router.urlPatternFor(resourceHandlerClass);
+            String pattern = router.uriPatternFor(resourceHandlerClass);
             if (pattern == null) {
                 throw new PippoRuntimeException("You must register a route for {}",
                         resourceHandlerClass.getSimpleName());
@@ -86,7 +86,7 @@ public class PippoHelper {
 
         Map<String, Object> parameters = new HashMap<>();
         parameters.put(ClasspathResourceHandler.PATH_PARAMETER, path);
-        String url = router.urlFor(patternRef.get(), parameters);
+        String url = router.uriFor(patternRef.get(), parameters);
         return url;
     }
 

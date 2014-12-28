@@ -22,18 +22,18 @@ import java.io.Serializable;
  */
 public class Route implements Serializable {
 
-    private String urlPattern;
+    private String uriPattern;
     private String requestMethod;
     private RouteHandler routeHandler;
 
-    public Route(String urlPattern, String requestMethod, RouteHandler routeHandler) {
-        this.urlPattern = urlPattern;
+    public Route(String uriPattern, String requestMethod, RouteHandler routeHandler) {
+        this.uriPattern = uriPattern;
         this.requestMethod = requestMethod;
         this.routeHandler = routeHandler;
     }
 
-    public String getUrlPattern() {
-        return urlPattern;
+    public String getUriPattern() {
+        return uriPattern;
     }
 
     public String getRequestMethod() {
@@ -52,14 +52,14 @@ public class Route implements Serializable {
         Route route = (Route) o;
 
         if (!requestMethod.equals(route.requestMethod)) return false;
-        if (!urlPattern.equals(route.urlPattern)) return false;
+        if (!uriPattern.equals(route.uriPattern)) return false;
 
         return true;
     }
 
     @Override
     public int hashCode() {
-        int result = urlPattern.hashCode();
+        int result = uriPattern.hashCode();
         result = 31 * result + requestMethod.hashCode();
         return result;
     }
@@ -68,7 +68,7 @@ public class Route implements Serializable {
     public String toString() {
         return "Route{" +
                 "requestMethod='" + requestMethod + '\'' +
-                ", urlPattern='" + urlPattern + '\'' +
+                ", uriPattern='" + uriPattern + '\'' +
                 '}';
     }
 

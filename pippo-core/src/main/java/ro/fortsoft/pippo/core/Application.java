@@ -203,7 +203,7 @@ public class Application {
     }
 
     public void GET(ClasspathResourceHandler resourceHandler) {
-        if (getRouter().urlPatternFor(resourceHandler.getClass()) != null) {
+        if (getRouter().uriPatternFor(resourceHandler.getClass()) != null) {
             throw new PippoRuntimeException("You may only register one route for {}",
                     resourceHandler.getClass().getSimpleName());
         }

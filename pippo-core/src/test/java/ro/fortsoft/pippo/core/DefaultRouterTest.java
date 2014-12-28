@@ -54,18 +54,18 @@ public class DefaultRouterTest extends Assert {
     }
 
     @Test
-    public void testNullUrlPatternRoute() throws Exception {
+    public void testNullUriPatternRoute() throws Exception {
         Route route = new Route(null, HttpConstants.Method.GET, new EmptyRouteHandler());
         thrown.expect(Exception.class);
-        thrown.expectMessage("The url pattern cannot be null or empty");
+        thrown.expectMessage("The uri pattern cannot be null or empty");
         router.addRoute(route);
     }
 
     @Test
-    public void testEmptyUrlPatternRoute() throws Exception {
+    public void testEmptyUriPatternRoute() throws Exception {
         Route route = new Route("", HttpConstants.Method.GET, new EmptyRouteHandler());
         thrown.expect(Exception.class);
-        thrown.expectMessage("The url pattern cannot be null or empty");
+        thrown.expectMessage("The uri pattern cannot be null or empty");
         router.addRoute(route);
     }
 
@@ -168,8 +168,7 @@ public class DefaultRouterTest extends Assert {
                 new EmptyRouteHandler());
         router.addRoute(route);
 
-        List<RouteMatch> routeMatches = router.findRoutes("/contact/3/something/borrowed",
-                HttpConstants.Method.GET);
+        List<RouteMatch> routeMatches = router.findRoutes("/contact/3/something/borrowed", HttpConstants.Method.GET);
         assertEquals(1, routeMatches.size());
 
         Map<String, String> pathParameters = routeMatches.get(0).getPathParameters();
@@ -272,8 +271,7 @@ public class DefaultRouterTest extends Assert {
         assertEquals("robots.txt", match.getPathParameters().get("path"));
 
         // multiple parameter parsing with regex expressions
-        router.addRoute(new Route("/{name: .+}/photos/{id: [0-9]+}", HttpConstants.Method.GET,
-                new EmptyRouteHandler()));
+        router.addRoute(new Route("/{name: .+}/photos/{id: [0-9]+}", HttpConstants.Method.GET, new EmptyRouteHandler()));
 
         pathUnderTest = "/John/photos/2201";
         matches = router.findRoutes(pathUnderTest, HttpConstants.Method.GET);
@@ -292,8 +290,7 @@ public class DefaultRouterTest extends Assert {
                 new EmptyRouteHandler()));
 
         // this must match
-        assertEquals(1, router.findRoutes("/blah/id/id2/id3/morestuff/at/the/end", HttpConstants.Method.GET)
-                .size());
+        assertEquals(1, router.findRoutes("/blah/id/id2/id3/morestuff/at/the/end", HttpConstants.Method.GET).size());
 
         // this should not match as the last "end" is missing
         assertEquals(0, router.findRoutes("/blah/id/id2/id3/morestuff/at/the", HttpConstants.Method.GET).size());
@@ -405,21 +402,21 @@ public class DefaultRouterTest extends Assert {
     }
 
     @Test
-    public void testUrlForWithRegex() throws Exception {
+    public void testUriForWithRegex() throws Exception {
         Route route = new Route("/user/{email}/{id: .*}", HttpConstants.Method.GET, new EmptyRouteHandler());
         router.addRoute(route);
 
         Map<String, Object> parameters = new HashMap<String, Object>();
         parameters.put("email", "test@test.com");
         parameters.put("id", 5);
-        String path = router.urlFor(route.getUrlPattern(), parameters);
+        String path = router.uriFor(route.getUriPattern(), parameters);
 
         assertThat(path, equalTo("/user/test@test.com/5"));
 
     }
 
     @Test
-    public void testUrlForWithRegexAndQueryParameters() throws Exception {
+    public void testUriForWithRegexAndQueryParameters() throws Exception {
         Route route = new Route("/user/{email}/{id: .*}", HttpConstants.Method.GET, new EmptyRouteHandler());
         router.addRoute(route);
 
@@ -427,7 +424,7 @@ public class DefaultRouterTest extends Assert {
         parameters.put("email", "test@test.com");
         parameters.put("id", 5);
         parameters.put("query", "recent_changes");
-        String path = router.urlFor(route.getUrlPattern(), parameters);
+        String path = router.uriFor(route.getUriPattern(), parameters);
 
         assertThat(path, equalTo("/user/test@test.com/5?query=recent_changes"));
     }

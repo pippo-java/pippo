@@ -141,7 +141,7 @@ public class DefaultErrorHandler implements ErrorHandler {
             content.append("<li>");
             content.append(route.getRequestMethod());
             content.append(" ");
-            content.append(route.getUrlPattern());
+            content.append(route.getUriPattern());
             content.append("</li>");
         }
         content.append("</ul>");

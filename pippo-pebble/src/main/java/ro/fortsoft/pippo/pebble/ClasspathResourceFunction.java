@@ -55,7 +55,7 @@ abstract class ClasspathResourceFunction<T extends ClasspathResourceHandler> imp
         @Override
         public Object execute(Map<String, Object> args) {
             if (patternRef.get() == null) {
-                String pattern = router.urlPatternFor(resourceHandlerClass);
+                String pattern = router.uriPatternFor(resourceHandlerClass);
                 if (pattern == null) {
                     throw new PippoRuntimeException("You must register a route for {}",
                             resourceHandlerClass.getSimpleName());
@@ -66,7 +66,7 @@ abstract class ClasspathResourceFunction<T extends ClasspathResourceHandler> imp
             String path = (String) args.get(ClasspathResourceHandler.PATH_PARAMETER);
             Map<String, Object> parameters = new HashMap<>();
             parameters.put(ClasspathResourceHandler.PATH_PARAMETER, path);
-            String url = router.urlFor(patternRef.get(), parameters);
+            String url = router.uriFor(patternRef.get(), parameters);
             return url;
         }
 
