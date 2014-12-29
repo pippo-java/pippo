@@ -16,13 +16,14 @@
 package ro.fortsoft.pippo.demo.crudng;
 
 import ro.fortsoft.pippo.core.Application;
+import ro.fortsoft.pippo.core.RedirectHandler;
 import ro.fortsoft.pippo.core.Request;
 import ro.fortsoft.pippo.core.Response;
+import ro.fortsoft.pippo.core.TemplateHandler;
 import ro.fortsoft.pippo.core.route.RouteHandler;
 import ro.fortsoft.pippo.core.route.RouteHandlerChain;
 import ro.fortsoft.pippo.demo.crud.ContactService;
 import ro.fortsoft.pippo.demo.crud.InMemoryContactService;
-import ro.fortsoft.pippo.metrics.Metered;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -115,40 +116,18 @@ public class CrudNgApplication extends Application {
 
         });
 
+
         /*
          * root redirect
          */
-        GET("/", new RouteHandler() {
+        GET("/", new RedirectHandler("/contacts"));
 
-            @Override
-            public void handle(Request request, Response response, RouteHandlerChain chain) {
-                response.redirectToContextPath("/contacts");
-            }
-
-        });
 
         /*
          * Server-generated HTML pages
          */
-        GET("/contacts", new RouteHandler() {
-
-            @Metered("page.contacts")
-            @Override
-            public void handle(Request request, Response response, RouteHandlerChain chain) {
-                response.render("crudng/contacts");
-            }
-
-        });
-
-        GET("/contact/{id}", new RouteHandler() {
-
-            @Metered("page.contact")
-            @Override
-            public void handle(Request request, Response response, RouteHandlerChain chain) {
-                response.render("crudng/contact");
-            }
-
-        });
+        GET("/contacts", new TemplateHandler("crudng/contacts"));
+        GET("/contact/.*", new TemplateHandler("crudng/contact"));
 
 
         /*
