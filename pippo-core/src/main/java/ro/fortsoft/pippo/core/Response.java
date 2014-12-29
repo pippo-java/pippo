@@ -16,6 +16,7 @@
 package ro.fortsoft.pippo.core;
 
 import ro.fortsoft.pippo.core.util.IoUtils;
+import ro.fortsoft.pippo.core.util.StringUtils;
 
 import java.io.File;
 import java.io.FileInputStream;
