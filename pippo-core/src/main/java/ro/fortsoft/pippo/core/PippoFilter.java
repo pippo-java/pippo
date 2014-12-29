@@ -164,7 +164,7 @@ public class PippoFilter implements Filter {
         String relativePath = getRelativePath(httpServletRequest);
         log.debug("The relative path for '{}' is '{}'", requestUri, relativePath);
 
-        final Request request = new Request(httpServletRequest);
+        final Request request = new Request(httpServletRequest, application);
         final Response response = new Response(httpServletResponse, application);
         try {
             Router router = application.getRouter();
