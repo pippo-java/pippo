@@ -115,16 +115,161 @@ public class Response {
     }
 
     /**
-     * Send a not found (404 status code).
+     * Send an OK (200 status code).
+     * <p>
+     * Standard response for successful HTTP requests. The actual response will
+     * depend on the request method used. In a GET request, the response will
+     * contain an entity corresponding to the requested resource. In a POST
+     * request the response will contain an entity describing or containing the
+     * result of the action.
+     * </p>
      *
      */
-    public void notFound() {
-        httpServletResponse.setStatus(HttpConstants.StatusCode.NOT_FOUND);
+    public void sendOk() {
+        status(HttpConstants.StatusCode.OK);
+        commit();
+    }
+
+    /**
+     * Send an CREATED (201 status code).
+     * <p>
+     * The request has been fulfilled and resulted in a new resource being created.
+     * </p>
+     *
+     */
+    public void sendCreated() {
+        status(HttpConstants.StatusCode.CREATED);
+        commit();
+    }
+
+    /**
+     * Send an ACCEPTED (202 status code).
+     * <p>
+     * The request has been accepted for processing, but the processing has not
+     * been completed. The request might or might not eventually be acted upon,
+     * as it might be disallowed when processing actually takes place.
+     * </p>
+     *
+     */
+    public void sendAccepted() {
+        status(HttpConstants.StatusCode.ACCEPTED);
+        commit();
+    }
+
+    /**
+     * Send an error.
+     *
+     */
+    public void sendError(int statusCode) {
+        httpServletResponse.setStatus(statusCode);
         try {
-            httpServletResponse.sendError(HttpConstants.StatusCode.NOT_FOUND);
+            httpServletResponse.sendError(statusCode);
         } catch (IOException e) {
             throw new PippoRuntimeException(e);
         }
+    }
+
+    /**
+     * Send a BAD REQUEST (400 status code).
+     * <p>
+     * The server cannot or will not process the request due to something that
+     * is perceived to be a client error.
+     * </p>
+     *
+     */
+    public void sendBadRequest() {
+        sendError(HttpConstants.StatusCode.BAD_REQUEST);
+    }
+
+    /**
+     * Send UNAUTHORIZED (401 status code).
+     * <p>
+     * Similar to 403 Forbidden, but specifically for use when authentication is
+     * required and has failed or has not yet been provided. The response must
+     * include a WWW-Authenticate header field containing a challenge applicable
+     * to the requested resource.
+     * </p>
+     */
+    public void sendUnauthorized() {
+        sendError(HttpConstants.StatusCode.UNAUTHORIZED);
+    }
+
+    /**
+     * Send FORBIDDEN (403 status code).
+     *
+     * <p>
+     * The request was a valid request, but the server is refusing to respond to
+     * it. Unlike a 401 Unauthorized response, authenticating will make no
+     * difference.
+     * </p>
+     *
+     */
+    public void sendForbidden() {
+        sendError(HttpConstants.StatusCode.FORBIDDEN);
+    }
+
+    /**
+     * Send a NOT FOUND (404 status code).
+     * <p>
+     * The requested resource could not be found but may be available again in
+     * the future. Subsequent requests by the client are permissible.
+     * </p>
+     *
+     */
+    public void sendNotFound() {
+        sendError(HttpConstants.StatusCode.NOT_FOUND);
+    }
+
+    /**
+     * Send a CONFLICT (409 status code).
+     * <p>
+     * Indicates that the request could not be processed because of conflict in
+     * the request, such as an edit conflict in the case of multiple updates.
+     * </p>
+     *
+     */
+    public void sendConflict() {
+        sendError(HttpConstants.StatusCode.CONFLICT);
+    }
+
+    /**
+     * Send GONE (410 status code).
+     * <p>
+     * Indicates that the resource requested is no longer available and will not
+     * be available again. This should be used when a resource has been
+     * intentionally removed and the resource should be purged. Upon receiving a
+     * 410 status code, the client should not request the resource again in the
+     * future.
+     * </p>
+     *
+     */
+    public void sendGone() {
+        sendError(HttpConstants.StatusCode.GONE);
+    }
+
+    /**
+     * Send an INTERNAL ERROR (500 status code).
+     * <p>
+     * A generic error message, given when an unexpected condition was
+     * encountered and no more specific message is suitable.
+     * </p>
+     *
+     */
+    public void sendInternalError() {
+        sendError(HttpConstants.StatusCode.INTERNAL_ERROR);
+    }
+
+    /**
+     * Send an NOT IMPLEMENTED ERROR (501 status code).
+     * <p>
+     * The server either does not recognize the request method, or it lacks the
+     * ability to fulfil the request. Usually this implies future availability
+     * (e.g., a new feature of a web-service API).
+     * </p>
+     *
+     */
+    public void sendNotImplemented() {
+        sendError(HttpConstants.StatusCode.NOT_IMPLEMENTED);
     }
 
     public Response cookie(Cookie cookie) {
