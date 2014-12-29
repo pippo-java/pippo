@@ -15,9 +15,10 @@
  */
 package ro.fortsoft.pippo.core;
 
+import ro.fortsoft.pippo.core.util.ServiceLocator;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import ro.fortsoft.pippo.core.util.ServiceLocator;
 
 /**
  * @author Decebal Suiu
@@ -55,6 +56,15 @@ public class Pippo {
 
             WebServerSettings serverSettings = new WebServerSettings(application.getPippoSettings());
             server.setSettings(serverSettings);
+
+            Runtime.getRuntime().addShutdownHook(new Thread() {
+
+                @Override
+                public void run() {
+                    server.stop();
+                }
+
+            });
         }
 
         return server;
