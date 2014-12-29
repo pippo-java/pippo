@@ -37,6 +37,8 @@ import org.slf4j.LoggerFactory;
 public class DefaultControllerHandler implements ControllerHandler {
 
     private static final Logger log = LoggerFactory.getLogger(ControllerHandler.class);
+    private static final String FORM = "@form";
+    private static final String BODY = "@body";
 
     protected final Class<? extends Controller> controllerClass;
     protected final String methodName;
@@ -106,20 +108,29 @@ public class DefaultControllerHandler implements ControllerHandler {
                     // mapped parameters
                     parameterNames = new String[types.length];
                     for (int i = 0; i < types.length; i++) {
-                        // confirm parameter type is supported
-                        Class<?> type = types[i];
-                        ParameterValue testValue = new ParameterValue();
-                        testValue.to(type);
 
-                        // confirm parameter is named
-                        String parameterName = getParameterName(controllerMethod, i);
-                        if (StringUtils.isNullOrEmpty(parameterName)) {
-                            throw new PippoRuntimeException(
-                                    "Controller method '{}.{}' parameter {} of type '{}' does not specify a name!",
-                                    controllerClass.getSimpleName(), methodName, i, type.getSimpleName());
+                        if (isBodyParameter(controllerMethod, i)) {
+                            // entity built from request body
+                            parameterNames[i] = BODY;
+                        } else if (isFormParameter(controllerMethod, i)) {
+                            // entity built from parameters
+                            parameterNames[i] = FORM;
+                        } else {
+                            // confirm parameter type is supported
+                            Class<?> type = types[i];
+                            ParameterValue testValue = new ParameterValue();
+                            testValue.to(type);
+
+                            // confirm parameter is named
+                            String parameterName = getParameterName(controllerMethod, i);
+                            if (StringUtils.isNullOrEmpty(parameterName)) {
+                                throw new PippoRuntimeException(
+                                        "Controller method '{}.{}' parameter {} of type '{}' does not specify a name!",
+                                        controllerClass.getSimpleName(), methodName, i, type.getSimpleName());
+                            }
+
+                            parameterNames[i] = parameterName;
                         }
-
-                        parameterNames[i] = parameterName;
                     }
 
                 } else {
@@ -144,19 +155,45 @@ public class DefaultControllerHandler implements ControllerHandler {
         for (int i = 0; i < args.length; i++) {
             Class<?> type = types[i];
             String name = parameterNames[i];
-            ParameterValue value = request.getParameter(name);
-            args[i] = value.to(type);
+            if (BODY.equals(name)) {
+                Object value = request.createEntityFromBody(type);
+                args[i] = value;
+            } else if (FORM.equals(name)) {
+                Object value = request.createEntityFromParameters(type);
+                args[i] = value;
+            } else {
+                ParameterValue value = request.getParameter(name);
+                args[i] = value.to(type);
+            }
         }
 
         return args;
     }
 
     protected String getParameterName(Method method, int i) {
+        Annotation annotation = getAnnotation(method, i, Param.class);
+        if (annotation != null) {
+            Param parameter = (Param) annotation;
+            return parameter.value();
+        }
+        return null;
+    }
+
+    protected boolean isBodyParameter(Method method, int i) {
+        Annotation annotation = getAnnotation(method, i, Body.class);
+        return annotation != null;
+    }
+
+    protected boolean isFormParameter(Method method, int i) {
+        Annotation annotation = getAnnotation(method, i, Form.class);
+        return annotation != null;
+    }
+
+    protected Annotation getAnnotation(Method method, int i, Class<?> annotationClass) {
         Annotation[] annotations = method.getParameterAnnotations()[i];
         for (Annotation annotation : annotations) {
-            if (annotation.annotationType() == Param.class) {
-                Param parameter = (Param) annotation;
-                return parameter.value();
+            if (annotation.annotationType() == annotationClass) {
+                return annotation;
             }
         }
         return null;
