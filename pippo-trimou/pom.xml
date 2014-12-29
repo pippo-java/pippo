@@ -24,7 +24,7 @@
 	<description>Trimou template engine</description>
   
 	<properties>
-		<trimou.version>1.7.0.Final</trimou.version>
+		<trimou.version>1.7.1.Final</trimou.version>
 	</properties>
 
 	<dependencies>
