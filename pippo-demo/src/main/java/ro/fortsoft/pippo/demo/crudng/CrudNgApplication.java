@@ -20,7 +20,6 @@ import ro.fortsoft.pippo.core.Request;
 import ro.fortsoft.pippo.core.Response;
 import ro.fortsoft.pippo.core.route.RouteHandler;
 import ro.fortsoft.pippo.core.route.RouteHandlerChain;
-import ro.fortsoft.pippo.demo.crud.Contact;
 import ro.fortsoft.pippo.demo.crud.ContactService;
 import ro.fortsoft.pippo.demo.crud.InMemoryContactService;
 import ro.fortsoft.pippo.metrics.Metered;
@@ -39,6 +38,10 @@ public class CrudNgApplication extends Application {
     private final Logger log = LoggerFactory.getLogger(CrudNgApplication.class);
 
     private ContactService contactService;
+
+    public ContactService getContactService() {
+        return contactService;
+    }
 
     @Override
     public void init() {
@@ -125,11 +128,11 @@ public class CrudNgApplication extends Application {
         });
 
         /*
-         * Server generated pages
+         * Server-generated HTML pages
          */
         GET("/contacts", new RouteHandler() {
 
-            @Metered("getContactsList")
+            @Metered("page.contacts")
             @Override
             public void handle(Request request, Response response, RouteHandlerChain chain) {
                 response.render("crudng/contacts");
@@ -139,7 +142,7 @@ public class CrudNgApplication extends Application {
 
         GET("/contact/{id}", new RouteHandler() {
 
-            @Metered("page.editContact")
+            @Metered("page.contact")
             @Override
             public void handle(Request request, Response response, RouteHandlerChain chain) {
                 response.render("crudng/contact");
@@ -149,64 +152,12 @@ public class CrudNgApplication extends Application {
 
 
         /*
-         * RESTful API methods
+         * RESTful API
          */
-        GET("/api/contacts", new RouteHandler() {
-
-            @Metered("api.contacts.get")
-            @Override
-            public void handle(Request request, Response response, RouteHandlerChain chain) {
-                response.send(contactService.getContacts(), request.getAcceptType());
-            }
-
-        });
-
-        GET("/api/contact/{id}", new RouteHandler() {
-
-            @Metered("api.contact.get")
-            @Override
-            public void handle(Request request, Response response, RouteHandlerChain chain) {
-                int id = request.getParameter("id").toInt(0);
-                Contact contact = (id > 0) ? contactService.getContact(id) : new Contact();
-                response.send(contact, request.getAcceptType());
-            }
-
-        });
-
-        DELETE("/api/contact/{id}", new RouteHandler() {
-
-            @Metered("api.contact.delete")
-            @Override
-            public void handle(Request request, Response response, RouteHandlerChain chain) {
-                int id = request.getParameter("id").toInt(0);
-                if (id <= 0) {
-                    response.sendBadRequest();
-                } else {
-                    Contact contact = contactService.getContact(id);
-                    if (contact == null) {
-                        response.sendBadRequest();
-                    } else {
-                        contactService.delete(id);
-                        log.info("Deleted contact #{} '{}'", contact.getId(), contact.getName());
-                        response.sendOk();
-                    }
-                }
-            }
-
-        });
-
-        POST("/api/contact", new RouteHandler() {
-
-            @Metered("api.contact.post")
-            @Override
-            public void handle(Request request, Response response, RouteHandlerChain chain) {
-                // create the contact from the request body
-                Contact contact = request.createEntityFromBody(Contact.class);
-                contactService.save(contact);
-                response.sendOk();
-            }
-
-        });
+        GET("/api/contacts", CrudNgApiController.class, "getContacts");
+        GET("/api/contact/{id}", CrudNgApiController.class, "getContact");
+        DELETE("/api/contact/{id}", CrudNgApiController.class, "deleteContact");
+        POST("/api/contact", CrudNgApiController.class, "saveContact");
 
     }
 
