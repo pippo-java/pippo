@@ -231,6 +231,36 @@ public class Request {
         return httpServletRequest.getRequestURI();
     }
 
+    public String getQuery() {
+        return httpServletRequest.getQueryString();
+    }
+
+    /**
+     * Returns the complete url with protocol, uri, and query string.
+     *
+     * @return the complete url
+     */
+    public String getFullUrl() {
+        StringBuilder sb = new StringBuilder(getUrl());
+        if (getQuery() != null) {
+            sb.append('?').append(getQuery());
+        }
+        return sb.toString();
+    }
+
+    /**
+     * Returns the complete uri with uri and query string.
+     *
+     * @return the complete uri
+     */
+    public String getFullUri() {
+        StringBuilder sb = new StringBuilder(getUri());
+        if (getQuery() != null) {
+            sb.append('?').append(getQuery());
+        }
+        return sb.toString();
+    }
+
     public String getMethod() {
         return httpServletRequest.getMethod();
     }

@@ -49,11 +49,13 @@ public interface Router {
 
     public List<Route> getRoutes();
 
-    public String urlFor(String urlPattern, Map<String, Object> parameters);
+    public String uriFor(String uri);
 
-    public String urlFor(Class<? extends Controller> controllerClass, String methodName, Map<String, Object> parameters);
+    public String uriFor(String urlPattern, Map<String, Object> parameters);
 
-    public String urlPatternFor(Class<? extends Controller> controllerClass, String methodName);
+    public String uriFor(Class<? extends Controller> controllerClass, String methodName, Map<String, Object> parameters);
 
-    public String urlPatternFor(Class<? extends ClasspathResourceHandler> resourceHandlerClass);
+    public String uriFor(Class<? extends Controller> controllerClass, String methodName);
+
+    public String uriPatternFor(Class<? extends ClasspathResourceHandler> resourceHandlerClass);
 }

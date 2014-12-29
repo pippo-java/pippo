@@ -56,7 +56,7 @@ abstract class ClasspathResourceMethod<T extends ClasspathResourceHandler> imple
     @Override
     public TemplateModel exec(List args) throws TemplateModelException {
         if (urlPattern.get() == null) {
-            String pattern = router.urlPatternFor(resourceHandlerClass);
+            String pattern = router.uriPatternFor(resourceHandlerClass);
             if (pattern == null) {
                 throw new PippoRuntimeException("You must register a route for {}",
                         resourceHandlerClass.getSimpleName());
@@ -68,7 +68,7 @@ abstract class ClasspathResourceMethod<T extends ClasspathResourceHandler> imple
         String path = args.get(0).toString();
         Map<String, Object> parameters = new HashMap<>();
         parameters.put(ClasspathResourceHandler.PATH_PARAMETER, path);
-        String url = router.urlFor(urlPattern.get(), parameters);
+        String url = router.uriFor(urlPattern.get(), parameters);
         return new SimpleScalar(url);
     }
 

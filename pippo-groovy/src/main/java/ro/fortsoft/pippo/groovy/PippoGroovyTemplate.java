@@ -123,7 +123,7 @@ public abstract class PippoGroovyTemplate extends BaseTemplate {
                                        Class<? extends ClasspathResourceHandler> resourceHandlerClass) {
 
         if (patternRef.get() == null) {
-            String pattern = router.urlPatternFor(resourceHandlerClass);
+            String pattern = router.uriPatternFor(resourceHandlerClass);
             if (pattern == null) {
                 throw new PippoRuntimeException("You must register a route for {}",
                         resourceHandlerClass.getSimpleName());
@@ -134,8 +134,8 @@ public abstract class PippoGroovyTemplate extends BaseTemplate {
 
         Map<String, Object> parameters = new HashMap<>();
         parameters.put(ClasspathResourceHandler.PATH_PARAMETER, path);
-        String url = router.urlFor(patternRef.get(), parameters);
-        return url;
+        String uri = router.uriFor(patternRef.get(), parameters);
+        return uri;
     }
 
     public String i18n(String messageKey) throws IOException {

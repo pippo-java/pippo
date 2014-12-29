@@ -42,13 +42,13 @@ public class ContactsController extends Controller {
     }
 
     @Timed
-    public void urlFor(@Param("id") int id) {
+    public void uriFor(@Param("id") int id) {
         Map<String, Object> parameters = new HashMap<>();
         parameters.put("id", id);
         parameters.put("action", "new");
-        String url = getApplication().getRouter().urlFor(ContactsController.class, "urlFor", parameters);
+        String uri = getApplication().getRouter().uriFor(ContactsController.class, "uriFor", parameters);
 
-        getResponse().send("id = " + id + "; url = " + url);
+        getResponse().send("id = " + id + "; uri = " + uri);
     }
 
 }
