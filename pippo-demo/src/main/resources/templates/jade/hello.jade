@@ -46,8 +46,8 @@ block content
         div(class="panel-body")
           ul
             li
-              a(href="satisfaction?lang=#{lang}")
+              a(href="#{contextPath}/satisfaction?lang=#{lang}")
                 =pippo.i18n("pippo.unmatchedRoute")
             li
-              a(href="exception?lang=#{lang}")
+              a(href="#{contextPath}/exception?lang=#{lang}")
                 =pippo.i18n("pippo.exceptionHandling")

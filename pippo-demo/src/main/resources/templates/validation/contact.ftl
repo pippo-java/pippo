@@ -8,7 +8,7 @@
 
     <@alerts.list messages=errors! type="danger"/>
 
-    <form class="form-horizontal" role="form" method="post" action="/">
+    <form class="form-horizontal" role="form" method="post" action="${contextPath}/">
         <div class="form-group">
             <label for="name" class="col-sm-2 control-label">Name</label>
             <div class="col-sm-9">

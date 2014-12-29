@@ -60,11 +60,48 @@ public class CrudApplication extends Application {
             @Override
             public void handle(Request request, Response response, RouteHandlerChain chain) {
                 if (request.getSession().getAttribute("username") == null) {
-                    request.getSession().setAttribute("originalDestination", request.getFullUri());
-                    response.redirect("/login");
+                    request.getSession().setAttribute("originalDestination", request.getContextUriWithQuery());
+                    response.redirectToContextPath("/login");
                 } else {
                     chain.next();
                 }
+            }
+
+        });
+
+        GET("/login", new RouteHandler() {
+
+            @Override
+            public void handle(Request request, Response response, RouteHandlerChain chain) {
+                Map<String, Object> model = new HashMap<>();
+                String error = (String) request.getSession().getAttribute("error");
+                request.getSession().removeAttribute("error");
+                if (error != null) {
+                    model.put("error", error);
+                }
+                response.render("crud/login", model);
+            }
+
+        });
+
+        POST("/login", new RouteHandler() {
+
+            @Override
+            public void handle(Request request, Response response, RouteHandlerChain chain) {
+                String username = request.getParameter("username").toString();
+                String password = request.getParameter("password").toString();
+                if (authenticate(username, password)) {
+                    request.getSession().setAttribute("username", username);
+                    String originalDestination = (String) request.getSession().getAttribute("originalDestination");
+                    response.redirectToContextPath(originalDestination != null ? originalDestination : "/contacts");
+                } else {
+                    request.getSession().setAttribute("error", "Authentication failed");
+                    response.redirectToContextPath("/login");
+                }
+            }
+
+            private boolean authenticate(String username, String password) {
+                return !username.isEmpty() && !password.isEmpty();
             }
 
         });
@@ -73,7 +110,7 @@ public class CrudApplication extends Application {
 
             @Override
             public void handle(Request request, Response response, RouteHandlerChain chain) {
-                response.redirect("/contacts");
+                response.redirectToContextPath("/contacts");
             }
 
         });
@@ -105,7 +142,7 @@ public class CrudApplication extends Application {
                 String action = request.getParameter("action").toString("new");
                 if ("delete".equals(action)) {
                     contactService.delete(id);
-                    response.redirect("/contacts");
+                    response.redirectToContextPath("/contacts");
 
                     return;
                 }
@@ -134,45 +171,8 @@ public class CrudApplication extends Application {
                 if ("save".equals(action)) {
                     Contact contact = request.createEntityFromParameters(Contact.class);
                     contactService.save(contact);
-                    response.redirect("/contacts");
+                    response.redirectToContextPath("/contacts");
                 }
-            }
-
-        });
-
-        GET("/login", new RouteHandler() {
-
-            @Override
-            public void handle(Request request, Response response, RouteHandlerChain chain) {
-                Map<String, Object> model = new HashMap<>();
-                String error = (String) request.getSession().getAttribute("error");
-                request.getSession().removeAttribute("error");
-                if (error != null) {
-                    model.put("error", error);
-                }
-                response.render("crud/login", model);
-            }
-
-        });
-
-        POST("/login", new RouteHandler() {
-
-            @Override
-            public void handle(Request request, Response response, RouteHandlerChain chain) {
-                String username = request.getParameter("username").toString();
-                String password = request.getParameter("password").toString();
-                if (authenticate(username, password)) {
-                    request.getSession().setAttribute("username", username);
-                    String originalDestination = (String) request.getSession().getAttribute("originalDestination");
-                    response.redirect(originalDestination != null ? originalDestination : "/contacts");
-                } else {
-                    request.getSession().setAttribute("error", "Authentication failed");
-                    response.redirect("/login");
-                }
-            }
-
-            private boolean authenticate(String username, String password) {
-                return !username.isEmpty() && !password.isEmpty();
             }
 
         });

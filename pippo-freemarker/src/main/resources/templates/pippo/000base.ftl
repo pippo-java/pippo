@@ -80,7 +80,7 @@
       <div class="application">
         ${applicationName} ${applicationVersion}
         <div>
-          <a class="link" href="${contextPath}">&larr;</a>
+          <a class="link" href="${contextPath}/">&larr;</a>
         </div>
       </div>
     </body>

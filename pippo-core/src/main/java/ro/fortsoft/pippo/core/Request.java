@@ -37,7 +37,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Represents a server-side HTTP request. An instance of this class is created for each request.
+ * Represents a server-side HTTP request. An instance of this class is created
+ * for each request.
  *
  * @author Decebal Suiu
  */
@@ -52,6 +53,7 @@ public class Request {
     private Map<String, ParameterValue> allParameters; // parameters + pathParameters
     private Map<String, FileItem> files;
     private Session session;
+    private String contextPath;
 
     private String body; // cache
 
@@ -64,10 +66,11 @@ public class Request {
         Enumeration<String> names = httpServletRequest.getParameterNames();
         while (names.hasMoreElements()) {
             String name = names.nextElement();
-            String [] values = httpServletRequest.getParameterValues(name);
+            String[] values = httpServletRequest.getParameterValues(name);
             tmp.put(name, new ParameterValue(values));
         }
         parameters = Collections.unmodifiableMap(tmp);
+        contextPath = application.getRouter().getContextPath();
     }
 
     public Map<String, ParameterValue> getParameters() {
@@ -223,24 +226,23 @@ public class Request {
         return httpServletRequest.isSecure();
     }
 
+    /**
+     * Returns the url with the protocol, context path, & resource path. The
+     * query string is omitted.
+     *
+     * @return the url
+     */
     public String getUrl() {
         return httpServletRequest.getRequestURL().toString();
     }
 
-    public String getUri() {
-        return httpServletRequest.getRequestURI();
-    }
-
-    public String getQuery() {
-        return httpServletRequest.getQueryString();
-    }
-
     /**
-     * Returns the complete url with protocol, uri, and query string.
+     * Returns the complete url with the protocol, context path, resource path, and
+     * query string.
      *
      * @return the complete url
      */
-    public String getFullUrl() {
+    public String getUrlWithQuery() {
         StringBuilder sb = new StringBuilder(getUrl());
         if (getQuery() != null) {
             sb.append('?').append(getQuery());
@@ -249,12 +251,59 @@ public class Request {
     }
 
     /**
-     * Returns the complete uri with uri and query string.
+     * Returns the container uri with the context path & resource path. The
+     * protocol and query string are omitted.
      *
-     * @return the complete uri
+     * @return the container uri
      */
-    public String getFullUri() {
+    public String getUri() {
+        return httpServletRequest.getRequestURI();
+    }
+
+    /**
+     * Returns the uri relative to the context.
+     *
+     * @return the uri relative to the context
+     */
+    public String getContextUri() {
+        if ("".equals(contextPath)) {
+            return getUri();
+        } else {
+            return getUri().substring(contextPath.length());
+        }
+    }
+
+    /**
+     * Returns the query string component of the request.
+     *
+     * @return the query string
+     */
+    public String getQuery() {
+        return httpServletRequest.getQueryString();
+    }
+
+    /**
+     * Returns the uri relative to the servlet container with the context path,
+     * resource path, and query string. The protocol is omitted.
+     *
+     * @return the container uri with the query
+     */
+    public String getUriWithQuery() {
         StringBuilder sb = new StringBuilder(getUri());
+        if (getQuery() != null) {
+            sb.append('?').append(getQuery());
+        }
+        return sb.toString();
+    }
+
+    /**
+     * Returns the uri with the query string relative to the context.
+     *
+     * @return the context-relative uri with the query
+     */
+    public String getContextUriWithQuery() {
+        StringBuilder sb = new StringBuilder();
+        sb.append(getContextUri());
         if (getQuery() != null) {
             sb.append('?').append(getQuery());
         }
@@ -327,7 +376,7 @@ public class Request {
     }
 
     public List<Cookie> getCookies() {
-        Cookie [] cookies = httpServletRequest.getCookies();
+        Cookie[] cookies = httpServletRequest.getCookies();
         if (cookies == null) {
             return Collections.emptyList();
         }
