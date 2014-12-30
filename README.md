@@ -20,6 +20,7 @@ Artifacts
      - Pippo Core `pippo-core` (jar)
 - Web Server
      - Pippo Jetty `pippo-jetty` (jar)
+     - Pippo Undertow `pippo-undertow` (jar)
 - JSON
      - Pippo Gson `pippo-gson` (jar)
      - Pippo Fastjson `pippo-fastjson` (jar)
