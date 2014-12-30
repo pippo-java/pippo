@@ -216,7 +216,7 @@ public class ParameterValue implements Serializable {
                 }
             }
         }
-        return null;
+        return defaultValue;
     }
 
     public Set<String> toSet() {
@@ -390,7 +390,7 @@ public class ParameterValue implements Serializable {
 
         if (type.isEnum()) {
             Class<? extends Enum> enumClass = (Class<? extends Enum>) type;
-            toEnum(enumClass);
+            return toEnum(enumClass);
         }
 
         if (pattern == null) {

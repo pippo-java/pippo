@@ -153,4 +153,20 @@ public class ParameterValueTest extends Assert {
         assertArrayEquals(new Timestamp[] {Timestamp.valueOf("2014-12-25 13:45:20"), Timestamp.valueOf("2014-12-25 8:45:35"), Timestamp.valueOf("2014-12-25 20:45:07")}, new ParameterValue("2014-12-25 13:45:20", "2014-12-25 8:45:35", "2014-12-25 20:45:07").to(Timestamp[].class));
     }
 
+
+    @Test
+    public void testEnums() throws Exception {
+        assertEquals(Alphabet.B, new ParameterValue("B").toEnum(Alphabet.class));
+        assertEquals(Alphabet.B, new ParameterValue("B", "A", "D").toEnum(Alphabet.class));
+        assertArrayEquals(new Alphabet[] {Alphabet.B, Alphabet.A, Alphabet.D}, new ParameterValue("B", "A", "D").to(Alphabet[].class));
+
+        assertEquals(Alphabet.B, new ParameterValue("b").toEnum(Alphabet.class, null, false));
+        assertNull(new ParameterValue("z").toEnum(Alphabet.class, null, false));
+        assertEquals(Alphabet.B, new ParameterValue("z").toEnum(Alphabet.class, Alphabet.B, false));
+
+    }
+
+    public static enum Alphabet {
+        A, B, C, D, E, F, G
+    }
 }
