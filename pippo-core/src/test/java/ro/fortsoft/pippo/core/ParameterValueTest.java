@@ -164,6 +164,10 @@ public class ParameterValueTest extends Assert {
         assertNull(new ParameterValue("z").toEnum(Alphabet.class, null, false));
         assertEquals(Alphabet.B, new ParameterValue("z").toEnum(Alphabet.class, Alphabet.B, false));
 
+        assertEquals(Alphabet.B, new ParameterValue("1").toEnum(Alphabet.class, null, false));
+        assertEquals(Alphabet.A, new ParameterValue("0").toEnum(Alphabet.class, null, false));
+        assertEquals(Alphabet.D, new ParameterValue("3").toEnum(Alphabet.class, null, false));
+
     }
 
     public static enum Alphabet {
