@@ -42,6 +42,11 @@ public class WebServerSettings implements Serializable {
         this.port = pippoSettings.getInteger(PippoConstants.SETTING_SERVER_PORT, defaultPort);
         this.host = pippoSettings.getString(PippoConstants.SETTING_SERVER_HOST, host);
         this.contextPath = pippoSettings.getString(PippoConstants.SETTING_SERVER_CONTEXT_PATH, contextPath);
+        this.externalStaticFilesLocation = pippoSettings.getString(PippoConstants.SETTING_SERVER_EXTERNAL_FILES_LOCATION, externalStaticFilesLocation);
+        this.keystoreFile = pippoSettings.getString(PippoConstants.SETTING_SERVER_KEYSTORE_FILE, keystoreFile);
+        this.keystorePassword = pippoSettings.getString(PippoConstants.SETTING_SERVER_KEYSTORE_PASSWORD, keystorePassword);
+        this.truststoreFile = pippoSettings.getString(PippoConstants.SETTING_SERVER_TRUSTSTORE_FILE, truststoreFile);
+        this.truststorePassword = pippoSettings.getString(PippoConstants.SETTING_SERVER_TRUSTSTORE_PASSWORD, truststorePassword);
     }
 
     public String getHost() {
