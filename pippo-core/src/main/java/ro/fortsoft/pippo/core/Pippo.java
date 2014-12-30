@@ -37,6 +37,15 @@ public class Pippo {
     public Pippo(Application application) {
         this.application = application;
         log.debug("Application '{}'", application);
+
+        Runtime.getRuntime().addShutdownHook(new Thread() {
+
+            @Override
+            public void run() {
+                Pippo.this.stop();
+            }
+
+        });
     }
 
     public Application getApplication() {
@@ -56,15 +65,6 @@ public class Pippo {
 
             WebServerSettings serverSettings = new WebServerSettings(application.getPippoSettings());
             server.setSettings(serverSettings);
-
-            Runtime.getRuntime().addShutdownHook(new Thread() {
-
-                @Override
-                public void run() {
-                    server.stop();
-                }
-
-            });
         }
 
         return server;
