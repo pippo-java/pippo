@@ -181,6 +181,44 @@ public class ParameterValue implements Serializable {
         return values[0];
     }
 
+    public <T extends Enum<?>> T toEnum(Class<T> classOfT) {
+        return toEnum(classOfT, null, true);
+    }
+
+    public <T extends Enum<?>> T toEnum(Class<T> classOfT, T defaultValue) {
+        return toEnum(classOfT, defaultValue, true);
+    }
+
+    public <T extends Enum<?>> T toEnum(Class<T> classOfT, T defaultValue, boolean caseSensitive) {
+        if (isNull()) {
+            return defaultValue;
+        }
+
+        int ordinal = Integer.MIN_VALUE;
+        try {
+            // attempt to interpret value as an ordinal
+            ordinal = Integer.parseInt(values[0]);
+        } catch (Exception e) {
+        }
+
+        T[] constants = classOfT.getEnumConstants();
+        for (T constant : constants) {
+            if (constant.ordinal() == ordinal) {
+                return constant;
+            }
+            if (caseSensitive) {
+                if (constant.name().equals(values[0])) {
+                    return constant;
+                }
+            } else {
+                if (constant.name().equalsIgnoreCase(values[0])) {
+                    return constant;
+                }
+            }
+        }
+        return null;
+    }
+
     public Set<String> toSet() {
         return toSet(new HashSet<String>());
     }
@@ -348,6 +386,11 @@ public class ParameterValue implements Serializable {
 
         if (type == UUID.class) {
             return toUUID();
+        }
+
+        if (type.isEnum()) {
+            Class<? extends Enum> enumClass = (Class<? extends Enum>) type;
+            toEnum(enumClass);
         }
 
         if (pattern == null) {
