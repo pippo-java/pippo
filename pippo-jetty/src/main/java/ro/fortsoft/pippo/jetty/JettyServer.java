@@ -30,6 +30,7 @@ import org.eclipse.jetty.server.Handler;
 import org.eclipse.jetty.server.Request;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.ServerConnector;
+import org.eclipse.jetty.server.handler.ContextHandler;
 import org.eclipse.jetty.server.handler.HandlerList;
 import org.eclipse.jetty.server.handler.ResourceHandler;
 import org.eclipse.jetty.servlet.FilterHolder;
@@ -43,6 +44,7 @@ import ro.fortsoft.pippo.core.AbstractWebServer;
 import ro.fortsoft.pippo.core.HttpConstants;
 import ro.fortsoft.pippo.core.PippoRuntimeException;
 import ro.fortsoft.pippo.core.RuntimeMode;
+import ro.fortsoft.pippo.core.util.StringUtils;
 
 /**
  * @author Decebal Suiu
@@ -118,7 +120,13 @@ public class JettyServer extends AbstractWebServer {
         // add external static files handler
         Handler externalStaticResourceHandler = createExternalStaticResourceHandler();
         if (externalStaticResourceHandler != null) {
-            handlerList.addHandler(externalStaticResourceHandler);
+            String contextPath = StringUtils.addEnd(StringUtils.addStart(settings.getContextPath(), "/"), "/");
+            String extPath = StringUtils.removeStart(settings.getExternalStaticFilesPath(), "/");
+            String path = contextPath + extPath;
+
+            ContextHandler extHandler = new ContextHandler(path);
+            extHandler.setHandler(externalStaticResourceHandler);
+            handlerList.addHandler(extHandler);
         }
 
         // add pippo handler
