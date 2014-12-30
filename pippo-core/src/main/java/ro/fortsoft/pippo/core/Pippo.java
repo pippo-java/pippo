@@ -15,9 +15,10 @@
  */
 package ro.fortsoft.pippo.core;
 
+import ro.fortsoft.pippo.core.util.ServiceLocator;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import ro.fortsoft.pippo.core.util.ServiceLocator;
 
 /**
  * @author Decebal Suiu
@@ -36,6 +37,15 @@ public class Pippo {
     public Pippo(Application application) {
         this.application = application;
         log.debug("Application '{}'", application);
+
+        Runtime.getRuntime().addShutdownHook(new Thread() {
+
+            @Override
+            public void run() {
+                Pippo.this.stop();
+            }
+
+        });
     }
 
     public Application getApplication() {
