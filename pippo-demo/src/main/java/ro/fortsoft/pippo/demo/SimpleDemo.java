@@ -23,10 +23,7 @@ import ro.fortsoft.pippo.core.Pippo;
 public class SimpleDemo {
 
     public static void main(String[] args) {
-//        new Pippo().start(); // run the default web server with the default web server settings
-
         Pippo pippo = new Pippo(new SimpleApplication());
-        pippo.getServer().getSettings().staticFilesLocation("/public");
         pippo.start();
     }
 

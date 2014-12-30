@@ -29,7 +29,6 @@ public class WebServerSettings implements Serializable {
     private String host = "localhost";
     private int port = defaultPort;
     private String contextPath = "/";
-    private String staticFilesLocation;
     private String externalStaticFilesLocation;
     private String keystoreFile;
     private String keystorePassword;
@@ -71,16 +70,6 @@ public class WebServerSettings implements Serializable {
 
     public WebServerSettings contextPath(String contextPath) {
         this.contextPath = contextPath;
-
-        return this;
-    }
-
-    public String getStaticFilesLocation() {
-        return staticFilesLocation;
-    }
-
-    public WebServerSettings staticFilesLocation(String staticFilesLocation) {
-        this.staticFilesLocation = staticFilesLocation;
 
         return this;
     }

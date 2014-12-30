@@ -15,6 +15,17 @@
  */
 package ro.fortsoft.pippo.jetty;
 
+import java.io.File;
+import java.io.IOException;
+import java.util.EnumSet;
+import java.util.concurrent.TimeUnit;
+
+import javax.servlet.DispatcherType;
+import javax.servlet.MultipartConfigElement;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.eclipse.jetty.server.Handler;
 import org.eclipse.jetty.server.Request;
 import org.eclipse.jetty.server.Server;
@@ -27,20 +38,11 @@ import org.eclipse.jetty.util.resource.Resource;
 import org.eclipse.jetty.util.ssl.SslContextFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import ro.fortsoft.pippo.core.AbstractWebServer;
 import ro.fortsoft.pippo.core.HttpConstants;
 import ro.fortsoft.pippo.core.PippoRuntimeException;
 import ro.fortsoft.pippo.core.RuntimeMode;
-
-import javax.servlet.DispatcherType;
-import javax.servlet.MultipartConfigElement;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.File;
-import java.io.IOException;
-import java.util.EnumSet;
-import java.util.concurrent.TimeUnit;
 
 /**
  * @author Decebal Suiu
@@ -113,12 +115,6 @@ public class JettyServer extends AbstractWebServer {
     protected HandlerList createHandlerList() {
         HandlerList handlerList = new HandlerList();
 
-        // add static files handler
-        Handler staticResourceHandler = createStaticResourceHandler();
-        if (staticResourceHandler != null) {
-            handlerList.addHandler(staticResourceHandler);
-        }
-
         // add external static files handler
         Handler externalStaticResourceHandler = createExternalStaticResourceHandler();
         if (externalStaticResourceHandler != null) {
@@ -130,25 +126,6 @@ public class JettyServer extends AbstractWebServer {
         handlerList.addHandler(pippoHandler);
 
         return handlerList;
-    }
-
-    protected ResourceHandler createStaticResourceHandler() {
-        ResourceHandler handler = null;
-
-        String staticFilesLocation = settings.getStaticFilesLocation();
-        if (staticFilesLocation != null) {
-            log.debug("Static files location: '{}'", staticFilesLocation);
-            handler = new StaticResourceHandler();
-            handler.setBaseResource(Resource.newClassPathResource(staticFilesLocation));
-            handler.setDirectoriesListed(false);
-            if (RuntimeMode.getCurrent() == RuntimeMode.DEV) {
-                handler.setCacheControl("no-cache"); // disable cache
-            }
-        } else {
-            log.debug("No static files location");
-        }
-
-        return handler;
     }
 
     protected ResourceHandler createExternalStaticResourceHandler() {

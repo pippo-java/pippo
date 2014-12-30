@@ -108,7 +108,6 @@ public class SimpleDemo {
 
     public static void main(String[] args) {
         Pippo pippo = new Pippo(new SimpleApplication());
-        pippo.getServer().getSettings().staticFilesLocation("/public");
         pippo.start();
     }
 
@@ -348,7 +347,6 @@ public class MyDemo {
 
     public static void main(String[] args) {
         Pippo pippo = new Pippo(new SimpleApplication());
-        pippo.getServer().getSettings().staticFilesLocation("/public");
         pippo.start();
     }
 
@@ -374,9 +372,6 @@ public class MyDemo {
     public static void main(String[] args) {
         Pippo pippo = new Pippo();
 
-        // specify the static files location
-        pippo.getServer().getSettings().staticFilesLocation("/public");
-
         // add routes
         pippo.getApplication().GET("/", (request, response, chain) -> response.send("Hello World"));
 
@@ -387,34 +382,36 @@ public class MyDemo {
 }
 ```     
 
-Static files
--------------------
-Websites generally need to serve additional files such as images, JavaScript, or CSS. In Pippo, we refer to these files as “static files”.
+Serving static files
+--------------------
+Web applications generally need to serve resource files such as images, JavaScript, or CSS. In Pippo, we refer to these files as “static files”.
 
-The easiest way of configuring the static files location is to pass a path in the web server settings.
-
-```java
-Pippo pippo = new Pippo();
-pippo.getServer().getSettings().staticFilesLocation("/public");
-```
-
-or 
+The easiest way of serving static files is to use the `PublicResourceHandler` and `WebjarsResourceHandler`.
 
 ```java
 Pippo pippo = new Pippo();
+pippo.getApplication().GET(new PublicResourceHandler());
+pippo.getApplication().GET(new WebjarsResourceHandler());
 pippo.getServer().getSettings().externalStaticFilesLocation("/var/myapp/public");
 ```
-
-You use `staticFilesLocation()` method when you want to serve files from class loader and `externalStaticFilesLocation` when you want to serve files from outside of your application.
 
 The CrudDemo is a good application that demonstrates the concept of static files. In pippo-demo/src/main/resources I created a folder __public__ and I put all assets in that folder (imgs, css, js, fonts, ...).
 
 ```
-ls public/css/
-bootstrap.min.css  style.css
+➤ tree pippo-demo/src/main/resources/public
+pippo-demo/src/main/resources/public
+├── css
+│   └── style.css
+├── fonts
+└── js
+    └── crudNgApp.js
+
+3 directories, 2 files
 ```
 
-You can see that CrudDemo uses bootstrap framework. You can use the bootstrap css in your web page with:
+The CrudDemo uses the Bootstrap framework & Font-Awesome. You can manually copy those resources into your project or you can serve them from the WebJars project using the *WebjarsAt* method appropriate for your template engine.
+
+The CrudDemo also uses a custom CSS file which is a classpath resource from the `/public/` folder.
 
 ```html
 <head>
@@ -422,12 +419,20 @@ You can see that CrudDemo uses bootstrap framework. You can use the bootstrap cs
     <meta content="IE=edge" http-equiv="X-UA-Compatible">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <link href="/css/style.css" rel="stylesheet">
-    <link href="/css/bootstrap.min.css" rel="stylesheet">
+    <link href="${webjarsAt('bootstrap/3.3.1/css/bootstrap.min.css')}" rel="stylesheet">
+    <link href="${webjarsAt('font-awesome/4.2.0/css/font-awesome.min.css')}" rel="stylesheet">
+    <link href="${publicAt('css/style.css')}" rel="stylesheet">
 </head>
 ```
 
-I want to point that the static files/resources are served directly by the embedded server (in case of pippo-jetty) and not by Pippo (through PippoFilter). 
+If you want to serve static files that are not on the classpath and you are using a Pippo WebServer then you may use the `externalStaticFilesLocation()` method.
+
+```java
+Pippo pippo = new Pippo();
+pippo.getApplication().GET(new PublicResourceHandler());
+pippo.getApplication().GET(new WebjarsResourceHandler());
+pippo.getServer().getSettings().externalStaticFilesLocation("/var/myapp/public");
+```
 
 Reverse routing
 -------------------
@@ -697,11 +702,11 @@ see the result.
 You can change some aspects of the embedded web server using `WebServerSettings`:
 ```java
 Pippo pippo = new Pippo();
-pippo.getServer().getSettings().port(8081).staticFilesLocation("/public");
+pippo.getServer().getSettings().port(8081).externalStaticFilesLocation("/var/assets");
 pippo.start();
 ```
 
-In above snippet I changed the port to _8081_ and ai specify the static file location to _public_.
+In above snippet I changed the port to _8081_ and ai specify the external static files location to _/var/assets_.
 
 If you need to create support for another embedded web server that is not implemented in Pippo or third-party modules 
 than all you need to do is to implement `WebServer` (or to extends `AbstractWebServer`).
