@@ -76,7 +76,7 @@ public class PippoFilter implements Filter {
     private final String PIPPO_LOGO = "\n"
     		+" ____  ____  ____  ____  _____\n"
             + "(  _ \\(_  _)(  _ \\(  _ \\(  _  )\n"
-            + " ) __/ _)(_  ) __/ ) __/ )(_)(   https://github.com/decebals/pippo\n"
+            + " ) __/ _)(_  ) __/ ) __/ )(_)(   http://pippo.ro\n"
             + "(__)  (____)(__)  (__)  (_____)  {}\n";
 
     private RouteHandlerChainFactory routeHandlerChainFactory;
