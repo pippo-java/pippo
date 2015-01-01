@@ -338,6 +338,7 @@ Pippo supports the following request parameter and entity field types:
 - java.sql.Date
 - java.sql.Time
 - java.sql.Timestamp
+- enum types mapped by case (in)sensitive name or by ordinal
 - and simple arrays [] of all these types
 
 An __Application__ is a class which associates with an instance of PippoFilter to serve pages over the HTTP protocol. Usually I subclass this class and add my routes in `init()` method.
