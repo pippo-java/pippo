@@ -17,6 +17,9 @@ package ro.fortsoft.pippo.core;
 
 import ro.fortsoft.pippo.core.util.StringUtils;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -56,6 +59,15 @@ public class ContentTypeEngines {
             }
         }
         return false;
+    }
+
+    /**
+     * Returns the list of registered content types.
+     *
+     * @return the list of registered content types
+     */
+    public List<String> getContentTypes() {
+        return Collections.unmodifiableList(new ArrayList<>(engines.keySet()));
     }
 
     /**
