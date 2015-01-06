@@ -11,7 +11,7 @@
         <filter-class>ro.fortsoft.pippo.core.PippoFilter</filter-class>
         <init-param>
             <param-name>applicationClassName</param-name>
-            <param-value>ro.fortsoft.pippo.demo.DemoApplication</param-value>
+            <param-value>ro.fortsoft.pippo.demo.SimpleApplication</param-value>
         </init-param>
     </filter>
 
