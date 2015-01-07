@@ -392,4 +392,12 @@ public class Request {
         return null;
     }
 
+    @Override
+    public String toString() {
+        return "Request{" +
+                "requestMethod='" + getMethod() + '\'' +
+                ", uriPattern='" + getContextUri() + '\'' +
+                '}';
+    }
+
 }
