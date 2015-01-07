@@ -38,4 +38,12 @@ public class RouteMatch {
         return pathParameters;
     }
 
+    @Override
+    public String toString() {
+        return "RouteMatch{" +
+                "requestMethod='" + route.getRequestMethod() + '\'' +
+                ", uriPattern='" + route.getUriPattern() + '\'' +
+                '}';
+    }
+
 }
