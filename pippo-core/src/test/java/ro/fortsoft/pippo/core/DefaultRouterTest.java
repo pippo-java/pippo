@@ -70,10 +70,10 @@ public class DefaultRouterTest extends Assert {
     }
 
     @Test
-    public void testInvalidMethodRequestRoute() throws Exception {
-        Route route = new Route("/.*", "GETT", new EmptyRouteHandler());
+    public void testUnspecifiedMethodRequestRoute() throws Exception {
+        Route route = new Route("/.*", "", new EmptyRouteHandler());
         thrown.expect(Exception.class);
-        thrown.expectMessage("Invalid request method");
+        thrown.expectMessage("Unspecified request method");
         router.addRoute(route);
     }
 
