@@ -122,6 +122,7 @@
         <module>pippo-metrics-graphite</module>
         <module>pippo-metrics-influxdb</module>
         <module>pippo-metrics-librato</module>
+        <module>pippo-parameterized-controllers</module>
     </modules>
 
 </project>
