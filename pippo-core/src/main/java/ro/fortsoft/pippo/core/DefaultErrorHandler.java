@@ -77,7 +77,8 @@ public class DefaultErrorHandler implements ErrorHandler {
                     response.send(locals, engine.getContentType());
                 } catch (Exception e) {
                     log.error("Unexpected error rendering generating '{}' representation!", acceptType, e);
-                    handle(e, request, response);
+                    response.status(HttpConstants.StatusCode.INTERNAL_ERROR);
+                    response.text(application.getMessages().get("pippo.statusCode500", request, response));
                 }
             }
         }
