@@ -29,7 +29,6 @@ import ro.fortsoft.pippo.core.route.Router;
 import ro.fortsoft.pippo.core.util.HttpCacheToolkit;
 import ro.fortsoft.pippo.core.util.MimeTypes;
 import ro.fortsoft.pippo.core.util.ServiceLocator;
-import ro.fortsoft.pippo.jaxb.JaxbEngine;
 
 import java.util.HashMap;
 import java.util.Map;

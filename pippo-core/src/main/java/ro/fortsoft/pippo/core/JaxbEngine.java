@@ -13,12 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package ro.fortsoft.pippo.jaxb;
-
-import ro.fortsoft.pippo.core.Application;
-import ro.fortsoft.pippo.core.ContentTypeEngine;
-import ro.fortsoft.pippo.core.HttpConstants;
-import ro.fortsoft.pippo.core.PippoRuntimeException;
+package ro.fortsoft.pippo.core;
 
 import java.io.StringReader;
 import java.io.StringWriter;
