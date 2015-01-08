@@ -72,11 +72,11 @@ public class DefaultErrorHandler implements ErrorHandler {
                 renderHtml(statusCode, request, response);
 
             } else {
+                Error error = prepareError(statusCode, request, response);
                 try {
-                    Map<String, Object> locals = prepareLocals(statusCode, request, response);
-                    response.send(locals, engine.getContentType());
+                    response.send(error, engine.getContentType());
                 } catch (Exception e) {
-                    log.error("Unexpected error rendering generating '{}' representation!", contentType, e);
+                    log.error("Unexpected error generating '{}' as '{}'!", Error.class.getName(), contentType, e);
                     response.status(HttpConstants.StatusCode.INTERNAL_ERROR);
                     response.text(application.getMessages().get("pippo.statusCode500", request, response));
                 }
@@ -95,8 +95,10 @@ public class DefaultErrorHandler implements ErrorHandler {
                 renderDirectly(request, response);
             } else {
                 try {
-                    Map<String, Object> locals = prepareLocals(statusCode, request, response);
-                    response.getLocals().putAll(locals);
+                    Error error = prepareError(statusCode, request, response);
+                    Map<String, Object> bindings = error.asMap();
+                    bindings.putAll(prepareTemplateBindings(statusCode, request, response));
+                    response.getLocals().putAll(bindings);
                     response.render(template);
                 } catch (Exception e) {
                     log.error("Unexpected error rendering your '{}' template!", template, e);
@@ -108,6 +110,11 @@ public class DefaultErrorHandler implements ErrorHandler {
 
     @Override
     public void handle(Exception exception, Request request, Response response) {
+
+        String message = exception.getMessage();
+        if (!StringUtils.isNullOrEmpty(message)) {
+            response.bind("message", message);
+        }
 
         if (application.getPippoSettings().isDev()) {
             StringWriter stringWriter = new StringWriter();
@@ -152,29 +159,43 @@ public class DefaultErrorHandler implements ErrorHandler {
     }
 
     /**
-     * Get the local values for the error response.
+     * Get the template bindings for the error response.
      *
      * @param request
      * @param response
-     * @return local values map
+     * @return bindings map
      */
-    protected Map<String, Object> prepareLocals(int statusCode, Request request, Response response) {
-        String messageKey = "pippo.statusCode" + statusCode;
-
+    protected Map<String, Object> prepareTemplateBindings(int statusCode, Request request, Response response) {
         Map<String, Object> locals = new LinkedHashMap<>();
         locals.put("applicationName", application.getApplicationName());
         locals.put("applicationVersion", application.getApplicationVersion());
-        locals.put("runtimeMode", application.getPippoSettings().getRuntimeMode());
-        locals.put("statusCode", statusCode);
-        locals.put("statusMessage", application.getMessages().get(messageKey, request, response));
-        locals.put("requestMethod", request.getMethod());
-        locals.put("requestUri", request.getUri());
-
+        locals.put("runtimeMode", application.getPippoSettings().getRuntimeMode().toString());
         if (application.getPippoSettings().isDev()) {
             locals.put("routes", application.getRouter().getRoutes());
         }
-
         return locals;
+    }
+
+    /**
+     * Prepares an Error instance for the error response.
+     *
+     * @param statusCode
+     * @param request
+     * @param response
+     * @return an Error
+     */
+    protected Error prepareError(int statusCode, Request request, Response response) {
+        String messageKey = "pippo.statusCode" + statusCode;
+
+        Error error = new Error();
+        error.statusCode = statusCode;
+        error.statusMessage = application.getMessages().get(messageKey, request, response);
+        error.requestMethod = request.getMethod();
+        error.requestUri = request.getContextUri();
+        error.stacktrace = (String) response.getLocals().get("stacktrace");
+        error.message = (String) response.getLocals().get("message");
+
+        return error;
     }
 
     protected String getTemplateForStatusCode(int statusCode) {
