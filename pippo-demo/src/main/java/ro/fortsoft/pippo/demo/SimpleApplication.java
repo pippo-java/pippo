@@ -16,6 +16,7 @@
 package ro.fortsoft.pippo.demo;
 
 import ro.fortsoft.pippo.core.Application;
+import ro.fortsoft.pippo.core.HttpConstants;
 import ro.fortsoft.pippo.core.Request;
 import ro.fortsoft.pippo.core.Response;
 import ro.fortsoft.pippo.core.route.RouteHandler;
@@ -133,6 +134,16 @@ public class SimpleApplication extends Application {
             @Override
             public void handle(Request request, Response response, RouteHandlerChain chain) {
                 throw new RuntimeException("Error");
+            }
+
+        });
+
+        // halt a response
+        GET("/halt", new RouteHandler() {
+
+            @Override
+            public void handle(Request request, Response response, RouteHandlerChain chain) {
+                response.contentType(HttpConstants.ContentType.APPLICATION_XML).halt(HttpConstants.StatusCode.NOT_FOUND, "You halted the response");
             }
 
         });

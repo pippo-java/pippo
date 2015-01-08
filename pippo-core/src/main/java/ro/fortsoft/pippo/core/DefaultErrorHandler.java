@@ -117,7 +117,14 @@ public class DefaultErrorHandler implements ErrorHandler {
             response.bind("stacktrace", stackTrace);
         }
 
-        handle(HttpConstants.StatusCode.INTERNAL_ERROR, request, response);
+        // assume an internal error unless this is a HaltResponseException
+        int statusCode = HttpConstants.StatusCode.INTERNAL_ERROR;
+        if (exception instanceof HaltResponseException) {
+            HaltResponseException haltException = (HaltResponseException) exception;
+            statusCode = haltException.getStatusCode();
+        }
+
+        handle(statusCode, request, response);
     }
 
     /**

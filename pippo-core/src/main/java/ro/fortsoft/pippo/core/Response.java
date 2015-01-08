@@ -545,6 +545,14 @@ public class Response {
         getCookieMap().put(cookie.getName(), cookie);
     }
 
+    public void halt(int statusCode) {
+        throw new HaltResponseException(statusCode, null);
+    }
+
+    public void halt(int statusCode, String message, Object... args) {
+        throw new HaltResponseException(statusCode, message, args);
+    }
+
     public void commit() {
         // add cookies
         for (Cookie cookie : getCookies()) {
