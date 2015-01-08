@@ -72,8 +72,7 @@ public class TemplateDemoApplication extends Application {
                 model.put("testDate", testDate);
                 model.put("mode", getRuntimeMode());
 
-                // .mustache is the default file extension
-                response.render(template, model);
+                response.html().render(template, model);
             }
 
         });
@@ -86,6 +85,7 @@ public class TemplateDemoApplication extends Application {
             @Timed("getException")
             @Override
             public void handle(Request request, Response response, RouteHandlerChain chain) {
+                response.html();
                 throw new PippoRuntimeException("Exception \"&nbsp;\" <#{}>", ++counter);
             }
 

@@ -40,7 +40,7 @@ public class SimpleApplication extends Application {
 
             @Override
             public void handle(Request request, Response response, RouteHandlerChain chain) {
-                response.send("Hello World");
+                response.text().send("Hello World");
             }
 
         });
@@ -106,6 +106,22 @@ public class SimpleApplication extends Application {
 
         });
 
+        // send an object and negotiate the Response content-type, default to XML
+        GET("/negotiate", new RouteHandler() {
+
+            @Override
+            public void handle(Request request, Response response, RouteHandlerChain chain) {
+                Contact contact = new Contact()
+                        .setId(12345)
+                        .setName("John")
+                        .setPhone("0733434435")
+                        .setAddress("Sunflower Street, No. 6");
+                response.xml().negotiate(request).send(contact);
+            }
+
+        });
+
+
         // send a template as response
         GET("/template", new RouteHandler() {
 
@@ -122,7 +138,7 @@ public class SimpleApplication extends Application {
 
                 Map<String, Object> model = new HashMap<>();
                 model.put("greeting", message);
-                response.render("hello", model);
+                response.html().render("hello", model);
             }
 
         });

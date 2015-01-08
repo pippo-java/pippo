@@ -388,12 +388,62 @@ public class Response {
         return httpServletResponse.isCommitted();
     }
 
+    /**
+     * Attempts to negotiate the Response content type based on the Request
+     * accept type. If an agreement can't be reached, the Response content-type
+     * is not set.
+     *
+     * This allows a response chain such as
+     * <code>response.xml().negotiate(request).send(myObject);</code> which will
+     * set the content type as <code>application/xml</code> and optionally
+     * override it after negotation.
+     *
+     * @param request
+     * @return the response
+     */
+    public Response negotiate(Request request) {
+        ContentTypeEngine engine = contentTypeEngines.getContentTypeEngine(request.getAcceptType());
+        if (engine == null) {
+            log.warn("Failed to negotiate a content type for accept-type '{}'", request.getAcceptType());
+            return this;
+        }
+        return contentType(engine.getContentType());
+    }
+
+    /**
+     * Sets the Response content-type to text/plain.
+     */
+    public Response text() {
+        return contentType(HttpConstants.ContentType.TEXT_PLAIN);
+    }
+
     public void text(Object object) {
         send(object, HttpConstants.ContentType.TEXT_PLAIN);
     }
 
+    /**
+     * Sets the Response content-type to text/html.
+     */
+    public Response html() {
+        return contentType(HttpConstants.ContentType.TEXT_HTML);
+    }
+
+    /**
+     * Sets the Response content-type to application/json.
+     */
+    public Response json() {
+        return contentType(HttpConstants.ContentType.APPLICATION_JSON);
+    }
+
     public void json(Object object) {
         send(object, HttpConstants.ContentType.APPLICATION_JSON);
+    }
+
+    /**
+     * Sets the Response content-type to application/xml.
+     */
+    public Response xml() {
+        return contentType(HttpConstants.ContentType.APPLICATION_XML);
     }
 
     public void xml(Object object) {
