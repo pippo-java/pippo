@@ -45,18 +45,18 @@ public class DefaultErrorHandler implements ErrorHandler {
     public void handle(int statusCode, Request request, Response response) {
         response.status(statusCode);
 
-        String acceptType = request.getAcceptType();
-        if (StringUtils.isNullOrEmpty(acceptType)) {
-            acceptType = response.getContentType();
+        String contentType = response.getContentType();
+        if (StringUtils.isNullOrEmpty(contentType)) {
+            contentType = request.getAcceptType();
         }
 
-        if (StringUtils.isNullOrEmpty(acceptType)) {
+        if (StringUtils.isNullOrEmpty(contentType)) {
 
             log.warn("No content type specified!'");
             renderHtml(statusCode, request, response);
 
-        } else if (acceptType.startsWith(HttpConstants.ContentType.TEXT_HTML)
-                || acceptType.startsWith(HttpConstants.ContentType.TEXT_XHTML)) {
+        } else if (contentType.startsWith(HttpConstants.ContentType.TEXT_HTML)
+                || contentType.startsWith(HttpConstants.ContentType.TEXT_XHTML)) {
 
             // render an html page
             renderHtml(statusCode, request, response);
@@ -64,11 +64,11 @@ public class DefaultErrorHandler implements ErrorHandler {
         } else {
 
             // render an object representation
-            ContentTypeEngine engine = application.getContentTypeEngine(acceptType);
+            ContentTypeEngine engine = application.getContentTypeEngine(contentType);
 
             if (engine == null) {
 
-                log.warn("No registered content type engine for '{}'", acceptType);
+                log.warn("No registered content type engine for '{}'", contentType);
                 renderHtml(statusCode, request, response);
 
             } else {
@@ -76,7 +76,7 @@ public class DefaultErrorHandler implements ErrorHandler {
                     Map<String, Object> locals = prepareLocals(statusCode, request, response);
                     response.send(locals, engine.getContentType());
                 } catch (Exception e) {
-                    log.error("Unexpected error rendering generating '{}' representation!", acceptType, e);
+                    log.error("Unexpected error rendering generating '{}' representation!", contentType, e);
                     response.status(HttpConstants.StatusCode.INTERNAL_ERROR);
                     response.text(application.getMessages().get("pippo.statusCode500", request, response));
                 }
