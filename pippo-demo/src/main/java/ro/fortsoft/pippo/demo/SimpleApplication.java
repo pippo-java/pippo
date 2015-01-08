@@ -61,6 +61,7 @@ public class SimpleApplication extends Application {
             @Override
             public void handle(Request request, Response response, RouteHandlerChain chain) {
                 Contact contact = new Contact()
+                        .setId(12345)
                         .setName("John")
                         .setPhone("0733434435")
                         .setAddress("Sunflower Street, No. 6");
@@ -78,6 +79,7 @@ public class SimpleApplication extends Application {
             @Override
             public void handle(Request request, Response response, RouteHandlerChain chain) {
                 Contact contact = new Contact()
+                        .setId(12345)
                         .setName("John")
                         .setPhone("0733434435")
                         .setAddress("Sunflower Street, No. 6");
@@ -95,6 +97,7 @@ public class SimpleApplication extends Application {
             @Override
             public void handle(Request request, Response response, RouteHandlerChain chain) {
                 Contact contact = new Contact()
+                        .setId(12345)
                         .setName("John")
                         .setPhone("0733434435")
                         .setAddress("Sunflower Street, No. 6");

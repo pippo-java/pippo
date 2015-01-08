@@ -17,10 +17,17 @@ package ro.fortsoft.pippo.demo.crud;
 
 import java.io.Serializable;
 
+import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
+
 /**
  * @author Decebal Suiu
  */
+@XmlRootElement
 public class Contact implements Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     private int id;
     private String name;
@@ -38,14 +45,18 @@ public class Contact implements Serializable {
         return id;
     }
 
-    public void setId(int id) {
+    @XmlAttribute
+    public Contact setId(int id) {
         this.id = id;
+
+        return this;
     }
 
     public String getName() {
         return name;
     }
 
+    @XmlElement
     public Contact setName(String name) {
         this.name = name;
 
@@ -56,6 +67,7 @@ public class Contact implements Serializable {
         return phone;
     }
 
+    @XmlElement
     public Contact setPhone(String phone) {
         this.phone = phone;
 
@@ -66,6 +78,7 @@ public class Contact implements Serializable {
         return address;
     }
 
+    @XmlElement
     public Contact setAddress(String address) {
         this.address = address;
 

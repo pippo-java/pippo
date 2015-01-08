@@ -91,6 +91,7 @@ public class Application {
         this.engines = new ContentTypeEngines();
 
         registerContentTypeEngine(TextPlainEngine.class);
+        registerContentTypeEngine(JaxbEngine.class);
     }
 
     public void init() {
