@@ -15,14 +15,15 @@
  */
 package ro.fortsoft.pippo.core.route;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import ro.fortsoft.pippo.core.Request;
 import ro.fortsoft.pippo.core.Response;
 
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author Decebal Suiu
@@ -42,8 +43,17 @@ public class DefaultRouteHandlerChain implements RouteHandlerChain {
         iterator = routeMatches.iterator();
     }
 
+    @Override
     public void next() {
         // TODO it's an idea to throw an exception (NotNextRouteException or similar) ?!
+        if (response.isCommitted()) {
+            while (iterator.hasNext()) {
+                RouteMatch match = iterator.next();
+                log.debug("Response committed, skipping {}", match);
+            }
+            return;
+        }
+
         if (iterator.hasNext()) {
             // retrieves the next route
             RouteMatch routeMatch = iterator.next();
