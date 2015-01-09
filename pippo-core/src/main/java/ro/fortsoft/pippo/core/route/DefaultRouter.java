@@ -15,7 +15,7 @@
  */
 package ro.fortsoft.pippo.core.route;
 
-import ro.fortsoft.pippo.core.HttpConstants;
+import ro.fortsoft.pippo.core.PippoRuntimeException;
 import ro.fortsoft.pippo.core.controller.Controller;
 import ro.fortsoft.pippo.core.controller.ControllerHandler;
 import ro.fortsoft.pippo.core.util.StringUtils;
@@ -108,31 +108,22 @@ public class DefaultRouter implements Router {
         return routes;
     }
 
-    protected void validateRoute(Route route) throws Exception {
+    protected void validateRoute(Route route) {
         // validate the request method
-        if (!existsRequestMethod(route.getRequestMethod())) {
-            throw new Exception("Invalid request method: " + route.getRequestMethod());
+        if (StringUtils.isNullOrEmpty(route.getRequestMethod())) {
+            throw new PippoRuntimeException("Unspecified request method!");
         }
 
         // validate the uri pattern
         String uriPattern = route.getUriPattern();
-        if (uriPattern == null || uriPattern.isEmpty()) {
-            throw new Exception("The uri pattern cannot be null or empty");
+        if (StringUtils.isNullOrEmpty(uriPattern)) {
+            throw new PippoRuntimeException("The uri pattern cannot be null or empty");
         }
-    }
-
-    private boolean existsRequestMethod(String requestMethod) {
-        return HttpConstants.Method.GET.equals(requestMethod)
-                || HttpConstants.Method.POST.equals(requestMethod)
-                || HttpConstants.Method.PUT.equals(requestMethod)
-                || HttpConstants.Method.HEAD.equals(requestMethod)
-                || HttpConstants.Method.DELETE.equals(requestMethod)
-                || HttpConstants.Method.PATCH.equals(requestMethod);
     }
 
     @Override
     public List<RouteMatch> findRoutes(String requestUri, String requestMethod) {
-        log.debug("Finding route for '{} {}'", requestUri, requestMethod);
+        log.debug("Finding route matches for {} '{}'", requestMethod, requestUri);
         List<PatternBinding> bindings = bindingsCache.get(requestMethod);
         if (bindings == null) {
             return Collections.emptyList();
@@ -150,8 +141,8 @@ public class DefaultRouter implements Router {
     }
 
     @Override
-    public void addRoute(Route route) throws Exception {
-        log.debug("Add route for '{} {}'", route.getRequestMethod(), route.getUriPattern());
+    public void addRoute(Route route) {
+        log.debug("Add route for {} '{}'", route.getRequestMethod(), route.getUriPattern());
         validateRoute(route);
         routes.add(route);
 
