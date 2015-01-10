@@ -40,7 +40,7 @@ public class SimpleApplication extends Application {
 
             @Override
             public void handle(Request request, Response response, RouteHandlerChain chain) {
-                response.text().send("Hello World");
+                response.send("Hello World");
             }
 
         });
@@ -138,7 +138,7 @@ public class SimpleApplication extends Application {
 
                 Map<String, Object> model = new HashMap<>();
                 model.put("greeting", message);
-                response.html().render("hello", model);
+                response.render("hello", model);
             }
 
         });

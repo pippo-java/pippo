@@ -79,7 +79,7 @@ public class CrudApplication extends Application {
                 if (error != null) {
                     model.put("error", error);
                 }
-                response.html().render("crud/login", model);
+                response.render("crud/login", model);
             }
 
         });
@@ -128,7 +128,7 @@ public class CrudApplication extends Application {
                 */
 
                 // variant 2
-                response.html().bind("contacts", contactService.getContacts()).render("crud/contacts");
+                response.bind("contacts", contactService.getContacts()).render("crud/contacts");
             }
 
         });
@@ -158,7 +158,7 @@ public class CrudApplication extends Application {
                 }
                 model.put("editAction", getRouter().uriFor(editAction.toString()));
                 model.put("backAction", getRouter().uriFor("/contacts"));
-                response.html().render("crud/contact", model);
+                response.render("crud/contact", model);
             }
 
         });

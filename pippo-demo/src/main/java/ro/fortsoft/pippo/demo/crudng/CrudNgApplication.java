@@ -89,7 +89,7 @@ public class CrudNgApplication extends Application {
                 if (error != null) {
                     model.put("error", error);
                 }
-                response.html().render("crudng/login", model);
+                response.render("crudng/login", model);
             }
 
         });

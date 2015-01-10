@@ -72,7 +72,7 @@ public class TemplateDemoApplication extends Application {
                 model.put("testDate", testDate);
                 model.put("mode", getRuntimeMode());
 
-                response.html().render(template, model);
+                response.render(template, model);
             }
 
         });
@@ -85,7 +85,6 @@ public class TemplateDemoApplication extends Application {
             @Timed("getException")
             @Override
             public void handle(Request request, Response response, RouteHandlerChain chain) {
-                response.html();
                 throw new PippoRuntimeException("Exception \"&nbsp;\" <#{}>", ++counter);
             }
 
