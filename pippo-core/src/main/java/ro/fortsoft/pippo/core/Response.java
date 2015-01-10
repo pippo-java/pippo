@@ -389,22 +389,42 @@ public class Response {
     }
 
     /**
-     * Attempts to negotiate the Response content type based on the Request
-     * accept type. If an agreement can't be reached, the Response content-type
-     * is not set.
-     *
-     * This allows a response chain such as
-     * <code>response.xml().negotiate(request).send(myObject);</code> which will
-     * set the content type as <code>application/xml</code> and optionally
-     * override it after negotation.
+     * Attempts to set the Content-Type of the Response based on Request
+     * headers.
+     * <p>
+     * The Accept header is preferred for negotiation but the Content-Type
+     * header may also be used if an agreeable engine can not be determined.
+     * </p>
+     * <p>
+     * If no Content-Type can not be negotiated then the response will not be
+     * modified. This behavior allows specification of a default Content-Type
+     * using one of the methods such as <code>xml()</code> or <code>json()</code>.
+     * <p>
+     * For example, <code>response.xml().contentType(request).send(myObject);</code>
+     * would set the default Content-Type as <code>application/xml</code> and
+     * then attempt to negotiate the client's preferred type. If negotiation failed,
+     * then the default <code>application/xml</code> would be sent and used to
+     * serialize the outgoing object.
      *
      * @param request
      * @return the response
      */
-    public Response negotiate(Request request) {
+    public Response contentType(Request request) {
+        // prefer the Accept header
         ContentTypeEngine engine = contentTypeEngines.getContentTypeEngine(request.getAcceptType());
+        if (engine != null) {
+            log.debug("Negotiated '{}' from request Accept header", engine.getContentType());
+        } else if (!StringUtils.isNullOrEmpty(request.getContentType())) {
+            // try to match the Request content-type
+            engine = contentTypeEngines.getContentTypeEngine(request.getContentType());
+            if (engine != null) {
+                log.debug("Negotiated '{}' from request Content-Type header", engine.getContentType());
+            }
+        }
+
         if (engine == null) {
-            log.warn("Failed to negotiate a content type for accept-type '{}'", request.getAcceptType());
+            log.debug("Failed to negotiate a content type for Accept='{}' and Content-Type='{}'",
+                    request.getAcceptType(), request.getContentType());
             return this;
         }
         return contentType(engine.getContentType());

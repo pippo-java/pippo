@@ -116,7 +116,7 @@ public class SimpleApplication extends Application {
                         .setName("John")
                         .setPhone("0733434435")
                         .setAddress("Sunflower Street, No. 6");
-                response.xml().negotiate(request).send(contact);
+                response.xml().contentType(request).send(contact);
             }
 
         });
