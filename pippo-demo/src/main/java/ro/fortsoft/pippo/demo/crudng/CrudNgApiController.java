@@ -44,14 +44,14 @@ public class CrudNgApiController extends Controller {
 
     @Metered("api.contacts.get")
     public void getContacts() {
-        getResponse().send(getContactService().getContacts(), getRequest().getAcceptType());
+        getResponse().xml().contentType(getRequest()).send(getContactService().getContacts());
         log.info("Retrieved all contacts");
     }
 
     @Metered("api.contact.get")
     public void getContact(@Param("id") int id) {
         Contact contact = (id > 0) ? getContactService().getContact(id) : new Contact();
-        getResponse().send(contact, getRequest().getAcceptType());
+        getResponse().xml().contentType(getRequest()).send(contact);
         log.info("Retrieved contact #{} '{}'", contact.getId(), contact.getName());
     }
 

@@ -45,9 +45,15 @@ public class DefaultErrorHandler implements ErrorHandler {
     public void handle(int statusCode, Request request, Response response) {
         response.status(statusCode);
 
+        // start with the content type specified for the response
         String contentType = response.getContentType();
+
         if (StringUtils.isNullOrEmpty(contentType)) {
-            contentType = request.getAcceptType();
+            // unspecified so negotiate a content type based on the request
+            response.contentType(request);
+
+            // retrieve the negotiated type
+            contentType = response.getContentType();
         }
 
         if (StringUtils.isNullOrEmpty(contentType)) {

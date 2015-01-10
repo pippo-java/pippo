@@ -72,7 +72,6 @@ public class TemplateDemoApplication extends Application {
                 model.put("testDate", testDate);
                 model.put("mode", getRuntimeMode());
 
-                // .mustache is the default file extension
                 response.render(template, model);
             }
 

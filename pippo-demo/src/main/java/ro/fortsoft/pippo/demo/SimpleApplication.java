@@ -106,6 +106,22 @@ public class SimpleApplication extends Application {
 
         });
 
+        // send an object and negotiate the Response content-type, default to XML
+        GET("/negotiate", new RouteHandler() {
+
+            @Override
+            public void handle(Request request, Response response, RouteHandlerChain chain) {
+                Contact contact = new Contact()
+                        .setId(12345)
+                        .setName("John")
+                        .setPhone("0733434435")
+                        .setAddress("Sunflower Street, No. 6");
+                response.xml().contentType(request).send(contact);
+            }
+
+        });
+
+
         // send a template as response
         GET("/template", new RouteHandler() {
 
