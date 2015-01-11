@@ -157,6 +157,19 @@ public class DefaultRouter implements Router {
     }
 
     @Override
+    public void removeRoute(Route route) {
+        log.debug("Removing route for {} '{}'", route.getRequestMethod(), route.getUriPattern());
+        routes.remove(route);
+
+        List<Route> cacheEntry = cache.get(route.getRequestMethod());
+        if (cacheEntry != null) {
+            cacheEntry.remove(route);
+        }
+
+        removeBinding(route);
+    }
+
+    @Override
     public String uriFor(String uri) {
         return prefixContextPath(uri);
     }
@@ -232,6 +245,11 @@ public class DefaultRouter implements Router {
             bindingsCache.put(requestMethod, new ArrayList<PatternBinding>());
         }
         bindingsCache.get(requestMethod).add(binding);
+    }
+
+    private void removeBinding(Route route) {
+        PatternBinding binding = getPatternBinding(route.getUriPattern());
+        bindingsCache.get(route.getRequestMethod()).remove(binding);
     }
 
     /**

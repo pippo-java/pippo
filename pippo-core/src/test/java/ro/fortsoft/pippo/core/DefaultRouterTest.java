@@ -87,6 +87,19 @@ public class DefaultRouterTest extends Assert {
     }
 
     @Test
+    public void testRemoveRoute() throws Exception {
+        Route route = new Route("/.*", HttpConstants.Method.GET, new EmptyRouteHandler());
+        router.addRoute(route);
+
+        assertEquals(1, router.getRoutes().size());
+        assertEquals(1, router.getRoutes(HttpConstants.Method.GET).size());
+
+        router.removeRoute(route);
+        assertEquals(0, router.getRoutes().size());
+        assertEquals(0, router.getRoutes(HttpConstants.Method.GET).size());
+    }
+
+    @Test
     public void testFindRoutes() throws Exception {
         Route route = new Route("/contact", HttpConstants.Method.GET, new EmptyRouteHandler());
         router.addRoute(route);
