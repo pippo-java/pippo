@@ -181,7 +181,13 @@ public class PippoFilter implements Filter {
                 }
             }
         } catch (Exception e) {
-            log.error(e.getMessage(), e);
+            if (e instanceof HaltResponseException) {
+                // normal response, log the message and status code
+                HaltResponseException haltException = (HaltResponseException) e;
+                log.debug("Halt '{}' ({})", haltException.getMessage(), haltException.getStatusCode());
+            } else {
+                log.error(e.getMessage(), e);
+            }
             ErrorHandler errorHandler = application.getErrorHandler();
             if (errorHandler != null) {
                 if (!response.isCommitted()) {
