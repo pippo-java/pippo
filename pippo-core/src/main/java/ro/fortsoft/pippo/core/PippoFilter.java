@@ -79,6 +79,8 @@ public class PippoFilter implements Filter {
             + " ) __/ _)(_  ) __/ ) __/ )(_)(   http://pippo.ro\n"
             + "(__)  (____)(__)  (__)  (_____)  {}\n";
 
+    private RequestFactory requestFactory;
+    private ResponseFactory responseFactory;
     private RouteHandlerChainFactory routeHandlerChainFactory;
     private Application application;
     private List<Initializer> initializers;
@@ -112,6 +114,14 @@ public class PippoFilter implements Filter {
             log.debug("Serving application on context path '{}'", contextPath);
 
             initializers = new ArrayList<>();
+
+            requestFactory = getRequestFactory();
+            initializers.add(requestFactory);
+            log.debug("Request factory is '{}'", requestFactory.getClass().getName());
+
+            responseFactory = getResponseFactory();
+            initializers.add(responseFactory);
+            log.debug("Response factory is '{}'", responseFactory.getClass().getName());
 
             routeHandlerChainFactory = getRouteHandlerChainFactory();
             initializers.add(routeHandlerChainFactory);
@@ -164,8 +174,8 @@ public class PippoFilter implements Filter {
         String relativePath = getRelativePath(httpServletRequest);
         log.debug("The relative path for '{}' is '{}'", requestUri, relativePath);
 
-        final Request request = new Request(httpServletRequest, application);
-        final Response response = new Response(httpServletResponse, application);
+        final Request request = requestFactory.createRequest(httpServletRequest, application);
+        final Response response = responseFactory.createResponse(httpServletResponse, application);
         try {
             Router router = application.getRouter();
             List<RouteMatch> routeMatches = router.findRoutes(relativePath, requestMethod);
@@ -351,6 +361,22 @@ public class PippoFilter implements Filter {
         }
 
         return path;
+    }
+
+    private RequestFactory getRequestFactory() {
+        RequestFactory factory = ServiceLocator.locate(RequestFactory.class);
+        if (factory == null) {
+            factory = new DefaultRequestFactory();
+        }
+        return factory;
+    }
+
+    private ResponseFactory getResponseFactory() {
+        ResponseFactory factory = ServiceLocator.locate(ResponseFactory.class);
+        if (factory == null) {
+            factory = new DefaultResponseFactory();
+        }
+        return factory;
     }
 
     private RouteHandlerChainFactory getRouteHandlerChainFactory() {

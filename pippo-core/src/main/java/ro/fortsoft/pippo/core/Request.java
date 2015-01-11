@@ -57,7 +57,7 @@ public class Request {
 
     private String body; // cache
 
-    Request(HttpServletRequest servletRequest, Application application) {
+    protected Request(HttpServletRequest servletRequest, Application application) {
         this.httpServletRequest = servletRequest;
         this.contentTypeEngines = application.getContentTypeEngines();
 

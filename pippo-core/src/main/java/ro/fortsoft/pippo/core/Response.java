@@ -49,7 +49,7 @@ public class Response {
     private Map<String, Cookie> cookies;
     private String contextPath;
 
-    Response(HttpServletResponse httpServletResponse, Application application) {
+    protected Response(HttpServletResponse httpServletResponse, Application application) {
         this.httpServletResponse = httpServletResponse;
         this.contentTypeEngines = application.getContentTypeEngines();
         this.templateEngine = application.getTemplateEngine();

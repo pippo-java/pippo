@@ -152,6 +152,17 @@ public class SimpleApplication extends Application {
             }
 
         });
+
+        // use custom Request and Response types
+        GET("/hello", new CustomHandler() {
+
+            @Override
+            public void handle(CustomRequest request, CustomResponse response, RouteHandlerChain chain) {
+
+                response.sendHelloMyFriend();
+            }
+
+        });
     }
 
 }
