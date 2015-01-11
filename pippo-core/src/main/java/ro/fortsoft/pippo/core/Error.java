@@ -44,6 +44,23 @@ public class Error implements Serializable {
     public Error() {
     }
 
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append(statusMessage).append(" (").append(statusCode).append(")\n");
+        sb.append(requestMethod).append(' ').append(requestUri).append('\n');
+
+        if (!StringUtils.isNullOrEmpty(message)) {
+            sb.append(message).append('\n');
+        }
+
+        if (!StringUtils.isNullOrEmpty(stacktrace)) {
+            sb.append('\n').append(stacktrace).append('\n');
+        }
+
+        return sb.toString();
+    }
+
     /**
      * Get the Error as a Map.
      *
