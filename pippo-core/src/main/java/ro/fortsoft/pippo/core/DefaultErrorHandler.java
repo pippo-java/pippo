@@ -49,8 +49,22 @@ public class DefaultErrorHandler implements ErrorHandler {
         String contentType = response.getContentType();
 
         if (StringUtils.isNullOrEmpty(contentType)) {
-            // unspecified so negotiate a content type based on the request
-            response.contentType(request);
+
+            if (!StringUtils.isNullOrEmpty(request.getAcceptType())) {
+
+                String acceptType = request.getAcceptType();
+                if (acceptType.startsWith(HttpConstants.ContentType.TEXT_HTML)
+                        || acceptType.startsWith(HttpConstants.ContentType.TEXT_XHTML)) {
+
+                    // exception during a browser request
+                    contentType = HttpConstants.ContentType.TEXT_HTML;
+                }
+            }
+
+            if (StringUtils.isNullOrEmpty(contentType)) {
+                // unspecified so negotiate a content type based on the request
+                response.contentType(request);
+            }
 
             // retrieve the negotiated type
             contentType = response.getContentType();
@@ -61,8 +75,7 @@ public class DefaultErrorHandler implements ErrorHandler {
             log.warn("No content type specified!'");
             renderHtml(statusCode, request, response);
 
-        } else if (contentType.startsWith(HttpConstants.ContentType.TEXT_HTML)
-                || contentType.startsWith(HttpConstants.ContentType.TEXT_XHTML)) {
+        } else if (contentType.equals(HttpConstants.ContentType.TEXT_HTML)) {
 
             // render an html page
             renderHtml(statusCode, request, response);
