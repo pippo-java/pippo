@@ -90,6 +90,12 @@
 
         <dependency>
             <groupId>ro.fortsoft.pippo</groupId>
+            <artifactId>pippo-snakeyaml</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>ro.fortsoft.pippo</groupId>
             <artifactId>pippo-metrics</artifactId>
             <version>${project.version}</version>
         </dependency>

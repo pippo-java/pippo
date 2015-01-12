@@ -117,6 +117,7 @@
         <module>pippo-gson</module>
         <module>pippo-fastjson</module>
         <module>pippo-xstream</module>
+        <module>pippo-snakeyaml</module>
         <module>pippo-metrics</module>
         <module>pippo-metrics-ganglia</module>
         <module>pippo-metrics-graphite</module>
