@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2014 the original author or authors.
+ * Copyright (C) 2015 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,16 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package ro.fortsoft.pippo.core.route;
+package ro.fortsoft.pippo.demo;
 
+import ro.fortsoft.pippo.core.Application;
+import ro.fortsoft.pippo.core.HttpConstants;
 import ro.fortsoft.pippo.core.Request;
 import ro.fortsoft.pippo.core.Response;
 
-/**
- * @author Decebal Suiu
- */
-public interface RouteHandler<A extends Request, B extends Response> {
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
-    public void handle(A request, B response, RouteHandlerChain chain);
+/**
+ * @author James Moger
+ */
+public class CustomRequest extends Request {
+
+    protected CustomRequest(HttpServletRequest httpServletRequest, Application application) {
+        super(httpServletRequest, application);
+    }
 
 }
