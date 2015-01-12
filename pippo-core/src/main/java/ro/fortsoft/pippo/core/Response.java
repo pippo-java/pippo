@@ -78,13 +78,13 @@ public class Response {
     }
 
     public Response contentLength(long length) {
-        httpServletResponse.addHeader(HttpConstants.Header.CONTENT_LENGTH, Long.toString(length));
+        httpServletResponse.setHeader(HttpConstants.Header.CONTENT_LENGTH, Long.toString(length));
 
         return this;
     }
 
     public Response header(String name, String value) {
-        httpServletResponse.addHeader(name, value);
+        httpServletResponse.setHeader(name, value);
 
         return this;
     }
