@@ -525,15 +525,11 @@ public class Response {
     public void file(String filename, InputStream input) {
         checkCommitted();
 
-//        if (isHeaderEmpty(HttpConstants.Header.CONTENT_TYPE)) {
-            header(HttpConstants.Header.CONTENT_TYPE, HttpConstants.ContentType.APPLICATION_OCTET_STREAM);
-//        }
+        header(HttpConstants.Header.CONTENT_TYPE, HttpConstants.ContentType.APPLICATION_OCTET_STREAM);
 
         if (isHeaderEmpty(HttpConstants.Header.CONTENT_DISPOSITION)) {
             if (filename != null && !filename.isEmpty()) {
-//                header(HttpConstants.Header.CONTENT_DISPOSITION, "inline; filename=\"" + filename + "\"");
                 header(HttpConstants.Header.CONTENT_DISPOSITION, "attachment; filename=\"" + filename + "\"");
-
             } else {
                 header(HttpConstants.Header.CONTENT_DISPOSITION, "attachment; filename=\"\"");
             }
