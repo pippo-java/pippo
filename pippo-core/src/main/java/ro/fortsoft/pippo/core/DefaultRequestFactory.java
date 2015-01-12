@@ -23,7 +23,7 @@ import javax.servlet.http.HttpServletRequest;
  * @author James Moger
  *
  */
-public class DefaultRequestFactory implements RequestFactory {
+public class DefaultRequestFactory implements RequestFactory<Request> {
 
     @Override
     public Request createRequest(HttpServletRequest httpServletRequest, Application application) {

@@ -18,17 +18,16 @@ package ro.fortsoft.pippo.demo;
 import ro.fortsoft.pippo.core.*;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 /**
  * This class constructs a CustomRequest to be passed to all handlers.
  *
  * @author James Moger
  */
-public class CustomRequestFactory implements RequestFactory {
+public class CustomRequestFactory implements RequestFactory<CustomRequest> {
 
     @Override
-    public Request createRequest(HttpServletRequest httpServletRequest, Application application) {
+    public CustomRequest createRequest(HttpServletRequest httpServletRequest, Application application) {
         return new CustomRequest(httpServletRequest, application);
     }
 

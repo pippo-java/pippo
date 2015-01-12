@@ -22,7 +22,7 @@ import javax.servlet.http.HttpServletResponse;
  *
  * @author James Moger
  */
-public class DefaultResponseFactory implements ResponseFactory {
+public class DefaultResponseFactory implements ResponseFactory<Response> {
 
     @Override
     public Response createResponse(HttpServletResponse httpServletResponse, Application application) {

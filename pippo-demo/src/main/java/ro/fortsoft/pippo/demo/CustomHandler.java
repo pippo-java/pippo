@@ -15,20 +15,10 @@
  */
 package ro.fortsoft.pippo.demo;
 
-import ro.fortsoft.pippo.core.Request;
-import ro.fortsoft.pippo.core.Response;
 import ro.fortsoft.pippo.core.route.RouteHandler;
-import ro.fortsoft.pippo.core.route.RouteHandlerChain;
 
 /**
  * @author James Moger
  */
-public abstract class CustomHandler implements RouteHandler {
-
-    @Override
-    public void handle(Request request, Response response, RouteHandlerChain chain) {
-        handle((CustomRequest) request, (CustomResponse) response, chain);
-    }
-
-    public abstract void handle(CustomRequest request, CustomResponse response, RouteHandlerChain chain);
+public interface CustomHandler extends RouteHandler<CustomRequest, CustomResponse> {
 }

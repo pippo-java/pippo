@@ -20,7 +20,7 @@ import javax.servlet.http.HttpServletResponse;
 /**
  * @author James Moger
  */
-public interface ResponseFactory extends Initializer {
+public interface ResponseFactory<T extends Response> extends Initializer {
 
-    public Response createResponse(HttpServletResponse httpServletResponse, Application application);
+    public T createResponse(HttpServletResponse httpServletResponse, Application application);
 }

@@ -20,7 +20,7 @@ import javax.servlet.http.HttpServletRequest;
 /**
  * @author James Moger
  */
-public interface RequestFactory extends Initializer {
+public interface RequestFactory<T extends Request> extends Initializer {
 
-    public Request createRequest(HttpServletRequest httpServletRequest, Application application);
+    public T createRequest(HttpServletRequest httpServletRequest, Application application);
 }

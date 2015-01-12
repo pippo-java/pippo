@@ -16,7 +16,6 @@
 package ro.fortsoft.pippo.demo;
 
 import ro.fortsoft.pippo.core.Application;
-import ro.fortsoft.pippo.core.Response;
 import ro.fortsoft.pippo.core.ResponseFactory;
 
 import javax.servlet.http.HttpServletResponse;
@@ -26,10 +25,10 @@ import javax.servlet.http.HttpServletResponse;
  *
  * @author James Moger
  */
-public class CustomResponseFactory implements ResponseFactory {
+public class CustomResponseFactory implements ResponseFactory<CustomResponse> {
 
     @Override
-    public Response createResponse(HttpServletResponse httpServletResponse, Application application) {
+    public CustomResponse createResponse(HttpServletResponse httpServletResponse, Application application) {
         return new CustomResponse(httpServletResponse, application);
     }
 

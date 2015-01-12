@@ -21,8 +21,8 @@ import ro.fortsoft.pippo.core.Response;
 /**
  * @author Decebal Suiu
  */
-public interface RouteHandler {
+public interface RouteHandler<A extends Request, B extends Response> {
 
-    public void handle(Request request, Response response, RouteHandlerChain chain);
+    public void handle(A request, B response, RouteHandlerChain chain);
 
 }
