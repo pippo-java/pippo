@@ -24,7 +24,10 @@ Artifacts
      - Pippo Gson `pippo-gson` (jar)
      - Pippo Fastjson `pippo-fastjson` (jar)
 - XML
+     - Pippo JAXB *default*
      - Pippo XStream `pippo-xstream` (jar)
+- YAML
+     - Pippo SnakeYaml `pippo-snakeyaml` (jar)
 - Template Engine
      - [Pippo Freemarker](https://github.com/decebals/pippo/tree/master/pippo-freemarker) `pippo-freemarker` (jar)
      - [Pippo Groovy](https://github.com/decebals/pippo/tree/master/pippo-groovy) `pippo-groovy` (jar)
