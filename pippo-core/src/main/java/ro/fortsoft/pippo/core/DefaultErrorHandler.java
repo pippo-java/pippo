@@ -64,15 +64,16 @@ public class DefaultErrorHandler implements ErrorHandler {
             if (StringUtils.isNullOrEmpty(contentType)) {
                 // unspecified so negotiate a content type based on the request
                 response.contentType(request);
+
+                // retrieve the negotiated type
+                contentType = response.getContentType();
             }
 
-            // retrieve the negotiated type
-            contentType = response.getContentType();
         }
 
         if (StringUtils.isNullOrEmpty(contentType)) {
 
-            log.warn("No content type specified!'");
+            log.debug("No accept type nor content type specified! Defaulting to text/html.");
             renderHtml(statusCode, request, response);
 
         } else if (contentType.equals(HttpConstants.ContentType.TEXT_HTML)) {
