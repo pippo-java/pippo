@@ -55,6 +55,7 @@ public final class HttpConstants {
         public static final int PAYMENT_REQUIRED = 402;
         public static final int FORBIDDEN = 403;
         public static final int NOT_FOUND = 404;
+        public static final int METHOD_NOT_ALLOWED = 405;
         public static final int CONFLICT = 409;
         public static final int GONE = 410;
         public static final int INTERNAL_ERROR = 500;

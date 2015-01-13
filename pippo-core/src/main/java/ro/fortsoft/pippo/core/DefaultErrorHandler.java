@@ -219,11 +219,29 @@ public class DefaultErrorHandler implements ErrorHandler {
 
     protected String getTemplateForStatusCode(int statusCode) {
         switch (statusCode) {
-        case 404:
-            return TemplateEngine.NOT_FOUND_404;
-        default:
-        case 500:
-            return TemplateEngine.INTERNAL_ERROR_500;
+            case HttpConstants.StatusCode.BAD_REQUEST:
+                return TemplateEngine.BAD_REQUEST_400;
+            case HttpConstants.StatusCode.UNAUTHORIZED:
+                return TemplateEngine.UNAUTHORIZED_401;
+            case HttpConstants.StatusCode.PAYMENT_REQUIRED:
+                return TemplateEngine.PAYMENT_REQUIRED_402;
+            case HttpConstants.StatusCode.FORBIDDEN:
+                return TemplateEngine.FORBIDDEN_403;
+            case HttpConstants.StatusCode.NOT_FOUND:
+                return TemplateEngine.NOT_FOUND_404;
+            case HttpConstants.StatusCode.METHOD_NOT_ALLOWED:
+                return TemplateEngine.METHOD_NOT_ALLOWED_405;
+            case HttpConstants.StatusCode.CONFLICT:
+                return TemplateEngine.CONFLICT_409;
+            case HttpConstants.StatusCode.GONE:
+                return TemplateEngine.GONE_410;
+            default:
+            case HttpConstants.StatusCode.INTERNAL_ERROR:
+                return TemplateEngine.INTERNAL_ERROR_500;
+            case HttpConstants.StatusCode.NOT_IMPLEMENTED:
+                return TemplateEngine.NOT_IMPLEMENTED_501;
+            case HttpConstants.StatusCode.OVERLOADED:
+                return TemplateEngine.OVERLOADED_502;
         }
     }
 
