@@ -76,6 +76,8 @@ public class ClasspathResourceHandler implements RouteHandler {
         }
 
         streamClasspathResource(url, request, response);
+
+        chain.next();
     }
 
     protected String getRequestedPath(Request request) {

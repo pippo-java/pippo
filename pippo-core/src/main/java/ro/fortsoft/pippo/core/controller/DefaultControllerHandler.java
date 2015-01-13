@@ -90,6 +90,8 @@ public class DefaultControllerHandler implements ControllerHandler {
         } catch (Exception e) {
             throw new PippoRuntimeException(e);
         }
+
+        chain.next();
     }
 
     protected Method findMethod(Class<? extends Controller> controllerClass, String name) {
