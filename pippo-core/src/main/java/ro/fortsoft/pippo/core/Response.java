@@ -57,17 +57,60 @@ public class Response {
         this.contextPath = application.getRouter().getContextPath();
     }
 
-    public String getContentType() {
-        return httpServletResponse.getContentType();
+    /**
+     * Map of bound objects which can be stored and shared between all handlers
+     * for the current request/response cycle.
+     * <p>
+     * All bound objects are made available to the template engine during parsing.
+     * </p>
+     *
+     * @return the bound objects map
+     */
+    public Map<String, Object> getLocals() {
+        if (locals == null) {
+            locals = new HashMap<>();
+        }
+
+        return locals;
     }
 
-    public Response contentType(String contentType) {
-        checkCommitted();
-        httpServletResponse.setContentType(contentType);
+    /**
+     * Binds an object to the response.
+     *
+     * @param name
+     * @param model
+     * @return the response
+     */
+    public Response bind(String name, Object model) {
+        getLocals().put(name, model);
 
         return this;
     }
 
+    /**
+     * Returns the servlet response.
+     *
+     * @return the servlet response
+     */
+    public HttpServletResponse getHttpServletResponse() {
+        return httpServletResponse;
+    }
+
+    /**
+     * Gets the character encoding of the response.
+     *
+     * @return the character encoding
+     */
+    public String getCharacterEncoding() {
+        return getHttpServletResponse().getCharacterEncoding();
+    }
+
+    /**
+     * Sets the character encoding of the response.
+     *
+     * @param charset
+     * @return the response
+     */
     public Response characterEncoding(String charset) {
         checkCommitted();
         getHttpServletResponse().setCharacterEncoding(charset);
@@ -75,20 +118,175 @@ public class Response {
         return this;
     }
 
-    public String getCharacterEncoding() {
-        return getHttpServletResponse().getCharacterEncoding();
+    private void addCookie(Cookie cookie) {
+        checkCommitted();
+        getCookieMap().put(cookie.getName(), cookie);
     }
 
-    public Response contentLength(long length) {
-        checkCommitted();
-        httpServletResponse.setHeader(HttpConstants.Header.CONTENT_LENGTH, Long.toString(length));
+    /**
+     * Adds a cookie to the response.
+     *
+     * @param cookie
+     * @return the response
+     */
+    public Response cookie(Cookie cookie) {
+        addCookie(cookie);
 
         return this;
     }
 
+    /**
+     * Adds a cookie to the response.
+     *
+     * @param name
+     * @param value
+     * @return the response
+     */
+    public Response cookie(String name, String value) {
+        Cookie cookie = new Cookie(name, value);
+        addCookie(cookie);
+
+        return this;
+    }
+
+    /**
+     * Adds a cookie to the response.
+     *
+     * @param name
+     * @param value
+     * @param maxAge
+     * @return the responbse
+     */
+    public Response cookie(String name, String value, int maxAge) {
+        Cookie cookie = new Cookie(name, value);
+        cookie.setMaxAge(maxAge);
+        addCookie(cookie);
+
+        return this;
+    }
+
+    /**
+     * Adds a cookie to the response.
+     *
+     * @param path
+     * @param domain
+     * @param name
+     * @param value
+     * @param maxAge
+     * @param secure
+     * @return the response
+     */
+    public Response cookie(String path, String domain, String name, String value, int maxAge, boolean secure) {
+        Cookie cookie = new Cookie(name, value);
+        cookie.setPath(path);
+        cookie.setDomain(domain);
+        cookie.setMaxAge(maxAge);
+        cookie.setSecure(secure);
+        addCookie(cookie);
+
+        return this;
+    }
+
+    /**
+     * Returns all cookies added to the response.
+     *
+     * @return the cookies added to the response
+     */
+    public Collection<Cookie> getCookies() {
+        return getCookieMap().values();
+    }
+
+    /**
+     * Gets the specified cookie by name.
+     *
+     * @param name
+     * @return the cookie or null
+     */
+    public Cookie getCookie(String name) {
+        return getCookieMap().get(name);
+    }
+
+    /**
+     * Removes the specified cookie by name.
+     *
+     * @param name
+     * @return the response
+     */
+    public Response removeCookie(String name) {
+        Cookie cookie = new Cookie(name, "");
+        cookie.setMaxAge(0);
+        addCookie(cookie);
+
+        return this;
+    }
+
+    private Map<String, Cookie> getCookieMap() {
+        if (cookies == null) {
+            cookies = new HashMap<>();
+        }
+
+        return cookies;
+    }
+
+    private boolean isHeaderEmpty(String name) {
+        String value = getHttpServletResponse().getHeader(name);
+        return (value == null) || value.isEmpty();
+    }
+
+    /**
+     * Sets a header.
+     *
+     * @param name
+     * @param value
+     * @return the response
+     */
     public Response header(String name, String value) {
         checkCommitted();
         httpServletResponse.setHeader(name, value);
+
+        return this;
+    }
+
+    /**
+     * Sets this response as not cacheable.
+     *
+     * @return the response
+     */
+    public Response noCache() {
+        checkCommitted();
+        // no-cache headers for HTTP/1.1
+        header(HttpConstants.Header.CACHE_CONTROL, "no-store, no-cache, must-revalidate");
+
+        // no-cache headers for HTTP/1.1 (IE)
+        header(HttpConstants.Header.CACHE_CONTROL, "post-check=0, pre-check=0");
+
+        // no-cache headers for HTTP/1.0
+        header(HttpConstants.Header.PRAGMA, "no-cache");
+
+        // set the expires to past
+        httpServletResponse.setDateHeader("Expires", 0);
+
+        return this;
+    }
+
+    /**
+     * Gets the status code of the response.
+     *
+     * @return the status code
+     */
+    public int getStatus() {
+        return httpServletResponse.getStatus();
+    }
+
+    /**
+     * Sets the status code of the response.
+     *
+     * @param status
+     * @return the response
+     */
+    public Response status(int status) {
+        checkCommitted();
+        httpServletResponse.setStatus(status);
 
         return this;
     }
@@ -102,6 +300,7 @@ public class Response {
      * </ul>
      * If you want a context-relative redirect, use the {@link redirectToContextPath}
      * method.
+     * <p>This method commits the response.</p>
      *
      * @param location
      *            Where to redirect
@@ -119,6 +318,7 @@ public class Response {
      * Redirects the browser to a path relative to the application context. For
      * example, redirectToContextPath("/contacts") might redirect the browser to
      * http://localhost/myContext/contacts
+     * <p>This method commits the response.</p>
      *
      * @param path
      */
@@ -133,9 +333,10 @@ public class Response {
 
     /**
      * A permanent (3XX status code) redirect.
-     * <p>
-     * This method commits the response.
-     * </p>
+     * <p>This method commits the response.</p>
+     *
+     * @param location
+     * @param statusCode
      */
     public void redirect(String location, int statusCode) {
         checkCommitted();
@@ -239,7 +440,6 @@ public class Response {
 
     /**
      * Set the response status to FORBIDDEN (403).
-     *
      * <p>
      * The request was a valid request, but the server is refusing to respond to
      * it. Unlike a 401 Unauthorized response, authenticating will make no
@@ -344,7 +544,10 @@ public class Response {
 
     /**
      * Set the response status to OVERLOADED (502).
-     *
+     * <p>
+     * The server is currently unavailable (because it is overloaded or down
+     * for maintenance). Generally, this is a temporary state.
+     * </p>
      */
     public Response overloaded() {
         status(HttpConstants.StatusCode.OVERLOADED);
@@ -354,7 +557,10 @@ public class Response {
 
     /**
      * Set the response status to SERVICE UNAVAILABLE (503).
-     *
+     * <p>
+     * The server is currently unavailable (because it is overloaded or down
+     * for maintenance). Generally, this is a temporary state.
+     * </p>
      */
     public Response serviceUnavailable() {
         status(HttpConstants.StatusCode.SERVICE_UNAVAILABLE);
@@ -362,110 +568,39 @@ public class Response {
         return this;
     }
 
-    public int getStatus() {
-        return httpServletResponse.getStatus();
-    }
-
-    public Response status(int status) {
+    /**
+     * Sets the content length of the response.
+     *
+     * @param length
+     * @return the response
+     */
+    public Response contentLength(long length) {
         checkCommitted();
-        httpServletResponse.setStatus(status);
+        httpServletResponse.setHeader(HttpConstants.Header.CONTENT_LENGTH, Long.toString(length));
 
         return this;
     }
 
-    public Response cookie(Cookie cookie) {
-        addCookie(cookie);
-
-        return this;
+    /**
+     * Returns the content type of the response.
+     *
+     * @return the content type
+     */
+    public String getContentType() {
+        return httpServletResponse.getContentType();
     }
 
-    public Response cookie(String name, String value) {
-        Cookie cookie = new Cookie(name, value);
-        addCookie(cookie);
-
-        return this;
-    }
-
-    public Response cookie(String name, String value, int maxAge) {
-        Cookie cookie = new Cookie(name, value);
-        cookie.setMaxAge(maxAge);
-        addCookie(cookie);
-
-        return this;
-    }
-
-    public Response cookie(String path, String domain, String name, String value, int maxAge, boolean secure) {
-        Cookie cookie = new Cookie(name, value);
-        cookie.setPath(path);
-        cookie.setDomain(domain);
-        cookie.setMaxAge(maxAge);
-        cookie.setSecure(secure);
-        addCookie(cookie);
-
-        return this;
-    }
-
-    public Collection<Cookie> getCookies() {
-        return getCookieMap().values();
-    }
-
-    public Cookie getCookie(String name) {
-        return getCookieMap().get(name);
-    }
-
-    public Response removeCookie(String name) {
-        Cookie cookie = new Cookie(name, "");
-        cookie.setMaxAge(0);
-        addCookie(cookie);
-
-        return this;
-    }
-
-    private Map<String, Cookie> getCookieMap() {
-        if (cookies == null) {
-            cookies = new HashMap<>();
-        }
-
-        return cookies;
-    }
-
-    private void addCookie(Cookie cookie) {
+    /**
+     * Sets the content type of the response.
+     *
+     * @param contentType
+     * @return the response
+     */
+    public Response contentType(String contentType) {
         checkCommitted();
-        getCookieMap().put(cookie.getName(), cookie);
-    }
-
-    public Response noCache() {
-        checkCommitted();
-        // no-cache headers for HTTP/1.1
-        header(HttpConstants.Header.CACHE_CONTROL, "no-store, no-cache, must-revalidate");
-
-        // no-cache headers for HTTP/1.1 (IE)
-        header(HttpConstants.Header.CACHE_CONTROL, "post-check=0, pre-check=0");
-
-        // no-cache headers for HTTP/1.0
-        header(HttpConstants.Header.PRAGMA, "no-cache");
-
-        // set the expires to past
-        httpServletResponse.setDateHeader("Expires", 0);
+        httpServletResponse.setContentType(contentType);
 
         return this;
-    }
-
-    public void write(CharSequence sequence) {
-        checkCommitted();
-        try {
-            httpServletResponse.getWriter().append(sequence);
-        } catch (IOException e) {
-            throw new PippoRuntimeException(e);
-        }
-    }
-
-    public HttpServletResponse getHttpServletResponse() {
-        return httpServletResponse;
-    }
-
-    public boolean isCommitted() {
-        return httpServletResponse.isCommitted();
     }
 
     /**
@@ -517,10 +652,6 @@ public class Response {
         return contentType(HttpConstants.ContentType.TEXT_PLAIN);
     }
 
-    public void text(Object object) {
-        send(object, HttpConstants.ContentType.TEXT_PLAIN);
-    }
-
     /**
      * Sets the Response content-type to text/html.
      */
@@ -535,10 +666,6 @@ public class Response {
         return contentType(HttpConstants.ContentType.APPLICATION_JSON);
     }
 
-    public void json(Object object) {
-        send(object, HttpConstants.ContentType.APPLICATION_JSON);
-    }
-
     /**
      * Sets the Response content-type to application/xml.
      */
@@ -546,15 +673,96 @@ public class Response {
         return contentType(HttpConstants.ContentType.APPLICATION_XML);
     }
 
+    /**
+     * Sets the Response content-type to application/x-yaml.
+     */
+    public Response yaml() {
+        return contentType(HttpConstants.ContentType.APPLICATION_X_YAML);
+    }
+
+    /**
+     * Appends the string content directly to the response.
+     * <p>This method DOES NOT commit the response.</p>
+     *
+     * @param sequence
+     */
+    public void append(CharSequence sequence) {
+        checkCommitted();
+        try {
+            httpServletResponse.getWriter().append(sequence);
+        } catch (IOException e) {
+            throw new PippoRuntimeException(e);
+        }
+    }
+
+    /**
+     * Writes the string content directly to the response.
+     * <p>This method commits the response.</p>
+     *
+     * @param content
+     */
+    public void send(CharSequence content) {
+        checkCommitted();
+        append(content);
+        commit();
+    }
+
+    /**
+     * Serializes the object as JSON using the registered <code>application/json</code>
+     * ContentTypeEngine and writes it to the response.
+     * <p>This method commits the response.</p>
+     *
+     * @param object
+     */
+    public void json(Object object) {
+        send(object, HttpConstants.ContentType.APPLICATION_JSON);
+    }
+
+    /**
+     * Serializes the object as XML using the registered <code>application/xml</code>
+     * ContentTypeEngine and writes it to the response.
+     * <p>This method commits the response.</p>
+     *
+     * @param object
+     */
     public void xml(Object object) {
         send(object, HttpConstants.ContentType.APPLICATION_XML);
     }
 
+    /**
+     * Serializes the object as YAML using the registered <code>application/x-yaml</code>
+     * ContentTypeEngine and writes it to the response.
+     * <p>This method commits the response.</p>
+     *
+     * @param object
+     */
+    public void yaml(Object object) {
+        send(object, HttpConstants.ContentType.APPLICATION_X_YAML);
+    }
+
+    /**
+     * Serializes the object as plain text using the registered <code>text/plain</code>
+     * ContentTypeEngine and writes it to the response.
+     * <p>This method commits the response.</p>
+     *
+     * @param object
+     */
+    public void text(Object object) {
+        send(object, HttpConstants.ContentType.TEXT_PLAIN);
+    }
+
+    /**
+     * Serializes the object using the registered ContentTypeEngine matching
+     * the pre-specified content-type.
+     * <p>This method commits the response.</p>
+     *
+     * @param object
+     */
     public void send(Object object) {
         send(object, getContentType());
     }
 
-    public void send(Object object, String contentType) {
+    private void send(Object object, String contentType) {
         if (StringUtils.isNullOrEmpty(contentType)) {
             throw new PippoRuntimeException("You must specify a content type!");
         }
@@ -567,12 +775,12 @@ public class Response {
         send(contentTypeEngine.toString(object));
     }
 
-    public void send(CharSequence content) {
-        checkCommitted();
-        write(content);
-        commit();
-    }
-
+    /**
+     * Copies the input stream to the response output stream.
+     * <p>This method commits the response.</p>
+     *
+     * @param input
+     */
     public void resource(InputStream input) {
         checkCommitted();
 
@@ -594,6 +802,12 @@ public class Response {
         }
     }
 
+    /**
+     * Writes the specified file directly to the response.
+     * <p>This method commits the response.</p>
+     *
+     * @param file
+     */
     public void file(File file) {
         try {
             file(file.getName(), new FileInputStream(file));
@@ -602,6 +816,13 @@ public class Response {
         }
     }
 
+    /**
+     * Copies the input stream to the response output stream as a download.
+     * <p>This method commits the response.</p>
+     *
+     * @param filename
+     * @param input
+     */
     public void file(String filename, InputStream input) {
         checkCommitted();
 
@@ -629,16 +850,23 @@ public class Response {
         }
     }
 
-    public Response bind(String name, Object model) {
-        getLocals().put(name, model);
-
-        return this;
-    }
-
+    /**
+     * Renders a template and writes the output directly to the response.
+     * <p>This method commits the response.</p>
+     *
+     * @param templateName
+     */
     public void render(String templateName) {
         render(templateName, new HashMap<String, Object>());
     }
 
+    /**
+     * Renders a template and writes the output directly to the response.
+     * <p>This method commits the response.</p>
+     *
+     * @param templateName
+     * @param model
+     */
     public void render(String templateName, Map<String, Object> model) {
         if (templateEngine == null) {
             log.error("You must set a template engine first");
@@ -654,31 +882,24 @@ public class Response {
         send(stringWriter.toString());
     }
 
-    /**
-     * Good for storing variables for the current request/response cycle.
-     * Also these variables will be available automatically to all templates for the current request/response cycle.
-     *
-     * @return
-     */
-    public Map<String, Object> getLocals() {
-        if (locals == null) {
-            locals = new HashMap<>();
-        }
-
-        return locals;
-    }
-
-    private boolean isHeaderEmpty(String name) {
-        String value = getHttpServletResponse().getHeader(name);
-        return (value == null) || value.isEmpty();
-    }
-
     private void checkCommitted() {
         if (isCommitted()) {
             throw new PippoRuntimeException("The response has already been committed");
         }
     }
 
+    /**
+     * Returns true if this response has already been committed.
+     *
+     * @return true if the response has been committed
+     */
+    public boolean isCommitted() {
+        return httpServletResponse.isCommitted();
+    }
+
+    /**
+     * This method commits the response.
+     */
     public void commit() {
         checkCommitted();
 
