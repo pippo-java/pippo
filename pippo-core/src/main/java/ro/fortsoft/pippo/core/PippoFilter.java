@@ -159,7 +159,7 @@ public class PippoFilter implements Filter {
 
         String requestMethod = httpServletRequest.getMethod();
         String requestUri = httpServletRequest.getRequestURI();
-        log.debug("Request '{} {}'", requestMethod, requestUri);
+        log.debug("Request {} '{}'", requestMethod, requestUri);
 
         // check for ignore path
         if (shouldIgnorePath(httpServletRequest)) {
@@ -176,31 +176,37 @@ public class PippoFilter implements Filter {
 
         final Request request = requestFactory.createRequest(httpServletRequest, application);
         final Response response = responseFactory.createResponse(httpServletResponse, application);
+        ErrorHandler errorHandler = application.getErrorHandler();
+
         try {
             Router router = application.getRouter();
             List<RouteMatch> routeMatches = router.findRoutes(relativePath, requestMethod);
-            if (!routeMatches.isEmpty()) {
+
+            if (routeMatches.isEmpty()) {
+                errorHandler.handle(HttpConstants.StatusCode.NOT_FOUND, request, response);
+            } else {
                 routeHandlerChainFactory.createChain(request, response, routeMatches).next();
             }
 
             if (!response.isCommitted()) {
-                log.warn("Cannot find a route for '{} {}'", requestMethod, requestUri);
-                ErrorHandler errorHandler = application.getErrorHandler();
-                if (errorHandler != null) {
-                    errorHandler.handle(HttpConstants.StatusCode.NOT_FOUND, request, response);
+                log.debug("Auto-committing response for {} '{}'", requestMethod, requestUri);
+                if (response.getStatus() >= HttpConstants.StatusCode.BAD_REQUEST) {
+                    // delegate response to the error handler.
+                    // this will generate response content appropriate for the request/
+                    errorHandler.handle(response.getStatus(), request, response);
+                } else {
+                    response.commit();
                 }
             }
         } catch (Exception e) {
             log.error(e.getMessage(), e);
-            ErrorHandler errorHandler = application.getErrorHandler();
-            if (errorHandler != null) {
-                if (!response.isCommitted()) {
-                    errorHandler.handle(e, request, response);
-                } else {
-                    log.debug("The response has already been committed. Cannot use the exception handler.");
-                }
+            if (!response.isCommitted()) {
+                errorHandler.handle(e, request, response);
+            } else {
+                log.debug("The response has already been committed. Cannot use the exception handler.");
             }
         } finally {
+            log.debug("Returned status code {} for {} '{}'", response.getStatus(), requestMethod, requestUri);
             ThreadContext.restore(previousThreadContext);
         }
     }
