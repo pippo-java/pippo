@@ -20,8 +20,10 @@ import ro.fortsoft.pippo.core.RedirectHandler;
 import ro.fortsoft.pippo.core.Request;
 import ro.fortsoft.pippo.core.Response;
 import ro.fortsoft.pippo.core.TemplateHandler;
+import ro.fortsoft.pippo.core.route.PublicResourceHandler;
 import ro.fortsoft.pippo.core.route.RouteHandler;
 import ro.fortsoft.pippo.core.route.RouteHandlerChain;
+import ro.fortsoft.pippo.core.route.WebjarsResourceHandler;
 import ro.fortsoft.pippo.demo.crud.ContactService;
 import ro.fortsoft.pippo.demo.crud.InMemoryContactService;
 
@@ -36,7 +38,7 @@ import org.slf4j.LoggerFactory;
  */
 public class CrudNgApplication extends Application {
 
-    private final Logger log = LoggerFactory.getLogger(CrudNgApplication.class);
+    private static final Logger log = LoggerFactory.getLogger(CrudNgApplication.class);
 
     private ContactService contactService;
 
@@ -48,9 +50,14 @@ public class CrudNgApplication extends Application {
     public void init() {
         super.init();
 
+        GET(new WebjarsResourceHandler());
+        GET(new PublicResourceHandler());
+
         contactService = new InMemoryContactService();
 
-        // audit filter
+        /*
+         *  audit filter
+         */
         GET("/.*", new RouteHandler() {
 
             @Override
@@ -77,7 +84,6 @@ public class CrudNgApplication extends Application {
             }
 
         });
-
 
         GET("/login", new RouteHandler() {
 
@@ -116,19 +122,16 @@ public class CrudNgApplication extends Application {
 
         });
 
-
         /*
          * root redirect
          */
         GET("/", new RedirectHandler("/contacts"));
-
 
         /*
          * Server-generated HTML pages
          */
         GET("/contacts", new TemplateHandler("crudng/contacts"));
         GET("/contact/.*", new TemplateHandler("crudng/contact"));
-
 
         /*
          * RESTful API
@@ -137,7 +140,6 @@ public class CrudNgApplication extends Application {
         GET("/api/contact/{id}", CrudNgApiController.class, "getContact");
         DELETE("/api/contact/{id}", CrudNgApiController.class, "deleteContact");
         POST("/api/contact", CrudNgApiController.class, "saveContact");
-
     }
 
 }

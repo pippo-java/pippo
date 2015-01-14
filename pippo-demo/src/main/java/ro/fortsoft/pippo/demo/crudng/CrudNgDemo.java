@@ -16,8 +16,6 @@
 package ro.fortsoft.pippo.demo.crudng;
 
 import ro.fortsoft.pippo.core.Pippo;
-import ro.fortsoft.pippo.core.route.PublicResourceHandler;
-import ro.fortsoft.pippo.core.route.WebjarsResourceHandler;
 
 /**
  * @author James Moger
@@ -26,9 +24,6 @@ public class CrudNgDemo {
 
     public static void main(String[] args) {
         Pippo pippo = new Pippo(new CrudNgApplication());
-        pippo.getApplication().GET(new WebjarsResourceHandler());
-        pippo.getApplication().GET(new PublicResourceHandler());
-
         pippo.start();
     }
 
