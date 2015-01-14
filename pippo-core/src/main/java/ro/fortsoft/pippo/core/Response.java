@@ -576,7 +576,7 @@ public class Response {
     public void resource(InputStream input) {
         checkCommitted();
 
-        if (isHeaderEmpty(HttpConstants.Header.CONTENT_TYPE)) {
+        if (isHeaderEmpty(HttpConstants.Header.CONTENT_TYPE) && getHttpServletResponse().getContentType() == null) {
             header(HttpConstants.Header.CONTENT_TYPE, HttpConstants.ContentType.APPLICATION_OCTET_STREAM);
         }
 
@@ -670,7 +670,7 @@ public class Response {
 
     private boolean isHeaderEmpty(String name) {
         String value = getHttpServletResponse().getHeader(name);
-        return (value == null) || value.isEmpty();
+        return StringUtils.isNullOrEmpty(value);
     }
 
     private void checkCommitted() {
