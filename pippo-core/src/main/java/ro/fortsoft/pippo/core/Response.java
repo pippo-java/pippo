@@ -62,12 +62,14 @@ public class Response {
     }
 
     public Response contentType(String contentType) {
+        checkCommitted();
         httpServletResponse.setContentType(contentType);
 
         return this;
     }
 
     public Response characterEncoding(String charset) {
+        checkCommitted();
         getHttpServletResponse().setCharacterEncoding(charset);
 
         return this;
@@ -78,12 +80,14 @@ public class Response {
     }
 
     public Response contentLength(long length) {
+        checkCommitted();
         httpServletResponse.setHeader(HttpConstants.Header.CONTENT_LENGTH, Long.toString(length));
 
         return this;
     }
 
     public Response header(String name, String value) {
+        checkCommitted();
         httpServletResponse.setHeader(name, value);
 
         return this;
@@ -103,6 +107,7 @@ public class Response {
      *            Where to redirect
      */
     public void redirect(String location) {
+        checkCommitted();
         try {
             httpServletResponse.sendRedirect(location);
         } catch (IOException e) {
@@ -128,8 +133,12 @@ public class Response {
 
     /**
      * A permanent (3XX status code) redirect.
+     * <p>
+     * This method commits the response.
+     * </p>
      */
     public void redirect(String location, int statusCode) {
+        checkCommitted();
         httpServletResponse.setStatus(statusCode);
         httpServletResponse.setHeader(HttpConstants.Header.LOCATION, location);
         httpServletResponse.setHeader(HttpConstants.Header.CONNECTION, "close");
@@ -141,7 +150,7 @@ public class Response {
     }
 
     /**
-     * Send an OK (200 status code).
+     * Set the response status to OK (200).
      * <p>
      * Standard response for successful HTTP requests. The actual response will
      * depend on the request method used. In a GET request, the response will
@@ -151,25 +160,27 @@ public class Response {
      * </p>
      *
      */
-    public void sendOk() {
+    public Response ok() {
         status(HttpConstants.StatusCode.OK);
-        commit();
+
+        return this;
     }
 
     /**
-     * Send an CREATED (201 status code).
+     * Set the response status to CREATED (201).
      * <p>
      * The request has been fulfilled and resulted in a new resource being created.
      * </p>
      *
      */
-    public void sendCreated() {
+    public Response created() {
         status(HttpConstants.StatusCode.CREATED);
-        commit();
+
+        return this;
     }
 
     /**
-     * Send an ACCEPTED (202 status code).
+     * Set the response status to ACCEPTED (202).
      * <p>
      * The request has been accepted for processing, but the processing has not
      * been completed. The request might or might not eventually be acted upon,
@@ -177,38 +188,28 @@ public class Response {
      * </p>
      *
      */
-    public void sendAccepted() {
+    public Response accepted() {
         status(HttpConstants.StatusCode.ACCEPTED);
-        commit();
+
+        return this;
     }
 
     /**
-     * Send an error.
-     *
-     */
-    public void sendError(int statusCode) {
-        httpServletResponse.setStatus(statusCode);
-        try {
-            httpServletResponse.sendError(statusCode);
-        } catch (IOException e) {
-            throw new PippoRuntimeException(e);
-        }
-    }
-
-    /**
-     * Send a BAD REQUEST (400 status code).
+     * Set the response status to BAD REQUEST (400).
      * <p>
      * The server cannot or will not process the request due to something that
      * is perceived to be a client error.
      * </p>
      *
      */
-    public void sendBadRequest() {
-        sendError(HttpConstants.StatusCode.BAD_REQUEST);
+    public Response badRequest() {
+        status(HttpConstants.StatusCode.BAD_REQUEST);
+
+        return this;
     }
 
     /**
-     * Send UNAUTHORIZED (401 status code).
+     * Set the response status to UNAUTHORIZED (401).
      * <p>
      * Similar to 403 Forbidden, but specifically for use when authentication is
      * required and has failed or has not yet been provided. The response must
@@ -216,12 +217,28 @@ public class Response {
      * to the requested resource.
      * </p>
      */
-    public void sendUnauthorized() {
-        sendError(HttpConstants.StatusCode.UNAUTHORIZED);
+    public Response unauthorized() {
+        status(HttpConstants.StatusCode.UNAUTHORIZED);
+
+        return this;
     }
 
     /**
-     * Send FORBIDDEN (403 status code).
+     * Set the response status to PAYMENT REQUIRED (402).
+     * <p>
+     * Reserved for future use. The original intention was that this code might
+     * be used as part of some form of digital cash or micropayment scheme, but
+     * that has not happened, and this code is not usually used.
+     * </p>
+     */
+    public Response paymentRequired() {
+        status(HttpConstants.StatusCode.PAYMENT_REQUIRED);
+
+        return this;
+    }
+
+    /**
+     * Set the response status to FORBIDDEN (403).
      *
      * <p>
      * The request was a valid request, but the server is refusing to respond to
@@ -230,36 +247,57 @@ public class Response {
      * </p>
      *
      */
-    public void sendForbidden() {
-        sendError(HttpConstants.StatusCode.FORBIDDEN);
+    public Response forbidden() {
+        status(HttpConstants.StatusCode.FORBIDDEN);
+
+        return this;
     }
 
     /**
-     * Send a NOT FOUND (404 status code).
+     * Set the response status to NOT FOUND (404).
      * <p>
      * The requested resource could not be found but may be available again in
      * the future. Subsequent requests by the client are permissible.
      * </p>
      *
      */
-    public void sendNotFound() {
-        sendError(HttpConstants.StatusCode.NOT_FOUND);
+    public Response notFound() {
+        status(HttpConstants.StatusCode.NOT_FOUND);
+
+        return this;
     }
 
     /**
-     * Send a CONFLICT (409 status code).
+     * Set the response status to METHOD NOT ALLOWED (405).
+     * <p>
+     * A request was made of a resource using a request method not supported
+     * by that resource; for example, using GET on a form which requires data
+     * to be presented via POST, or using PUT on a read-only resource.
+     * </p>
+     *
+     */
+    public Response methodNotAllowed() {
+        status(HttpConstants.StatusCode.METHOD_NOT_ALLOWED);
+
+        return this;
+    }
+
+    /**
+     * Set the response status to CONFLICT (409).
      * <p>
      * Indicates that the request could not be processed because of conflict in
      * the request, such as an edit conflict in the case of multiple updates.
      * </p>
      *
      */
-    public void sendConflict() {
-        sendError(HttpConstants.StatusCode.CONFLICT);
+    public Response conflict() {
+        status(HttpConstants.StatusCode.CONFLICT);
+
+        return this;
     }
 
     /**
-     * Send GONE (410 status code).
+     * Set the response status to GONE (410).
      * <p>
      * Indicates that the resource requested is no longer available and will not
      * be available again. This should be used when a resource has been
@@ -269,24 +307,28 @@ public class Response {
      * </p>
      *
      */
-    public void sendGone() {
-        sendError(HttpConstants.StatusCode.GONE);
+    public Response gone() {
+        status(HttpConstants.StatusCode.GONE);
+
+        return this;
     }
 
     /**
-     * Send an INTERNAL ERROR (500 status code).
+     * Set the response status to INTERNAL ERROR (500).
      * <p>
      * A generic error message, given when an unexpected condition was
      * encountered and no more specific message is suitable.
      * </p>
      *
      */
-    public void sendInternalError() {
-        sendError(HttpConstants.StatusCode.INTERNAL_ERROR);
+    public Response internalError() {
+        status(HttpConstants.StatusCode.INTERNAL_ERROR);
+
+        return this;
     }
 
     /**
-     * Send an NOT IMPLEMENTED ERROR (501 status code).
+     * Set the response status to NOT IMPLEMENTED (501).
      * <p>
      * The server either does not recognize the request method, or it lacks the
      * ability to fulfil the request. Usually this implies future availability
@@ -294,8 +336,41 @@ public class Response {
      * </p>
      *
      */
-    public void sendNotImplemented() {
-        sendError(HttpConstants.StatusCode.NOT_IMPLEMENTED);
+    public Response notImplemented() {
+        status(HttpConstants.StatusCode.NOT_IMPLEMENTED);
+
+        return this;
+    }
+
+    /**
+     * Set the response status to OVERLOADED (502).
+     *
+     */
+    public Response overloaded() {
+        status(HttpConstants.StatusCode.OVERLOADED);
+
+        return this;
+    }
+
+    /**
+     * Set the response status to SERVICE UNAVAILABLE (503).
+     *
+     */
+    public Response serviceUnavailable() {
+        status(HttpConstants.StatusCode.SERVICE_UNAVAILABLE);
+
+        return this;
+    }
+
+    public int getStatus() {
+        return httpServletResponse.getStatus();
+    }
+
+    public Response status(int status) {
+        checkCommitted();
+        httpServletResponse.setStatus(status);
+
+        return this;
     }
 
     public Response cookie(Cookie cookie) {
@@ -346,17 +421,21 @@ public class Response {
         return this;
     }
 
-    public int getStatus() {
-        return httpServletResponse.getStatus();
+    private Map<String, Cookie> getCookieMap() {
+        if (cookies == null) {
+            cookies = new HashMap<>();
+        }
+
+        return cookies;
     }
 
-    public Response status(int status) {
-        httpServletResponse.setStatus(status);
-
-        return this;
+    private void addCookie(Cookie cookie) {
+        checkCommitted();
+        getCookieMap().put(cookie.getName(), cookie);
     }
 
     public Response noCache() {
+        checkCommitted();
         // no-cache headers for HTTP/1.1
         header(HttpConstants.Header.CACHE_CONTROL, "no-store, no-cache, must-revalidate");
 
@@ -373,6 +452,7 @@ public class Response {
     }
 
     public void write(CharSequence sequence) {
+        checkCommitted();
         try {
             httpServletResponse.getWriter().append(sequence);
         } catch (IOException e) {
@@ -599,19 +679,9 @@ public class Response {
         }
     }
 
-    private Map<String, Cookie> getCookieMap() {
-        if (cookies == null) {
-            cookies = new HashMap<>();
-        }
-
-        return cookies;
-    }
-
-    private void addCookie(Cookie cookie) {
-        getCookieMap().put(cookie.getName(), cookie);
-    }
-
     public void commit() {
+        checkCommitted();
+
         // add cookies
         for (Cookie cookie : getCookies()) {
             httpServletResponse.addCookie(cookie);
@@ -619,7 +689,7 @@ public class Response {
 
         // set status to OK if it's not set
         if (getStatus() == 0) {
-            status(HttpConstants.StatusCode.OK);
+            ok();
         }
 
         // content type to TEXT_HTML if it's not set

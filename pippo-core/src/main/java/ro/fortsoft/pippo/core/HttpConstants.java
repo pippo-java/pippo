@@ -61,7 +61,8 @@ public final class HttpConstants {
         public static final int INTERNAL_ERROR = 500;
         public static final int NOT_IMPLEMENTED = 501;
         public static final int OVERLOADED = 502;
-        public static final int GATEWAY_TIMEOUT = 503;
+        public static final int SERVICE_UNAVAILABLE = 503;
+        public static final int GATEWAY_TIMEOUT = 504;
 
         private StatusCode() {
             // restrict instantiation

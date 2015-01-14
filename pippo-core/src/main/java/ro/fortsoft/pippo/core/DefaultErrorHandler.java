@@ -94,7 +94,7 @@ public class DefaultErrorHandler implements ErrorHandler {
             } else {
                 Error error = prepareError(statusCode, request, response);
                 try {
-                    response.send(error, engine.getContentType());
+                    response.contentType(engine.getContentType()).send(error);
                 } catch (Exception e) {
                     log.error("Unexpected error generating '{}' as '{}'!", Error.class.getName(), contentType, e);
                     response.status(HttpConstants.StatusCode.INTERNAL_ERROR);
