@@ -113,6 +113,7 @@ public class Response {
      */
     public Response characterEncoding(String charset) {
         checkCommitted();
+
         getHttpServletResponse().setCharacterEncoding(charset);
 
         return this;
@@ -120,6 +121,7 @@ public class Response {
 
     private void addCookie(Cookie cookie) {
         checkCommitted();
+
         getCookieMap().put(cookie.getName(), cookie);
     }
 
@@ -155,7 +157,7 @@ public class Response {
      * @param name
      * @param value
      * @param maxAge
-     * @return the responbse
+     * @return the response
      */
     public Response cookie(String name, String value, int maxAge) {
         Cookie cookie = new Cookie(name, value);
@@ -229,8 +231,7 @@ public class Response {
     }
 
     private boolean isHeaderEmpty(String name) {
-        String value = getHttpServletResponse().getHeader(name);
-        return (value == null) || value.isEmpty();
+        return StringUtils.isNullOrEmpty(getHttpServletResponse().getHeader(name));
     }
 
     /**
@@ -242,6 +243,7 @@ public class Response {
      */
     public Response header(String name, String value) {
         checkCommitted();
+
         httpServletResponse.setHeader(name, value);
 
         return this;
@@ -254,6 +256,7 @@ public class Response {
      */
     public Response noCache() {
         checkCommitted();
+
         // no-cache headers for HTTP/1.1
         header(HttpConstants.Header.CACHE_CONTROL, "no-store, no-cache, must-revalidate");
 
@@ -286,6 +289,7 @@ public class Response {
      */
     public Response status(int status) {
         checkCommitted();
+
         httpServletResponse.setStatus(status);
 
         return this;
@@ -307,6 +311,7 @@ public class Response {
      */
     public void redirect(String location) {
         checkCommitted();
+
         try {
             httpServletResponse.sendRedirect(location);
         } catch (IOException e) {
@@ -340,9 +345,10 @@ public class Response {
      */
     public void redirect(String location, int statusCode) {
         checkCommitted();
-        httpServletResponse.setStatus(statusCode);
-        httpServletResponse.setHeader(HttpConstants.Header.LOCATION, location);
-        httpServletResponse.setHeader(HttpConstants.Header.CONNECTION, "close");
+
+        status(statusCode);
+        header(HttpConstants.Header.LOCATION, location);
+        header(HttpConstants.Header.CONNECTION, "close");
         try {
             httpServletResponse.sendError(statusCode);
         } catch (IOException e) {
@@ -576,7 +582,8 @@ public class Response {
      */
     public Response contentLength(long length) {
         checkCommitted();
-        httpServletResponse.setHeader(HttpConstants.Header.CONTENT_LENGTH, Long.toString(length));
+
+        httpServletResponse.setContentLength((int) length);
 
         return this;
     }
@@ -598,6 +605,7 @@ public class Response {
      */
     public Response contentType(String contentType) {
         checkCommitted();
+
         httpServletResponse.setContentType(contentType);
 
         return this;
@@ -688,6 +696,7 @@ public class Response {
      */
     public void append(CharSequence sequence) {
         checkCommitted();
+
         try {
             httpServletResponse.getWriter().append(sequence);
         } catch (IOException e) {
@@ -703,6 +712,7 @@ public class Response {
      */
     public void send(CharSequence content) {
         checkCommitted();
+
         append(content);
         commit();
     }
@@ -784,8 +794,9 @@ public class Response {
     public void resource(InputStream input) {
         checkCommitted();
 
-        if (isHeaderEmpty(HttpConstants.Header.CONTENT_TYPE)) {
-            header(HttpConstants.Header.CONTENT_TYPE, HttpConstants.ContentType.APPLICATION_OCTET_STREAM);
+        // content type to OCTET_STREAM if it's not set
+        if (getContentType() == null) {
+            contentType(HttpConstants.ContentType.APPLICATION_OCTET_STREAM);
         }
 
         try {
@@ -826,7 +837,10 @@ public class Response {
     public void file(String filename, InputStream input) {
         checkCommitted();
 
-        header(HttpConstants.Header.CONTENT_TYPE, HttpConstants.ContentType.APPLICATION_OCTET_STREAM);
+        // content type to OCTET_STREAM if it's not set
+        if (getContentType() == null) {
+            contentType(HttpConstants.ContentType.APPLICATION_OCTET_STREAM);
+        }
 
         if (isHeaderEmpty(HttpConstants.Header.CONTENT_DISPOSITION)) {
             if (filename != null && !filename.isEmpty()) {
@@ -915,7 +929,7 @@ public class Response {
 
         // content type to TEXT_HTML if it's not set
         if (getContentType() == null) {
-            header(HttpConstants.Header.CONTENT_TYPE, HttpConstants.ContentType.TEXT_HTML);
+            contentType(HttpConstants.ContentType.TEXT_HTML);
         }
 
         try {
