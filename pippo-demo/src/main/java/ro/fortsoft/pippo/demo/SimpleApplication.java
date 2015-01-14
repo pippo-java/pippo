@@ -16,6 +16,7 @@
 package ro.fortsoft.pippo.demo;
 
 import ro.fortsoft.pippo.core.Application;
+import ro.fortsoft.pippo.core.HttpConstants;
 import ro.fortsoft.pippo.core.Request;
 import ro.fortsoft.pippo.core.Response;
 import ro.fortsoft.pippo.core.route.RouteHandler;
@@ -148,7 +149,10 @@ public class SimpleApplication extends Application {
 
             @Override
             public void handle(Request request, Response response, RouteHandlerChain chain) {
-                throw new RuntimeException("Error");
+                int statusCode = request.getParameter("code").toInt(HttpConstants.StatusCode.INTERNAL_ERROR);
+                // do not commit the response
+                // this delegates response representation to PippoFilter
+                response.status(statusCode);
             }
 
         });

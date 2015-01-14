@@ -58,15 +58,15 @@ public class CrudNgApiController extends Controller {
     @Metered("api.contact.delete")
     public void deleteContact(@Param("id") int id) {
         if (id <= 0) {
-            getResponse().sendBadRequest();
+            getResponse().badRequest();
         } else {
             Contact contact = getContactService().getContact(id);
             if (contact == null) {
-                getResponse().sendBadRequest();
+                getResponse().badRequest();
             } else {
                 getContactService().delete(id);
                 log.info("Deleted contact #{} '{}'", contact.getId(), contact.getName());
-                getResponse().sendOk();
+                getResponse().ok();
             }
         }
     }
@@ -74,7 +74,7 @@ public class CrudNgApiController extends Controller {
     @Metered("api.contact.post")
     public void saveContact(@Body Contact contact) {
         getContactService().save(contact);
-        getResponse().sendOk();
+        getResponse().ok();
         log.info("Saved contact #{} '{}'", contact.getId(), contact.getName());
     }
 }
