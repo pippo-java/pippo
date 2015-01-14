@@ -158,7 +158,6 @@ public class SimpleApplication extends Application {
 
             @Override
             public void handle(CustomRequest request, CustomResponse response, RouteHandlerChain chain) {
-
                 response.sendHelloMyFriend();
             }
 
