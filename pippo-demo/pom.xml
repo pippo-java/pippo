@@ -8,189 +8,34 @@
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
-    <artifactId>pippo-demo</artifactId>
+    <packaging>pom</packaging>
+    <artifactId>pippo-demo-parent</artifactId>
     <version>0.4.0-SNAPSHOT</version>
-    <name>Pippo Demo</name>
-    <description>Demo application</description>
+    <name>Pippo Demo Parent</name>
+    <description>Demo applications</description>
 
     <properties>
-        <spring.version>4.1.1.RELEASE</spring.version>
         <slf4j.version>1.7.7</slf4j.version>
     </properties>
 
     <dependencies>
-        <dependency>
-            <groupId>ro.fortsoft.pippo</groupId>
-            <artifactId>pippo</artifactId>
-            <version>${project.version}</version>
-            <type>pom</type>
-            <!--
-            <exclusions>
-                <exclusion>
-                    <groupId>ro.fortsoft.pippo</groupId>
-                    <artifactId>pippo-jetty</artifactId>
-                </exclusion>
-            </exclusions>
-            -->
-        </dependency>
-
-        <dependency>
-            <groupId>ro.fortsoft.pippo</groupId>
-            <artifactId>pippo-jade</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>ro.fortsoft.pippo</groupId>
-            <artifactId>pippo-trimou</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>ro.fortsoft.pippo</groupId>
-            <artifactId>pippo-pebble</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>ro.fortsoft.pippo</groupId>
-            <artifactId>pippo-groovy</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>ro.fortsoft.pippo</groupId>
-            <artifactId>pippo-spring</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>ro.fortsoft.pippo</groupId>
-            <artifactId>pippo-guice</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>ro.fortsoft.pippo</groupId>
-            <artifactId>pippo-gson</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>ro.fortsoft.pippo</groupId>
-            <artifactId>pippo-fastjson</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>ro.fortsoft.pippo</groupId>
-            <artifactId>pippo-xstream</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>ro.fortsoft.pippo</groupId>
-            <artifactId>pippo-snakeyaml</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>ro.fortsoft.pippo</groupId>
-            <artifactId>pippo-metrics</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-
-        <!-- Spring framework -->
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-web</artifactId>
-            <version>${spring.version}</version>
-        </dependency>
-
         <!-- Logging -->
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-simple</artifactId>
             <version>${slf4j.version}</version>
         </dependency>
-
-        <dependency>
-            <groupId>org.webjars</groupId>
-            <artifactId>bootstrap</artifactId>
-            <version>3.3.1</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.webjars</groupId>
-            <artifactId>font-awesome</artifactId>
-            <version>4.2.0</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.webjars</groupId>
-            <artifactId>angularjs</artifactId>
-            <version>1.3.6</version>
-        </dependency>
-
-        <!-- Validation -->
-        <dependency>
-            <groupId>org.hibernate</groupId>
-            <artifactId>hibernate-validator</artifactId>
-            <version>5.1.3.Final</version>
-        </dependency>
-        <!--
-        <dependency>
-            <groupId>javax.el</groupId>
-            <artifactId>javax.el-api</artifactId>
-            <version>2.2.4</version>
-        </dependency>
-        -->
-        <dependency>
-            <groupId>org.glassfish.web</groupId>
-            <artifactId>javax.el</artifactId>
-            <version>2.2.4</version>
-        </dependency>
     </dependencies>
 
-    <build>
-        <resources>
-            <resource>
-                <directory>src/main/java</directory>
-                <includes>
-                    <include>**/*</include>
-                </includes>
-            </resource>
-            <resource>
-                <directory>src/main/resources</directory>
-                <filtering>true</filtering>
-                <includes>
-                    <include>**/*</include>
-                </includes>
-            </resource>
-        </resources>
+    <modules>
+        <module>pippo-demo-common</module>
+        <module>pippo-demo-basic</module>
+        <module>pippo-demo-controller</module>
+        <module>pippo-demo-upload</module>
+        <module>pippo-demo-validation</module>
+        <module>pippo-demo-custom</module>
+        <module>pippo-demo-crud</module>
+        <module>pippo-demo-crudng</module>
+    </modules>
 
-        <plugins>
-            <!--
-            <plugin>
-                <groupId>org.eclipse.jetty</groupId>
-                <artifactId>jetty-maven-plugin</artifactId>
-                <version>9.2.0.v20140526</version>
-                <configuration>
-                    <scanIntervalSeconds>10</scanIntervalSeconds>
-                    <stopKey>foo</stopKey>
-                    <stopPort>9999</stopPort>
-                    <webApp>
-                        <contextPath>/</contextPath>
-                    </webApp>
-                </configuration>
-            </plugin>
-
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-war-plugin</artifactId>
-                <version>2.5</version>
-            </plugin>
-            -->
-        </plugins>
-    </build>
 </project>
