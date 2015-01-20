@@ -33,7 +33,9 @@
         <module>pippo-demo-controller</module>
         <module>pippo-demo-upload</module>
         <module>pippo-demo-validation</module>
+        <!--
         <module>pippo-demo-custom</module>
+        -->
         <module>pippo-demo-crud</module>
         <module>pippo-demo-crudng</module>
     </modules>
