@@ -71,6 +71,11 @@ public class PippoFilter implements Filter {
      */
     public static final String IGNORE_PATHS_PARAM = "ignorePaths";
 
+    /**
+     * The name of the context parameter that specifies the runtime mode.
+     */
+    public static final String MODE_PARAM = "mode";
+
     private static final String slash = "/";
 
     private final String PIPPO_LOGO = "\n"
@@ -100,6 +105,12 @@ public class PippoFilter implements Filter {
             initFilterPath(filterConfig);
         }
         log.debug("The filter path is '{}'", filterPath);
+
+        // check for runtime mode in filter init parameter
+        String mode = filterConfig.getInitParameter(MODE_PARAM);
+        if (!StringUtils.isNullOrEmpty(mode)) {
+            System.setProperty(PippoConstants.SYSTEM_PROPERTY_PIPPO_MODE, mode);
+        }
 
         if (application == null) {
             createApplication(filterConfig);
