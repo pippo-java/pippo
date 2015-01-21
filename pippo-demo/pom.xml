@@ -47,6 +47,9 @@
             <activation>
                 <activeByDefault>true</activeByDefault>
             </activation>
+            <properties>
+                <packaging.type>jar</packaging.type>
+            </properties>
             <dependencies>
                 <dependency>
                     <groupId>ro.fortsoft.pippo</groupId>
@@ -57,6 +60,9 @@
         </profile>
         <profile>
             <id>war</id>
+            <properties>
+                <packaging.type>war</packaging.type>
+            </properties>
         </profile>
     </profiles>
 </project>

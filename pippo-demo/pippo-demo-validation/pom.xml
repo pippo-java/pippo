@@ -8,7 +8,7 @@
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
-    <packaging>war</packaging>
+    <packaging>${packaging.type}</packaging>
     <artifactId>pippo-demo-validation</artifactId>
     <version>0.4.0-SNAPSHOT</version>
     <name>Pippo Demo Validation</name>
@@ -59,4 +59,5 @@
             <version>4.2.0</version>
         </dependency>
     </dependencies>
+
 </project>
