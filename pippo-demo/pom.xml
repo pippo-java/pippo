@@ -41,4 +41,22 @@
         <module>pippo-demo-template</module>
     </modules>
 
+    <profiles>
+        <profile>
+            <id>main</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <dependencies>
+                <dependency>
+                    <groupId>ro.fortsoft.pippo</groupId>
+                    <artifactId>pippo-jetty</artifactId>
+                    <version>${project.version}</version>
+                </dependency>
+            </dependencies>
+        </profile>
+        <profile>
+            <id>war</id>
+        </profile>
+    </profiles>
 </project>
