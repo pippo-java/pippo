@@ -1,0 +1,24 @@
+doctype html
+html(lang=lang)
+  head
+    meta(charset="utf-8")
+    meta(content="IE=edge", http-equiv="X-UA-Compatible")
+    meta(name="viewport", content="width=device-width, initial-scale=1.0")
+    
+    title=pippo.i18n("pippo.welcome")
+
+    link(href=pippo.webjarsAt('bootstrap/3.3.1/css/bootstrap.min.css'), rel="stylesheet")
+    link(href=pippo.webjarsAt('font-awesome/4.2.0/css/font-awesome.min.css'), rel="stylesheet")
+    link(href=pippo.publicAt('css/style.css'), rel="stylesheet")
+
+  body
+    #container.container
+        
+      block content
+
+      hr
+      p
+        i Jade Template Engine (#{mode})
+
+    script(src=pippo.webjarsAt('jquery/1.11.1/jquery.min.js'))
+    script(src=pippo.webjarsAt('bootstrap/3.3.1/js/bootstrap.min.js'))
