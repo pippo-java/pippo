@@ -72,10 +72,9 @@ public class ClasspathResourceHandler implements RouteHandler {
         URL url = this.getClass().getClassLoader().getResource(path);
         if (url == null) {
             response.notFound().commit();
-            return;
+        } else {
+            streamClasspathResource(url, request, response);
         }
-
-        streamClasspathResource(url, request, response);
 
         chain.next();
     }
