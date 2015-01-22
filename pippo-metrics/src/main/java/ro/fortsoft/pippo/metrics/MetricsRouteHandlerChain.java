@@ -92,10 +92,7 @@ public class MetricsRouteHandlerChain extends DefaultRouteHandlerChain {
 
 		handler.handle(request, response, this);
 
-		while (iterator.hasNext()) {
-			RouteMatch routeMatch = iterator.next();
-			log.debug("chain.next() not called, skipping {}", routeMatch);
-		}
+		logUnhandledRoutes();
 	}
 
 }
