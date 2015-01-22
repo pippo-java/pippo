@@ -15,12 +15,16 @@
  */
 package ro.fortsoft.pippo.core.route;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import ro.fortsoft.pippo.core.HttpConstants;
 import ro.fortsoft.pippo.core.PippoRuntimeException;
 import ro.fortsoft.pippo.core.controller.Controller;
 import ro.fortsoft.pippo.core.controller.ControllerHandler;
 import ro.fortsoft.pippo.core.util.StringUtils;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -29,9 +33,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * The routes are matched in the order they are defined.
@@ -46,18 +47,19 @@ public class DefaultRouter implements Router {
     // Matches: {id} AND {id: .*?}
     // group(1) extracts the name of the group (in that case "id").
     // group(3) extracts the regex if defined
-    private final Pattern PATTERN_FOR_VARIABLE_PARTS_OF_ROUTE = Pattern.compile("\\{(.*?)(:\\s(.*?))?\\}");
+    private static final Pattern PATTERN_FOR_VARIABLE_PARTS_OF_ROUTE = Pattern.compile("\\{(.*?)(:\\s(.*?))?\\}");
 
     // This regex matches everything in between path slashes.
-    private final String VARIABLE_ROUTES_DEFAULT_REGEX = "([^/]*)";
+    private static final String VARIABLE_ROUTES_DEFAULT_REGEX = "([^/]*)";
 
     // This regex works for both {myParam} AND {myParam: .*}
-    private final String VARIABLE_PART_PATTERN_WITH_PLACEHOLDER = "\\{(%s)(:\\s(.*))?\\}";
+    private static final String VARIABLE_PART_PATTERN_WITH_PLACEHOLDER = "\\{(%s)(:\\s(.*))?\\}";
 
     // key = request method
     private Map<String, List<PatternBinding>> bindingsCache;
 
     private List<Route> routes;
+    // key = request method
     private Map<String, List<Route>> cache;
     private String contextPath;
 
@@ -124,16 +126,17 @@ public class DefaultRouter implements Router {
     @Override
     public List<RouteMatch> findRoutes(String requestUri, String requestMethod) {
         log.debug("Finding route matches for {} '{}'", requestMethod, requestUri);
-        List<PatternBinding> bindings = bindingsCache.get(requestMethod);
-        if (bindings == null) {
-            return Collections.emptyList();
-        }
 
         List<RouteMatch> routeMatches = new ArrayList<>();
-        for (PatternBinding binding : bindings) {
-            if (binding.getPattern().matcher(requestUri).matches()) {
-                // TODO improve (it's possible to have the same urlPattern for many routes => same parameters)
-                routeMatches.add(new RouteMatch(binding.getRoute(), getParameters(binding, requestUri)));
+
+        List<PatternBinding> bindings = getBindings(requestMethod);
+        for (Route route : routes) { // to preserve the routes order
+            for (PatternBinding binding : bindings) {
+                if (route.equals(binding.getRoute()) && binding.getPattern().matcher(requestUri).matches()) {
+                    // TODO improve (it's possible to have the same uriPattern for many routes => same parameters)
+                    routeMatches.add(new RouteMatch(route, getParameters(binding, requestUri)));
+                    break;
+                }
             }
         }
 
@@ -176,7 +179,7 @@ public class DefaultRouter implements Router {
 
     @Override
     public String uriFor(String uriPattern, Map<String, Object> parameters) {
-        PatternBinding binding = getPatternBinding(uriPattern);
+        PatternBinding binding = getBinding(uriPattern);
 
         return (binding != null) ? prefixContextPath(uriFor(binding, parameters)) : null;
     }
@@ -229,13 +232,13 @@ public class DefaultRouter implements Router {
                 }
             }
         }
+
         return null;
     }
 
-
     private void addBinding(Route route) {
         String uriPattern = route.getUriPattern();
-        // TODO improve (it's possible to have the same urlPattern for many routes => same pattern)
+        // TODO improve (it's possible to have the same uriPattern for many routes => same pattern)
         String regex = getRegex(uriPattern);
         Pattern pattern = Pattern.compile(regex);
         List<String> parameterNames = getParameterNames(uriPattern);
@@ -248,8 +251,35 @@ public class DefaultRouter implements Router {
     }
 
     private void removeBinding(Route route) {
-        PatternBinding binding = getPatternBinding(route.getUriPattern());
+        PatternBinding binding = getBinding(route.getUriPattern());
         bindingsCache.get(route.getRequestMethod()).remove(binding);
+    }
+
+    private PatternBinding getBinding(String uriPattern) {
+        Collection<List<PatternBinding>> values = bindingsCache.values();
+        for (List<PatternBinding> bindings : values) {
+            for (PatternBinding binding : bindings) {
+                if (uriPattern.equals(binding.getRoute().getUriPattern())) {
+                    return binding;
+                }
+            }
+        }
+
+        return null;
+    }
+
+    private List<PatternBinding> getBindings(String requestMethod) {
+        List<PatternBinding> bindings = new ArrayList<>();
+
+        if (bindingsCache.containsKey(requestMethod)) {
+            bindings.addAll(bindingsCache.get(requestMethod));
+        }
+
+        if (bindingsCache.containsKey(HttpConstants.Method.ALL)) {
+            bindings.addAll(bindingsCache.get(HttpConstants.Method.ALL));
+        }
+
+        return bindings;
     }
 
     /**
@@ -268,7 +298,6 @@ public class DefaultRouter implements Router {
         StringBuffer stringBuffer = new StringBuffer();
 
         while (matcher.find()) {
-
             // By convention group 3 is the regex if provided by the user.
             // If it is not provided by the user the group 3 is null.
             String namedVariablePartOfRoute = matcher.group(3);
@@ -283,7 +312,6 @@ public class DefaultRouter implements Router {
             }
             // we replace the current namedVariablePartOfRoute group
             matcher.appendReplacement(stringBuffer, namedVariablePartOfORouteReplacedWithRegex);
-
         }
 
         // .. and we append the tail to complete the stringBuffer
@@ -293,20 +321,19 @@ public class DefaultRouter implements Router {
     }
 
     /**
-     *
      * Extracts the name of the parameters from a route
      *
      * /{my_id}/{my_name}
      *
      * would return a List with "my_id" and "my_name"
      *
-     * @param urlPattern
+     * @param uriPattern
      * @return a list with the names of all parameters in the url pattern
      */
-    private List<String> getParameterNames(String urlPattern) {
-        List<String> list = new ArrayList<String>();
+    private List<String> getParameterNames(String uriPattern) {
+        List<String> list = new ArrayList<>();
 
-        Matcher m = PATTERN_FOR_VARIABLE_PARTS_OF_ROUTE.matcher(urlPattern);
+        Matcher m = PATTERN_FOR_VARIABLE_PARTS_OF_ROUTE.matcher(uriPattern);
 
         while (m.find()) {
             // group(1) is the name of the group. Must be always there...
@@ -334,20 +361,6 @@ public class DefaultRouter implements Router {
         return parameters;
     }
 
-    private PatternBinding getPatternBinding(String uriPattern) {
-        Iterator<List<PatternBinding>> iterator = bindingsCache.values().iterator();
-        while (iterator.hasNext()) {
-            List<PatternBinding> bindings = iterator.next();
-            for (PatternBinding binding : bindings) {
-                if (uriPattern.equals(binding.getRoute().getUriPattern())) {
-                    return binding;
-                }
-            }
-        }
-
-        return null;
-    }
-
     private String uriFor(PatternBinding binding, Map<String, Object> parameters) {
         String uri = binding.getRoute().getUriPattern();
 
@@ -359,7 +372,6 @@ public class DefaultRouter implements Router {
         Map<String, Object> queryParameters = new HashMap<>(parameters.size());
 
         for (Entry<String, Object> parameterPair : parameters.entrySet()) {
-
             boolean foundAsPathParameter = false;
 
             StringBuffer sb = new StringBuffer();
@@ -396,7 +408,6 @@ public class DefaultRouter implements Router {
                 if (iterator.hasNext()) {
                     query.append("&");
                 }
-
             }
 
             uri += "?" + query;

@@ -34,9 +34,13 @@ public final class HttpConstants {
         public static final String OPTIONS = "OPTIONS";
         */
 
+        // not really a method (marker for all methods)
+        public static final String ALL = "ALL";
+
         private Method() {
             // restrict instantiation
         }
+
     }
 
     public static final class StatusCode {
@@ -67,6 +71,7 @@ public final class HttpConstants {
         private StatusCode() {
             // restrict instantiation
         }
+
     }
 
     public static final class Header {
@@ -97,6 +102,7 @@ public final class HttpConstants {
         private Header() {
             // restrict instantiation
         }
+
     }
 
     public static final class ContentType {
@@ -114,9 +120,11 @@ public final class HttpConstants {
         private ContentType() {
             // restrict instantiation
         }
+
     }
 
     private HttpConstants() {
         // restrict instantiation
     }
+
 }

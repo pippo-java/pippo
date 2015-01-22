@@ -210,64 +210,72 @@ public class Application {
         }
         resourceHandler.setMimeTypes(mimeTypes);
         resourceHandler.setHttpCacheToolkit(httpCacheToolkit);
-        addRoute(resourceHandler.getUrlPattern(), HttpConstants.Method.GET, resourceHandler);
+        addRoute(resourceHandler.getUriPattern(), HttpConstants.Method.GET, resourceHandler);
     }
 
-    public void GET(String urlPattern, RouteHandler routeHandler) {
-        addRoute(urlPattern, HttpConstants.Method.GET, routeHandler);
+    public void GET(String uriPattern, RouteHandler routeHandler) {
+        addRoute(uriPattern, HttpConstants.Method.GET, routeHandler);
     }
 
-    public void GET(String urlPattern, Class<? extends Controller> controllerClass, String methodName) {
-        addRoute(urlPattern, HttpConstants.Method.GET, controllerClass, methodName);
+    public void GET(String uriPattern, Class<? extends Controller> controllerClass, String methodName) {
+        addRoute(uriPattern, HttpConstants.Method.GET, controllerClass, methodName);
     }
 
-    public void POST(String urlPattern, RouteHandler routeHandler) {
-        addRoute(urlPattern, HttpConstants.Method.POST, routeHandler);
+    public void POST(String uriPattern, RouteHandler routeHandler) {
+        addRoute(uriPattern, HttpConstants.Method.POST, routeHandler);
     }
 
-    public void POST(String urlPattern, Class<? extends Controller> controllerClass, String methodName) {
-        addRoute(urlPattern, HttpConstants.Method.POST, controllerClass, methodName);
+    public void POST(String uriPattern, Class<? extends Controller> controllerClass, String methodName) {
+        addRoute(uriPattern, HttpConstants.Method.POST, controllerClass, methodName);
     }
 
-    public void DELETE(String urlPattern, RouteHandler routeHandler) {
-        addRoute(urlPattern, HttpConstants.Method.DELETE, routeHandler);
+    public void DELETE(String uriPattern, RouteHandler routeHandler) {
+        addRoute(uriPattern, HttpConstants.Method.DELETE, routeHandler);
     }
 
-    public void DELETE(String urlPattern, Class<? extends Controller> controllerClass, String methodName) {
-        addRoute(urlPattern, HttpConstants.Method.DELETE, controllerClass, methodName);
+    public void DELETE(String uriPattern, Class<? extends Controller> controllerClass, String methodName) {
+        addRoute(uriPattern, HttpConstants.Method.DELETE, controllerClass, methodName);
     }
 
-    public void HEAD(String urlPattern, RouteHandler routeHandler) {
-        addRoute(urlPattern, HttpConstants.Method.HEAD, routeHandler);
+    public void HEAD(String uriPattern, RouteHandler routeHandler) {
+        addRoute(uriPattern, HttpConstants.Method.HEAD, routeHandler);
     }
 
-    public void HEAD(String urlPattern, Class<? extends Controller> controllerClass, String methodName) {
-        addRoute(urlPattern, HttpConstants.Method.HEAD, controllerClass, methodName);
+    public void HEAD(String uriPattern, Class<? extends Controller> controllerClass, String methodName) {
+        addRoute(uriPattern, HttpConstants.Method.HEAD, controllerClass, methodName);
     }
 
-    public void PUT(String urlPattern, RouteHandler routeHandler) {
-        addRoute(urlPattern, HttpConstants.Method.PUT, routeHandler);
+    public void PUT(String uriPattern, RouteHandler routeHandler) {
+        addRoute(uriPattern, HttpConstants.Method.PUT, routeHandler);
     }
 
-    public void PUT(String urlPattern, Class<? extends Controller> controllerClass, String methodName) {
-        addRoute(urlPattern, HttpConstants.Method.PUT, controllerClass, methodName);
+    public void PUT(String uriPattern, Class<? extends Controller> controllerClass, String methodName) {
+        addRoute(uriPattern, HttpConstants.Method.PUT, controllerClass, methodName);
     }
 
-    public void PATCH(String urlPattern, RouteHandler routeHandler) {
-        addRoute(urlPattern, HttpConstants.Method.PATCH, routeHandler);
+    public void PATCH(String uriPattern, RouteHandler routeHandler) {
+        addRoute(uriPattern, HttpConstants.Method.PATCH, routeHandler);
     }
 
-    public void PATCH(String urlPattern, Class<? extends Controller> controllerClass, String methodName) {
-        addRoute(urlPattern, HttpConstants.Method.PATCH, controllerClass, methodName);
+    public void PATCH(String uriPattern, Class<? extends Controller> controllerClass, String methodName) {
+        addRoute(uriPattern, HttpConstants.Method.PATCH, controllerClass, methodName);
     }
 
-    public void addRoute(String urlPattern, String requestMethod, Class<? extends Controller> controllerClass, String methodName) {
+    public void ALL(String uriPattern, RouteHandler routeHandler) {
+        addRoute(uriPattern, HttpConstants.Method.ALL, routeHandler);
+    }
+
+    public void ALL(String uriPattern, Class<? extends Controller> controllerClass, String methodName) {
+        addRoute(uriPattern, HttpConstants.Method.ALL, controllerClass, methodName);
+    }
+
+    public void addRoute(String uriPattern, String requestMethod, Class<? extends Controller> controllerClass, String methodName) {
         RouteHandler routeHandler = getControllerHandlerFactory().createHandler(controllerClass, methodName);
-        addRoute(urlPattern, requestMethod, routeHandler);
+        addRoute(uriPattern, requestMethod, routeHandler);
     }
 
-    public void addRoute(String urlPattern, String requestMethod, RouteHandler routeHandler) {
-        Route route = new Route(urlPattern, requestMethod, routeHandler);
+    public void addRoute(String uriPattern, String requestMethod, RouteHandler routeHandler) {
+        Route route = new Route(uriPattern, requestMethod, routeHandler);
         try {
             getRouter().addRoute(route);
         } catch (Exception e) {

@@ -196,7 +196,7 @@ public class DefaultRouterTest extends Assert {
     @Test
     public void testWebjarsRoute() throws Exception {
         WebjarsResourceHandler webjars = new WebjarsResourceHandler();
-        Route route = new Route(webjars.getUrlPattern(), HttpConstants.Method.GET, new EmptyRouteHandler());
+        Route route = new Route(webjars.getUriPattern(), HttpConstants.Method.GET, new EmptyRouteHandler());
         router.addRoute(route);
 
         List<RouteMatch> routeMatches = router.findRoutes("/webjars/bootstrap/3.0.2/css/bootstrap.min.css",

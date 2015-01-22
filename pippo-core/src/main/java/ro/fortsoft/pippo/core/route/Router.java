@@ -53,11 +53,12 @@ public interface Router {
 
     public String uriFor(String uri);
 
-    public String uriFor(String urlPattern, Map<String, Object> parameters);
+    public String uriFor(String uriPattern, Map<String, Object> parameters);
 
     public String uriFor(Class<? extends Controller> controllerClass, String methodName, Map<String, Object> parameters);
 
     public String uriFor(Class<? extends Controller> controllerClass, String methodName);
 
     public String uriPatternFor(Class<? extends ClasspathResourceHandler> resourceHandlerClass);
+
 }

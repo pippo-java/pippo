@@ -40,7 +40,7 @@ public class ClasspathResourceHandler implements RouteHandler {
 
     public static String PATH_PARAMETER = "path";
 
-    private final String urlPattern;
+    private final String uriPattern;
     private final String resourceBasePath;
 
     private MimeTypes mimeTypes;
@@ -48,12 +48,12 @@ public class ClasspathResourceHandler implements RouteHandler {
     private HttpCacheToolkit httpCacheToolkit;
 
     public ClasspathResourceHandler(String urlPath, String resourceBasePath) {
-        this.urlPattern = String.format("/%s/{%s: .*}", getNormalizedPath(urlPath), PATH_PARAMETER);
+        this.uriPattern = String.format("/%s/{%s: .*}", getNormalizedPath(urlPath), PATH_PARAMETER);
         this.resourceBasePath = getNormalizedPath(resourceBasePath);
     }
 
-    public String getUrlPattern() {
-        return urlPattern;
+    public String getUriPattern() {
+        return uriPattern;
     }
 
     public void setMimeTypes(MimeTypes mimeTypes) {
