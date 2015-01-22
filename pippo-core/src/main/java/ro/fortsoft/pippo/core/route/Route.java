@@ -15,12 +15,10 @@
  */
 package ro.fortsoft.pippo.core.route;
 
-import java.io.Serializable;
-
 /**
  * @author Decebal Suiu
  */
-public class Route implements Serializable {
+public class Route {
 
     private String uriPattern;
     private String requestMethod;
