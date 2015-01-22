@@ -64,7 +64,10 @@ public class FreemarkerTemplateEngine implements TemplateEngine {
         Router router = application.getRouter();
         PippoSettings pippoSettings = application.getPippoSettings();
 
-        String pathPrefix = pippoSettings.getString(PippoConstants.SETTING_TEMPLATE_PATH_PREFIX, DEFAULT_PATH_PREFIX);
+        String pathPrefix = pippoSettings.getString(PippoConstants.SETTING_TEMPLATE_PATH_PREFIX, null);
+        if (StringUtils.isNullOrEmpty(pathPrefix)) {
+            pathPrefix = TemplateEngine.DEFAULT_PATH_PREFIX;
+        }
         configuration = new Configuration(Configuration.VERSION_2_3_21);
         configuration.setDefaultEncoding(PippoConstants.UTF8);
         configuration.setOutputEncoding(PippoConstants.UTF8);

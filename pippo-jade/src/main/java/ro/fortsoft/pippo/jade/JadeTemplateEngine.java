@@ -54,7 +54,10 @@ public class JadeTemplateEngine implements TemplateEngine {
 
         PippoSettings pippoSettings = application.getPippoSettings();
 
-        String pathPrefix = pippoSettings.getString(PippoConstants.SETTING_TEMPLATE_PATH_PREFIX, DEFAULT_PATH_PREFIX);
+        String pathPrefix = pippoSettings.getString(PippoConstants.SETTING_TEMPLATE_PATH_PREFIX, null);
+        if (StringUtils.isNullOrEmpty(pathPrefix)) {
+            pathPrefix = TemplateEngine.DEFAULT_PATH_PREFIX;
+        }
         configuration = new JadeConfiguration();
         configuration.setTemplateLoader(new ClassTemplateLoader(JadeTemplateEngine.class, pathPrefix));
         configuration.setMode(Mode.HTML);

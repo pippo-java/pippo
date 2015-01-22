@@ -73,7 +73,10 @@ public class TrimouTemplateEngine implements TemplateEngine {
         builder.registerHelper("publicAt", new PublicAtHelper(router));
         builder.registerHelpers(HelpersBuilder.extra().build());
 
-        String pathPrefix = pippoSettings.getString(PippoConstants.SETTING_TEMPLATE_PATH_PREFIX, DEFAULT_PATH_PREFIX);
+        String pathPrefix = pippoSettings.getString(PippoConstants.SETTING_TEMPLATE_PATH_PREFIX, null);
+        if (StringUtils.isNullOrEmpty(pathPrefix)) {
+            pathPrefix = TemplateEngine.DEFAULT_PATH_PREFIX;
+        }
         pathPrefix = StringUtils.removeStart(pathPrefix, "/");
         builder.addTemplateLocator(new PippoTemplateLocator(10, pathPrefix));
 

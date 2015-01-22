@@ -66,7 +66,10 @@ public class PebbleTemplateEngine implements TemplateEngine {
         Router router = application.getRouter();
         PippoSettings pippoSettings = application.getPippoSettings();
 
-        String pathPrefix = pippoSettings.getString(PippoConstants.SETTING_TEMPLATE_PATH_PREFIX, DEFAULT_PATH_PREFIX);
+        String pathPrefix = pippoSettings.getString(PippoConstants.SETTING_TEMPLATE_PATH_PREFIX, null);
+        if (StringUtils.isNullOrEmpty(pathPrefix)) {
+            pathPrefix = TemplateEngine.DEFAULT_PATH_PREFIX;
+        }
 
         List<Loader> loaders = Lists.newArrayList();
         PippoTemplateLoader templateLoader = new PippoTemplateLoader();
