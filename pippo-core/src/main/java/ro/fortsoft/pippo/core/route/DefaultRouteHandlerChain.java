@@ -75,8 +75,7 @@ public class DefaultRouteHandlerChain implements RouteHandlerChain {
      * Log the RouteMatches that are not handled when we break the chain
      */
     protected void logUnhandledRoutes() {
-        // log the RouteMatches that are not handled when we break the chain
-        if(log.isDebugEnabled()) {
+        if (log.isDebugEnabled()) {
             while (iterator.hasNext()) {
                 RouteMatch routeMatch = iterator.next();
                 log.debug("chain.next() not called, skipping {}", routeMatch);
