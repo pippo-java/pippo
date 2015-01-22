@@ -68,7 +68,8 @@ public class DefaultRouteHandlerChain implements RouteHandlerChain {
     protected void handleRoute(Route route) {
         route.getRouteHandler().handle(request, response, this);
 
-        while(iterator.hasNext()) {
+        // log the RouteMatches that are not handled when we break the chain
+        while (iterator.hasNext()) {
             RouteMatch routeMatch = iterator.next();
             log.debug("chain.next() not called, skipping {}", routeMatch);
         }
