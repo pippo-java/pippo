@@ -894,7 +894,7 @@ every pippo.properties file it finds, and it instantiates and execute the initia
 To demonstrate the initializer concept I added a dump _FreemarkerInitializer_ in pippo-freemarker module. In our example,
 the _pippo.properties_ file (which should be packaged in the root of the classpath) contains only one line:
 ```properties
-initializer=FreemarkerInitializer
+initializer=ro.pippo.freemarker.FreemarkerInitializer
 ```
 
 The initializer can be implemented like this:
