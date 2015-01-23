@@ -162,7 +162,6 @@ public class Application {
         templateEngine.init(this);
         this.templateEngine = templateEngine;
         log.debug("Template engine is '{}'", templateEngine.getClass().getName());
-
     }
 
     public ContentTypeEngines getContentTypeEngines() {
