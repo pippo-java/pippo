@@ -132,7 +132,7 @@ public class DefaultErrorHandler implements ErrorHandler {
     public void handle(Exception exception, Request request, Response response) {
 
         String message = exception.getMessage();
-        if (!StringUtils.isNullOrEmpty(message)) {
+        if (!StringUtils.isNullOrEmpty(message) && !response.getLocals().containsKey("message")) {
             response.bind("message", message);
         }
 
@@ -243,6 +243,8 @@ public class DefaultErrorHandler implements ErrorHandler {
                 return TemplateEngine.NOT_IMPLEMENTED_501;
             case HttpConstants.StatusCode.OVERLOADED:
                 return TemplateEngine.OVERLOADED_502;
+            case HttpConstants.StatusCode.SERVICE_UNAVAILABLE:
+                return TemplateEngine.SERVICE_UNAVAILABLE_503;
         }
     }
 

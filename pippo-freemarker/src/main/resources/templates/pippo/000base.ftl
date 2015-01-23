@@ -40,16 +40,26 @@
             }
 
             .text {
-                padding-top: 30px;
-                text-align:center; 
+                padding-top: 20px;
+                text-align:center;
                 font-size: 16pt;
-                font-weight: bold;                
+                font-weight: bold;
+            }
+
+            .message {
+                margin-top: 30px;
+                text-align: center;
+                border: 1px solid #fac7c7;
+                border-radius: 2px;
+                background-color: rgba(255, 182, 193, 0.15);
+                padding: 10px;
+                color: #dd0000;
             }
 
             .application {
                 border-top: 1px solid lightGray;
                 padding-top: 20px;
-                text-align:center; 
+                text-align:center;
                 font-size: 14pt;
                 font-weight: bold;
                 padding-bottom: 30px;
@@ -70,13 +80,16 @@
       <div class="status-code">
         <div class="mode">${runtimeMode}</div>
         <span class="description">${statusMessage}</span> ${statusCode}
-      </div>        
+      </div>
+      <#if message??>
+        <pre class="message"><#escape x as x?html>${message}</#escape></pre>
+      </#if>
       <div class="text">${requestMethod} ${requestUri}</div>
       <#if stacktrace??>
         <pre><#escape x as x?html>${stacktrace}</#escape></pre>
       <#else>
         <div class="frowny">:(</div>
-      </#if>            
+      </#if>
       <div class="application">
         ${applicationName} ${applicationVersion}
         <div>

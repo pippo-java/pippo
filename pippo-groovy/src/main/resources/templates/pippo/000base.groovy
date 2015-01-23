@@ -17,7 +17,7 @@ html {
                 padding: 0px 20px;
             }
             
-            .status-code {                
+            .status-code {
                 font-size: 20pt;
                 color: darkGray;
                 font-weight: bold;
@@ -39,10 +39,20 @@ html {
             }
 
             .text {
-                padding-top: 30px;
+                padding-top: 20px;
                 text-align:center; 
                 font-size: 16pt;
-                font-weight: bold;                
+                font-weight: bold;
+            }
+
+            .message {
+                margin-top: 30px;
+                text-align: center;
+                border: 1px solid #fac7c7;
+                border-radius: 2px;
+                background-color: rgba(255, 182, 193, 0.15);
+                padding: 10px;
+                color: #dd0000;
             }
 
             .application {
@@ -72,6 +82,9 @@ html {
             span(class:'description') { yield statusMessage }
             yield ' '
             yield statusCode
+        }
+        if (message != null) {
+            pre(class:'message') { yield message }
         }
         div(class:'text') { yield "$requestMethod $requestUri" }
         if (stacktrace != null) {

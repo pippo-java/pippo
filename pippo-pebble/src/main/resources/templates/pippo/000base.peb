@@ -17,22 +17,22 @@
                 max-width: 900px;
                 padding: 0px 20px;
             }
-            
-            .status-code {                
+
+            .status-code {
                 font-size: 20pt;
                 color: darkGray;
                 font-weight: bold;
                 border-bottom: 1px solid lightGray;
                 padding-bottom: 10px;
             }
-            
+
             .status-code .mode {
                 float: right;
                 color: lightGray;
                 text-transform:uppercase;
                 font-weight: normal;
             }
-            
+
             .frowny {
                 font-size: 100pt;
                 padding-bottom: 30px;
@@ -40,27 +40,37 @@
             }
 
             .text {
-                padding-top: 30px;
-                text-align:center; 
+                padding-top: 20px;
+                text-align:center;
                 font-size: 16pt;
-                font-weight: bold;                
+                font-weight: bold;
+            }
+
+            .message {
+                margin-top: 30px;
+                text-align: center;
+                border: 1px solid #fac7c7;
+                border-radius: 2px;
+                background-color: rgba(255, 182, 193, 0.15);
+                padding: 10px;
+                color: #dd0000;
             }
 
             .application {
                 border-top: 1px solid lightGray;
                 padding-top: 20px;
-                text-align:center; 
+                text-align:center;
                 font-size: 14pt;
                 font-weight: bold;
                 padding-bottom: 30px;
             }
-            
+
             .link {
                 color: blue;
                 text-decoration: none;
                 font-size: 50pt;
             }
-            
+
             pre, .description, .text, .frowny {
                 color: #3B3131;
             }
@@ -70,19 +80,21 @@
         <div class="status-code">
             <div class="mode">{{runtimeMode}}</div>
             <span class="description">{{statusMessage}}</span> {{statusCode}}
-        </div>        
-            <div class="text">{{requestMethod}} {{requestUri}}</div>
-            {% if stacktrace is not empty %}
-                <pre>{{stacktrace}}</pre>
-            {% else %}
-                <div class="frowny">:(</div>
-            {% endif %}           
-            <div class="application">
-                {{applicationName}} {{applicationVersion}}
-                <div>
-                    <a class="link" href="{{contextPath}}/">&larr;</a>
-                </div>
+        </div>
+        {% if message is not empty %}
+            <pre class="message">{{message}}</pre>
+        {% endif %}
+        <div class="text">{{requestMethod}} {{requestUri}}</div>
+        {% if stacktrace is not empty %}
+            <pre>{{stacktrace}}</pre>
+        {% else %}
+            <div class="frowny">:(</div>
+        {% endif %}
+        <div class="application">
+            {{applicationName}} {{applicationVersion}}
+            <div>
+                <a class="link" href="{{contextPath}}/">&larr;</a>
             </div>
-        </div>            
+        </div>
     </body>
 </html>
