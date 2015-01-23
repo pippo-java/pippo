@@ -36,6 +36,7 @@ public interface TemplateEngine {
     public final static String INTERNAL_ERROR_500 = "pippo/500internalError";
     public final static String NOT_IMPLEMENTED_501 = "pippo/501notImplemented";
     public final static String OVERLOADED_502 = "pippo/502overloaded";
+    public final static String SERVICE_UNAVAILABLE_503 = "pippo/503serviceUnavailable";
 
     public void init(Application application);
 
