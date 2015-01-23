@@ -57,11 +57,11 @@ public class CrudNgApplication extends Application {
         /*
          *  audit filter
          */
-        GET("/.*", new RouteHandler() {
+        ALL("/.*", new RouteHandler() {
 
             @Override
             public void handle(Request request, Response response, RouteHandlerChain chain) {
-                log.info("request.getUri() = {}", request.getUri());
+                log.info("Request for {} '{}'", request.getMethod(), request.getUri());
                 chain.next();
             }
 
