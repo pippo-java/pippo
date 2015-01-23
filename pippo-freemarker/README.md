@@ -12,7 +12,7 @@ Setup
 1) Add the pippo-freemarker dependency to your pom.xml:
 
     <dependency>
-        <groupId>ro.fortsoft.pippo</groupId>
+        <groupId>ro.pippo</groupId>
         <artifactId>pippo-freemarker</artifactId>
         <version>${pippo.version}</version>
     </dependency>

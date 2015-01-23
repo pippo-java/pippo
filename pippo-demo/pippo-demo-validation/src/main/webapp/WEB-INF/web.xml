@@ -7,10 +7,10 @@
 
     <filter>
         <filter-name>pippo</filter-name>
-        <filter-class>ro.fortsoft.pippo.core.PippoFilter</filter-class>
+        <filter-class>ro.pippo.core.PippoFilter</filter-class>
         <init-param>
             <param-name>applicationClassName</param-name>
-            <param-value>ro.fortsoft.pippo.demo.validation.ValidationApplication</param-value>
+            <param-value>ro.pippo.demo.validation.ValidationApplication</param-value>
         </init-param>
         <init-param>
             <param-name>mode</param-name>

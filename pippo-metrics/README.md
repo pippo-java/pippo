@@ -10,7 +10,7 @@ Setup
 
 ```xml
 <dependency>
-    <groupId>ro.fortsoft.pippo</groupId>
+    <groupId>ro.pippo</groupId>
     <artifactId>pippo-metrics</artifactId>
     <version>${pippo.version}</version>
 </dependency>

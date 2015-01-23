@@ -12,7 +12,7 @@ Setup
 1) Add the pippo-jade dependency to your pom.xml:
 
     <dependency>
-        <groupId>ro.fortsoft.pippo</groupId>
+        <groupId>ro.pippo</groupId>
         <artifactId>pippo-jade</artifactId>
         <version>${pippo.version}</version>
     </dependency>

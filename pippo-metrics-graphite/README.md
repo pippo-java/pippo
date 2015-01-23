@@ -6,7 +6,7 @@ Add the following dependency to your application `pom.xml`.
 
 ```xml
 <dependency>
-    <groupId>ro.fortsoft.pippo</groupId>
+    <groupId>ro.pippo</groupId>
     <artifactId>pippo-metrics-graphite</artifactId>
     <version>${pippo.version}</version>
 </dependency>
