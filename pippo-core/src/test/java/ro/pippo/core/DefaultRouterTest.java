@@ -441,4 +441,19 @@ public class DefaultRouterTest extends Assert {
 
         assertThat(path, equalTo("/user/test@test.com/5?query=recent_changes"));
     }
+
+    @Test
+    public void testExclusionFilter() throws Exception {
+        Route route = new Route("^(?!/(webjars|public)/).*", HttpConstants.Method.ALL, new EmptyRouteHandler());
+        router.addRoute(route);
+
+        List<RouteMatch> matches = router.findRoutes("/test/route", HttpConstants.Method.GET);
+        assertEquals(1, matches.size());
+
+        matches = router.findRoutes("/webjars/route", HttpConstants.Method.GET);
+        assertEquals(0, matches.size());
+
+        matches = router.findRoutes("/public/route", HttpConstants.Method.GET);
+        assertEquals(0, matches.size());
+    }
 }

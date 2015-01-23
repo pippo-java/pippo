@@ -346,8 +346,11 @@ public class DefaultRouter implements Router {
     }
 
     private Map<String, String> getParameters(PatternBinding binding, String requestUri) {
-        Map<String, String> parameters = new HashMap<>();
+        if (binding.getParameterNames().isEmpty()) {
+            return Collections.EMPTY_MAP;
+        }
 
+        Map<String, String> parameters = new HashMap<>();
         List<String> parameterNames = binding.getParameterNames();
         Matcher matcher = binding.getPattern().matcher(requestUri);
         matcher.matches();
