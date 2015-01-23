@@ -122,7 +122,6 @@ public class BasicApplication extends Application {
 
         });
 
-
         // send a template as response
         GET("/template", new RouteHandler() {
 
