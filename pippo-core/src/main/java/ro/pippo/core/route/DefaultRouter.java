@@ -215,13 +215,13 @@ public class DefaultRouter implements Router {
     }
 
     @Override
-    public String uriPatternFor(Class<? extends ClasspathResourceHandler> resourceHandlerClass) {
+    public String uriPatternFor(Class<? extends StaticResourceHandler> resourceHandlerClass) {
         Route route = getRoute(resourceHandlerClass);
 
         return (route != null) ? route.getUriPattern() : null;
     }
 
-    private Route getRoute(Class<? extends ClasspathResourceHandler> resourceHandlerClass) {
+    private Route getRoute(Class<? extends StaticResourceHandler> resourceHandlerClass) {
         List<Route> routes = getRoutes();
         for (Route route : routes) {
             RouteHandler routeHandler = route.getRouteHandler();
@@ -293,10 +293,9 @@ public class DefaultRouter implements Router {
      *          specified by the user.
      */
     private String getRegex(String urlPattern) {
+        StringBuffer buffer = new StringBuffer();
+
         Matcher matcher = PATTERN_FOR_VARIABLE_PARTS_OF_ROUTE.matcher(urlPattern);
-
-        StringBuffer stringBuffer = new StringBuffer();
-
         while (matcher.find()) {
             // By convention group 3 is the regex if provided by the user.
             // If it is not provided by the user the group 3 is null.
@@ -311,13 +310,13 @@ public class DefaultRouter implements Router {
                 namedVariablePartOfORouteReplacedWithRegex = VARIABLE_ROUTES_DEFAULT_REGEX;
             }
             // we replace the current namedVariablePartOfRoute group
-            matcher.appendReplacement(stringBuffer, namedVariablePartOfORouteReplacedWithRegex);
+            matcher.appendReplacement(buffer, namedVariablePartOfORouteReplacedWithRegex);
         }
 
         // .. and we append the tail to complete the stringBuffer
-        matcher.appendTail(stringBuffer);
+        matcher.appendTail(buffer);
 
-        return stringBuffer.toString();
+        return buffer.toString();
     }
 
     /**
@@ -333,13 +332,12 @@ public class DefaultRouter implements Router {
     private List<String> getParameterNames(String uriPattern) {
         List<String> list = new ArrayList<>();
 
-        Matcher m = PATTERN_FOR_VARIABLE_PARTS_OF_ROUTE.matcher(uriPattern);
-
-        while (m.find()) {
+        Matcher matcher = PATTERN_FOR_VARIABLE_PARTS_OF_ROUTE.matcher(uriPattern);
+        while (matcher.find()) {
             // group(1) is the name of the group. Must be always there...
             // "/assets/{file}" and "/assets/{file: [a-zA-Z][a-zA-Z_0-9]}"
             // will return file.
-            list.add(m.group(1));
+            list.add(matcher.group(1));
         }
 
         return list;

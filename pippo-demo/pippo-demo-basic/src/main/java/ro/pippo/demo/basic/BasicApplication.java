@@ -19,6 +19,7 @@ import ro.pippo.core.Application;
 import ro.pippo.core.HttpConstants;
 import ro.pippo.core.Request;
 import ro.pippo.core.Response;
+import ro.pippo.core.route.FileResourceHandler;
 import ro.pippo.core.route.RouteHandler;
 import ro.pippo.core.route.RouteHandlerChain;
 import ro.pippo.demo.common.Contact;
@@ -155,6 +156,9 @@ public class BasicApplication extends Application {
             }
 
         });
+
+         // send files from a local folder (try a request like 'src/main/java/ro/pippo/demo/basic/BasicApplication.java')
+        GET(new FileResourceHandler("/src", "src"));
     }
 
 }
