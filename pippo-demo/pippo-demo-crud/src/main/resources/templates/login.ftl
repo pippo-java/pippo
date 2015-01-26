@@ -25,7 +25,7 @@
                             <div class="form-group">
                                 <input class="form-control" placeholder="Password" name="password" type="password">
                             </div>
-                            <input class="btn btn-success btn-block" type="submit" value="Login">
+                            <input class="btn btn-success btn-block" type="submit" name="login" value="Login">
                         </fieldset>
                     </form>
                 </div>
