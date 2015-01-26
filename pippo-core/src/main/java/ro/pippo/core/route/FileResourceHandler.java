@@ -40,7 +40,7 @@ public class FileResourceHandler extends StaticResourceHandler {
         URL url = null;
 
         try {
-            File file = new File(getResourceBasePath(), resourcePath);
+            File file = new File(getResourceBasePath(), resourcePath).getAbsoluteFile();
             if (file.exists() && file.isFile()) {
                 url = file.toURI().toURL();
             } else {
