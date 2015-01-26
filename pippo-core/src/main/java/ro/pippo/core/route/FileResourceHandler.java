@@ -31,8 +31,15 @@ public class FileResourceHandler extends StaticResourceHandler {
 
     private static final Logger log = LoggerFactory.getLogger(FileResourceHandler.class);
 
-    public FileResourceHandler(String urlPath, String resourceBasePath) {
-        super(urlPath, resourceBasePath);
+    final File directory;
+
+    public FileResourceHandler(String urlPath, File directory) {
+        super(urlPath);
+        this.directory = directory.getAbsoluteFile();
+    }
+
+    public FileResourceHandler(String urlPath, String directory) {
+        this(urlPath, new File(directory));
     }
 
     @Override
@@ -40,7 +47,7 @@ public class FileResourceHandler extends StaticResourceHandler {
         URL url = null;
 
         try {
-            File file = new File(getResourceBasePath(), resourcePath).getAbsoluteFile();
+            File file = new File(directory, resourcePath).getAbsoluteFile();
             if (file.exists() && file.isFile()) {
                 url = file.toURI().toURL();
             } else {

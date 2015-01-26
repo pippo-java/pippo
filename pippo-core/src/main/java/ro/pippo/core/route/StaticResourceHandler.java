@@ -40,19 +40,13 @@ public abstract class StaticResourceHandler implements RouteHandler {
     public static final String PATH_PARAMETER = "path";
 
     private final String uriPattern;
-    private final String resourceBasePath;
 
     private MimeTypes mimeTypes;
 
     private HttpCacheToolkit httpCacheToolkit;
 
-    public StaticResourceHandler(String urlPath, String resourceBasePath) {
+    public StaticResourceHandler(String urlPath) {
         this.uriPattern = String.format("/%s/{%s: .*}", getNormalizedPath(urlPath), PATH_PARAMETER);
-        this.resourceBasePath = getNormalizedPath(resourceBasePath);
-    }
-
-    public String getResourceBasePath() {
-        return resourceBasePath;
     }
 
     public String getUriPattern() {
@@ -98,12 +92,6 @@ public abstract class StaticResourceHandler implements RouteHandler {
 
         return path;
     }
-
-    /*
-    protected String getFilename(String path) {
-        return path.substring(path.lastIndexOf('/') + 1);
-    }
-    */
 
     protected void streamResource(URL resourceUrl, Request request, Response response) {
         try {
