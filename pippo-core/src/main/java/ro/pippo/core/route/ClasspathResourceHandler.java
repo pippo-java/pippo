@@ -24,13 +24,20 @@ import java.net.URL;
  */
 public class ClasspathResourceHandler extends StaticResourceHandler {
 
+    private final String resourceBasePath;
+
     public ClasspathResourceHandler(String urlPath, String resourceBasePath) {
-        super(urlPath, resourceBasePath);
+        super(urlPath);
+        this.resourceBasePath = getNormalizedPath(resourceBasePath);
     }
 
     @Override
     public URL getResourceUrl(String resourcePath) {
         return this.getClass().getClassLoader().getResource(getResourceBasePath() + "/" + resourcePath);
+    }
+
+    public String getResourceBasePath() {
+        return resourceBasePath;
     }
 
 }
