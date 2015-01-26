@@ -59,6 +59,6 @@ public interface Router {
 
     public String uriFor(Class<? extends Controller> controllerClass, String methodName);
 
-    public String uriPatternFor(Class<? extends ClasspathResourceHandler> resourceHandlerClass);
+    public String uriPatternFor(Class<? extends StaticResourceHandler> resourceHandlerClass);
 
 }

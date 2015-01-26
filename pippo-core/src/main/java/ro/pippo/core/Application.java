@@ -21,8 +21,8 @@ import ro.pippo.core.controller.ControllerInitializationListenerList;
 import ro.pippo.core.controller.ControllerInstantiationListenerList;
 import ro.pippo.core.controller.ControllerInvokeListenerList;
 import ro.pippo.core.controller.DefaultControllerHandlerFactory;
-import ro.pippo.core.route.ClasspathResourceHandler;
 import ro.pippo.core.route.DefaultRouter;
+import ro.pippo.core.route.StaticResourceHandler;
 import ro.pippo.core.route.Route;
 import ro.pippo.core.route.RouteHandler;
 import ro.pippo.core.route.Router;
@@ -202,7 +202,7 @@ public class Application {
         getRouter().setContextPath(contextPath);
     }
 
-    public void GET(ClasspathResourceHandler resourceHandler) {
+    public void GET(StaticResourceHandler resourceHandler) {
         if (getRouter().uriPatternFor(resourceHandler.getClass()) != null) {
             throw new PippoRuntimeException("You may only register one route for {}",
                     resourceHandler.getClass().getSimpleName());
