@@ -53,10 +53,6 @@ public final class PippoConstants {
 
     public static final String SETTING_SERVER_CONTEXT_PATH = "server.contextPath";
 
-    public static final String SETTING_SERVER_EXTERNAL_FILES_PATH = "server.externalFilesPath";
-
-    public static final String SETTING_SERVER_EXTERNAL_FILES_LOCATION = "server.externalFilesLocation";
-
     public static final String SETTING_SERVER_KEYSTORE_FILE = "server.keystoreFile";
 
     public static final String SETTING_SERVER_KEYSTORE_PASSWORD = "server.keystorePassword";
