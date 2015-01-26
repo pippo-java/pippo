@@ -794,6 +794,11 @@ public class Response {
     public void resource(InputStream input) {
         checkCommitted();
 
+        // add cookies
+        for (Cookie cookie : getCookies()) {
+            httpServletResponse.addCookie(cookie);
+        }
+
         // content type to OCTET_STREAM if it's not set
         if (getContentType() == null) {
             contentType(HttpConstants.ContentType.APPLICATION_OCTET_STREAM);
@@ -805,7 +810,10 @@ public class Response {
                 contentLength(length);
             }
 
-            commit();
+            // by calling httpServletResponse.getOutputStream() we have already
+            // committed the response
+            httpServletResponse.flushBuffer();
+
         } catch (Exception e) {
             throw new PippoRuntimeException(e);
         } finally {
@@ -837,6 +845,11 @@ public class Response {
     public void file(String filename, InputStream input) {
         checkCommitted();
 
+        // add cookies
+        for (Cookie cookie : getCookies()) {
+            httpServletResponse.addCookie(cookie);
+        }
+
         // content type to OCTET_STREAM if it's not set
         if (getContentType() == null) {
             contentType(HttpConstants.ContentType.APPLICATION_OCTET_STREAM);
@@ -856,7 +869,10 @@ public class Response {
                 contentLength(length);
             }
 
-            commit();
+            // by calling httpServletResponse.getOutputStream() we have already
+            // committed the response
+            httpServletResponse.flushBuffer();
+
         } catch (Exception e) {
             throw new PippoRuntimeException(e);
         } finally {
@@ -933,6 +949,7 @@ public class Response {
         }
 
         try {
+            log.debug("Response committed");
             httpServletResponse.flushBuffer();
         } catch (IOException e) {
             throw new PippoRuntimeException(e);
