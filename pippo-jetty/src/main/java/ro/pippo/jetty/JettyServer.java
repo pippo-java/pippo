@@ -15,36 +15,28 @@
  */
 package ro.pippo.jetty;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.EnumSet;
-import java.util.concurrent.TimeUnit;
+import org.eclipse.jetty.server.Handler;
+import org.eclipse.jetty.server.Request;
+import org.eclipse.jetty.server.Server;
+import org.eclipse.jetty.server.ServerConnector;
+import org.eclipse.jetty.server.handler.ResourceHandler;
+import org.eclipse.jetty.servlet.FilterHolder;
+import org.eclipse.jetty.servlet.ServletContextHandler;
+import org.eclipse.jetty.util.ssl.SslContextFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import ro.pippo.core.AbstractWebServer;
+import ro.pippo.core.HttpConstants;
+import ro.pippo.core.PippoRuntimeException;
 
 import javax.servlet.DispatcherType;
 import javax.servlet.MultipartConfigElement;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-import org.eclipse.jetty.server.Handler;
-import org.eclipse.jetty.server.Request;
-import org.eclipse.jetty.server.Server;
-import org.eclipse.jetty.server.ServerConnector;
-import org.eclipse.jetty.server.handler.ContextHandler;
-import org.eclipse.jetty.server.handler.HandlerList;
-import org.eclipse.jetty.server.handler.ResourceHandler;
-import org.eclipse.jetty.servlet.FilterHolder;
-import org.eclipse.jetty.servlet.ServletContextHandler;
-import org.eclipse.jetty.util.resource.Resource;
-import org.eclipse.jetty.util.ssl.SslContextFactory;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import ro.pippo.core.AbstractWebServer;
-import ro.pippo.core.HttpConstants;
-import ro.pippo.core.PippoRuntimeException;
-import ro.pippo.core.RuntimeMode;
-import ro.pippo.core.util.StringUtils;
+import java.io.IOException;
+import java.util.EnumSet;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @author Decebal Suiu
@@ -69,8 +61,8 @@ public class JettyServer extends AbstractWebServer {
         connectors[0] = serverConnector;
         server.setConnectors(connectors);
 
-        Handler handler = createHandlerList();
-        server.setHandler(handler);
+        Handler pippoHandler = createPippoHandler();
+        server.setHandler(pippoHandler);
 
         try {
             String version = server.getClass().getPackage().getImplementationVersion();
@@ -114,51 +106,6 @@ public class JettyServer extends AbstractWebServer {
         return new ServerConnector(new Server(), sslContextFactory);
     }
 
-    protected HandlerList createHandlerList() {
-        HandlerList handlerList = new HandlerList();
-
-        // add external static files handler
-        Handler externalStaticResourceHandler = createExternalStaticResourceHandler();
-        if (externalStaticResourceHandler != null) {
-            String contextPath = StringUtils.addEnd(StringUtils.addStart(settings.getContextPath(), "/"), "/");
-            String extPath = StringUtils.removeStart(settings.getExternalStaticFilesPath(), "/");
-            String path = contextPath + extPath;
-
-            ContextHandler extHandler = new ContextHandler(path);
-            extHandler.setHandler(externalStaticResourceHandler);
-            handlerList.addHandler(extHandler);
-        }
-
-        // add pippo handler
-        Handler pippoHandler = createPippoHandler();
-        handlerList.addHandler(pippoHandler);
-
-        return handlerList;
-    }
-
-    protected ResourceHandler createExternalStaticResourceHandler() {
-        ResourceHandler handler = null;
-
-        String externalStaticFilesLocation = settings.getExternalStaticFilesLocation();
-        if (externalStaticFilesLocation != null) {
-            log.debug("External static files location: '{}'", externalStaticFilesLocation);
-            handler = new StaticResourceHandler();
-            File dir = new File(externalStaticFilesLocation);
-            if (!dir.exists() || !dir.isDirectory()) {
-                log.warn("Folder '" + dir.getAbsoluteFile() + "' doesn't exist");
-            }
-            handler.setBaseResource(Resource.newResource(dir));
-            handler.setDirectoriesListed(false);
-            if (RuntimeMode.getCurrent() == RuntimeMode.DEV) {
-                handler.setCacheControl("no-cache"); // disable cache
-            }
-        } else {
-            log.debug("No external static files location");
-        }
-
-        return handler;
-    }
-
     protected ServletContextHandler createPippoHandler() {
         String location = pippoFilter.getApplication().getUploadLocation();
         long maxFileSize = pippoFilter.getApplication().getMaximumUploadSize();
@@ -175,7 +122,7 @@ public class JettyServer extends AbstractWebServer {
 
         FilterHolder pippoFilterHolder = new FilterHolder(pippoFilter);
         handler.addFilter(pippoFilterHolder, filterPath, dispatches);
-        log.debug("Using pippo filter for path '{}'",  filterPath);
+        log.debug("Using pippo filter for path '{}'", filterPath);
 
         return handler;
     }
@@ -187,7 +134,7 @@ public class JettyServer extends AbstractWebServer {
 
         @Override
         public void handle(String target, Request baseRequest, HttpServletRequest request, HttpServletResponse response)
-                throws IOException, ServletException {
+            throws IOException, ServletException {
             if (request.getRequestURI().equals("/")) {
                 return;
             }
@@ -212,7 +159,7 @@ public class JettyServer extends AbstractWebServer {
 
         @Override
         public void doHandle(String target, Request baseRequest, HttpServletRequest request, HttpServletResponse response)
-                throws IOException, ServletException {
+            throws IOException, ServletException {
 
             if (isMultipartRequest(request)) {
                 baseRequest.setAttribute(Request.__MULTIPART_CONFIG_ELEMENT, multipartConfig);
@@ -223,8 +170,8 @@ public class JettyServer extends AbstractWebServer {
 
         private boolean isMultipartRequest(HttpServletRequest request) {
             return HttpConstants.Method.POST.equalsIgnoreCase(request.getMethod())
-                    && request.getContentType() != null
-                    && request.getContentType().toLowerCase().startsWith(HttpConstants.ContentType.MULTIPART_FORM_DATA);
+                && request.getContentType() != null
+                && request.getContentType().toLowerCase().startsWith(HttpConstants.ContentType.MULTIPART_FORM_DATA);
         }
 
     }

@@ -390,13 +390,12 @@ Serving static files
 --------------------
 Web applications generally need to serve resource files such as images, JavaScript, or CSS. In Pippo, we refer to these files as “static files”.
 
-The easiest way of serving static files is to use the `PublicResourceHandler` and `WebjarsResourceHandler`.
+The easiest way of serving static files is to use the `PublicResourceHandler`, `WebjarsResourceHandler`, & `FileResourceHandler`.
 
 ```java
 Pippo pippo = new Pippo();
 pippo.getApplication().GET(new PublicResourceHandler());
 pippo.getApplication().GET(new WebjarsResourceHandler());
-pippo.getServer().getSettings().externalStaticFilesLocation("/var/myapp/public");
 ```
 
 The CrudDemo is a good application that demonstrates the concept of static files. In pippo-demo/src/main/resources I created a folder __public__ and I put all assets in that folder (imgs, css, js, fonts, ...).
@@ -429,13 +428,11 @@ The CrudDemo also uses a custom CSS file which is a classpath resource from the 
 </head>
 ```
 
-If you want to serve static files that are not on the classpath and you are using a Pippo WebServer then you may use the `externalStaticFilesLocation()` method.
+If you want to serve static files that are not on the classpath then you may use the `FileResourceHandler`.
 
 ```java
 Pippo pippo = new Pippo();
-pippo.getApplication().GET(new PublicResourceHandler());
-pippo.getApplication().GET(new WebjarsResourceHandler());
-pippo.getServer().getSettings().externalStaticFilesLocation("/var/myapp/public");
+pippo.getApplication().GET(new FileResourceHandler("/src", "src"));
 ```
 
 Reverse routing
@@ -706,11 +703,11 @@ see the result.
 You can change some aspects of the embedded web server using `WebServerSettings`:
 ```java
 Pippo pippo = new Pippo();
-pippo.getServer().getSettings().port(8081).externalStaticFilesLocation("/var/assets");
+pippo.getServer().getSettings().port(8081);
 pippo.start();
 ```
 
-In above snippet I changed the port to _8081_ and ai specify the external static files location to _/var/assets_.
+In above snippet I changed the port to _8081_.
 
 If you need to create support for another embedded web server that is not implemented in Pippo or third-party modules 
 than all you need to do is to implement `WebServer` (or to extends `AbstractWebServer`).
