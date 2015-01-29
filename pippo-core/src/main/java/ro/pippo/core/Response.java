@@ -794,6 +794,11 @@ public class Response {
     public void resource(InputStream input) {
         checkCommitted();
 
+        // set status to OK if it's not set
+        if (getStatus() == 0) {
+            ok();
+        }
+
         // add cookies
         for (Cookie cookie : getCookies()) {
             httpServletResponse.addCookie(cookie);
@@ -841,6 +846,11 @@ public class Response {
      */
     public void file(String filename, InputStream input) {
         checkCommitted();
+
+        // set status to OK if it's not set
+        if (getStatus() == 0) {
+            ok();
+        }
 
         // add cookies
         for (Cookie cookie : getCookies()) {
