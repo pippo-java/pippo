@@ -16,6 +16,7 @@
 package ro.pippo.core;
 
 import ro.pippo.core.route.DefaultRouteHandlerChainFactory;
+import ro.pippo.core.route.RouteHandlerChain;
 import ro.pippo.core.route.RouteHandlerChainFactory;
 import ro.pippo.core.route.RouteMatch;
 import ro.pippo.core.route.Router;
@@ -277,7 +278,7 @@ public class PippoFilter implements Filter {
     }
 
     private void initIgnorePaths(FilterConfig filterConfig) {
-        ignorePaths = new HashSet<String>();
+        ignorePaths = new HashSet<>();
         String paths = filterConfig.getInitParameter(IGNORE_PATHS_PARAM);
         if (paths != null && !paths.isEmpty()) {
             String[] parts = paths.split(",");
@@ -381,6 +382,7 @@ public class PippoFilter implements Filter {
         if (factory == null) {
             factory = new DefaultRequestFactory();
         }
+
         return factory;
     }
 
@@ -389,6 +391,7 @@ public class PippoFilter implements Filter {
         if (factory == null) {
             factory = new DefaultResponseFactory();
         }
+
         return factory;
     }
 
@@ -397,6 +400,7 @@ public class PippoFilter implements Filter {
         if (factory == null) {
             factory = new DefaultRouteHandlerChainFactory();
         }
+
         return factory;
     }
 
@@ -432,14 +436,12 @@ public class PippoFilter implements Filter {
         String pippoVersion;
 
         try {
-
             Properties prop = new Properties();
             URL url = ClasspathUtils.locateOnClasspath(PippoConstants.LOCATION_OF_PIPPO_BUILTIN_PROPERTIES);
             InputStream stream = url.openStream();
             prop.load(stream);
 
             pippoVersion = prop.getProperty(PIPPO_VERSION_PROPERTY_KEY);
-
         } catch (Exception e) {
             //this should not happen. Never.
             throw new PippoRuntimeException("Something is wrong with your build. Cannot find resource {}",

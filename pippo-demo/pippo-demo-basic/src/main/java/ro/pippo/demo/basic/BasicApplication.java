@@ -159,6 +159,16 @@ public class BasicApplication extends Application {
 
          // send files from a local folder (try a request like 'src/main/java/ro/pippo/demo/basic/BasicApplication.java')
         GET(new FileResourceHandler("/src", "src"));
+
+        // use a finally filter (invoked even when exceptions were raised in previous routes)
+        ALL("/.*", new RouteHandler() {
+
+            @Override
+            public void handle(Request request, Response response, RouteHandlerChain chain) {
+                System.out.println(">>> Cleanup here");
+            }
+
+        }).runAsFinally();
     }
 
 }
