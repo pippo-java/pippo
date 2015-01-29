@@ -805,13 +805,10 @@ public class Response {
         }
 
         try {
-            long length = IoUtils.copy(input, httpServletResponse.getOutputStream());
-            if (isHeaderEmpty(HttpConstants.Header.CONTENT_LENGTH)) {
-                contentLength(length);
-            }
+            // by calling httpServletResponse.getOutputStream() we are committing the response
+            IoUtils.copy(input, httpServletResponse.getOutputStream());
 
-            // by calling httpServletResponse.getOutputStream() we have already
-            // committed the response
+            // flushing the buffer forces chunked-encoding
             httpServletResponse.flushBuffer();
 
         } catch (Exception e) {
@@ -864,13 +861,10 @@ public class Response {
         }
 
         try {
-            long length = IoUtils.copy(input, httpServletResponse.getOutputStream());
-            if (isHeaderEmpty(HttpConstants.Header.CONTENT_LENGTH)) {
-                contentLength(length);
-            }
+            // by calling httpServletResponse.getOutputStream() we are committing the response
+            IoUtils.copy(input, httpServletResponse.getOutputStream());
 
-            // by calling httpServletResponse.getOutputStream() we have already
-            // committed the response
+            // flushing the buffer forces chunked-encoding
             httpServletResponse.flushBuffer();
 
         } catch (Exception e) {
