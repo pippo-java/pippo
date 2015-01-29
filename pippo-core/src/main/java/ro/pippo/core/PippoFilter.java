@@ -211,11 +211,7 @@ public class PippoFilter implements Filter {
             }
         } catch (Exception e) {
             log.error(e.getMessage(), e);
-            if (!response.isCommitted()) {
-                errorHandler.handle(e, request, response);
-            } else {
-                log.debug("The response has already been committed. Cannot use the exception handler.");
-            }
+            errorHandler.handle(e, request, response);
         } finally {
             log.debug("Returned status code {} for {} '{}'", response.getStatus(), requestMethod, requestUri);
             ThreadContext.restore(previousThreadContext);

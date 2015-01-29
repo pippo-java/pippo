@@ -50,9 +50,7 @@ public class DefaultErrorHandler implements ErrorHandler {
         String contentType = response.getContentType();
 
         if (StringUtils.isNullOrEmpty(contentType)) {
-
             if (!StringUtils.isNullOrEmpty(request.getAcceptType())) {
-
                 String acceptType = request.getAcceptType();
                 if (acceptType.startsWith(HttpConstants.ContentType.TEXT_HTML)
                         || acceptType.startsWith(HttpConstants.ContentType.TEXT_XHTML)) {
@@ -69,29 +67,20 @@ public class DefaultErrorHandler implements ErrorHandler {
                 // retrieve the negotiated type
                 contentType = response.getContentType();
             }
-
         }
 
         if (StringUtils.isNullOrEmpty(contentType)) {
-
             log.debug("No accept type nor content type specified! Defaulting to text/html.");
             renderHtml(statusCode, request, response);
-
         } else if (contentType.equals(HttpConstants.ContentType.TEXT_HTML)) {
-
             // render an html page
             renderHtml(statusCode, request, response);
-
         } else {
-
             // render an object representation
             ContentTypeEngine engine = application.getContentTypeEngine(contentType);
-
             if (engine == null) {
-
                 log.warn("No registered content type engine for '{}'", contentType);
                 renderHtml(statusCode, request, response);
-
             } else {
                 Error error = prepareError(statusCode, request, response);
                 try {
@@ -131,6 +120,10 @@ public class DefaultErrorHandler implements ErrorHandler {
 
     @Override
     public void handle(Exception exception, Request request, Response response) {
+        if (response.isCommitted()) {
+            log.debug("The response has already been committed. Cannot use the exception handler.");
+            return;
+        }
 
         String message = exception.getMessage();
         if (!StringUtils.isNullOrEmpty(message) && !response.getLocals().containsKey("message")) {
@@ -194,6 +187,7 @@ public class DefaultErrorHandler implements ErrorHandler {
         if (application.getPippoSettings().isDev()) {
             locals.put("routes", application.getRouter().getRoutes());
         }
+
         return locals;
     }
 
