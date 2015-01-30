@@ -59,8 +59,7 @@ public class Pippo {
                 throw new PippoRuntimeException("Cannot found a WebServer");
             }
 
-            PippoFilter pippoFilter = new PippoFilter();
-            pippoFilter.setApplication(application);
+            PippoFilter pippoFilter = createPippoFilter(application);
             server.setPippoFilter(pippoFilter);
 
             WebServerSettings serverSettings = new WebServerSettings(application.getPippoSettings());
@@ -87,6 +86,27 @@ public class Pippo {
         if (server != null) {
             server.stop();
         }
+    }
+
+    /**
+     * Override this method if you want to customize the PippoFilter.
+     * <pre>
+     *     protected PippoFilter createPippoFilter(Application application) {
+     *         PippoFilter pippoFilter = super.createPippoFilter(application);
+     *         pippoFilter.setIgnorePaths(Collections.singleton("/favicon.ico"));
+     *
+     *         return pippoFilter;
+     *     }
+     * <pre/>
+     *
+     * @param application
+     * @return
+     */
+    protected PippoFilter createPippoFilter(Application application) {
+        PippoFilter pippoFilter = new PippoFilter();
+        pippoFilter.setApplication(application);
+
+        return pippoFilter;
     }
 
 }
