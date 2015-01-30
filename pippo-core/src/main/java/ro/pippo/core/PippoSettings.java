@@ -15,6 +15,8 @@
  */
 package ro.pippo.core;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import ro.pippo.core.util.ClasspathUtils;
 import ro.pippo.core.util.StringUtils;
 
@@ -32,14 +34,13 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.concurrent.TimeUnit;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * A simple properties-file based settings class for Pippo applications.
@@ -65,7 +66,7 @@ import org.slf4j.LoggerFactory;
  * Settings without a mode prefix are the shared for all modes unless explicitly
  * overridden by a mode-specific setting.
  * </p>
- *
+ * <p/>
  * <pre>
  * example.value = my example value
  * %prod.example.value = my production value
@@ -92,6 +93,8 @@ public class PippoSettings {
 
     private final Properties overrides;
 
+    private final Map<String, String> interpolationValues;
+
     private final URL propertiesUrl;
 
     private final boolean isFile;
@@ -102,6 +105,9 @@ public class PippoSettings {
         this.runtimeMode = runtimeMode;
         this.propertiesUrl = getPropertiesUrl();
         this.isFile = propertiesUrl.getProtocol().equals("file:");
+        this.interpolationValues = new HashMap<>();
+
+        loadInterpolationValues();
         this.properties = loadProperties(propertiesUrl);
         this.overrides = new Properties();
     }
@@ -209,12 +215,15 @@ public class PippoSettings {
             if (isFile) {
                 baseDir = new File(propertiesUrl.getPath()).getParentFile();
             } else {
-                // use current working directory for includes
+                // use current working directory for includes/overrides
                 baseDir = new File(System.getProperty("user.dir"));
             }
 
             // allow including other properties files
             props = loadIncludes(baseDir, props);
+
+            // allow overriding properties
+            props = loadOverrides(baseDir, props);
 
             // collect settings for the current runtime mode
             String prefix = "%" + runtimeMode.toString() + ".";
@@ -245,6 +254,10 @@ public class PippoSettings {
 
     /**
      * Recursively read "include" properties files.
+     * <p>
+     * "Include" properties are the base properties which are overwritten by
+     * the provided properties.
+     * </p>
      *
      * @param baseDir
      * @param properties
@@ -252,9 +265,38 @@ public class PippoSettings {
      * @throws IOException
      */
     private Properties loadIncludes(File baseDir, Properties properties) throws IOException {
-        Properties baseProperties = new Properties();
+        return loadProperties(baseDir, properties, "include", false);
+    }
 
-        String include = (String) properties.remove("include");
+    /**
+     * Recursively read "override" properties files.
+     * <p>
+     * "Override" properties overwrite the provided properties.
+     * </p>
+     *
+     * @param baseDir
+     * @param properties
+     * @return the merged properties
+     * @throws IOException
+     */
+    private Properties loadOverrides(File baseDir, Properties properties) throws IOException {
+        return loadProperties(baseDir, properties, "override", true);
+    }
+
+    /**
+     * Recursively read referenced properties files.
+     *
+     * @param baseDir
+     * @param currentProperties
+     * @param key
+     * @param override
+     * @return the merged properties
+     * @throws IOException
+     */
+    private Properties loadProperties(File baseDir, Properties currentProperties, String key, boolean override) throws IOException {
+        Properties loadedProperties = new Properties();
+
+        String include = (String) currentProperties.remove(key);
         if (!StringUtils.isNullOrEmpty(include)) {
             // allow for multiples
             List<String> names = StringUtils.getList(include, defaultListDelimiter);
@@ -263,11 +305,14 @@ public class PippoSettings {
                     continue;
                 }
 
+                // interpolate any variables
+                final String fileName = interpolateString(name);
+
                 // try co-located
-                File file = new File(baseDir, name.trim());
+                File file = new File(baseDir, fileName);
                 if (!file.exists()) {
                     // try absolute path
-                    file = new File(name.trim());
+                    file = new File(fileName);
                 }
 
                 if (!file.exists()) {
@@ -276,23 +321,80 @@ public class PippoSettings {
                 }
 
                 // load properties
-                log.debug("loading includes from {}", file);
+                log.debug("loading {} settings from {}", key, file);
                 try (FileInputStream iis = new FileInputStream(file)) {
-                    baseProperties.load(iis);
+                    loadedProperties.load(iis);
                 }
 
-                // read nested includes
-                baseProperties = loadIncludes(file.getParentFile(), baseProperties);
+                // read nested properties
+                loadedProperties = loadProperties(file.getParentFile(), loadedProperties, key, override);
             }
         }
 
-        // includes are "default" properties, they must be set first and the
-        // props which specified the "includes" must override
         Properties merged = new Properties();
-        merged.putAll(baseProperties);
-        merged.putAll(properties);
+        if (override) {
+            // "override" settings overwrite the current properties
+            merged.putAll(currentProperties);
+            merged.putAll(loadedProperties);
+        } else {
+            // "include" settings are overwritten by the current properties
+            merged.putAll(loadedProperties);
+            merged.putAll(currentProperties);
+        }
 
         return merged;
+    }
+
+    /**
+     * Creates a map of prepared interpolation values.
+     * <p>
+     * All values support the standard ${name} syntax but also support
+     * the @{name} syntax to cope with build systems with aggressive
+     * token filtering.
+     * </p>
+     */
+    protected void loadInterpolationValues() {
+        // System properties may be accessed using ${name} or @{name}
+        for (String propertyName : System.getProperties().stringPropertyNames()) {
+            String value = System.getProperty(propertyName);
+            if (!StringUtils.isNullOrEmpty(value)) {
+                addInterpolationValue(propertyName, value);
+            }
+        }
+
+        // Environment variables may be accessed using ${env.NAME} or @{env.NAME}
+        for (String variableName : System.getenv().keySet()) {
+            String value = System.getenv(variableName);
+            if (!StringUtils.isNullOrEmpty(value)) {
+                addInterpolationValue("env." + variableName, value);
+            }
+        }
+    }
+
+    /**
+     * Add a value that may be interpolated.
+     *
+     * @param name
+     * @param value
+     */
+    protected void addInterpolationValue(String name, String value) {
+        interpolationValues.put(String.format("${%s}", name), value);
+        interpolationValues.put(String.format("@{%s}", name), value);
+    }
+
+    /**
+     * Interpolates a string value using System properties and Environment variables.
+     *
+     * @param value
+     * @return an interpolated string
+     */
+    protected String interpolateString(String value) {
+        String interpolatedValue = value;
+        for (Map.Entry<String, String> entry : interpolationValues.entrySet()) {
+            interpolatedValue = interpolatedValue.replace(entry.getKey(), entry.getValue());
+        }
+
+        return interpolatedValue;
     }
 
     /**
@@ -346,6 +448,20 @@ public class PippoSettings {
     }
 
     /**
+     * Returns a string value that has been interpolated from System Properties
+     * and Environment Variables using the ${name} or @{name} syntax.
+     *
+     * @param name
+     * @param defaultValue
+     * @return an interpolated string
+     */
+    public String getInterpolatedString(String name, String defaultValue) {
+        String value = getString(name, defaultValue);
+        final String interpolatedValue = interpolateString(value);
+        return interpolatedValue;
+    }
+
+    /**
      * Returns the boolean value for the specified name. If the name does not
      * exist or the value for the name can not be interpreted as a boolean, the
      * defaultValue is returned.
@@ -380,7 +496,7 @@ public class PippoSettings {
             }
         } catch (NumberFormatException e) {
             log.warn("Failed to parse integer for " + name + " using default of "
-                    + defaultValue);
+                + defaultValue);
         }
 
         return defaultValue;
@@ -403,7 +519,7 @@ public class PippoSettings {
             }
         } catch (NumberFormatException e) {
             log.warn("Failed to parse long for " + name + " using default of "
-                    + defaultValue);
+                + defaultValue);
         }
 
         return defaultValue;
@@ -426,7 +542,7 @@ public class PippoSettings {
             }
         } catch (NumberFormatException e) {
             log.warn("Failed to parse float for " + name + " using default of "
-                    + defaultValue);
+                + defaultValue);
         }
 
         return defaultValue;
@@ -449,7 +565,7 @@ public class PippoSettings {
             }
         } catch (NumberFormatException e) {
             log.warn("Failed to parse double for " + name + " using default of "
-                    + defaultValue);
+                + defaultValue);
         }
 
         return defaultValue;
@@ -587,7 +703,7 @@ public class PippoSettings {
 
     /**
      * Gets the duration setting and converts it to milliseconds.
-     *
+     * <p/>
      * The setting must be use one of the following conventions:
      * <ul>
      * <li> n MILLISECONDS
@@ -606,7 +722,7 @@ public class PippoSettings {
 
     /**
      * Gets the duration setting and converts it to milliseconds.
-     *
+     * <p/>
      * The setting must be use one of the following conventions:
      * <ul>
      * <li>n MILLISECONDS
@@ -617,20 +733,19 @@ public class PippoSettings {
      * </ul>
      *
      * @param name
-     * @param defaultValue
-     *            in milliseconds
+     * @param defaultValue in milliseconds
      * @return milliseconds
      */
     public long getDurationInMilliseconds(String name, long defaultValue) {
         TimeUnit timeUnit = extractTimeUnit(name, defaultValue + " MILLISECONDS");
-        long duration =  getLong(name, defaultValue);
+        long duration = getLong(name, defaultValue);
 
         return timeUnit.toMillis(duration);
     }
 
     /**
      * Gets the duration setting and converts it to seconds.
-     *
+     * <p/>
      * The setting must be use one of the following conventions:
      * <ul>
      * <li>n MILLISECONDS
@@ -649,7 +764,7 @@ public class PippoSettings {
 
     /**
      * Gets the duration setting and converts it to seconds.
-     *
+     * <p/>
      * The setting must be use one of the following conventions:
      * <ul>
      * <li>n MILLISECONDS
@@ -660,20 +775,19 @@ public class PippoSettings {
      * </ul>
      *
      * @param name
-     * @param defaultValue
-     *            in seconds
+     * @param defaultValue in seconds
      * @return seconds
      */
     public long getDurationInSeconds(String name, long defaultValue) {
         TimeUnit timeUnit = extractTimeUnit(name, defaultValue + " SECONDS");
-        long duration =  getLong(name, defaultValue);
+        long duration = getLong(name, defaultValue);
 
         return timeUnit.toSeconds(duration);
     }
 
     /**
      * Gets the duration setting and converts it to minutes.
-     *
+     * <p/>
      * The setting must be use one of the following conventions:
      * <ul>
      * <li> n MILLISECONDS
@@ -692,7 +806,7 @@ public class PippoSettings {
 
     /**
      * Gets the duration setting and converts it to minutes.
-     *
+     * <p/>
      * The setting must be use one of the following conventions:
      * <ul>
      * <li>n MILLISECONDS
@@ -703,20 +817,19 @@ public class PippoSettings {
      * </ul>
      *
      * @param name
-     * @param defaultValue
-     *            in minutes
+     * @param defaultValue in minutes
      * @return minutes
      */
     public long getDurationInMinutes(String name, long defaultValue) {
         TimeUnit timeUnit = extractTimeUnit(name, defaultValue + " MINUTES");
-        long duration =  getLong(name, defaultValue);
+        long duration = getLong(name, defaultValue);
 
         return timeUnit.toMinutes(duration);
     }
 
     /**
      * Gets the duration setting and converts it to hours.
-     *
+     * <p/>
      * The setting must be use one of the following conventions:
      * <ul>
      * <li> n MILLISECONDS
@@ -735,7 +848,7 @@ public class PippoSettings {
 
     /**
      * Gets the duration setting and converts it to hours.
-     *
+     * <p/>
      * The setting must be use one of the following conventions:
      * <ul>
      * <li>n MILLISECONDS
@@ -746,20 +859,19 @@ public class PippoSettings {
      * </ul>
      *
      * @param name
-     * @param defaultValue
-     *            in hours
+     * @param defaultValue in hours
      * @return hours
      */
     public long getDurationInHours(String name, long defaultValue) {
         TimeUnit timeUnit = extractTimeUnit(name, defaultValue + " HOURS");
-        long duration =  getLong(name, defaultValue);
+        long duration = getLong(name, defaultValue);
 
         return timeUnit.toHours(duration);
     }
 
     /**
      * Gets the duration setting and converts it to days.
-     *
+     * <p/>
      * The setting must be use one of the following conventions:
      * <ul>
      * <li> n MILLISECONDS
@@ -778,7 +890,7 @@ public class PippoSettings {
 
     /**
      * Gets the duration setting and converts it to days.
-     *
+     * <p/>
      * The setting must be use one of the following conventions:
      * <ul>
      * <li>n MILLISECONDS
@@ -789,13 +901,12 @@ public class PippoSettings {
      * </ul>
      *
      * @param name
-     * @param defaultValue
-     *            in days
+     * @param defaultValue in days
      * @return days
      */
     public long getDurationInDays(String name, long defaultValue) {
         TimeUnit timeUnit = extractTimeUnit(name, defaultValue + " DAYS");
-        long duration =  getLong(name, defaultValue);
+        long duration = getLong(name, defaultValue);
 
         return timeUnit.toDays(duration);
     }
