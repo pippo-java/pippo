@@ -121,7 +121,7 @@ public abstract class StaticResourceHandler implements RouteHandler {
                 }
             }
         } catch (Exception e) {
-            throw new PippoRuntimeException("Failed to stream resource " + resourceUrl, e);
+            throw new PippoRuntimeException("Failed to stream resource {}", e, resourceUrl);
         }
     }
 

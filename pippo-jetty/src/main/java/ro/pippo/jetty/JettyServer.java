@@ -19,7 +19,6 @@ import org.eclipse.jetty.server.Handler;
 import org.eclipse.jetty.server.Request;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.ServerConnector;
-import org.eclipse.jetty.server.handler.ResourceHandler;
 import org.eclipse.jetty.servlet.FilterHolder;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.util.ssl.SslContextFactory;
@@ -125,23 +124,6 @@ public class JettyServer extends AbstractWebServer {
         log.debug("Using pippo filter for path '{}'", filterPath);
 
         return handler;
-    }
-
-    /**
-     * http://stackoverflow.com/questions/12766477/getting-a-403-on-root-requests-when-using-a-resourcehandler-and-custom-handler-i
-     */
-    private static class StaticResourceHandler extends ResourceHandler {
-
-        @Override
-        public void handle(String target, Request baseRequest, HttpServletRequest request, HttpServletResponse response)
-            throws IOException, ServletException {
-            if (request.getRequestURI().equals("/")) {
-                return;
-            }
-
-            super.handle(target, baseRequest, request, response);
-        }
-
     }
 
     /**

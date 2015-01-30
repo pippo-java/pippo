@@ -794,6 +794,11 @@ public class Response {
     public void resource(InputStream input) {
         checkCommitted();
 
+        // set status to OK if it's not set
+        if (getStatus() == 0) {
+            ok();
+        }
+
         // add cookies
         for (Cookie cookie : getCookies()) {
             httpServletResponse.addCookie(cookie);
@@ -805,13 +810,10 @@ public class Response {
         }
 
         try {
-            long length = IoUtils.copy(input, httpServletResponse.getOutputStream());
-            if (isHeaderEmpty(HttpConstants.Header.CONTENT_LENGTH)) {
-                contentLength(length);
-            }
+            // by calling httpServletResponse.getOutputStream() we are committing the response
+            IoUtils.copy(input, httpServletResponse.getOutputStream());
 
-            // by calling httpServletResponse.getOutputStream() we have already
-            // committed the response
+            // flushing the buffer forces chunked-encoding
             httpServletResponse.flushBuffer();
 
         } catch (Exception e) {
@@ -845,6 +847,11 @@ public class Response {
     public void file(String filename, InputStream input) {
         checkCommitted();
 
+        // set status to OK if it's not set
+        if (getStatus() == 0) {
+            ok();
+        }
+
         // add cookies
         for (Cookie cookie : getCookies()) {
             httpServletResponse.addCookie(cookie);
@@ -864,13 +871,10 @@ public class Response {
         }
 
         try {
-            long length = IoUtils.copy(input, httpServletResponse.getOutputStream());
-            if (isHeaderEmpty(HttpConstants.Header.CONTENT_LENGTH)) {
-                contentLength(length);
-            }
+            // by calling httpServletResponse.getOutputStream() we are committing the response
+            IoUtils.copy(input, httpServletResponse.getOutputStream());
 
-            // by calling httpServletResponse.getOutputStream() we have already
-            // committed the response
+            // flushing the buffer forces chunked-encoding
             httpServletResponse.flushBuffer();
 
         } catch (Exception e) {
