@@ -191,6 +191,11 @@ public class PippoFilter implements Filter {
         ErrorHandler errorHandler = application.getErrorHandler();
 
         try {
+            // Force the initial Response status code to Integer.MAX_VALUE.
+            // The chain is expected to properly set a Response status code.
+            // Note: Some containers (e.g. Jetty) prohibit setting 0.
+            response.status(Integer.MAX_VALUE);
+
             Router router = application.getRouter();
             List<RouteMatch> routeMatches = router.findRoutes(relativePath, requestMethod);
 
@@ -201,6 +206,10 @@ public class PippoFilter implements Filter {
             }
 
             if (!response.isCommitted()) {
+                if (response.getStatus() == Integer.MAX_VALUE) {
+                    log.info("Handlers in chain did not set a status code for {} '{}'", requestMethod, requestUri);
+                    response.notFound();
+                }
                 log.debug("Auto-committing response for {} '{}'", requestMethod, requestUri);
                 if (response.getStatus() >= HttpConstants.StatusCode.BAD_REQUEST) {
                     // delegate response to the error handler.
