@@ -18,10 +18,12 @@ package ro.pippo.jade;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
+import java.io.StringReader;
 import java.io.Writer;
 import java.util.Locale;
 import java.util.Map;
 
+import de.neuland.jade4j.template.ReaderTemplateLoader;
 import ro.pippo.core.Application;
 import ro.pippo.core.Languages;
 import ro.pippo.core.Messages;
@@ -75,7 +77,39 @@ public class JadeTemplateEngine implements TemplateEngine {
     }
 
     @Override
-    public void render(String templateName, Map<String, Object> model, Writer writer) {
+    public void renderString(String templateContent, Map<String, Object> model, Writer writer) {
+        // prepare the locale-aware i18n method
+        String language = (String) model.get(PippoConstants.REQUEST_PARAMETER_LANG);
+        if (StringUtils.isNullOrEmpty(language)) {
+            language = languages.getLanguageOrDefault(null);
+        }
+
+        // prepare the locale-aware prettyTime method
+        Locale locale = (Locale) model.get(PippoConstants.REQUEST_PARAMETER_LOCALE);
+        if (locale == null) {
+            locale = languages.getLocaleOrDefault(language);
+        }
+
+        model.put("pippo", new PippoHelper(messages, language, locale, router));
+        try (StringReader reader = new StringReader(templateContent)) {
+            ReaderTemplateLoader stringTemplateLoader = new ReaderTemplateLoader(reader, "StringTemplate");
+
+            JadeConfiguration stringTemplateConfiguration = new JadeConfiguration();
+            stringTemplateConfiguration.setCaching(false);
+            stringTemplateConfiguration.setTemplateLoader(stringTemplateLoader);
+            stringTemplateConfiguration.setMode(configuration.getMode());
+            stringTemplateConfiguration.setPrettyPrint(configuration.isPrettyPrint());
+
+            JadeTemplate stringTemplate = configuration.getTemplate("StringTemplate");
+            configuration.renderTemplate(stringTemplate, model, writer);
+            writer.flush();
+        } catch (Exception e) {
+            throw new PippoRuntimeException(e);
+        }
+    }
+
+    @Override
+    public void renderResource(String templateName, Map<String, Object> model, Writer writer) {
         // prepare the locale-aware i18n method
         String language = (String) model.get(PippoConstants.REQUEST_PARAMETER_LANG);
         if (StringUtils.isNullOrEmpty(language)) {
