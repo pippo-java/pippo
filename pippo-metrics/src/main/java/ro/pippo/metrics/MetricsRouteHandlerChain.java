@@ -91,8 +91,6 @@ public class MetricsRouteHandlerChain extends DefaultRouteHandlerChain {
 		}
 
 		handler.handle(request, response, this);
-
-		logUnhandledRoutes();
 	}
 
 }

@@ -25,4 +25,10 @@ public interface RouteHandlerChain {
      */
     public void next();
 
+
+    /**
+     * Cleanup ensures that Routes that are flagged to run as finally
+     * are executed.
+     */
+    public void cleanup();
 }
