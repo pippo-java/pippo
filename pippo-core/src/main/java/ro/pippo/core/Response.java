@@ -912,7 +912,7 @@ public class Response {
 
         // render the template using the merged model
         StringWriter stringWriter = new StringWriter();
-        templateEngine.render(templateName, model, stringWriter);
+        templateEngine.renderResource(templateName, model, stringWriter);
         send(stringWriter.toString());
     }
 

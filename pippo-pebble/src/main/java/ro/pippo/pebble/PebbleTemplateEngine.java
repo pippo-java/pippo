@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
+import com.mitchellbosecke.pebble.loader.StringLoader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -97,7 +98,31 @@ public class PebbleTemplateEngine implements TemplateEngine {
     }
 
     @Override
-    public void render(String templateName, Map<String, Object> model, Writer writer) {
+    public void renderString(String templateContent, Map<String, Object> model, Writer writer) {
+        String language = (String) model.get(PippoConstants.REQUEST_PARAMETER_LANG);
+        if (StringUtils.isNullOrEmpty(language)) {
+            language = languages.getLanguageOrDefault(null);
+        }
+        Locale locale = (Locale) model.get(PippoConstants.REQUEST_PARAMETER_LOCALE);
+        if (locale == null) {
+            locale = languages.getLocaleOrDefault(language);
+        }
+
+        try {
+            PebbleEngine stringEngine = new PebbleEngine(new StringLoader());
+            stringEngine.setStrictVariables(engine.isStrictVariables());
+            stringEngine.setTemplateCache(null);
+
+            PebbleTemplate template = stringEngine.getTemplate(templateContent);
+            template.evaluate(writer, model, locale);
+            writer.flush();
+        } catch (Exception e) {
+            throw new PippoRuntimeException(e);
+        }
+    }
+
+    @Override
+    public void renderResource(String templateName, Map<String, Object> model, Writer writer) {
         String language = (String) model.get(PippoConstants.REQUEST_PARAMETER_LANG);
         if (StringUtils.isNullOrEmpty(language)) {
             language = languages.getLanguageOrDefault(null);

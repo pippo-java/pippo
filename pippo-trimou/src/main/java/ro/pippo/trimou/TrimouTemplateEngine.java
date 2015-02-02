@@ -95,7 +95,35 @@ public class TrimouTemplateEngine implements TemplateEngine {
     }
 
     @Override
-    public void render(String templateName, Map<String, Object> model, Writer writer) {
+    public void renderString(String templateContent, Map<String, Object> model, Writer writer) {
+        String language = (String) model.get(PippoConstants.REQUEST_PARAMETER_LANG);
+        if (StringUtils.isNullOrEmpty(language)) {
+            language = languages.getLanguageOrDefault(null);
+        }
+
+        // prepare the locale
+        Locale locale = (Locale) model.get(PippoConstants.REQUEST_PARAMETER_LOCALE);
+        if (locale == null) {
+            locale = languages.getLocaleOrDefault(language);
+        }
+
+        try {
+            localeSupport.setCurrentLocale(locale);
+            Mustache template = engine.compileMustache("StringTemplate", templateContent);
+            template.render(writer, model);
+            writer.flush();
+        } catch (Exception e) {
+            if (e instanceof PippoRuntimeException) {
+                throw (PippoRuntimeException) e;
+            }
+            throw new PippoRuntimeException(e);
+        } finally {
+            localeSupport.remove();
+        }
+    }
+
+    @Override
+    public void renderResource(String templateName, Map<String, Object> model, Writer writer) {
         String language = (String) model.get(PippoConstants.REQUEST_PARAMETER_LANG);
         if (StringUtils.isNullOrEmpty(language)) {
             language = languages.getLanguageOrDefault(null);

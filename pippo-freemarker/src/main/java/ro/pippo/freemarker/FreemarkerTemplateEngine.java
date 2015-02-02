@@ -104,7 +104,34 @@ public class FreemarkerTemplateEngine implements TemplateEngine {
     }
 
     @Override
-    public void render(String templateName, Map<String, Object> model, Writer writer) {
+    public void renderString(String templateContent, Map<String, Object> model, Writer writer) {
+        // prepare the locale-aware i18n method
+        String language = (String) model.get(PippoConstants.REQUEST_PARAMETER_LANG);
+        if (StringUtils.isNullOrEmpty(language)) {
+            language = languages.getLanguageOrDefault(null);
+        }
+        model.put("i18n", new I18nMethod(messages, language));
+
+        // prepare the locale-aware prettyTime method
+        Locale locale = (Locale) model.get(PippoConstants.REQUEST_PARAMETER_LOCALE);
+        if (locale == null) {
+            locale = languages.getLocaleOrDefault(language);
+        }
+        model.put("prettyTime", new PrettyTimeMethod(locale));
+        model.put("formatTime", new FormatTimeMethod(locale));
+        model.put("webjarsAt", webjarResourcesMethod);
+        model.put("publicAt", publicResourcesMethod);
+
+        try {
+            Template template = new Template("StringTemplate", templateContent, configuration);
+            template.process(model, writer);
+        } catch (Exception e) {
+            throw new PippoRuntimeException(e);
+        }
+    }
+
+    @Override
+    public void renderResource(String templateName, Map<String, Object> model, Writer writer) {
         // prepare the locale-aware i18n method
         String language = (String) model.get(PippoConstants.REQUEST_PARAMETER_LANG);
         if (StringUtils.isNullOrEmpty(language)) {
