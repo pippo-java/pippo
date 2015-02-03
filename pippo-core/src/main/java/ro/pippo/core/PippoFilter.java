@@ -225,7 +225,7 @@ public class PippoFilter implements Filter {
             log.error(e.getMessage(), e);
             errorHandler.handle(e, request, response);
         } finally {
-            handlerChain.cleanup();
+            handlerChain.runFinallyRoutes();
             log.debug("Returned status code {} for {} '{}'", response.getStatus(), requestMethod, requestUri);
             ThreadContext.restore(previousThreadContext);
         }

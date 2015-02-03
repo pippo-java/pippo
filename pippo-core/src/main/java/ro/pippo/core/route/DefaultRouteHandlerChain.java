@@ -66,15 +66,11 @@ public class DefaultRouteHandlerChain implements RouteHandlerChain {
         }
     }
 
-    protected void handleRoute(Route route) {
-        route.getRouteHandler().handle(request, response, this);
-    }
-
     /**
-     * Log the RouteMatches that are not handled when we break the chain
+     * Execute all routes that are flagged to run as finally.
      */
     @Override
-    public void cleanup() {
+    public void runFinallyRoutes() {
         while (iterator.hasNext()) {
             RouteMatch routeMatch = iterator.next();
             if (routeMatch.getRoute().isRunAsFinally()) {
@@ -88,4 +84,9 @@ public class DefaultRouteHandlerChain implements RouteHandlerChain {
             }
         }
     }
+
+    protected void handleRoute(Route route) {
+        route.getRouteHandler().handle(request, response, this);
+    }
+
 }
