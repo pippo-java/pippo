@@ -44,7 +44,6 @@ public class DefaultRouteHandlerChain implements RouteHandlerChain {
 
     @Override
     public void next() {
-        // TODO it's an idea to throw an exception (NotNextRouteException or similar) ?!
         if (iterator.hasNext()) {
             // retrieves the next route
             RouteMatch routeMatch = iterator.next();
