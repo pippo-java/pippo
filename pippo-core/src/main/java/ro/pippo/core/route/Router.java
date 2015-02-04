@@ -43,9 +43,9 @@ public interface Router {
      */
     public void setContextPath(String contextPath);
 
-    public void addRoute(Route route) throws Exception;
+    public void addRoute(Route route);
 
-    public void removeRoute(Route route) throws Exception;
+    public void removeRoute(Route route);
 
     public List<RouteMatch> findRoutes(String requestUri, String requestMethod);
 

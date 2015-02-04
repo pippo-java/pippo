@@ -15,7 +15,10 @@
  */
 package ro.pippo.core;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import ro.pippo.core.route.DefaultRouteHandlerChainFactory;
+import ro.pippo.core.route.RouteHandlerChain;
 import ro.pippo.core.route.RouteHandlerChainFactory;
 import ro.pippo.core.route.RouteMatch;
 import ro.pippo.core.route.Router;
@@ -23,6 +26,15 @@ import ro.pippo.core.util.ClasspathUtils;
 import ro.pippo.core.util.ServiceLocator;
 import ro.pippo.core.util.StringUtils;
 
+import javax.servlet.Filter;
+import javax.servlet.FilterChain;
+import javax.servlet.FilterConfig;
+import javax.servlet.FilterRegistration;
+import javax.servlet.ServletException;
+import javax.servlet.ServletRequest;
+import javax.servlet.ServletResponse;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -35,19 +47,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Properties;
 import java.util.Set;
-
-import javax.servlet.Filter;
-import javax.servlet.FilterChain;
-import javax.servlet.FilterConfig;
-import javax.servlet.FilterRegistration;
-import javax.servlet.ServletException;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * @author Decebal Suiu
@@ -79,10 +78,10 @@ public class PippoFilter implements Filter {
     private static final String slash = "/";
 
     private final String PIPPO_LOGO = "\n"
-    		+" ____  ____  ____  ____  _____\n"
-            + "(  _ \\(_  _)(  _ \\(  _ \\(  _  )\n"
-            + " ) __/ _)(_  ) __/ ) __/ )(_)(   http://pippo.ro\n"
-            + "(__)  (____)(__)  (__)  (_____)  {}\n";
+        + " ____  ____  ____  ____  _____\n"
+        + "(  _ \\(_  _)(  _ \\(  _ \\(  _  )\n"
+        + " ) __/ _)(_  ) __/ ) __/ )(_)(   http://pippo.ro\n"
+        + "(__)  (____)(__)  (__)  (_____)  {}\n";
 
     private RequestFactory requestFactory;
     private ResponseFactory responseFactory;
@@ -94,7 +93,7 @@ public class PippoFilter implements Filter {
 
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
-    	log.info(PIPPO_LOGO, readPippoVersion());
+        log.info(PIPPO_LOGO, readPippoVersion());
 
         if (ignorePaths == null) {
             initIgnorePaths(filterConfig);
@@ -158,7 +157,7 @@ public class PippoFilter implements Filter {
 
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain chain)
-            throws IOException, ServletException {
+        throws IOException, ServletException {
         final ThreadContext previousThreadContext = ThreadContext.detach();
 
         HttpServletRequest httpServletRequest = (HttpServletRequest) servletRequest;
@@ -189,17 +188,30 @@ public class PippoFilter implements Filter {
         final Response response = responseFactory.createResponse(httpServletResponse, application);
         ErrorHandler errorHandler = application.getErrorHandler();
 
+        RouteHandlerChain handlerChain = null;
         try {
+            // Force the initial Response status code to Integer.MAX_VALUE.
+            // The chain is expected to properly set a Response status code.
+            // Note: Some containers (e.g. Jetty) prohibit setting 0.
+            response.status(Integer.MAX_VALUE);
+
             Router router = application.getRouter();
             List<RouteMatch> routeMatches = router.findRoutes(relativePath, requestMethod);
 
             if (routeMatches.isEmpty()) {
                 errorHandler.handle(HttpConstants.StatusCode.NOT_FOUND, request, response);
+                handlerChain = routeHandlerChainFactory.createChain(request, response, new ArrayList<RouteMatch>());
             } else {
-                routeHandlerChainFactory.createChain(request, response, routeMatches).next();
+                handlerChain = routeHandlerChainFactory.createChain(request, response, routeMatches);
             }
 
+            handlerChain.next();
+
             if (!response.isCommitted()) {
+                if (response.getStatus() == Integer.MAX_VALUE) {
+                    log.info("Handlers in chain did not set a status code for {} '{}'", requestMethod, requestUri);
+                    response.notFound();
+                }
                 log.debug("Auto-committing response for {} '{}'", requestMethod, requestUri);
                 if (response.getStatus() >= HttpConstants.StatusCode.BAD_REQUEST) {
                     // delegate response to the error handler.
@@ -213,6 +225,7 @@ public class PippoFilter implements Filter {
             log.error(e.getMessage(), e);
             errorHandler.handle(e, request, response);
         } finally {
+            handlerChain.runFinallyRoutes();
             log.debug("Returned status code {} for {} '{}'", response.getStatus(), requestMethod, requestUri);
             ThreadContext.restore(previousThreadContext);
         }
@@ -277,7 +290,7 @@ public class PippoFilter implements Filter {
     }
 
     private void initIgnorePaths(FilterConfig filterConfig) {
-        ignorePaths = new HashSet<String>();
+        ignorePaths = new HashSet<>();
         String paths = filterConfig.getInitParameter(IGNORE_PATHS_PARAM);
         if (paths != null && !paths.isEmpty()) {
             String[] parts = paths.split(",");
@@ -312,7 +325,7 @@ public class PippoFilter implements Filter {
                 filterMapping = "";
             } else if (!filterMapping.startsWith("/") || !filterMapping.endsWith("/*")) {
                 throw new PippoRuntimeException("Your {} must start with \"/\" and end with \"/*\". It is: ",
-                        FILTER_MAPPING_PARAM, filterMapping);
+                    FILTER_MAPPING_PARAM, filterMapping);
             } else {
                 // remove leading "/" and trailing "*"
                 filterMapping = filterMapping.substring(1, filterMapping.length() - 1);
@@ -381,6 +394,7 @@ public class PippoFilter implements Filter {
         if (factory == null) {
             factory = new DefaultRequestFactory();
         }
+
         return factory;
     }
 
@@ -389,6 +403,7 @@ public class PippoFilter implements Filter {
         if (factory == null) {
             factory = new DefaultResponseFactory();
         }
+
         return factory;
     }
 
@@ -397,6 +412,7 @@ public class PippoFilter implements Filter {
         if (factory == null) {
             factory = new DefaultRouteHandlerChainFactory();
         }
+
         return factory;
     }
 
@@ -432,18 +448,16 @@ public class PippoFilter implements Filter {
         String pippoVersion;
 
         try {
-
             Properties prop = new Properties();
             URL url = ClasspathUtils.locateOnClasspath(PippoConstants.LOCATION_OF_PIPPO_BUILTIN_PROPERTIES);
             InputStream stream = url.openStream();
             prop.load(stream);
 
             pippoVersion = prop.getProperty(PIPPO_VERSION_PROPERTY_KEY);
-
         } catch (Exception e) {
             //this should not happen. Never.
             throw new PippoRuntimeException("Something is wrong with your build. Cannot find resource {}",
-                    PippoConstants.LOCATION_OF_PIPPO_BUILTIN_PROPERTIES);
+                PippoConstants.LOCATION_OF_PIPPO_BUILTIN_PROPERTIES);
         }
 
         return pippoVersion;

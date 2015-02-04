@@ -23,6 +23,7 @@ public class Route {
     private String uriPattern;
     private String requestMethod;
     private RouteHandler routeHandler;
+    private boolean runAsFinally;
 
     public Route(String uriPattern, String requestMethod, RouteHandler routeHandler) {
         this.uriPattern = uriPattern;
@@ -40,6 +41,18 @@ public class Route {
 
     public RouteHandler getRouteHandler() {
         return routeHandler;
+    }
+
+    public boolean isRunAsFinally() {
+        return runAsFinally;
+    }
+
+    /**
+     * Mark this route to be invoked even when exceptions were raised in previous routes.
+     * This flag make sense only for an after filter.
+     */
+    public void runAsFinally() {
+        runAsFinally = true;
     }
 
     @Override

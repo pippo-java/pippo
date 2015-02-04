@@ -42,8 +42,8 @@ public class DefaultRouteHandlerChain implements RouteHandlerChain {
         iterator = routeMatches.iterator();
     }
 
+    @Override
     public void next() {
-        // TODO it's an idea to throw an exception (NotNextRouteException or similar) ?!
         if (iterator.hasNext()) {
             // retrieves the next route
             RouteMatch routeMatch = iterator.next();
@@ -65,22 +65,27 @@ public class DefaultRouteHandlerChain implements RouteHandlerChain {
         }
     }
 
-    protected void handleRoute(Route route) {
-        route.getRouteHandler().handle(request, response, this);
-
-        logUnhandledRoutes();
-    }
-
     /**
-     * Log the RouteMatches that are not handled when we break the chain
+     * Execute all routes that are flagged to run as finally.
      */
-    protected void logUnhandledRoutes() {
-        if (log.isDebugEnabled()) {
-            while (iterator.hasNext()) {
-                RouteMatch routeMatch = iterator.next();
+    @Override
+    public void runFinallyRoutes() {
+        while (iterator.hasNext()) {
+            RouteMatch routeMatch = iterator.next();
+            if (routeMatch.getRoute().isRunAsFinally()) {
+                try {
+                    handleRoute(routeMatch.getRoute());
+                } catch (Exception e) {
+                    log.error("Unexpected error in Finally Route", e);
+                }
+            } else if (log.isDebugEnabled()) {
                 log.debug("chain.next() not called, skipping {}", routeMatch);
             }
         }
+    }
+
+    protected void handleRoute(Route route) {
+        route.getRouteHandler().handle(request, response, this);
     }
 
 }

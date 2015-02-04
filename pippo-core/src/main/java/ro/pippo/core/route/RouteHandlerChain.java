@@ -25,4 +25,9 @@ public interface RouteHandlerChain {
      */
     public void next();
 
+    /**
+     * Execute all routes that are flagged to run as finally.
+     */
+    public void runFinallyRoutes();
+
 }

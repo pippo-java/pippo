@@ -260,26 +260,26 @@ public class Application {
         addRoute(uriPattern, HttpConstants.Method.PATCH, controllerClass, methodName);
     }
 
-    public void ALL(String uriPattern, RouteHandler routeHandler) {
-        addRoute(uriPattern, HttpConstants.Method.ALL, routeHandler);
+    public Route ALL(String uriPattern, RouteHandler routeHandler) {
+        return addRoute(uriPattern, HttpConstants.Method.ALL, routeHandler);
     }
 
-    public void ALL(String uriPattern, Class<? extends Controller> controllerClass, String methodName) {
-        addRoute(uriPattern, HttpConstants.Method.ALL, controllerClass, methodName);
+    public Route ALL(String uriPattern, Class<? extends Controller> controllerClass, String methodName) {
+        return addRoute(uriPattern, HttpConstants.Method.ALL, controllerClass, methodName);
     }
 
-    public void addRoute(String uriPattern, String requestMethod, Class<? extends Controller> controllerClass, String methodName) {
+    public Route addRoute(String uriPattern, String requestMethod, Class<? extends Controller> controllerClass, String methodName) {
         RouteHandler routeHandler = getControllerHandlerFactory().createHandler(controllerClass, methodName);
-        addRoute(uriPattern, requestMethod, routeHandler);
+        Route route = addRoute(uriPattern, requestMethod, routeHandler);
+
+        return route;
     }
 
-    public void addRoute(String uriPattern, String requestMethod, RouteHandler routeHandler) {
+    public Route addRoute(String uriPattern, String requestMethod, RouteHandler routeHandler) {
         Route route = new Route(uriPattern, requestMethod, routeHandler);
-        try {
-            getRouter().addRoute(route);
-        } catch (Exception e) {
-            log.error("Cannot add route '{}'", route, e);
-        }
+        getRouter().addRoute(route);
+
+        return route;
     }
 
     public ControllerHandlerFactory getControllerHandlerFactory() {

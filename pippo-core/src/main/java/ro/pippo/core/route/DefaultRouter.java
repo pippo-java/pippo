@@ -140,6 +140,8 @@ public class DefaultRouter implements Router {
             }
         }
 
+        log.debug("Found {} route matches for {} '{}'", routeMatches.size(), requestMethod, requestUri);
+
         return routeMatches;
     }
 
