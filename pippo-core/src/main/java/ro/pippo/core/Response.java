@@ -953,7 +953,7 @@ public class Response {
         }
 
         try {
-            log.debug("Response committed");
+            log.trace("Response committed");
             httpServletResponse.flushBuffer();
         } catch (IOException e) {
             throw new PippoRuntimeException(e);
