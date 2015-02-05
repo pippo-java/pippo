@@ -53,6 +53,7 @@ public class Application {
     private Router router;
     private ErrorHandler errorHandler;
     private ControllerHandlerFactory controllerHandlerFactory;
+    private SessionFactory sessionFactory;
 
     private String uploadLocation = System.getProperty("java.io.tmpdir");
     private long maximumUploadSize = -1L;
@@ -293,6 +294,18 @@ public class Application {
         }
 
         return controllerHandlerFactory;
+    }
+
+    public SessionFactory getSessionFactory() {
+        if (sessionFactory == null) {
+            SessionFactory factory = ServiceLocator.locate(SessionFactory.class);
+            if (factory == null) {
+                factory = new DefaultSessionFactory();
+            }
+            sessionFactory = factory;
+        }
+
+        return sessionFactory;
     }
 
     public ErrorHandler getErrorHandler() {

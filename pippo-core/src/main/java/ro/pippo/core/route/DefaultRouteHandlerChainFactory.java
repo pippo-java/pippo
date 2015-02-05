@@ -25,7 +25,6 @@ import java.util.List;
  * This factory constructs the default route handler chain.
  *
  * @author James Moger
- *
  */
 public class DefaultRouteHandlerChainFactory implements RouteHandlerChainFactory {
 
@@ -41,4 +40,5 @@ public class DefaultRouteHandlerChainFactory implements RouteHandlerChainFactory
     @Override
     public void destroy(Application application) {
     }
+
 }

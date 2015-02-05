@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2014 the original author or authors.
+ * Copyright (C) 2015 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,19 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package ro.pippo.core.route;
-
-import ro.pippo.core.Initializer;
-import ro.pippo.core.Request;
-import ro.pippo.core.Response;
-
-import java.util.List;
+package ro.pippo.core;
 
 /**
- * @author James Moger
+ * @author Decebal Suiu
  */
-public interface RouteHandlerChainFactory extends Initializer {
+public interface SessionFactory {
 
-	public RouteHandlerChain createChain(Request request, Response response, List<RouteMatch> routeMatches);
+    /**
+     * Returns the current <code>Session</code> associated with a request or, if there is no
+     * current session and <code>create</code> is true, returns a new session.
+     *
+     * @param request
+     * @param create
+     * @return
+     */
+    public Session createSession(Request request, boolean create);
 
 }

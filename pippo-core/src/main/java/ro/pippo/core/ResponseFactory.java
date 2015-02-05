@@ -23,4 +23,5 @@ import javax.servlet.http.HttpServletResponse;
 public interface ResponseFactory<T extends Response> extends Initializer {
 
     public T createResponse(HttpServletResponse httpServletResponse, Application application);
+
 }

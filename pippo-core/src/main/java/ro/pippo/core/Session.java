@@ -15,56 +15,23 @@
  */
 package ro.pippo.core;
 
-import javax.servlet.http.HttpSession;
 import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * @author Decebal Suiu
  */
-public class Session {
+public interface Session {
 
-    private HttpSession httpSession;
+    public String getId();
 
-    public Session(HttpSession httpSession) {
-        this.httpSession = httpSession;
-    }
+    public void setAttribute(String name, Object value);
 
-    public String getId() {
-        return httpSession.getId();
-    }
+    public Object getAttribute(String name);
 
-    public void setAttribute(String name, Object value) {
-        httpSession.setAttribute(name, value);
-    }
+    public Enumeration<String> getAttributeNames();
 
-    public Object getAttribute(String name) {
-        return httpSession.getAttribute(name);
-    }
+    public void removeAttribute(String name);
 
-    public Enumeration<String> getAttributeNames() {
-        return httpSession.getAttributeNames();
-    }
-
-    public void removeAttribute(String name) {
-        httpSession.removeAttribute(name);
-    }
-
-    public void invalidate() {
-        httpSession.invalidate();
-    }
-
-    public boolean isNew() {
-        return httpSession.isNew();
-    }
-
-    public Map<String, Object> getMessages() {
-        return new HashMap<String, Object>();
-    }
-
-    public HttpSession getHttpSession() {
-        return httpSession;
-    }
+    public void invalidate();
 
 }
