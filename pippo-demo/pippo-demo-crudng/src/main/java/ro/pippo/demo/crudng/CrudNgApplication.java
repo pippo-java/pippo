@@ -75,7 +75,7 @@ public class CrudNgApplication extends Application {
             @Override
             public void handle(Request request, Response response, RouteHandlerChain chain) {
                 if (request.getSession().get("username") == null) {
-                    request.getSession().set("originalDestination", request.getContextUriWithQuery());
+                    request.getSession().put("originalDestination", request.getContextUriWithQuery());
                     response.redirectToContextPath("/login");
                 } else {
                     chain.next();
@@ -106,11 +106,11 @@ public class CrudNgApplication extends Application {
                 String username = request.getParameter("username").toString();
                 String password = request.getParameter("password").toString();
                 if (authenticate(username, password)) {
-                    request.getSession().set("username", username);
+                    request.getSession().put("username", username);
                     String originalDestination = (String) request.getSession().get("originalDestination");
                     response.redirectToContextPath(originalDestination != null ? originalDestination : "/contacts");
                 } else {
-                    request.getSession().set("error", "Authentication failed");
+                    request.getSession().put("error", "Authentication failed");
                     response.redirectToContextPath("/login");
                 }
             }

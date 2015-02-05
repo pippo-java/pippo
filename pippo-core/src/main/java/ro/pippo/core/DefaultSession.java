@@ -35,7 +35,7 @@ public class DefaultSession implements Session {
     }
 
     @Override
-    public void set(String name, Object value) {
+    public void put(String name, Object value) {
         httpSession.setAttribute(name, value);
     }
 

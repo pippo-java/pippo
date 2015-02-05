@@ -24,7 +24,7 @@ public interface Session {
 
     public String getId();
 
-    public void set(String name, Object value);
+    public void put(String name, Object value);
 
     public <T> T get(String name);
 
