@@ -66,8 +66,8 @@ public class CrudApplication extends Application {
 
             @Override
             public void handle(Request request, Response response, RouteHandlerChain chain) {
-                if (request.getSession().getAttribute("username") == null) {
-                    request.getSession().setAttribute("originalDestination", request.getContextUriWithQuery());
+                if (request.getSession().get("username") == null) {
+                    request.getSession().set("originalDestination", request.getContextUriWithQuery());
                     response.redirectToContextPath("/login");
                 } else {
                     chain.next();
@@ -81,8 +81,8 @@ public class CrudApplication extends Application {
             @Override
             public void handle(Request request, Response response, RouteHandlerChain chain) {
                 Map<String, Object> model = new HashMap<>();
-                String error = (String) request.getSession().getAttribute("error");
-                request.getSession().removeAttribute("error");
+                String error = request.getSession().get("error");
+                request.getSession().remove("error");
                 if (error != null) {
                     model.put("error", error);
                 }
@@ -98,11 +98,11 @@ public class CrudApplication extends Application {
                 String username = request.getParameter("username").toString();
                 String password = request.getParameter("password").toString();
                 if (authenticate(username, password)) {
-                    request.getSession().setAttribute("username", username);
-                    String originalDestination = (String) request.getSession().getAttribute("originalDestination");
+                    request.getSession().set("username", username);
+                    String originalDestination = request.getSession().get("originalDestination");
                     response.redirectToContextPath(originalDestination != null ? originalDestination : "/contacts");
                 } else {
-                    request.getSession().setAttribute("error", "Authentication failed");
+                    request.getSession().set("error", "Authentication failed");
                     response.redirectToContextPath("/login");
                 }
             }

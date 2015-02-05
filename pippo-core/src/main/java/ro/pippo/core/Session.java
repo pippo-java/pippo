@@ -24,13 +24,13 @@ public interface Session {
 
     public String getId();
 
-    public void setAttribute(String name, Object value);
+    public void set(String name, Object value);
 
-    public Object getAttribute(String name);
+    public <T> T get(String name);
 
-    public Enumeration<String> getAttributeNames();
+    public Enumeration<String> getKeys();
 
-    public void removeAttribute(String name);
+    public void remove(String name);
 
     public void invalidate();
 

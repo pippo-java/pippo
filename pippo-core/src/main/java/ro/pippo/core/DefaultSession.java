@@ -29,26 +29,32 @@ public class DefaultSession implements Session {
         this.httpSession = httpSession;
     }
 
+    @Override
     public String getId() {
         return httpSession.getId();
     }
 
-    public void setAttribute(String name, Object value) {
+    @Override
+    public void set(String name, Object value) {
         httpSession.setAttribute(name, value);
     }
 
-    public Object getAttribute(String name) {
-        return httpSession.getAttribute(name);
+    @Override
+    public <T> T get(String name) {
+        return (T) httpSession.getAttribute(name);
     }
 
-    public Enumeration<String> getAttributeNames() {
+    @Override
+    public Enumeration<String> getKeys() {
         return httpSession.getAttributeNames();
     }
 
-    public void removeAttribute(String name) {
+    @Override
+    public void remove(String name) {
         httpSession.removeAttribute(name);
     }
 
+    @Override
     public void invalidate() {
         httpSession.invalidate();
     }
