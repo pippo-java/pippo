@@ -64,7 +64,7 @@ public abstract class StaticResourceHandler implements RouteHandler {
     @Override
     public final void handle(Request request, Response response, RouteHandlerChain chain) {
         String resourcePath = getResourcePath(request);
-        log.debug("Request resource '{}'", resourcePath);
+        log.trace("Request resource '{}'", resourcePath);
 
         URL url = getResourceUrl(resourcePath);
         if (url == null) {
@@ -101,7 +101,6 @@ public abstract class StaticResourceHandler implements RouteHandler {
 
             if (response.getStatus() == HttpConstants.StatusCode.NOT_MODIFIED) {
                 // Do not stream anything out. Simply return 304
-                log.debug("Unmodified resource '{}'", resourceUrl);
                 response.commit();
             } else {
                 String filename = resourceUrl.getFile();

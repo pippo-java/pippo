@@ -125,7 +125,7 @@ public class DefaultRouter implements Router {
 
     @Override
     public List<RouteMatch> findRoutes(String requestUri, String requestMethod) {
-        log.debug("Finding route matches for {} '{}'", requestMethod, requestUri);
+        log.trace("Finding route matches for {} '{}'", requestMethod, requestUri);
 
         List<RouteMatch> routeMatches = new ArrayList<>();
 
