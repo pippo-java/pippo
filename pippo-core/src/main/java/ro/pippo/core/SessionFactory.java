@@ -21,13 +21,11 @@ package ro.pippo.core;
 public interface SessionFactory {
 
     /**
-     * Returns the current <code>Session</code> associated with a request or, if there is no
-     * current session and <code>create</code> is true, returns a new session.
+     * Creates a new session.
      *
      * @param request
-     * @param create
-     * @return
+     * @return a session
      */
-    public Session createSession(Request request, boolean create);
+    public Session createSession(Request request);
 
 }
