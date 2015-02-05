@@ -50,8 +50,10 @@ public class DefaultSession implements Session {
     }
 
     @Override
-    public void remove(String name) {
+    public <T> T remove(String name) {
+        T t = get(name);
         httpSession.removeAttribute(name);
+        return t;
     }
 
     @Override

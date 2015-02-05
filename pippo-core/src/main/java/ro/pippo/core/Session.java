@@ -30,7 +30,7 @@ public interface Session {
 
     public Enumeration<String> getKeys();
 
-    public void remove(String name);
+    public <T> T remove(String name);
 
     public void invalidate();
 
