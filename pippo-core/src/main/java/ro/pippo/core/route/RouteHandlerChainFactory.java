@@ -22,11 +22,10 @@ import ro.pippo.core.Response;
 import java.util.List;
 
 /**
- *
  * @author James Moger
- *
  */
 public interface RouteHandlerChainFactory extends Initializer {
 
 	public RouteHandlerChain createChain(Request request, Response response, List<RouteMatch> routeMatches);
+
 }

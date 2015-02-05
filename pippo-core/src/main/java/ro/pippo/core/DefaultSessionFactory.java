@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2014 the original author or authors.
+ * Copyright (C) 2015 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,23 +15,18 @@
  */
 package ro.pippo.core;
 
-import java.util.Enumeration;
+import javax.servlet.http.HttpSession;
 
 /**
  * @author Decebal Suiu
  */
-public interface Session {
+public class DefaultSessionFactory implements SessionFactory {
 
-    public String getId();
+    @Override
+    public Session createSession(Request request, boolean create) {
+        HttpSession httpSession = request.getHttpServletRequest().getSession(create);
 
-    public void put(String name, Object value);
-
-    public <T> T get(String name);
-
-    public Enumeration<String> getKeys();
-
-    public <T> T remove(String name);
-
-    public void invalidate();
+        return new DefaultSession(httpSession);
+    }
 
 }
