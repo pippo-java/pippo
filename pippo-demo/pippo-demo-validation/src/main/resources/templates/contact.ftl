@@ -6,7 +6,7 @@
         <h2>Contact</h2>
     </div>
 
-    <@alerts.list messages=errors! type="danger"/>
+    <@alerts.list messages=flash.getErrors() type="danger"/>
 
     <form class="form-horizontal" role="form" method="post" action="${contextPath}/">
         <div class="form-group">

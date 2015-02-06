@@ -74,6 +74,10 @@ public class Response {
         return locals;
     }
 
+    public Flash getFlash() {
+        return (Flash) getLocals().get("flash");
+    }
+
     /**
      * Binds an object to the response.
      *

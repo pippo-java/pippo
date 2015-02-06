@@ -188,6 +188,8 @@ public class PippoFilter implements Filter {
         final Response response = responseFactory.createResponse(httpServletResponse, application);
         ErrorHandler errorHandler = application.getErrorHandler();
 
+        processFlash(request, response);
+
         RouteHandlerChain handlerChain = null;
         try {
             // Force the initial Response status code to Integer.MAX_VALUE.
@@ -461,6 +463,25 @@ public class PippoFilter implements Filter {
         }
 
         return pippoVersion;
+    }
+
+    private void processFlash(Request request, Response response) {
+        Flash flash = null;
+
+        Session session = request.getSession(false);
+        if (session != null) {
+            // get flash from session
+            flash = session.remove("flash");
+            // put an empty flash (outcoming flash) in session
+            session.put("flash", new Flash());
+        }
+
+        if (flash == null) {
+            flash = new Flash();
+        }
+
+        // make current flash available to templates
+        response.bind("flash", flash);
     }
 
 }

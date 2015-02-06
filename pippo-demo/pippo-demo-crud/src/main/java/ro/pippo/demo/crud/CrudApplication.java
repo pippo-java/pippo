@@ -80,12 +80,7 @@ public class CrudApplication extends Application {
 
             @Override
             public void handle(Request request, Response response, RouteHandlerChain chain) {
-                Map<String, Object> model = new HashMap<>();
-                String error = request.getSession().remove("error");
-                if (error != null) {
-                    model.put("error", error);
-                }
-                response.render("login", model);
+                response.render("login");
             }
 
         });
@@ -101,7 +96,7 @@ public class CrudApplication extends Application {
                     String originalDestination = request.getSession().remove("originalDestination");
                     response.redirectToContextPath(originalDestination != null ? originalDestination : "/contacts");
                 } else {
-                    request.getSession().put("error", "Authentication failed");
+                    request.getSession().getFlash().error("Authentication failed");
                     response.redirectToContextPath("/login");
                 }
             }
