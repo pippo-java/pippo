@@ -25,6 +25,10 @@ public class DefaultSessionFactory implements SessionFactory {
     @Override
     public Session createSession(Request request, boolean create) {
         HttpSession httpSession = request.getHttpServletRequest().getSession(create);
+        if (httpSession == null) {
+            // without a servlet session we can not have a DefaultSession
+            return null;
+        }
 
         return new DefaultSession(httpSession);
     }
