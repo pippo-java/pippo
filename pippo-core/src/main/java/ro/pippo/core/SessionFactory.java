@@ -28,6 +28,6 @@ public interface SessionFactory {
      * @param create
      * @return
      */
-    public Session createSession(Request request, boolean create);
+    public Session getSession(Request request, boolean create);
 
 }

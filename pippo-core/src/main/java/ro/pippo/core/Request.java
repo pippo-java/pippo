@@ -323,7 +323,7 @@ public class Request {
 
     public Session getSession(boolean create) {
         if (session == null) {
-            session = sessionFactory.createSession(this, create);
+            session = sessionFactory.getSession(this, create);
         }
 
         return session;

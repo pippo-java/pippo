@@ -23,7 +23,7 @@ import javax.servlet.http.HttpSession;
 public class DefaultSessionFactory implements SessionFactory {
 
     @Override
-    public Session createSession(Request request, boolean create) {
+    public Session getSession(Request request, boolean create) {
         HttpSession httpSession = request.getHttpServletRequest().getSession(create);
         if (httpSession == null) {
             // without a servlet session we can not have a DefaultSession
