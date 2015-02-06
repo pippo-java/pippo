@@ -20,7 +20,9 @@ import ro.pippo.core.util.StringUtils;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.text.MessageFormat;
 import java.util.Collections;
 import java.util.HashSet;
@@ -346,9 +348,9 @@ public class Messages {
     private Properties loadMessages(String fileOrUrl) {
         URL url = ClasspathUtils.locateOnClasspath(fileOrUrl);
         if (url != null) {
-            try (InputStream is = url.openStream()) {
+            try (InputStreamReader reader = new InputStreamReader(url.openStream(), StandardCharsets.UTF_8)) {
                 Properties messages = new Properties();
-                messages.load(is);
+                messages.load(reader);
                 return messages;
             } catch (IOException e) {
                 log.error("Failed to load {}", fileOrUrl, e);
