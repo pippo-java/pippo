@@ -75,9 +75,11 @@ public class StringUtils {
         if (isNullOrEmpty(str) || isNullOrEmpty(remove)) {
             return str;
         }
+
         if (str.startsWith(remove)) {
             return str.substring(remove.length());
         }
+
         return str;
     }
 
@@ -108,9 +110,11 @@ public class StringUtils {
         if (isNullOrEmpty(str) || isNullOrEmpty(remove)) {
             return str;
         }
+
         if (str.endsWith(remove)) {
             return str.substring(0, str.length() - remove.length());
         }
+
         return str;
     }
 
@@ -138,12 +142,15 @@ public class StringUtils {
         if (isNullOrEmpty(add)) {
             return str;
         }
+
         if (isNullOrEmpty(str)) {
             return add;
         }
+
         if (!str.startsWith(add)) {
             return add + str;
         }
+
         return str;
     }
 
@@ -171,12 +178,24 @@ public class StringUtils {
         if (isNullOrEmpty(add)) {
             return str;
         }
+
         if (isNullOrEmpty(str)) {
             return add;
         }
+
         if (!str.endsWith(add)) {
             return str + add;
         }
+
         return str;
     }
+
+    /**
+     * Format the string. Replace "{}" with %s and format the string using String.format
+     */
+    public static String format(String str, Object... parameters) {
+        str = str.replaceAll("\\{\\}", "%s");
+        return String.format(str, parameters);
+    }
+
 }

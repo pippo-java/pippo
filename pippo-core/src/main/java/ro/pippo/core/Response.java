@@ -74,6 +74,10 @@ public class Response {
         return locals;
     }
 
+    /**
+     * Shortcut for <code>getLocals().get("flash")</code>.
+     * @return
+     */
     public Flash getFlash() {
         return (Flash) getLocals().get("flash");
     }
@@ -819,7 +823,6 @@ public class Response {
 
             // flushing the buffer forces chunked-encoding
             httpServletResponse.flushBuffer();
-
         } catch (Exception e) {
             throw new PippoRuntimeException(e);
         } finally {
@@ -880,7 +883,6 @@ public class Response {
 
             // flushing the buffer forces chunked-encoding
             httpServletResponse.flushBuffer();
-
         } catch (Exception e) {
             throw new PippoRuntimeException(e);
         } finally {

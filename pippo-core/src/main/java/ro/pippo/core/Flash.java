@@ -15,6 +15,8 @@
  */
 package ro.pippo.core;
 
+import ro.pippo.core.util.StringUtils;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -40,10 +42,6 @@ public class Flash implements Iterable<Flash.Message> {
         messages.add(new Message(level, message));
     }
 
-    public void error(String message) {
-        add(Message.ERROR, message);
-    }
-
     public List<String> get(int level) {
         if (messages.isEmpty()) {
             return Collections.emptyList();
@@ -67,6 +65,21 @@ public class Flash implements Iterable<Flash.Message> {
         return get(level).isEmpty();
     }
 
+    @Override
+    public Iterator<Flash.Message> iterator() {
+        return messages.iterator();
+    }
+
+    // some helpers
+
+    public void error(String message) {
+        add(Message.ERROR, message);
+    }
+
+    public void error(String message, Object... parameters) {
+        add(Message.ERROR, StringUtils.format(message, parameters));
+    }
+
     public boolean hasError() {
         return !isEmpty(Message.ERROR);
     }
@@ -75,8 +88,16 @@ public class Flash implements Iterable<Flash.Message> {
         return hasError() ? get(Message.ERROR).get(0) : null;
     }
 
-    public List<String> getErrors() {
+    public List<String> getErrorList() {
         return hasError() ? get(Message.ERROR) : Collections.EMPTY_LIST;
+    }
+
+    public void success(String message) {
+        add(Message.SUCCESS, message);
+    }
+
+    public void success(String message, Object... parameters) {
+        add(Message.SUCCESS, StringUtils.format(message, parameters));
     }
 
     public boolean hasSuccess() {
@@ -87,13 +108,48 @@ public class Flash implements Iterable<Flash.Message> {
         return hasSuccess() ? get(Message.SUCCESS).get(0) : null;
     }
 
-    public List<String> getSuccesses() {
+    public List<String> getSuccessList() {
         return hasSuccess() ? get(Message.SUCCESS) : Collections.EMPTY_LIST;
     }
 
-    @Override
-    public Iterator<Flash.Message> iterator() {
-        return messages.iterator();
+    public void warning(String message) {
+        add(Message.WARNING, message);
+    }
+
+    public void warning(String message, Object... parameters) {
+        add(Message.WARNING, StringUtils.format(message, parameters));
+    }
+
+    public boolean hasWarning() {
+        return !isEmpty(Message.WARNING);
+    }
+
+    public String getWarning() {
+        return hasWarning() ? get(Message.WARNING).get(0) : null;
+    }
+
+    public List<String> getWarningList() {
+        return hasWarning() ? get(Message.WARNING) : Collections.EMPTY_LIST;
+    }
+
+    public void info(String message) {
+        add(Message.INFO, message);
+    }
+
+    public void info(String message, Object... parameters) {
+        add(Message.INFO, StringUtils.format(message, parameters));
+    }
+
+    public boolean hasInfo() {
+        return !isEmpty(Message.INFO);
+    }
+
+    public String getInfo() {
+        return hasInfo() ? get(Message.INFO).get(0) : null;
+    }
+
+    public List<String> getInfoList() {
+        return hasInfo() ? get(Message.INFO) : Collections.EMPTY_LIST;
     }
 
     @Override
