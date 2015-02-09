@@ -17,6 +17,7 @@ package ro.pippo.core;
 
 import ro.pippo.core.util.StringUtils;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -30,7 +31,7 @@ import java.util.Map;
  *
  * @author Decebal Suiu
  */
-public class Flash implements Iterable<Flash.Message> {
+public class Flash implements Iterable<Flash.Message>, Serializable {
 
     private List<Message> messages;
 
@@ -159,7 +160,7 @@ public class Flash implements Iterable<Flash.Message> {
             '}';
     }
 
-    public static class Message {
+    public static class Message implements Serializable {
 
         /**
          * Constant for an undefined level.
