@@ -165,7 +165,7 @@ public class PebbleTemplateEngine implements TemplateEngine {
                 template = engine.getTemplate(localizedName);
             }
         } catch (LoaderException e) {
-            log.error(e.getMessage(), e);
+            log.debug(e.getMessage());
         }
 
         return template;
