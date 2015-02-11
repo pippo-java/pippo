@@ -472,6 +472,8 @@ public class PippoFilter implements Filter {
         if (session != null) {
             // get flash from session
             flash = session.remove("flash");
+            // put an empty flash (outcoming flash) in session; defense against session.get("flash")
+            session.put("flash", new Flash());
         }
 
         if (flash == null) {
