@@ -20,7 +20,7 @@
  * @param type
  -->
 <#macro list messages type="info">
-    <#if messages??>
+    <#if messages?has_content>
         <div class="message-list">
             <#list messages as message>
                 <div class="alert alert-${type} alert-dismissable" role="alert">

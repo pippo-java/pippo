@@ -15,6 +15,8 @@
  */
 package ro.pippo.core;
 
+import ro.pippo.core.util.StringUtils;
+
 /**
  * @author Decebal Suiu
  */
@@ -24,11 +26,11 @@ public class PippoRuntimeException extends RuntimeException {
     }
 
     public PippoRuntimeException(String message, Object... parameters) {
-        super(format(message, parameters));
+        super(StringUtils.format(message, parameters));
     }
 
     public PippoRuntimeException(String message, Throwable cause, Object... parameters) {
-        super(format(message, parameters), cause);
+        super(StringUtils.format(message, parameters), cause);
     }
 
     public PippoRuntimeException(Throwable cause) {
@@ -37,14 +39,6 @@ public class PippoRuntimeException extends RuntimeException {
 
     public PippoRuntimeException(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace) {
         super(message, cause, enableSuppression, writableStackTrace);
-    }
-
-    /**
-     * Format the message. Replace "{}" with %s and format the message using String.format
-     */
-    static String format(String message, Object... parameters) {
-        message = message.replaceAll("\\{\\}", "%s");
-        return String.format(message, parameters);
     }
 
 }

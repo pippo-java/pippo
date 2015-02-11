@@ -61,6 +61,16 @@ public class DefaultSession implements Session {
         httpSession.invalidate();
     }
 
+    @Override
+    public Flash getFlash() {
+        Flash flash = get("flash");
+        if (flash == null) {
+            put("flash", flash = new Flash());
+        }
+
+        return flash;
+    }
+
     public boolean isNew() {
         return httpSession.isNew();
     }

@@ -2,13 +2,13 @@
 <@base.page title="Login">
     <div class="row" style="padding: 120px">
         <div class="col-md-4 col-md-offset-4">
-            <#if error??>
+            <#if flash.hasError()>
                 <div class="alert alert-danger alert-dismissible" role="alert">
                     <button type="button" class="close" data-dismiss="alert">
                         <span aria-hidden="true">&times;</span>
                         <span class="sr-only">Close</span>
                     </button>
-                    ${error}
+                    ${flash.getError()}
                 </div>
             </#if>
 

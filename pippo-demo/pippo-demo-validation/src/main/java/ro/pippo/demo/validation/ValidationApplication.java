@@ -16,6 +16,7 @@
 package ro.pippo.demo.validation;
 
 import ro.pippo.core.Application;
+import ro.pippo.core.Flash;
 import ro.pippo.core.Request;
 import ro.pippo.core.Response;
 import ro.pippo.core.route.PublicResourceHandler;
@@ -27,9 +28,7 @@ import javax.validation.ConstraintViolation;
 import javax.validation.Validation;
 import javax.validation.Validator;
 import javax.validation.ValidatorFactory;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -55,7 +54,6 @@ public class ValidationApplication extends Application {
                 Contact contact = new Contact();
                 Map<String, Object> model = new HashMap<>();
                 model.put("contact", contact);
-//                model.put("errors", Collections.emptyList());
                 response.render("contact", model);
             }
 
@@ -72,13 +70,13 @@ public class ValidationApplication extends Application {
                 if (violations.isEmpty()) {
                     response.send(contact.toString());
                 } else {
-                    List<String> errors = new ArrayList<>();
+                    // makes violations available to template via flash (response.getLocals().get("flash"))
+                    Flash flash = response.getFlash();
                     for (ConstraintViolation<Contact> violation : violations) {
-                        errors.add(violation.getPropertyPath() + " " + violation.getMessage());
+                        flash.error(violation.getPropertyPath() + " " + violation.getMessage());
                     }
                     Map<String, Object> model = new HashMap<>();
                     model.put("contact", contact);
-                    model.put("errors", errors);
                     response.render("contact", model);
                 }
             }
