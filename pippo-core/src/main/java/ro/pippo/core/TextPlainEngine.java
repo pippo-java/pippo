@@ -15,7 +15,6 @@
  */
 package ro.pippo.core;
 
-
 /**
  * A text/plain engine based on toString()
  *

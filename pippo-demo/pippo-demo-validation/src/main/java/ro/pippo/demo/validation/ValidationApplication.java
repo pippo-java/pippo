@@ -16,9 +16,11 @@
 package ro.pippo.demo.validation;
 
 import ro.pippo.core.Application;
+import ro.pippo.core.session.CookieSessionFactory;
 import ro.pippo.core.Flash;
 import ro.pippo.core.Request;
 import ro.pippo.core.Response;
+import ro.pippo.core.session.SessionFactory;
 import ro.pippo.core.route.PublicResourceHandler;
 import ro.pippo.core.route.RouteHandler;
 import ro.pippo.core.route.RouteHandlerChain;
@@ -83,5 +85,12 @@ public class ValidationApplication extends Application {
 
         });
     }
+
+    /*
+    @Override
+    public SessionFactory getSessionFactory() {
+        return new CookieSessionFactory(getPippoSettings());
+    }
+    */
 
 }

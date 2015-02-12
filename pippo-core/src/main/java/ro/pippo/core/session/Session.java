@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015 the original author or authors.
+ * Copyright (C) 2014 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,24 +13,35 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package ro.pippo.core;
+package ro.pippo.core.session;
 
-import javax.servlet.http.HttpSession;
+import ro.pippo.core.Flash;
+
+import java.util.Enumeration;
 
 /**
  * @author Decebal Suiu
  */
-public class DefaultSessionFactory implements SessionFactory {
+public interface Session {
 
-    @Override
-    public Session getSession(Request request, boolean create) {
-        HttpSession httpSession = request.getHttpServletRequest().getSession(create);
-        if (httpSession == null) {
-            // without a servlet session we can not have a DefaultSession
-            return null;
-        }
+    public String getId();
 
-        return new DefaultSession(httpSession);
-    }
+    public void put(String name, Object value);
+
+    public <T> T get(String name);
+
+    public Enumeration<String> getKeys();
+
+    public <T> T remove(String name);
+
+    public void invalidate();
+
+    /**
+     * Shortcut for <code>get("flash")</code>.
+     * @return
+     */
+    public Flash getFlash();
+
+    public boolean isNew();
 
 }

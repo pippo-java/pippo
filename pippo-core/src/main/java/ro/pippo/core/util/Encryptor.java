@@ -13,21 +13,31 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package ro.pippo.core;
+package ro.pippo.core.util;
 
 /**
  * @author Decebal Suiu
  */
-public interface SessionFactory {
+public interface Encryptor {
 
     /**
-     * Returns the current <code>Session</code> associated with a request or, if there is no
-     * current session and <code>create</code> is true, returns a new session.
+     * Encrypt a clear text String.
      *
-     * @param request
-     * @param create
+     * @param key
+     * @param data
      * @return
+     * @throws Exception
      */
-    public Session getSession(Request request, boolean create);
+    public String encrypt(String key, String data) throws Exception;
+
+    /**
+     * Decrypt an encrypted String.
+     *
+     * @param key
+     * @param data
+     * @return
+     * @throws Exception
+     */
+    public String decrypt(String key, String data) throws Exception;
 
 }

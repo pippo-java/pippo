@@ -22,6 +22,7 @@ import ro.pippo.core.route.RouteHandlerChain;
 import ro.pippo.core.route.RouteHandlerChainFactory;
 import ro.pippo.core.route.RouteMatch;
 import ro.pippo.core.route.Router;
+import ro.pippo.core.session.Session;
 import ro.pippo.core.util.ClasspathUtils;
 import ro.pippo.core.util.ServiceLocator;
 import ro.pippo.core.util.StringUtils;

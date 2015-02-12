@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2014 the original author or authors.
+ * Copyright (C) 2015 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,31 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package ro.pippo.core;
-
-import java.util.Enumeration;
+package ro.pippo.core.util;
 
 /**
+ * Encryptor based on "AES" algorithm.
+ *
  * @author Decebal Suiu
  */
-public interface Session {
+public class DefaultEncryptor extends BaseEncryptor {
 
-    public String getId();
-
-    public void put(String name, Object value);
-
-    public <T> T get(String name);
-
-    public Enumeration<String> getKeys();
-
-    public <T> T remove(String name);
-
-    public void invalidate();
-
-    /**
-     * Shortcut for <code>get("flash")</code>.
-     * @return
-     */
-    public Flash getFlash();
+    public DefaultEncryptor() {
+        super("AES");
+    }
 
 }

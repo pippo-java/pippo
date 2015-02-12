@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2014 the original author or authors.
+ * Copyright (C) 2015 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,19 +13,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package ro.pippo.core;
+package ro.pippo.core.session;
+
+import ro.pippo.core.PippoSettings;
+import ro.pippo.core.Request;
 
 /**
- * @author James Moger
+ * @author Decebal Suiu
  */
-public interface ContentTypeEngine {
+public class CookieSessionFactory implements SessionFactory {
 
-    public void init(Application application);
+    private PippoSettings settings;
 
-    public String getContentType();
+    public CookieSessionFactory(PippoSettings settings) {
+        this.settings = settings;
+    }
 
-    public String toString(Object object);
-
-    public <T> T fromString(String content, Class<T> classOfT);
+    @Override
+    public Session getSession(Request request, boolean create) {
+        return new CookieSession(request, create, settings);
+    }
 
 }
