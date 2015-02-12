@@ -17,6 +17,8 @@ package ro.pippo.core;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import ro.pippo.core.session.Session;
+import ro.pippo.core.session.SessionFactory;
 import ro.pippo.core.util.IoUtils;
 import ro.pippo.core.util.StringUtils;
 
@@ -322,6 +324,11 @@ public final class Request {
     }
 
     public Session getSession(boolean create) {
+        /*
+        if (create && session == null) {
+            session = sessionFactory.getSession(this);
+        }
+        */
         if (session == null) {
             session = sessionFactory.getSession(this, create);
         }

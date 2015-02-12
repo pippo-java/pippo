@@ -13,7 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package ro.pippo.core;
+package ro.pippo.core.session;
+
+import ro.pippo.core.Flash;
 
 import javax.servlet.http.HttpSession;
 import java.util.Enumeration;
@@ -40,6 +42,7 @@ public class DefaultSession implements Session {
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public <T> T get(String name) {
         return (T) httpSession.getAttribute(name);
     }
@@ -53,6 +56,7 @@ public class DefaultSession implements Session {
     public <T> T remove(String name) {
         T t = get(name);
         httpSession.removeAttribute(name);
+
         return t;
     }
 
@@ -78,6 +82,7 @@ public class DefaultSession implements Session {
         return flash;
     }
 
+    @Override
     public boolean isNew() {
         return httpSession.isNew();
     }

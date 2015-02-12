@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015 the original author or authors.
+ * Copyright (C) 2014 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,21 +13,37 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package ro.pippo.core;
+package ro.pippo.core.session;
+
+import ro.pippo.core.Flash;
+
+import java.util.Enumeration;
 
 /**
  * @author Decebal Suiu
  */
-public interface SessionFactory {
+public interface Session {
+
+    public String getId();
+
+    public void put(String name, Object value);
+
+    public <T> T get(String name);
+
+    public Enumeration<String> getKeys();
+
+    public <T> T remove(String name);
+
+    public void invalidate();
+
+    public void touch();
 
     /**
-     * Returns the current <code>Session</code> associated with a request or, if there is no
-     * current session and <code>create</code> is true, returns a new session.
-     *
-     * @param request
-     * @param create
+     * Shortcut for <code>get("flash")</code>.
      * @return
      */
-    public Session getSession(Request request, boolean create);
+    public Flash getFlash();
+
+    public boolean isNew();
 
 }
