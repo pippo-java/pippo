@@ -13,24 +13,31 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package ro.pippo.core;
-
-import javax.servlet.http.HttpSession;
+package ro.pippo.core.util;
 
 /**
  * @author Decebal Suiu
  */
-public class DefaultSessionFactory implements SessionFactory {
+public interface Encryptor {
 
-    @Override
-    public Session getSession(Request request, boolean create) {
-        HttpSession httpSession = request.getHttpServletRequest().getSession(create);
-        if (httpSession == null) {
-            // without a servlet session we can not have a DefaultSession
-            return null;
-        }
+    /**
+     * Encrypt a clear text String.
+     *
+     * @param key
+     * @param data
+     * @return
+     * @throws Exception
+     */
+    public String encrypt(String key, String data) throws Exception;
 
-        return new DefaultSession(httpSession);
-    }
+    /**
+     * Decrypt an encrypted String.
+     *
+     * @param key
+     * @param data
+     * @return
+     * @throws Exception
+     */
+    public String decrypt(String key, String data) throws Exception;
 
 }

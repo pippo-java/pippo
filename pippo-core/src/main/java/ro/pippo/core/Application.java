@@ -30,6 +30,8 @@ import ro.pippo.core.route.RoutePostDispatchListenerList;
 import ro.pippo.core.route.RoutePreDispatchListenerList;
 import ro.pippo.core.route.Router;
 import ro.pippo.core.route.StaticResourceHandler;
+import ro.pippo.core.session.DefaultSessionFactory;
+import ro.pippo.core.session.SessionFactory;
 import ro.pippo.core.util.HttpCacheToolkit;
 import ro.pippo.core.util.MimeTypes;
 import ro.pippo.core.util.ServiceLocator;

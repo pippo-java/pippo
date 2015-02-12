@@ -78,4 +78,11 @@ public class ValidationApplication extends Application {
         });
     }
 
+    /*
+    @Override
+    public SessionFactory getSessionFactory() {
+        return new CookieSessionFactory(getPippoSettings());
+    }
+    */
+
 }
