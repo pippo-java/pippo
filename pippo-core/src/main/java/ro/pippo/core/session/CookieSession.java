@@ -139,11 +139,14 @@ public class CookieSession implements Session {
     }
 
     @Override
+<<<<<<< HEAD
     public void touch() {
         // TODO
     }
 
     @Override
+=======
+>>>>>>> d47ba05... I began working on CookieSession
     public Flash getFlash() {
         Flash flash = get("flash");
         if (flash == null) {

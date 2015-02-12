@@ -29,7 +29,10 @@ import ro.pippo.core.route.RouteHandler;
 import ro.pippo.core.route.RoutePostDispatchListenerList;
 import ro.pippo.core.route.RoutePreDispatchListenerList;
 import ro.pippo.core.route.Router;
+<<<<<<< HEAD
 import ro.pippo.core.route.StaticResourceHandler;
+=======
+>>>>>>> d47ba05... I began working on CookieSession
 import ro.pippo.core.session.DefaultSessionFactory;
 import ro.pippo.core.session.SessionFactory;
 import ro.pippo.core.util.HttpCacheToolkit;
