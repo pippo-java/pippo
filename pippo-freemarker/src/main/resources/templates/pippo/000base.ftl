@@ -17,22 +17,22 @@
                 max-width: 900px;
                 padding: 0px 20px;
             }
-            
-            .status-code {                
+
+            .status-code {
                 font-size: 20pt;
                 color: darkGray;
                 font-weight: bold;
                 border-bottom: 1px solid lightGray;
                 padding-bottom: 10px;
             }
-            
+
             .status-code .mode {
                 float: right;
                 color: lightGray;
                 text-transform:uppercase;
                 font-weight: normal;
             }
-            
+
             .frowny {
                 font-size: 100pt;
                 padding-bottom: 30px;
@@ -48,7 +48,8 @@
 
             .message {
                 margin-top: 30px;
-                text-align: center;
+                text-align: left;
+                overflow: auto;
                 border: 1px solid #fac7c7;
                 border-radius: 2px;
                 background-color: rgba(255, 182, 193, 0.15);
@@ -64,13 +65,13 @@
                 font-weight: bold;
                 padding-bottom: 30px;
             }
-            
+
             .link {
                 color: blue;
                 text-decoration: none;
                 font-size: 50pt;
             }
-            
+
             pre, .description, .text, .frowny {
                 color: #3B3131;
             }

@@ -16,7 +16,7 @@ html {
                 max-width: 900px;
                 padding: 0px 20px;
             }
-            
+
             .status-code {
                 font-size: 20pt;
                 color: darkGray;
@@ -24,14 +24,14 @@ html {
                 border-bottom: 1px solid lightGray;
                 padding-bottom: 10px;
             }
-            
+
             .status-code .mode {
                 float: right;
                 color: lightGray;
                 text-transform:uppercase;
                 font-weight: normal;
             }
-            
+
             .frowny {
                 font-size: 100pt;
                 padding-bottom: 30px;
@@ -40,14 +40,15 @@ html {
 
             .text {
                 padding-top: 20px;
-                text-align:center; 
+                text-align:center;
                 font-size: 16pt;
                 font-weight: bold;
             }
 
             .message {
                 margin-top: 30px;
-                text-align: center;
+                text-align: left;
+                overflow: auto;
                 border: 1px solid #fac7c7;
                 border-radius: 2px;
                 background-color: rgba(255, 182, 193, 0.15);
@@ -58,18 +59,18 @@ html {
             .application {
                 border-top: 1px solid lightGray;
                 padding-top: 20px;
-                text-align:center; 
+                text-align:center;
                 font-size: 14pt;
                 font-weight: bold;
                 padding-bottom: 30px;
             }
-            
+
             .link {
                 color: blue;
                 text-decoration: none;
                 font-size: 50pt;
             }
-            
+
             pre, .description, .text, .frowny {
                 color: #3B3131;
             }

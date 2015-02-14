@@ -48,7 +48,8 @@
 
             .message {
                 margin-top: 30px;
-                text-align: center;
+                text-align: left;
+                overflow: auto;
                 border: 1px solid #fac7c7;
                 border-radius: 2px;
                 background-color: rgba(255, 182, 193, 0.15);
