@@ -163,16 +163,6 @@ public class Flash implements Iterable<Flash.Message>, Serializable {
     public static class Message implements Serializable {
 
         /**
-         * Constant for an undefined level.
-         */
-        public static final int UNDEFINED = 0;
-
-        /**
-         * Constant for debug level.
-         */
-        public static final int DEBUG = 100;
-
-        /**
          * Constant for info level.
          */
         public static final int INFO = 200;
@@ -192,22 +182,14 @@ public class Flash implements Iterable<Flash.Message>, Serializable {
          */
         public static final int ERROR = 500;
 
-        /**
-         * Constant for fatal level.
-         */
-        public static final int FATAL = 600;
-
         /* Levels as strings for debugging. */
         private static final Map<Integer, String> levelStrings = new HashMap<>();
 
         static {
-            levelStrings.put(UNDEFINED, "UNDEFINED");
-            levelStrings.put(DEBUG, "DEBUG");
             levelStrings.put(INFO, "INFO");
             levelStrings.put(SUCCESS, "SUCCESS");
             levelStrings.put(WARNING, "WARNING");
             levelStrings.put(ERROR, "ERROR");
-            levelStrings.put(FATAL, "FATAL");
         }
 
         private int level;
@@ -230,14 +212,6 @@ public class Flash implements Iterable<Flash.Message>, Serializable {
             return message;
         }
 
-        public boolean isUndefined() {
-            return (getLevel() == UNDEFINED);
-        }
-
-        public boolean isDebug() {
-            return isLevel(DEBUG);
-        }
-
         public boolean isInfo() {
             return isLevel(INFO);
         }
@@ -254,12 +228,8 @@ public class Flash implements Iterable<Flash.Message>, Serializable {
             return isLevel(ERROR);
         }
 
-        public boolean isFatal() {
-            return isLevel(FATAL);
-        }
-
         public boolean isLevel(int level) {
-            return (getLevel() >= level);
+            return (getLevel() == level);
         }
 
         @Override
