@@ -129,7 +129,9 @@ public class Response {
 
     private void addCookie(Cookie cookie) {
         checkCommitted();
-
+        if (StringUtils.isNullOrEmpty(cookie.getPath())) {
+            cookie.setPath(StringUtils.addStart(contextPath, "/"));
+        }
         getCookieMap().put(cookie.getName(), cookie);
     }
 
