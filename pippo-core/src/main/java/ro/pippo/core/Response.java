@@ -788,7 +788,7 @@ public class Response {
         checkCommitted();
 
         // set status to OK if it's not set
-        if (getStatus() == 0) {
+        if (getStatus() == 0 || getStatus() == Integer.MAX_VALUE) {
             ok();
         }
 
@@ -840,7 +840,7 @@ public class Response {
         checkCommitted();
 
         // set status to OK if it's not set
-        if (getStatus() == 0) {
+        if (getStatus() == 0 || getStatus() == Integer.MAX_VALUE) {
             ok();
         }
 
@@ -938,7 +938,7 @@ public class Response {
         }
 
         // set status to OK if it's not set
-        if (getStatus() == 0) {
+        if (getStatus() == 0 || getStatus() == Integer.MAX_VALUE) {
             ok();
         }
 
