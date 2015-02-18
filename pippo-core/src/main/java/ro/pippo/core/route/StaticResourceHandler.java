@@ -112,11 +112,11 @@ public abstract class StaticResourceHandler implements RouteHandler {
                     // stream the resource
                     log.debug("Streaming as resource '{}'", resourceUrl);
                     response.contentType(mimeType);
-                    response.resource(urlConnection.getInputStream());
+                    response.ok().resource(urlConnection.getInputStream());
                 } else {
                     // stream the file
                     log.debug("Streaming as file '{}'", resourceUrl);
-                    response.file(filename, urlConnection.getInputStream());
+                    response.ok().file(filename, urlConnection.getInputStream());
                 }
             }
         } catch (Exception e) {
