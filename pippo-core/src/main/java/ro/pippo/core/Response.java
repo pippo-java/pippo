@@ -699,22 +699,6 @@ public class Response {
     }
 
     /**
-     * Appends the string content directly to the response.
-     * <p>This method DOES NOT commit the response.</p>
-     *
-     * @param sequence
-     */
-    public void append(CharSequence sequence) {
-        checkCommitted();
-
-        try {
-            httpServletResponse.getWriter().append(sequence);
-        } catch (IOException e) {
-            throw new PippoRuntimeException(e);
-        }
-    }
-
-    /**
      * Writes the string content directly to the response.
      * <p>This method commits the response.</p>
      *
@@ -723,8 +707,7 @@ public class Response {
     public void send(CharSequence content) {
         checkCommitted();
 
-        append(content);
-        commit();
+        commit(content);
     }
 
     /**
@@ -943,6 +926,10 @@ public class Response {
      * This method commits the response.
      */
     public void commit() {
+        commit(null);
+    }
+
+    private void commit(CharSequence content) {
         checkCommitted();
 
         // add cookies
@@ -961,6 +948,9 @@ public class Response {
         }
 
         try {
+            if (content != null) {
+                httpServletResponse.getWriter().append(content);
+            }
             log.trace("Response committed");
             httpServletResponse.flushBuffer();
         } catch (IOException e) {
