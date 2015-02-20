@@ -21,6 +21,8 @@ import org.slf4j.LoggerFactory;
 import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 /**
  * Serves file resources.
@@ -31,11 +33,11 @@ public class FileResourceHandler extends StaticResourceHandler {
 
     private static final Logger log = LoggerFactory.getLogger(FileResourceHandler.class);
 
-    final File directory;
+    final String directory;
 
     public FileResourceHandler(String urlPath, File directory) {
         super(urlPath);
-        this.directory = directory.getAbsoluteFile();
+        this.directory = directory.getAbsolutePath();
     }
 
     public FileResourceHandler(String urlPath, String directory) {
@@ -47,11 +49,17 @@ public class FileResourceHandler extends StaticResourceHandler {
         URL url = null;
 
         try {
-            File file = new File(directory, resourcePath).getAbsoluteFile();
+            Path requestedPath = Paths.get(directory, resourcePath).normalize().toAbsolutePath();
+            if (!requestedPath.startsWith(directory)) {
+                log.warn("Request for '{}' which is not located in '{}'", requestedPath, directory);
+                return null;
+            }
+
+            File file = requestedPath.toFile();
             if (file.exists() && file.isFile()) {
-                url = file.toURI().toURL();
+                url = requestedPath.toUri().toURL();
             } else {
-                log.error("File '{}' not found", file);
+                log.warn("File '{}' not found", resourcePath);
             }
         } catch (MalformedURLException e) {
             log.error(e.getMessage(), e);
