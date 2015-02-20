@@ -329,6 +329,45 @@ public class Request {
         return session;
     }
 
+    public void resetSession() {
+        if (session == null) {
+            return;
+        }
+        session.invalidate();
+        session = null;
+        getSession();
+    }
+
+    public void recreateSession() {
+        if (session == null) {
+            return;
+        }
+
+        // preserve the session data
+        Map<String, Object> values = new HashMap<>();
+        Enumeration<String> keys = getSession().getKeys();
+        while (keys.hasMoreElements()) {
+            String key = keys.nextElement();
+            values.put(key, getSession().get(key));
+        }
+
+        // preserve the flash data
+        Flash flash = session.getFlash();
+
+        // create a new session
+        resetSession();
+
+        // restore the session data
+        for (Map.Entry<String, Object> entry : values.entrySet()) {
+            getSession().put(entry.getKey(), entry.getValue());
+        }
+
+        // restore the flash instance
+        if (flash != null) {
+            getSession().put("flash", flash);
+        }
+    }
+
     public Map<String, FileItem> getFiles() {
         if (files == null) {
             files = new HashMap<>();

@@ -34,6 +34,8 @@ public interface Session {
 
     public void invalidate();
 
+    public void touch();
+
     /**
      * Shortcut for <code>get("flash")</code>.
      * @return

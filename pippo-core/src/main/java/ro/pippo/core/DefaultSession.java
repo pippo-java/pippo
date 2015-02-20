@@ -62,6 +62,13 @@ public class DefaultSession implements Session {
     }
 
     @Override
+    public void touch() {
+        // modify the session to keep it alive
+        put("__touch", "DOES_NOT_MATTER");
+        remove("__touch");
+    }
+
+    @Override
     public Flash getFlash() {
         Flash flash = get("flash");
         if (flash == null) {
