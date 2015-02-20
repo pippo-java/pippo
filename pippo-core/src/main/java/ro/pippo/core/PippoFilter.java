@@ -39,6 +39,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
+import java.net.URI;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -168,12 +169,16 @@ public class PippoFilter implements Filter {
         ThreadContext.setApplication(application);
 
         String requestMethod = httpServletRequest.getMethod();
-        String requestUri = httpServletRequest.getRequestURI();
-        log.debug("Request {} '{}'", requestMethod, requestUri);
+
+        // create a URI to automatically decode the path
+        URI uri = URI.create(httpServletRequest.getRequestURL().toString());
+        String requestUri = uri.getPath();
+        String relativePath = getRelativePath(httpServletRequest.getContextPath(), requestUri);
+        log.trace("The relative path for '{}' is '{}'", requestUri, relativePath);
 
         // check for ignore path
-        if (shouldIgnorePath(httpServletRequest)) {
-            log.debug("Ignoring request '{}'", requestUri);
+        if (shouldIgnorePath(relativePath)) {
+            log.debug("Ignoring request '{}'", relativePath);
             if (chain != null) {
                 chain.doFilter(servletRequest, servletResponse);
             }
@@ -181,9 +186,7 @@ public class PippoFilter implements Filter {
             return;
         }
 
-        String relativePath = getRelativePath(httpServletRequest);
-        log.debug("The relative path for '{}' is '{}'", requestUri, relativePath);
-
+        log.debug("Request {} '{}'", requestMethod, relativePath);
         final Request request = requestFactory.createRequest(httpServletRequest, application);
         final Response response = responseFactory.createResponse(httpServletResponse, application);
         ErrorHandler errorHandler = application.getErrorHandler();
@@ -211,10 +214,10 @@ public class PippoFilter implements Filter {
 
             if (!response.isCommitted()) {
                 if (response.getStatus() == Integer.MAX_VALUE) {
-                    log.info("Handlers in chain did not set a status code for {} '{}'", requestMethod, requestUri);
+                    log.info("Handlers in chain did not set a status code for {} '{}'", requestMethod, relativePath);
                     response.notFound();
                 }
-                log.debug("Auto-committing response for {} '{}'", requestMethod, requestUri);
+                log.debug("Auto-committing response for {} '{}'", requestMethod, relativePath);
                 if (response.getStatus() >= HttpConstants.StatusCode.BAD_REQUEST) {
                     // delegate response to the error handler.
                     // this will generate response content appropriate for the request/
@@ -228,7 +231,7 @@ public class PippoFilter implements Filter {
             errorHandler.handle(e, request, response);
         } finally {
             handlerChain.runFinallyRoutes();
-            log.debug("Returned status code {} for {} '{}'", response.getStatus(), requestMethod, requestUri);
+            log.debug("Returned status code {} for {} '{}'", response.getStatus(), requestMethod, relativePath);
             ThreadContext.restore(previousThreadContext);
         }
     }
@@ -276,12 +279,11 @@ public class PippoFilter implements Filter {
         }
     }
 
-    private boolean shouldIgnorePath(HttpServletRequest request) {
+    private boolean shouldIgnorePath(String path) {
         if (ignorePaths.size() > 0) {
-            String relativePath = getRelativePath(request);
-            if (relativePath != null && !relativePath.isEmpty()) {
-                for (String path : ignorePaths) {
-                    if (relativePath.startsWith(path)) {
+            if (path != null && !path.isEmpty()) {
+                for (String ignorePath : ignorePaths) {
+                    if (path.startsWith(ignorePath)) {
                         return true;
                     }
                 }
@@ -368,9 +370,7 @@ public class PippoFilter implements Filter {
         }
     }
 
-    private String getRelativePath(HttpServletRequest request) {
-        String path = request.getRequestURI();
-        String contextPath = request.getContextPath();
+    private String getRelativePath(String contextPath, String path) {
         path = path.substring(contextPath.length());
         if (path.length() > 0) {
             path = path.substring(1);
