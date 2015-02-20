@@ -15,7 +15,7 @@
     <description>XStream integration</description>
 
     <properties>
-        <xstream.version>1.4.7</xstream.version>
+        <xstream.version>1.4.8</xstream.version>
     </properties>
 
     <dependencies>
