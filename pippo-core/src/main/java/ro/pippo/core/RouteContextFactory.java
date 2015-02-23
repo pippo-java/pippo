@@ -16,25 +16,12 @@
 package ro.pippo.core;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 /**
- * This factory constructs the Pippo default Request class.
- *
  * @author James Moger
- *
  */
-public class DefaultRequestFactory implements RequestFactory<Request> {
+public interface RouteContextFactory<T extends RouteContext> extends Initializer {
 
-    @Override
-    public Request createRequest(HttpServletRequest httpServletRequest, Application application) {
-        return new Request(httpServletRequest, application);
-    }
-
-    @Override
-    public void init(Application application) {
-    }
-
-    @Override
-    public void destroy(Application application) {
-    }
+    public T createRouteContext(Application application, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse);
 }

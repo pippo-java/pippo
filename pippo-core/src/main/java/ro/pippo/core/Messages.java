@@ -79,13 +79,12 @@ public class Messages {
      * </p>
      *
      * @param key
-     * @param request
-     * @param response
+     * @param routeContext
      * @param parameters
      * @return the message or the key if the key does not exist
      */
-    public String get(String key, Request request, Response response, Object... parameters) {
-        String language = languages.getLanguageOrDefault(request, response);
+    public String get(String key, RouteContext routeContext, Object... parameters) {
+        String language = languages.getLanguageOrDefault(routeContext);
         return get(key, language, parameters);
     }
 
@@ -147,14 +146,13 @@ public class Messages {
      *
      * @param key
      * @param defaultMessage
-     * @param request
-     * @param response
+     * @param routeContext
      * @param parameters
      * @return the message or the key if the key does not exist
      */
     public String getWithDefault(String key, String defaultMessage,
-            Request request, Response response, Object... parameters) {
-        String language = languages.getLanguageOrDefault(request, response);
+            RouteContext routeContext, Object... parameters) {
+        String language = languages.getLanguageOrDefault(routeContext);
         return getWithDefault(key, defaultMessage, language, parameters);
     }
 
@@ -203,12 +201,11 @@ public class Messages {
      * </ol>
      * </p>
      *
-     * @param request
-     * @param response
+     * @param routeContext
      * @return all localized messages
      */
-    public Map<String, String> getAll(Request request, Response response) {
-        String language = languages.getLanguageOrDefault(request, response);
+    public Map<String, String> getAll(RouteContext routeContext) {
+        String language = languages.getLanguageOrDefault(routeContext);
         return getAll(language);
     }
 

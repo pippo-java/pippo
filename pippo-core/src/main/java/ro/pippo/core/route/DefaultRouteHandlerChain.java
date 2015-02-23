@@ -17,8 +17,7 @@ package ro.pippo.core.route;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import ro.pippo.core.Request;
-import ro.pippo.core.Response;
+import ro.pippo.core.RouteContext;
 
 import java.util.Iterator;
 import java.util.List;
@@ -31,13 +30,11 @@ public class DefaultRouteHandlerChain implements RouteHandlerChain {
 
     private static final Logger log = LoggerFactory.getLogger(DefaultRouteHandlerChain.class);
 
-    protected Request request;
-    protected Response response;
+    protected RouteContext routeContext;
     protected Iterator<RouteMatch> iterator;
 
-    public DefaultRouteHandlerChain(Request request, Response response, List<RouteMatch> routeMatches) {
-        this.request = request;
-        this.response = response;
+    public DefaultRouteHandlerChain(RouteContext routeContext, List<RouteMatch> routeMatches) {
+        this.routeContext = routeContext;
 
         iterator = routeMatches.iterator();
     }
@@ -53,7 +50,7 @@ public class DefaultRouteHandlerChain implements RouteHandlerChain {
             // set the new path parameters in request
             Map<String, String> pathParameters = routeMatch.getPathParameters();
             if (pathParameters != null) {
-                request.setPathParameters(pathParameters);
+                routeContext.getRequest().setPathParameters(pathParameters);
                 log.debug("Added path parameters to request");
             }
 
@@ -85,7 +82,7 @@ public class DefaultRouteHandlerChain implements RouteHandlerChain {
     }
 
     protected void handleRoute(Route route) {
-        route.getRouteHandler().handle(request, response, this);
+        route.getRouteHandler().handle(routeContext, this);
     }
 
 }

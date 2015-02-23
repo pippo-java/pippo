@@ -15,29 +15,10 @@
  */
 package ro.pippo.demo.custom;
 
-import ro.pippo.core.Application;
-import ro.pippo.core.ResponseFactory;
-
-import javax.servlet.http.HttpServletResponse;
+import ro.pippo.core.route.RouteHandler;
 
 /**
- * This class constructs a CustomResponse to be passed to all handlers.
- *
  * @author James Moger
  */
-public class CustomResponseFactory implements ResponseFactory<CustomResponse> {
-
-    @Override
-    public CustomResponse createResponse(HttpServletResponse httpServletResponse, Application application) {
-        return new CustomResponse(httpServletResponse, application);
-    }
-
-    @Override
-    public void init(Application application) {
-    }
-
-    @Override
-    public void destroy(Application application) {
-    }
-
+public interface CustomContextHandler extends RouteHandler<CustomContext> {
 }

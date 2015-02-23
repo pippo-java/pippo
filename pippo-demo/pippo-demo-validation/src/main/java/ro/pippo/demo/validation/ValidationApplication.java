@@ -17,8 +17,7 @@ package ro.pippo.demo.validation;
 
 import ro.pippo.core.Application;
 import ro.pippo.core.Flash;
-import ro.pippo.core.Request;
-import ro.pippo.core.Response;
+import ro.pippo.core.RouteContext;
 import ro.pippo.core.route.PublicResourceHandler;
 import ro.pippo.core.route.RouteHandler;
 import ro.pippo.core.route.RouteHandlerChain;
@@ -50,11 +49,11 @@ public class ValidationApplication extends Application {
         GET("/", new RouteHandler() {
 
             @Override
-            public void handle(Request request, Response response, RouteHandlerChain chain) {
+            public void handle(RouteContext routeContext, RouteHandlerChain chain) {
                 Contact contact = new Contact();
                 Map<String, Object> model = new HashMap<>();
                 model.put("contact", contact);
-                response.render("contact", model);
+                routeContext.getResponse().render("contact", model);
             }
 
         });
@@ -62,22 +61,22 @@ public class ValidationApplication extends Application {
         POST("/", new RouteHandler() {
 
             @Override
-            public void handle(Request request, Response response, RouteHandlerChain chain) {
-                Contact contact = request.createEntityFromParameters(Contact.class);
+            public void handle(RouteContext routeContext, RouteHandlerChain chain) {
+                Contact contact = routeContext.getRequest().createEntityFromParameters(Contact.class);
 
                 // check for validation
                 Set<ConstraintViolation<Contact>> violations = validator.validate(contact);
                 if (violations.isEmpty()) {
-                    response.send(contact.toString());
+                    routeContext.getResponse().send(contact.toString());
                 } else {
                     // makes violations available to template via flash (response.getLocals().get("flash"))
-                    Flash flash = response.getFlash();
+                    Flash flash = routeContext.getResponse().getFlash();
                     for (ConstraintViolation<Contact> violation : violations) {
                         flash.error(violation.getPropertyPath() + " " + violation.getMessage());
                     }
                     Map<String, Object> model = new HashMap<>();
                     model.put("contact", contact);
-                    response.render("contact", model);
+                    routeContext.getResponse().render("contact", model);
                 }
             }
 

@@ -34,8 +34,8 @@ public class RedirectHandler implements RouteHandler {
     }
 
     @Override
-    public void handle(Request request, Response response, RouteHandlerChain chain) {
-        response.redirectToContextPath(path);
+    public void handle(RouteContext routeContext, RouteHandlerChain chain) {
+        routeContext.getResponse().redirectToContextPath(path);
     }
 
 }

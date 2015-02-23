@@ -37,8 +37,8 @@ public class TemplateHandler implements RouteHandler {
     }
 
     @Override
-    public void handle(Request request, Response response, RouteHandlerChain chain) {
-        response.render(template);
+    public void handle(RouteContext routeContext, RouteHandlerChain chain) {
+        routeContext.getResponse().render(template);
     }
 
 }

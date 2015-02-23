@@ -81,7 +81,7 @@ public class JadeTemplateEngine implements TemplateEngine {
         // prepare the locale-aware i18n method
         String language = (String) model.get(PippoConstants.REQUEST_PARAMETER_LANG);
         if (StringUtils.isNullOrEmpty(language)) {
-            language = languages.getLanguageOrDefault(null);
+            language = languages.getLanguageOrDefault(language);
         }
 
         // prepare the locale-aware prettyTime method
@@ -113,7 +113,7 @@ public class JadeTemplateEngine implements TemplateEngine {
         // prepare the locale-aware i18n method
         String language = (String) model.get(PippoConstants.REQUEST_PARAMETER_LANG);
         if (StringUtils.isNullOrEmpty(language)) {
-            language = languages.getLanguageOrDefault(null);
+            language = languages.getLanguageOrDefault(language);
         }
 
         // prepare the locale-aware prettyTime method

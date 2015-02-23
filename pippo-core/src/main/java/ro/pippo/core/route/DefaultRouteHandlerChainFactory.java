@@ -18,6 +18,7 @@ package ro.pippo.core.route;
 import ro.pippo.core.Application;
 import ro.pippo.core.Request;
 import ro.pippo.core.Response;
+import ro.pippo.core.RouteContext;
 
 import java.util.List;
 
@@ -29,8 +30,8 @@ import java.util.List;
 public class DefaultRouteHandlerChainFactory implements RouteHandlerChainFactory {
 
     @Override
-    public RouteHandlerChain createChain(Request request, Response response, List<RouteMatch> routeMatches) {
-        return new DefaultRouteHandlerChain(request, response, routeMatches);
+    public RouteHandlerChain createChain(RouteContext routeContext, List<RouteMatch> routeMatches) {
+        return new DefaultRouteHandlerChain(routeContext, routeMatches);
     }
 
     @Override

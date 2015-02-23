@@ -13,12 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package ro.pippo.demo.custom;
-
-import ro.pippo.core.route.RouteHandler;
+package ro.pippo.core;
 
 /**
  * @author James Moger
  */
-public interface CustomHandler extends RouteHandler<CustomRequest, CustomResponse> {
+public interface RouteContext {
+
+    Request getRequest();
+    Response getResponse();
 }

@@ -15,21 +15,19 @@
  */
 package ro.pippo.core.controller;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import ro.pippo.core.Application;
 import ro.pippo.core.Param;
 import ro.pippo.core.ParameterValue;
 import ro.pippo.core.PippoRuntimeException;
-import ro.pippo.core.Request;
-import ro.pippo.core.Response;
+import ro.pippo.core.RouteContext;
 import ro.pippo.core.route.RouteHandlerChain;
 import ro.pippo.core.util.LangUtils;
 import ro.pippo.core.util.StringUtils;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * @author Decebal Suiu
@@ -51,7 +49,7 @@ public class DefaultControllerHandler implements ControllerHandler {
         this.method = findMethod(controllerClass, methodName);
         if (method == null) {
             throw new PippoRuntimeException("Failed to find controller method '{}.{}'",
-                    controllerClass.getSimpleName(), methodName);
+                controllerClass.getSimpleName(), methodName);
         }
     }
 
@@ -71,7 +69,7 @@ public class DefaultControllerHandler implements ControllerHandler {
     }
 
     @Override
-    public void handle(Request request, Response response, RouteHandlerChain chain) {
+    public void handle(RouteContext routeContext, RouteHandlerChain chain) {
         log.debug("Invoke method '{}'", LangUtils.toString(method));
         try {
             // create the controller instance
@@ -79,13 +77,13 @@ public class DefaultControllerHandler implements ControllerHandler {
             Application.get().getControllerInstantiationListeners().onInstantiation(controller);
 
             // init controller
-            controller.init(request, response, chain);
+            controller.init(routeContext, chain);
             Application.get().getControllerInitializationListeners().onInitialize(controller);
 
             // invoke action (a method from controller)
             Application.get().getControllerInvokeListeners().onInvoke(controller, method);
 
-            Object[] args = prepareMethodArgs(request);
+            Object[] args = prepareMethodArgs(routeContext);
             method.invoke(controller, args);
         } catch (Exception e) {
             throw new PippoRuntimeException(e);
@@ -127,8 +125,8 @@ public class DefaultControllerHandler implements ControllerHandler {
                             String parameterName = getParameterName(controllerMethod, i);
                             if (StringUtils.isNullOrEmpty(parameterName)) {
                                 throw new PippoRuntimeException(
-                                        "Controller method '{}.{}' parameter {} of type '{}' does not specify a name!",
-                                        controllerClass.getSimpleName(), methodName, i, type.getSimpleName());
+                                    "Controller method '{}.{}' parameter {} of type '{}' does not specify a name!",
+                                    controllerClass.getSimpleName(), methodName, i, type.getSimpleName());
                             }
 
                             parameterNames[i] = parameterName;
@@ -137,8 +135,8 @@ public class DefaultControllerHandler implements ControllerHandler {
 
                 } else {
                     throw new PippoRuntimeException(
-                            "Found overloaded controller method '{}.{}'. Method names must be unique!",
-                            controllerClass.getSimpleName(), methodName);
+                        "Found overloaded controller method '{}.{}'. Method names must be unique!",
+                        controllerClass.getSimpleName(), methodName);
                 }
             }
         }
@@ -146,11 +144,11 @@ public class DefaultControllerHandler implements ControllerHandler {
         return controllerMethod;
     }
 
-    protected Object[] prepareMethodArgs(Request request) {
+    protected Object[] prepareMethodArgs(RouteContext routeContext) {
         Class<?>[] types = method.getParameterTypes();
 
         if (types.length == 0) {
-            return new Object[] {};
+            return new Object[]{};
         }
 
         Object[] args = new Object[types.length];
@@ -158,13 +156,13 @@ public class DefaultControllerHandler implements ControllerHandler {
             Class<?> type = types[i];
             String name = parameterNames[i];
             if (BODY.equals(name)) {
-                Object value = request.createEntityFromBody(type);
+                Object value = routeContext.getRequest().createEntityFromBody(type);
                 args[i] = value;
             } else if (FORM.equals(name)) {
-                Object value = request.createEntityFromParameters(type);
+                Object value = routeContext.getRequest().createEntityFromParameters(type);
                 args[i] = value;
             } else {
-                ParameterValue value = request.getParameter(name);
+                ParameterValue value = routeContext.getRequest().getParameter(name);
                 args[i] = value.to(type);
             }
         }

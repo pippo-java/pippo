@@ -84,8 +84,7 @@ public class PippoFilter implements Filter {
         + " ) __/ _)(_  ) __/ ) __/ )(_)(   http://pippo.ro\n"
         + "(__)  (____)(__)  (__)  (_____)  {}\n";
 
-    private RequestFactory requestFactory;
-    private ResponseFactory responseFactory;
+    private RouteContextFactory routeContextFactory;
     private RouteHandlerChainFactory routeHandlerChainFactory;
     private Application application;
     private List<Initializer> initializers;
@@ -126,13 +125,9 @@ public class PippoFilter implements Filter {
 
             initializers = new ArrayList<>();
 
-            requestFactory = getRequestFactory();
-            initializers.add(requestFactory);
-            log.debug("Request factory is '{}'", requestFactory.getClass().getName());
-
-            responseFactory = getResponseFactory();
-            initializers.add(responseFactory);
-            log.debug("Response factory is '{}'", responseFactory.getClass().getName());
+            routeContextFactory = getRouteContextFactory();
+            initializers.add(routeContextFactory);
+            log.debug("RouteContext factory is '{}'", routeContextFactory.getClass().getName());
 
             routeHandlerChainFactory = getRouteHandlerChainFactory();
             initializers.add(routeHandlerChainFactory);
@@ -187,51 +182,50 @@ public class PippoFilter implements Filter {
         }
 
         log.debug("Request {} '{}'", requestMethod, relativePath);
-        final Request request = requestFactory.createRequest(httpServletRequest, application);
-        final Response response = responseFactory.createResponse(httpServletResponse, application);
+        final RouteContext routeContext = routeContextFactory.createRouteContext(application, httpServletRequest, httpServletResponse);
         ErrorHandler errorHandler = application.getErrorHandler();
 
-        processFlash(request, response);
+        processFlash(routeContext);
 
         RouteHandlerChain handlerChain = null;
         try {
             // Force the initial Response status code to Integer.MAX_VALUE.
             // The chain is expected to properly set a Response status code.
             // Note: Some containers (e.g. Jetty) prohibit setting 0.
-            response.status(Integer.MAX_VALUE);
+            routeContext.getResponse().status(Integer.MAX_VALUE);
 
             Router router = application.getRouter();
             List<RouteMatch> routeMatches = router.findRoutes(relativePath, requestMethod);
 
             if (routeMatches.isEmpty()) {
-                errorHandler.handle(HttpConstants.StatusCode.NOT_FOUND, request, response);
-                handlerChain = routeHandlerChainFactory.createChain(request, response, new ArrayList<RouteMatch>());
+                errorHandler.handle(HttpConstants.StatusCode.NOT_FOUND, routeContext);
+                handlerChain = routeHandlerChainFactory.createChain(routeContext, new ArrayList<RouteMatch>());
             } else {
-                handlerChain = routeHandlerChainFactory.createChain(request, response, routeMatches);
+                handlerChain = routeHandlerChainFactory.createChain(routeContext, routeMatches);
             }
 
             handlerChain.next();
 
-            if (!response.isCommitted()) {
-                if (response.getStatus() == Integer.MAX_VALUE) {
+            if (!routeContext.getResponse().isCommitted()) {
+                if (routeContext.getResponse().getStatus() == Integer.MAX_VALUE) {
                     log.info("Handlers in chain did not set a status code for {} '{}'", requestMethod, relativePath);
-                    response.notFound();
+                    routeContext.getResponse().notFound();
                 }
                 log.debug("Auto-committing response for {} '{}'", requestMethod, relativePath);
-                if (response.getStatus() >= HttpConstants.StatusCode.BAD_REQUEST) {
+                if (routeContext.getResponse().getStatus() >= HttpConstants.StatusCode.BAD_REQUEST) {
                     // delegate response to the error handler.
                     // this will generate response content appropriate for the request/
-                    errorHandler.handle(response.getStatus(), request, response);
+                    errorHandler.handle(routeContext.getResponse().getStatus(), routeContext);
                 } else {
-                    response.commit();
+                    routeContext.getResponse().commit();
                 }
             }
         } catch (Exception e) {
             log.error(e.getMessage(), e);
-            errorHandler.handle(e, request, response);
+            errorHandler.handle(e, routeContext);
         } finally {
             handlerChain.runFinallyRoutes();
-            log.debug("Returned status code {} for {} '{}'", response.getStatus(), requestMethod, relativePath);
+            log.debug("Returned status code {} for {} '{}'", routeContext.getResponse().getStatus(), requestMethod, relativePath);
             ThreadContext.restore(previousThreadContext);
         }
     }
@@ -391,19 +385,10 @@ public class PippoFilter implements Filter {
         return path;
     }
 
-    private RequestFactory getRequestFactory() {
-        RequestFactory factory = ServiceLocator.locate(RequestFactory.class);
+    private RouteContextFactory getRouteContextFactory() {
+        RouteContextFactory factory = ServiceLocator.locate(RouteContextFactory.class);
         if (factory == null) {
-            factory = new DefaultRequestFactory();
-        }
-
-        return factory;
-    }
-
-    private ResponseFactory getResponseFactory() {
-        ResponseFactory factory = ServiceLocator.locate(ResponseFactory.class);
-        if (factory == null) {
-            factory = new DefaultResponseFactory();
+            factory = new DefaultRouteContextFactory();
         }
 
         return factory;
@@ -465,10 +450,10 @@ public class PippoFilter implements Filter {
         return pippoVersion;
     }
 
-    private void processFlash(Request request, Response response) {
+    private void processFlash(RouteContext routeContext) {
         Flash flash = null;
 
-        Session session = request.getSession(false);
+        Session session = routeContext.getRequest().getSession(false);
         if (session != null) {
             // get flash from session
             flash = session.remove("flash");
@@ -481,7 +466,7 @@ public class PippoFilter implements Filter {
         }
 
         // make current flash available to templates
-        response.bind("flash", flash);
+        routeContext.getResponse().bind("flash", flash);
     }
 
 }

@@ -18,14 +18,13 @@ package ro.pippo.core.util;
 import ro.pippo.core.HttpConstants;
 import ro.pippo.core.PippoConstants;
 import ro.pippo.core.PippoSettings;
-import ro.pippo.core.Request;
-import ro.pippo.core.Response;
 
 import java.text.ParseException;
 import java.util.Date;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import ro.pippo.core.RouteContext;
 
 /**
  * HttpCacheToolkit adapted from Ninja Web Framework
@@ -40,13 +39,13 @@ public class HttpCacheToolkit {
         this.pippoSettings = pippoSettings;
     }
 
-    public boolean isModified(String etag, long lastModified, Request request, Response response) {
-        final String browserEtag = request.getHeader(HttpConstants.Header.IF_NONE_MATCH);
+    public boolean isModified(String etag, long lastModified, RouteContext routeContext) {
+        final String browserEtag = routeContext.getRequest().getHeader(HttpConstants.Header.IF_NONE_MATCH);
         if (browserEtag != null && !StringUtils.isNullOrEmpty(etag)) {
             return !(browserEtag.equals(etag));
         }
 
-        final String ifModifiedSince = request.getHeader(HttpConstants.Header.IF_MODIFIED_SINCE);
+        final String ifModifiedSince = routeContext.getRequest().getHeader(HttpConstants.Header.IF_MODIFIED_SINCE);
         if ((lastModified > 0) && !StringUtils.isNullOrEmpty(ifModifiedSince)) {
             try {
                 Date browserDate = DateUtils.parseHttpDateFormat(ifModifiedSince);
@@ -61,16 +60,16 @@ public class HttpCacheToolkit {
         return true;
     }
 
-    public void addEtag(Request request, Response response, long lastModified) {
+    public void addEtag(RouteContext routeContext, long lastModified) {
         if (pippoSettings.isProd()) {
             String maxAge = pippoSettings.getString(PippoConstants.SETTING_HTTP_CACHE_CONTROL, "3600");
             if (maxAge.equals("0")) {
-                response.header(HttpConstants.Header.CACHE_CONTROL, "no-cache");
+                routeContext.getResponse().header(HttpConstants.Header.CACHE_CONTROL, "no-cache");
             } else {
-                response.header(HttpConstants.Header.CACHE_CONTROL, "max-age=" + maxAge);
+                routeContext.getResponse().header(HttpConstants.Header.CACHE_CONTROL, "max-age=" + maxAge);
             }
         } else {
-            response.header(HttpConstants.Header.CACHE_CONTROL, "no-cache");
+            routeContext.getResponse().header(HttpConstants.Header.CACHE_CONTROL, "no-cache");
         }
 
         // Use etag on demand:
@@ -81,13 +80,13 @@ public class HttpCacheToolkit {
             // ETag right now is only lastModified long.
             // maybe we change that in the future.
             etag = "\"" + lastModified + "\"";
-            response.header(HttpConstants.Header.ETAG, etag);
+            routeContext.getResponse().header(HttpConstants.Header.ETAG, etag);
         }
 
-        if (isModified(etag, lastModified, request, response)) {
-            response.header(HttpConstants.Header.LAST_MODIFIED, DateUtils.formatForHttpHeader(lastModified));
-        } else if (request.getMethod().equalsIgnoreCase(HttpConstants.Method.GET)) {
-            response.status(HttpConstants.StatusCode.NOT_MODIFIED);
+        if (isModified(etag, lastModified, routeContext)) {
+            routeContext.getResponse().header(HttpConstants.Header.LAST_MODIFIED, DateUtils.formatForHttpHeader(lastModified));
+        } else if (routeContext.getRequest().getMethod().equalsIgnoreCase(HttpConstants.Method.GET)) {
+            routeContext.getResponse().status(HttpConstants.StatusCode.NOT_MODIFIED);
         }
     }
 

@@ -16,11 +16,28 @@
 package ro.pippo.core;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 /**
  * @author James Moger
  */
-public interface RequestFactory<T extends Request> extends Initializer {
+public class DefaultRouteContext implements RouteContext {
 
-    public T createRequest(HttpServletRequest httpServletRequest, Application application);
+    private final Request request;
+    private final Response response;
+
+    protected DefaultRouteContext(Application application, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
+        this.request = new Request(httpServletRequest, application);
+        this.response = new Response(httpServletResponse, application);
+    }
+
+    @Override
+    public Request getRequest() {
+        return request;
+    }
+
+    @Override
+    public Response getResponse() {
+        return response;
+    }
 }

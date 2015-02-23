@@ -19,8 +19,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ro.pippo.core.Application;
 import ro.pippo.core.HttpConstants;
-import ro.pippo.core.Request;
-import ro.pippo.core.Response;
+import ro.pippo.core.RouteContext;
 import ro.pippo.core.route.FileResourceHandler;
 import ro.pippo.core.route.RouteHandler;
 import ro.pippo.core.route.RouteHandlerChain;
@@ -45,8 +44,8 @@ public class BasicApplication extends Application {
         GET("/", new RouteHandler() {
 
             @Override
-            public void handle(Request request, Response response, RouteHandlerChain chain) {
-                response.send("Hello World");
+            public void handle(RouteContext routeContext, RouteHandlerChain chain) {
+                routeContext.getResponse().send("Hello World");
             }
 
         });
@@ -55,8 +54,8 @@ public class BasicApplication extends Application {
         GET("/file", new RouteHandler() {
 
             @Override
-            public void handle(Request request, Response response, RouteHandlerChain chain) {
-                response.file(new File("pom.xml"));
+            public void handle(RouteContext routeContext, RouteHandlerChain chain) {
+                routeContext.getResponse().file(new File("pom.xml"));
             }
 
         });
@@ -65,16 +64,16 @@ public class BasicApplication extends Application {
         GET("/json", new RouteHandler() {
 
             @Override
-            public void handle(Request request, Response response, RouteHandlerChain chain) {
+            public void handle(RouteContext routeContext, RouteHandlerChain chain) {
                 Contact contact = new Contact()
-                        .setId(12345)
-                        .setName("John")
-                        .setPhone("0733434435")
-                        .setAddress("Sunflower Street, No. 6");
+                    .setId(12345)
+                    .setName("John")
+                    .setPhone("0733434435")
+                    .setAddress("Sunflower Street, No. 6");
                 // you can use variant 1 or 2
 //                response.contentType(HttpConstants.ContentType.APPLICATION_JSON); // 1
 //                response.send(new Gson().toJson(contact)); // 1
-                response.json(contact); // 2
+                routeContext.getResponse().json(contact); // 2
             }
 
         });
@@ -83,16 +82,16 @@ public class BasicApplication extends Application {
         GET("/xml", new RouteHandler() {
 
             @Override
-            public void handle(Request request, Response response, RouteHandlerChain chain) {
+            public void handle(RouteContext routeContext, RouteHandlerChain chain) {
                 Contact contact = new Contact()
-                        .setId(12345)
-                        .setName("John")
-                        .setPhone("0733434435")
-                        .setAddress("Sunflower Street, No. 6");
+                    .setId(12345)
+                    .setName("John")
+                    .setPhone("0733434435")
+                    .setAddress("Sunflower Street, No. 6");
                 // you can use variant 1 or 2
 //                response.contentType(HttpConstants.ContentType.APPLICATION_XML); // 1
 //                response.send(new Xstream().toXML(contact)); // 1
-                response.xml(contact); // 2
+                routeContext.getResponse().xml(contact); // 2
             }
 
         });
@@ -101,13 +100,13 @@ public class BasicApplication extends Application {
         GET("/text", new RouteHandler() {
 
             @Override
-            public void handle(Request request, Response response, RouteHandlerChain chain) {
+            public void handle(RouteContext routeContext, RouteHandlerChain chain) {
                 Contact contact = new Contact()
-                        .setId(12345)
-                        .setName("John")
-                        .setPhone("0733434435")
-                        .setAddress("Sunflower Street, No. 6");
-                response.text(contact); // 2
+                    .setId(12345)
+                    .setName("John")
+                    .setPhone("0733434435")
+                    .setAddress("Sunflower Street, No. 6");
+                routeContext.getResponse().text(contact); // 2
             }
 
         });
@@ -116,13 +115,13 @@ public class BasicApplication extends Application {
         GET("/negotiate", new RouteHandler() {
 
             @Override
-            public void handle(Request request, Response response, RouteHandlerChain chain) {
+            public void handle(RouteContext routeContext, RouteHandlerChain chain) {
                 Contact contact = new Contact()
-                        .setId(12345)
-                        .setName("John")
-                        .setPhone("0733434435")
-                        .setAddress("Sunflower Street, No. 6");
-                response.xml().contentType(request).send(contact);
+                    .setId(12345)
+                    .setName("John")
+                    .setPhone("0733434435")
+                    .setAddress("Sunflower Street, No. 6");
+                routeContext.getResponse().xml().contentType(routeContext.getRequest()).send(contact);
             }
 
         });
@@ -131,19 +130,19 @@ public class BasicApplication extends Application {
         GET("/template", new RouteHandler() {
 
             @Override
-            public void handle(Request request, Response response, RouteHandlerChain chain) {
-            	String message;
+            public void handle(RouteContext routeContext, RouteHandlerChain chain) {
+                String message;
 
-            	String lang = request.getParameter("lang").toString();
-            	if (lang == null) {
-            		message = getMessages().get("pippo.greeting", request, response);
-            	} else {
-            		message = getMessages().get("pippo.greeting", lang);
-            	}
+                String lang = routeContext.getRequest().getParameter("lang").toString();
+                if (lang == null) {
+                    message = getMessages().get("pippo.greeting", routeContext);
+                } else {
+                    message = getMessages().get("pippo.greeting", lang);
+                }
 
                 Map<String, Object> model = new HashMap<>();
                 model.put("greeting", message);
-                response.render("hello", model);
+                routeContext.getResponse().render("hello", model);
             }
 
         });
@@ -152,23 +151,23 @@ public class BasicApplication extends Application {
         GET("/error", new RouteHandler() {
 
             @Override
-            public void handle(Request request, Response response, RouteHandlerChain chain) {
-                int statusCode = request.getParameter("code").toInt(HttpConstants.StatusCode.INTERNAL_ERROR);
+            public void handle(RouteContext routeContext, RouteHandlerChain chain) {
+                int statusCode = routeContext.getRequest().getParameter("code").toInt(HttpConstants.StatusCode.INTERNAL_ERROR);
                 // do not commit the response
                 // this delegates response representation to PippoFilter
-                response.status(statusCode);
+                routeContext.getResponse().status(statusCode);
             }
 
         });
 
-         // send files from a local folder (try a request like 'src/main/java/ro/pippo/demo/basic/BasicApplication.java')
+        // send files from a local folder (try a request like 'src/main/java/ro/pippo/demo/basic/BasicApplication.java')
         GET(new FileResourceHandler("/src", "src"));
 
         // throw a programatically exception
         GET("/exception", new RouteHandler() {
 
             @Override
-            public void handle(Request request, Response response, RouteHandlerChain chain) {
+            public void handle(RouteContext routeContext, RouteHandlerChain chain) {
                 throw new RuntimeException("My programatically error");
             }
 
@@ -179,7 +178,7 @@ public class BasicApplication extends Application {
         ALL("/.*", new RouteHandler() {
 
             @Override
-            public void handle(Request request, Response response, RouteHandlerChain chain) {
+            public void handle(RouteContext routeContext, RouteHandlerChain chain) {
                 log.info(">>> Cleanup here");
             }
 

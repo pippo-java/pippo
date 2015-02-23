@@ -16,8 +16,7 @@
 package ro.pippo.core.route;
 
 import ro.pippo.core.Initializer;
-import ro.pippo.core.Request;
-import ro.pippo.core.Response;
+import ro.pippo.core.RouteContext;
 
 import java.util.List;
 
@@ -26,6 +25,6 @@ import java.util.List;
  */
 public interface RouteHandlerChainFactory extends Initializer {
 
-	public RouteHandlerChain createChain(Request request, Response response, List<RouteMatch> routeMatches);
+    public RouteHandlerChain createChain(RouteContext routeContext, List<RouteMatch> routeMatches);
 
 }

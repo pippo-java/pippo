@@ -20,6 +20,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ro.pippo.core.Request;
 import ro.pippo.core.Response;
+import ro.pippo.core.RouteContext;
 import ro.pippo.core.controller.ControllerHandler;
 import ro.pippo.core.route.DefaultRouteHandlerChain;
 import ro.pippo.core.route.Route;
@@ -36,61 +37,61 @@ import java.util.List;
  */
 public class MetricsRouteHandlerChain extends DefaultRouteHandlerChain {
 
-	private static final Logger log = LoggerFactory.getLogger(MetricsRouteHandlerChain.class);
+    private static final Logger log = LoggerFactory.getLogger(MetricsRouteHandlerChain.class);
 
-	private final MetricRegistry metricRegistry;
+    private final MetricRegistry metricRegistry;
 
-	public MetricsRouteHandlerChain(MetricRegistry metricRegistry, Request request, Response response, List<RouteMatch> routeMatches) {
-		super(request, response, routeMatches);
+    public MetricsRouteHandlerChain(MetricRegistry metricRegistry, RouteContext routeContext, List<RouteMatch> routeMatches) {
+        super(routeContext, routeMatches);
 
-		this.metricRegistry = metricRegistry;
-	}
+        this.metricRegistry = metricRegistry;
+    }
 
-	@Override
-	protected void handleRoute(Route route) {
-		RouteHandler handler = route.getRouteHandler();
+    @Override
+    protected void handleRoute(Route route) {
+        RouteHandler handler = route.getRouteHandler();
 
-		try {
-			Method method;
-			if (handler instanceof ControllerHandler) {
-				ControllerHandler controllerHandler = (ControllerHandler) handler;
-				method = controllerHandler.getMethod();
-			} else {
-				method = route.getRouteHandler().getClass().getMethod("handle", Request.class, Response.class, RouteHandlerChain.class);
-			}
+        try {
+            Method method;
+            if (handler instanceof ControllerHandler) {
+                ControllerHandler controllerHandler = (ControllerHandler) handler;
+                method = controllerHandler.getMethod();
+            } else {
+                method = route.getRouteHandler().getClass().getMethod("handle", RouteContext.class, RouteHandlerChain.class);
+            }
 
-			String metricName = MetricRegistry.name(method.getDeclaringClass(), method.getName());
+            String metricName = MetricRegistry.name(method.getDeclaringClass(), method.getName());
 
-			if (method.isAnnotationPresent(Metered.class)) {
-				log.debug("Found '{}' annotation on method '{}'", Metered.class.getSimpleName(), LangUtils.toString(method));
-				// route handler is Metered
-				Metered metered = method.getAnnotation(Metered.class);
-				if (!metered.value().isEmpty()) {
-					metricName = metered.value();
-				}
-				handler = new MeteredRouteHandler(metricName, route.getRouteHandler(), metricRegistry);
-			} else if (method.isAnnotationPresent(Timed.class)) {
-				log.debug("Found '{}' annotation on method '{}'", Timed.class.getSimpleName(), LangUtils.toString(method));
-				// route handler is Timed
-				Timed timed = method.getAnnotation(Timed.class);
-				if (!timed.value().isEmpty()) {
-					metricName = timed.value();
-				}
-				handler = new TimedRouteHandler(metricName, route.getRouteHandler(), metricRegistry);
-			} else if (method.isAnnotationPresent(Counted.class)) {
-				log.debug("Found '{}' annotation on method '{}'", Counted.class.getSimpleName(), LangUtils.toString(method));
-				// route handler is Counted
-				Counted counted = method.getAnnotation(Counted.class);
-				if (!counted.value().isEmpty()) {
-					metricName = counted.value();
-				}
-				handler = new CountedRouteHandler(metricName, counted.active(), route.getRouteHandler(), metricRegistry);
-			}
-		} catch (Exception e) {
-			log.error("Failed to get method?!", e);
-		}
+            if (method.isAnnotationPresent(Metered.class)) {
+                log.debug("Found '{}' annotation on method '{}'", Metered.class.getSimpleName(), LangUtils.toString(method));
+                // route handler is Metered
+                Metered metered = method.getAnnotation(Metered.class);
+                if (!metered.value().isEmpty()) {
+                    metricName = metered.value();
+                }
+                handler = new MeteredRouteHandler(metricName, route.getRouteHandler(), metricRegistry);
+            } else if (method.isAnnotationPresent(Timed.class)) {
+                log.debug("Found '{}' annotation on method '{}'", Timed.class.getSimpleName(), LangUtils.toString(method));
+                // route handler is Timed
+                Timed timed = method.getAnnotation(Timed.class);
+                if (!timed.value().isEmpty()) {
+                    metricName = timed.value();
+                }
+                handler = new TimedRouteHandler(metricName, route.getRouteHandler(), metricRegistry);
+            } else if (method.isAnnotationPresent(Counted.class)) {
+                log.debug("Found '{}' annotation on method '{}'", Counted.class.getSimpleName(), LangUtils.toString(method));
+                // route handler is Counted
+                Counted counted = method.getAnnotation(Counted.class);
+                if (!counted.value().isEmpty()) {
+                    metricName = counted.value();
+                }
+                handler = new CountedRouteHandler(metricName, counted.active(), route.getRouteHandler(), metricRegistry);
+            }
+        } catch (Exception e) {
+            log.error("Failed to get method?!", e);
+        }
 
-		handler.handle(request, response, this);
-	}
+        handler.handle(routeContext, this);
+    }
 
 }

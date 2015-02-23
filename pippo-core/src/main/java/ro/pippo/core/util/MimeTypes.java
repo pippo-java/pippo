@@ -15,10 +15,11 @@
  */
 package ro.pippo.core.util;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import ro.pippo.core.PippoConstants;
 import ro.pippo.core.PippoSettings;
-import ro.pippo.core.Request;
-import ro.pippo.core.Response;
+import ro.pippo.core.RouteContext;
 
 import java.io.InputStream;
 import java.net.URL;
@@ -26,9 +27,6 @@ import java.util.List;
 import java.util.Properties;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * MimeTypes utils adapted from Play 1.2.4 & Ninja Web Framework
@@ -53,8 +51,7 @@ public class MimeTypes {
     /**
      * Returns the mimetype from a file name
      *
-     * @param filename
-     *            the file name
+     * @param filename the file name
      * @return the mimetype or the empty string if not found
      */
     public String getMimeType(String filename) {
@@ -64,11 +61,9 @@ public class MimeTypes {
     /**
      * Returns the mimetype from a file name.<br/>
      *
-     * @param filename
-     *            the file name
-     * @param defaultMimeType
-     *            the default mime type to return when no matching mimetype is
-     *            found
+     * @param filename        the file name
+     * @param defaultMimeType the default mime type to return when no matching mimetype is
+     *                        found
      * @return the mimetype
      */
     public String getMimeType(String filename, String defaultMimeType) {
@@ -95,14 +90,12 @@ public class MimeTypes {
      * For a text-based content-type, also return the encoding suffix eg.
      * <em>"text/plain; charset=utf-8"</em>
      *
-     * @param request
-     * @param response
-     * @param filename
-     *            the file name
+     * @param routeContext
+     * @param filename     the file name
      * @return the content-type deduced from the file extension.
      */
-    public String getContentType(Request request, Response response, String filename) {
-        return getContentType(request, response, filename, "application/octet-stream");
+    public String getContentType(RouteContext routeContext, String filename) {
+        return getContentType(routeContext, filename, "application/octet-stream");
     }
 
     /**
@@ -110,16 +103,13 @@ public class MimeTypes {
      * For a text-based content-type, also return the encoding suffix eg.
      * <em>"text/plain; charset=utf-8"</em>
      *
-     * @param request
-     * @param response
-     * @param filename
-     *            the file name
-     * @param defaultContentType
-     *            the default content-type to return when no matching
-     *            content-type is found
+     * @param routeContext
+     * @param filename           the file name
+     * @param defaultContentType the default content-type to return when no matching
+     *                           content-type is found
      * @return the content-type deduced from the file extension.
      */
-    public String getContentType(Request request, Response response, String filename, String defaultContentType) {
+    public String getContentType(RouteContext routeContext, String filename, String defaultContentType) {
         String contentType = getMimeType(filename, null);
         if (contentType == null) {
             contentType = defaultContentType;
@@ -135,8 +125,7 @@ public class MimeTypes {
     /**
      * Check the mimetype is referenced in the mimetypes database.
      *
-     * @param mimeType
-     *            the mimeType to verify
+     * @param mimeType the mimeType to verify
      */
     public boolean isValidMimeType(String mimeType) {
         if (mimeType == null) {

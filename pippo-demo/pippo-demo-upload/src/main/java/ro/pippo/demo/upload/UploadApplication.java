@@ -18,8 +18,7 @@ package ro.pippo.demo.upload;
 import ro.pippo.core.Application;
 import ro.pippo.core.FileItem;
 import ro.pippo.core.PippoRuntimeException;
-import ro.pippo.core.Request;
-import ro.pippo.core.Response;
+import ro.pippo.core.RouteContext;
 import ro.pippo.core.route.RouteHandler;
 import ro.pippo.core.route.RouteHandlerChain;
 
@@ -40,8 +39,8 @@ public class UploadApplication extends Application {
         GET("/", new RouteHandler() {
 
             @Override
-            public void handle(Request request, Response response, RouteHandlerChain chain) {
-                response.render("upload");
+            public void handle(RouteContext routeContext, RouteHandlerChain chain) {
+                routeContext.getResponse().render("upload");
             }
 
         });
@@ -49,12 +48,12 @@ public class UploadApplication extends Application {
         POST("/upload", new RouteHandler() {
 
             @Override
-            public void handle(Request request, Response response, RouteHandlerChain chain) {
-                String submitter = request.getParameter("submitter").toString();
+            public void handle(RouteContext routeContext, RouteHandlerChain chain) {
+                String submitter = routeContext.getRequest().getParameter("submitter").toString();
                 System.out.println("submitter = " + submitter);
 
                 // retrieves the value for 'file'
-                FileItem file = request.getFile("file");
+                FileItem file = routeContext.getRequest().getFile("file");
                 System.out.println("file = " + file);
                 try {
                     // write to disk
@@ -63,7 +62,7 @@ public class UploadApplication extends Application {
                     file.write(uploadedFile);
 
                     // send response
-                    response.send("Uploaded file to '" + uploadedFile + "'");
+                    routeContext.getResponse().send("Uploaded file to '" + uploadedFile + "'");
                 } catch (IOException e) {
                     throw new PippoRuntimeException(e); // to display the error stack as response
                 }
