@@ -39,7 +39,7 @@ public class UploadApplication extends Application {
 
             @Override
             public void handle(RouteContext routeContext) {
-                routeContext.getResponse().render("upload");
+                routeContext.render("upload");
             }
 
         });
@@ -48,7 +48,7 @@ public class UploadApplication extends Application {
 
             @Override
             public void handle(RouteContext routeContext) {
-                String submitter = routeContext.getRequest().getParameter("submitter").toString();
+                String submitter = routeContext.fromRequest("submitter").toString();
                 System.out.println("submitter = " + submitter);
 
                 // retrieves the value for 'file'
@@ -61,7 +61,7 @@ public class UploadApplication extends Application {
                     file.write(uploadedFile);
 
                     // send response
-                    routeContext.getResponse().send("Uploaded file to '" + uploadedFile + "'");
+                    routeContext.send("Uploaded file to '" + uploadedFile + "'");
                 } catch (IOException e) {
                     throw new PippoRuntimeException(e); // to display the error stack as response
                 }

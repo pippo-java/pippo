@@ -19,14 +19,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ro.pippo.core.Application;
 import ro.pippo.core.HttpConstants;
-import ro.pippo.core.route.RouteContext;
 import ro.pippo.core.route.FileResourceHandler;
+import ro.pippo.core.route.RouteContext;
 import ro.pippo.core.route.RouteHandler;
 import ro.pippo.demo.common.Contact;
 
 import java.io.File;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * @author Decebal Suiu
@@ -44,7 +42,7 @@ public class BasicApplication extends Application {
 
             @Override
             public void handle(RouteContext routeContext) {
-                routeContext.getResponse().send("Hello World");
+                routeContext.send("Hello World");
             }
 
         });
@@ -54,7 +52,7 @@ public class BasicApplication extends Application {
 
             @Override
             public void handle(RouteContext routeContext) {
-                routeContext.getResponse().file(new File("pom.xml"));
+                routeContext.send(new File("pom.xml"));
             }
 
         });
@@ -72,7 +70,7 @@ public class BasicApplication extends Application {
                 // you can use variant 1 or 2
 //                response.contentType(HttpConstants.ContentType.APPLICATION_JSON); // 1
 //                response.send(new Gson().toJson(contact)); // 1
-                routeContext.getResponse().json(contact); // 2
+                routeContext.json().send(contact); // 2
             }
 
         });
@@ -90,7 +88,7 @@ public class BasicApplication extends Application {
                 // you can use variant 1 or 2
 //                response.contentType(HttpConstants.ContentType.APPLICATION_XML); // 1
 //                response.send(new Xstream().toXML(contact)); // 1
-                routeContext.getResponse().xml(contact); // 2
+                routeContext.xml().send(contact); // 2
             }
 
         });
@@ -105,7 +103,7 @@ public class BasicApplication extends Application {
                     .setName("John")
                     .setPhone("0733434435")
                     .setAddress("Sunflower Street, No. 6");
-                routeContext.getResponse().text(contact); // 2
+                routeContext.text().send(contact); // 2
             }
 
         });
@@ -120,7 +118,7 @@ public class BasicApplication extends Application {
                     .setName("John")
                     .setPhone("0733434435")
                     .setAddress("Sunflower Street, No. 6");
-                routeContext.getResponse().xml().contentType(routeContext.getRequest()).send(contact);
+                routeContext.xml().negotiateContentType().send(contact);
             }
 
         });
@@ -132,16 +130,15 @@ public class BasicApplication extends Application {
             public void handle(RouteContext routeContext) {
                 String message;
 
-                String lang = routeContext.getRequest().getParameter("lang").toString();
+                String lang = routeContext.fromRequest("lang").toString();
                 if (lang == null) {
                     message = getMessages().get("pippo.greeting", routeContext);
                 } else {
                     message = getMessages().get("pippo.greeting", lang);
                 }
 
-                Map<String, Object> model = new HashMap<>();
-                model.put("greeting", message);
-                routeContext.getResponse().render("hello", model);
+                routeContext.putLocal("greeting", message);
+                routeContext.render("hello");
             }
 
         });
@@ -151,10 +148,10 @@ public class BasicApplication extends Application {
 
             @Override
             public void handle(RouteContext routeContext) {
-                int statusCode = routeContext.getRequest().getParameter("code").toInt(HttpConstants.StatusCode.INTERNAL_ERROR);
+                int statusCode = routeContext.fromRequest("code").toInt(HttpConstants.StatusCode.INTERNAL_ERROR);
                 // do not commit the response
                 // this delegates response representation to PippoFilter
-                routeContext.getResponse().status(statusCode);
+                routeContext.status(statusCode);
             }
 
         });

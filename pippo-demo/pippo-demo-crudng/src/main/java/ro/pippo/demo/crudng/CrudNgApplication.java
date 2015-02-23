@@ -56,7 +56,7 @@ public class CrudNgApplication extends Application {
 
             @Override
             public void handle(RouteContext routeContext) {
-                log.info("Request for {} '{}'", routeContext.getRequest().getMethod(), routeContext.getRequest().getUri());
+                log.info("Request for {} '{}'", routeContext.getRequestMethod(), routeContext.getRequestUri());
                 routeContext.next();
             }
 
@@ -69,9 +69,9 @@ public class CrudNgApplication extends Application {
 
             @Override
             public void handle(RouteContext routeContext) {
-                if (routeContext.getRequest().getSession().get("username") == null) {
-                    routeContext.getRequest().getSession().put("originalDestination", routeContext.getRequest().getContextUriWithQuery());
-                    routeContext.getResponse().redirectToContextPath("/login");
+                if (routeContext.fromSession("username") == null) {
+                    routeContext.putSession("originalDestination", routeContext.getRequest().getContextUriWithQuery());
+                    routeContext.redirect("/login");
                 } else {
                     routeContext.next();
                 }
@@ -83,7 +83,7 @@ public class CrudNgApplication extends Application {
 
             @Override
             public void handle(RouteContext routeContext) {
-                routeContext.getResponse().render("login");
+                routeContext.render("login");
             }
 
         });
@@ -92,15 +92,17 @@ public class CrudNgApplication extends Application {
 
             @Override
             public void handle(RouteContext routeContext) {
-                String username = routeContext.getRequest().getParameter("username").toString();
-                String password = routeContext.getRequest().getParameter("password").toString();
+                String username = routeContext.fromRequest("username").toString();
+                String password = routeContext.fromRequest("password").toString();
                 if (authenticate(username, password)) {
-                    routeContext.getRequest().getSession().put("username", username);
-                    String originalDestination = routeContext.getRequest().getSession().remove("originalDestination");
-                    routeContext.getResponse().redirectToContextPath(originalDestination != null ? originalDestination : "/contacts");
+                    String originalDestination = routeContext.removeSession("originalDestination");
+                    routeContext.resetSession();
+
+                    routeContext.putSession("username", username);
+                    routeContext.redirect(originalDestination != null ? originalDestination : "/contacts");
                 } else {
-                    routeContext.getRequest().getSession().getFlash().error("Authentication failed");
-                    routeContext.getResponse().redirectToContextPath("/login");
+                    routeContext.flashError("Authentication failed");
+                    routeContext.redirect("/login");
                 }
             }
 

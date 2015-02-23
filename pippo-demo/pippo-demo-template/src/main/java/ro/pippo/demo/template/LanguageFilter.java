@@ -32,7 +32,7 @@ public class LanguageFilter extends RequestLanguageFilter {
 
     @Override
     public void handle(RouteContext routeContext) {
-        routeContext.getResponse().bind("languageChoices", languages.getRegisteredLanguages());
+        routeContext.putLocal("languageChoices", languages.getRegisteredLanguages());
         super.handle(routeContext);
     }
 

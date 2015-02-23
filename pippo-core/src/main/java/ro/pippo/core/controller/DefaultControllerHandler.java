@@ -155,13 +155,13 @@ public class DefaultControllerHandler implements ControllerHandler {
             Class<?> type = types[i];
             String name = parameterNames[i];
             if (BODY.equals(name)) {
-                Object value = routeContext.getRequest().createEntityFromBody(type);
+                Object value = routeContext.createEntityFromBody(type);
                 args[i] = value;
             } else if (FORM.equals(name)) {
-                Object value = routeContext.getRequest().createEntityFromParameters(type);
+                Object value = routeContext.createEntityFromParameters(type);
                 args[i] = value;
             } else {
-                ParameterValue value = routeContext.getRequest().getParameter(name);
+                ParameterValue value = routeContext.fromRequest(name);
                 args[i] = value.to(type);
             }
         }

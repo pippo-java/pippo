@@ -39,12 +39,12 @@ public class HttpCacheToolkit {
     }
 
     public boolean isModified(String etag, long lastModified, RouteContext routeContext) {
-        final String browserEtag = routeContext.getRequest().getHeader(HttpConstants.Header.IF_NONE_MATCH);
+        final String browserEtag = routeContext.fromHeader(HttpConstants.Header.IF_NONE_MATCH).toString();
         if (browserEtag != null && !StringUtils.isNullOrEmpty(etag)) {
             return !(browserEtag.equals(etag));
         }
 
-        final String ifModifiedSince = routeContext.getRequest().getHeader(HttpConstants.Header.IF_MODIFIED_SINCE);
+        final String ifModifiedSince = routeContext.fromHeader(HttpConstants.Header.IF_MODIFIED_SINCE).toString();
         if ((lastModified > 0) && !StringUtils.isNullOrEmpty(ifModifiedSince)) {
             try {
                 Date browserDate = DateUtils.parseHttpDateFormat(ifModifiedSince);
@@ -63,12 +63,12 @@ public class HttpCacheToolkit {
         if (pippoSettings.isProd()) {
             String maxAge = pippoSettings.getString(PippoConstants.SETTING_HTTP_CACHE_CONTROL, "3600");
             if (maxAge.equals("0")) {
-                routeContext.getResponse().header(HttpConstants.Header.CACHE_CONTROL, "no-cache");
+                routeContext.putHeader(HttpConstants.Header.CACHE_CONTROL, "no-cache");
             } else {
-                routeContext.getResponse().header(HttpConstants.Header.CACHE_CONTROL, "max-age=" + maxAge);
+                routeContext.putHeader(HttpConstants.Header.CACHE_CONTROL, "max-age=" + maxAge);
             }
         } else {
-            routeContext.getResponse().header(HttpConstants.Header.CACHE_CONTROL, "no-cache");
+            routeContext.putHeader(HttpConstants.Header.CACHE_CONTROL, "no-cache");
         }
 
         // Use etag on demand:
@@ -79,13 +79,13 @@ public class HttpCacheToolkit {
             // ETag right now is only lastModified long.
             // maybe we change that in the future.
             etag = "\"" + lastModified + "\"";
-            routeContext.getResponse().header(HttpConstants.Header.ETAG, etag);
+            routeContext.putHeader(HttpConstants.Header.ETAG, etag);
         }
 
         if (isModified(etag, lastModified, routeContext)) {
-            routeContext.getResponse().header(HttpConstants.Header.LAST_MODIFIED, DateUtils.formatForHttpHeader(lastModified));
-        } else if (routeContext.getRequest().getMethod().equalsIgnoreCase(HttpConstants.Method.GET)) {
-            routeContext.getResponse().status(HttpConstants.StatusCode.NOT_MODIFIED);
+            routeContext.putHeader(HttpConstants.Header.LAST_MODIFIED, DateUtils.formatForHttpHeader(lastModified));
+        } else if (routeContext.isRequestMethod(HttpConstants.Method.GET)) {
+            routeContext.status(HttpConstants.StatusCode.NOT_MODIFIED);
         }
     }
 

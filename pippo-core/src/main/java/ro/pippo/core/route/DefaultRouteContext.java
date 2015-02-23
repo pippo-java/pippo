@@ -18,9 +18,12 @@ package ro.pippo.core.route;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ro.pippo.core.Application;
+import ro.pippo.core.ParameterValue;
 import ro.pippo.core.Request;
 import ro.pippo.core.Response;
+import ro.pippo.core.Session;
 
+import java.io.File;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -57,6 +60,171 @@ public class DefaultRouteContext implements RouteContext {
     @Override
     public Response getResponse() {
         return response;
+    }
+
+    @Override
+    public boolean hasSession() {
+        return request.getSession(false) != null;
+    }
+
+    @Override
+    public Session getSession() {
+        return request.getSession();
+    }
+
+    @Override
+    public void recreateSession() {
+        request.recreateSession();
+    }
+
+    @Override
+    public void resetSession() {
+        request.resetSession();
+    }
+
+    @Override
+    public void touchSession() {
+        request.getSession().touch();
+    }
+
+    @Override
+    public void invalidateSession() {
+        request.getSession().invalidate();
+    }
+
+    @Override
+    public <T> T putSession(String name, T t) {
+        getSession().put(name, t);
+        return t;
+    }
+
+    @Override
+    public <T> T fromSession(String name) {
+        if (hasSession()) {
+            T t = request.getSession().get(name);
+            return t;
+        }
+        return null;
+    }
+
+    @Override
+    public <T> T removeSession(String name) {
+        if (hasSession()) {
+            T t = request.getSession().remove(name);
+            return t;
+        }
+        return null;
+    }
+
+    @Override
+    public <T> T putLocal(String name, T t) {
+        response.getLocals().put(name, t);
+        return t;
+    }
+
+    @Override
+    public void putLocals(Map<String, Object> locals) {
+        response.getLocals().putAll(locals);
+    }
+
+    @Override
+    public <T> T fromLocal(String name) {
+        T t = (T) response.getLocals().get(name);
+        return t;
+    }
+
+    @Override
+    public <T> T removeLocal(String name) {
+        T t = (T) response.getLocals().remove(name);
+        return t;
+    }
+
+    @Override
+    public ParameterValue fromRequest(String name) {
+        ParameterValue parameterValue = request.getParameter(name);
+        return parameterValue;
+    }
+
+    @Override
+    public ParameterValue fromHeader(String name) {
+        ParameterValue parameterValue = request.getParameter(name);
+        return parameterValue;
+    }
+
+    @Override
+    public <T> T putHeader(String name, T t) {
+        response.header(name, t.toString());
+        return t;
+    }
+
+    @Override
+    public void flashError(String message, Object... args) {
+        request.getSession().getFlash().error(message, args);
+    }
+
+    @Override
+    public void flashWarning(String message, Object... args) {
+        request.getSession().getFlash().warning(message, args);
+    }
+
+    @Override
+    public void flashInfo(String message, Object... args) {
+        request.getSession().getFlash().info(message, args);
+    }
+
+    @Override
+    public void flashSuccess(String message, Object... args) {
+        request.getSession().getFlash().success(message, args);
+    }
+
+    @Override
+    public <T> T createEntityFromParameters(Class<T> classOfT) {
+        return request.createEntityFromParameters(classOfT);
+    }
+
+    @Override
+    public <T> T createEntityFromBody(Class<T> classOfT) {
+        return request.createEntityFromBody(classOfT);
+    }
+
+    @Override
+    public String getRequestUri() {
+        return request.getContextUri();
+    }
+
+    @Override
+    public String getRequestMethod() {
+        return request.getMethod();
+    }
+
+    @Override
+    public boolean isRequestMethod(String method) {
+        return request.getMethod().equalsIgnoreCase(method);
+    }
+
+    @Override
+    public void render(String templateName) {
+        response.render(templateName);
+    }
+
+    @Override
+    public void send(CharSequence content) {
+        response.send(content);
+    }
+
+    @Override
+    public void send(File file) {
+        response.send(file);
+    }
+
+    @Override
+    public void send(Object object) {
+        response.send(object);
+    }
+
+    @Override
+    public void redirect(String path) {
+        response.redirectToContextPath(path);
     }
 
     @Override
@@ -100,6 +268,56 @@ public class DefaultRouteContext implements RouteContext {
             }
         }
     }
+
+    @Override
+    public RouteContext text() {
+        response.text();
+
+        return this;
+    }
+
+    @Override
+    public RouteContext xml() {
+        response.xml();
+
+        return this;
+    }
+
+    @Override
+    public RouteContext json() {
+        response.json();
+
+        return this;
+    }
+
+    @Override
+    public RouteContext yaml() {
+        response.yaml();
+
+        return this;
+    }
+
+    @Override
+    public RouteContext html() {
+        response.html();
+
+        return this;
+    }
+
+    @Override
+    public RouteContext negotiateContentType() {
+        response.contentType(request);
+
+        return this;
+    }
+
+    @Override
+    public RouteContext status(int code) {
+        response.status(code);
+
+        return this;
+    }
+
 
     protected void handleRoute(Route route) {
         route.getRouteHandler().handle(this);

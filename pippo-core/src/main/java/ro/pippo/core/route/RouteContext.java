@@ -16,8 +16,13 @@
 package ro.pippo.core.route;
 
 import ro.pippo.core.Application;
+import ro.pippo.core.ParameterValue;
 import ro.pippo.core.Request;
 import ro.pippo.core.Response;
+import ro.pippo.core.Session;
+
+import java.io.File;
+import java.util.Map;
 
 /**
  * @author James Moger
@@ -30,7 +35,82 @@ public interface RouteContext {
 
     Response getResponse();
 
+    boolean hasSession();
+
+    Session getSession();
+
+    void recreateSession();
+
+    void resetSession();
+
+    void touchSession();
+
+    void invalidateSession();
+
+    <T> T putSession(String name, T t);
+
+    <T> T fromSession(String name);
+
+    <T> T removeSession(String name);
+
+    <T> T putLocal(String name, T t);
+
+    void putLocals(Map<String, Object> locals);
+
+    <T> T fromLocal(String name);
+
+    <T> T removeLocal(String name);
+
+    ParameterValue fromRequest(String name);
+
+    ParameterValue fromHeader(String name);
+
+    <T> T putHeader(String name, T t);
+
+    void flashError(String message, Object... args);
+
+    void flashWarning(String message, Object... args);
+
+    void flashInfo(String message, Object... args);
+
+    void flashSuccess(String message, Object... args);
+
+    <T> T createEntityFromParameters(Class<T> classOfT);
+
+    <T> T createEntityFromBody(Class<T> classOfT);
+
+    String getRequestUri();
+
+    String getRequestMethod();
+
+    boolean isRequestMethod(String method);
+
+    void render(String templateName);
+
+    void send(CharSequence content);
+
+    void send(File file);
+
+    void send(Object object);
+
+    void redirect(String path);
+
     void next();
 
     void runFinallyRoutes();
+
+    RouteContext text();
+
+    RouteContext xml();
+
+    RouteContext json();
+
+    RouteContext yaml();
+
+    RouteContext html();
+
+    RouteContext negotiateContentType();
+
+    RouteContext status(int code);
+
 }

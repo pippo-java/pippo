@@ -18,17 +18,14 @@ package ro.pippo.demo.crud;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ro.pippo.core.Application;
-import ro.pippo.core.route.RouteContext;
 import ro.pippo.core.route.PublicResourceHandler;
+import ro.pippo.core.route.RouteContext;
 import ro.pippo.core.route.RouteHandler;
 import ro.pippo.core.route.WebjarsResourceHandler;
 import ro.pippo.demo.common.Contact;
 import ro.pippo.demo.common.ContactService;
 import ro.pippo.demo.common.InMemoryContactService;
 import ro.pippo.metrics.Metered;
-
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * @author Decebal Suiu
@@ -53,7 +50,7 @@ public class CrudApplication extends Application {
 
             @Override
             public void handle(RouteContext routeContext) {
-                log.info("Request for {} '{}'", routeContext.getRequest().getMethod(), routeContext.getRequest().getUri());
+                log.info("Request for {} '{}'", routeContext.getRequestMethod(), routeContext.getRequestUri());
                 routeContext.next();
             }
 
@@ -64,9 +61,9 @@ public class CrudApplication extends Application {
 
             @Override
             public void handle(RouteContext routeContext) {
-                if (routeContext.getRequest().getSession().get("username") == null) {
-                    routeContext.getRequest().getSession().put("originalDestination", routeContext.getRequest().getContextUriWithQuery());
-                    routeContext.getResponse().redirectToContextPath("/login");
+                if (routeContext.fromSession("username") == null) {
+                    routeContext.putSession("originalDestination", routeContext.getRequest().getContextUriWithQuery());
+                    routeContext.redirect("/login");
                 } else {
                     routeContext.next();
                 }
@@ -78,7 +75,7 @@ public class CrudApplication extends Application {
 
             @Override
             public void handle(RouteContext routeContext) {
-                routeContext.getResponse().render("login");
+                routeContext.render("login");
             }
 
         });
@@ -87,15 +84,17 @@ public class CrudApplication extends Application {
 
             @Override
             public void handle(RouteContext routeContext) {
-                String username = routeContext.getRequest().getParameter("username").toString();
-                String password = routeContext.getRequest().getParameter("password").toString();
+                String username = routeContext.fromRequest("username").toString();
+                String password = routeContext.fromRequest("password").toString();
                 if (authenticate(username, password)) {
-                    routeContext.getRequest().getSession().put("username", username);
-                    String originalDestination = routeContext.getRequest().getSession().remove("originalDestination");
-                    routeContext.getResponse().redirectToContextPath(originalDestination != null ? originalDestination : "/contacts");
+                    String originalDestination = routeContext.removeSession("originalDestination");
+                    routeContext.resetSession();
+
+                    routeContext.putSession("username", username);
+                    routeContext.redirect(originalDestination != null ? originalDestination : "/contacts");
                 } else {
-                    routeContext.getRequest().getSession().getFlash().error("Authentication failed");
-                    routeContext.getResponse().redirectToContextPath("/login");
+                    routeContext.flashError("Authentication failed");
+                    routeContext.redirect("/login");
                 }
             }
 
@@ -109,7 +108,7 @@ public class CrudApplication extends Application {
 
             @Override
             public void handle(RouteContext routeContext) {
-                routeContext.getResponse().redirectToContextPath("/contacts");
+                routeContext.redirect("/contacts");
             }
 
         });
@@ -127,7 +126,8 @@ public class CrudApplication extends Application {
                 */
 
                 // variant 2
-                routeContext.getResponse().bind("contacts", contactService.getContacts()).render("contacts");
+                routeContext.putLocal("contacts", contactService.getContacts());
+                routeContext.render("contacts");
             }
 
         });
@@ -137,27 +137,26 @@ public class CrudApplication extends Application {
             @Metered("getContact")
             @Override
             public void handle(RouteContext routeContext) {
-                int id = routeContext.getRequest().getParameter("id").toInt(0);
-                String action = routeContext.getRequest().getParameter("action").toString("new");
+                int id = routeContext.fromRequest("id").toInt(0);
+                String action = routeContext.fromRequest("action").toString("new");
                 if ("delete".equals(action)) {
                     contactService.delete(id);
-                    routeContext.getResponse().redirectToContextPath("/contacts");
+                    routeContext.redirect("/contacts");
 
                     return;
                 }
 
                 Contact contact = (id > 0) ? contactService.getContact(id) : new Contact();
-                Map<String, Object> model = new HashMap<>();
-                model.put("contact", contact);
+                routeContext.putLocal("contact", contact);
                 StringBuilder editAction = new StringBuilder();
                 editAction.append("/contact?action=save");
                 if (id > 0) {
                     editAction.append("&id=");
                     editAction.append(id);
                 }
-                model.put("editAction", getRouter().uriFor(editAction.toString()));
-                model.put("backAction", getRouter().uriFor("/contacts"));
-                routeContext.getResponse().render("contact", model);
+                routeContext.putLocal("editAction", getRouter().uriFor(editAction.toString()));
+                routeContext.putLocal("backAction", getRouter().uriFor("/contacts"));
+                routeContext.render("contact");
             }
 
         });
@@ -166,11 +165,11 @@ public class CrudApplication extends Application {
 
             @Override
             public void handle(RouteContext routeContext) {
-                String action = routeContext.getRequest().getParameter("action").toString();
+                String action = routeContext.fromRequest("action").toString();
                 if ("save".equals(action)) {
-                    Contact contact = routeContext.getRequest().createEntityFromParameters(Contact.class);
+                    Contact contact = routeContext.createEntityFromParameters(Contact.class);
                     contactService.save(contact);
-                    routeContext.getResponse().redirectToContextPath("/contacts");
+                    routeContext.redirect("/contacts");
                 }
             }
 

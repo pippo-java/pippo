@@ -194,7 +194,7 @@ public class PippoFilter implements Filter {
                 // Force the initial Response status code to Integer.MAX_VALUE.
                 // The chain is expected to properly set a Response status code.
                 // Note: Some containers (e.g. Jetty) prohibit setting 0.
-                routeContext.getResponse().status(Integer.MAX_VALUE);
+                routeContext.status(Integer.MAX_VALUE);
 
                 processFlash(routeContext);
             }
@@ -439,9 +439,10 @@ public class PippoFilter implements Filter {
     private void processFlash(RouteContext routeContext) {
         Flash flash = null;
 
-        Session session = routeContext.getRequest().getSession(false);
-        if (session != null) {
+
+        if (routeContext.hasSession()) {
             // get flash from session
+            Session session = routeContext.getSession();
             flash = session.remove("flash");
             // put an empty flash (outcoming flash) in session; defense against session.get("flash")
             session.put("flash", new Flash());
@@ -452,7 +453,7 @@ public class PippoFilter implements Filter {
         }
 
         // make current flash available to templates
-        routeContext.getResponse().bind("flash", flash);
+        routeContext.putLocal("flash", flash);
     }
 
 }

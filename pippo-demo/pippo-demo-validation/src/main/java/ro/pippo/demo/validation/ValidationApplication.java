@@ -17,8 +17,8 @@ package ro.pippo.demo.validation;
 
 import ro.pippo.core.Application;
 import ro.pippo.core.Flash;
-import ro.pippo.core.route.RouteContext;
 import ro.pippo.core.route.PublicResourceHandler;
+import ro.pippo.core.route.RouteContext;
 import ro.pippo.core.route.RouteHandler;
 import ro.pippo.core.route.WebjarsResourceHandler;
 
@@ -26,8 +26,6 @@ import javax.validation.ConstraintViolation;
 import javax.validation.Validation;
 import javax.validation.Validator;
 import javax.validation.ValidatorFactory;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Set;
 
 /**
@@ -50,9 +48,8 @@ public class ValidationApplication extends Application {
             @Override
             public void handle(RouteContext routeContext) {
                 Contact contact = new Contact();
-                Map<String, Object> model = new HashMap<>();
-                model.put("contact", contact);
-                routeContext.getResponse().render("contact", model);
+                routeContext.putLocal("contact", contact);
+                routeContext.render("contact");
             }
 
         });
@@ -61,21 +58,21 @@ public class ValidationApplication extends Application {
 
             @Override
             public void handle(RouteContext routeContext) {
-                Contact contact = routeContext.getRequest().createEntityFromParameters(Contact.class);
+                Contact contact = routeContext.createEntityFromParameters(Contact.class);
 
                 // check for validation
                 Set<ConstraintViolation<Contact>> violations = validator.validate(contact);
                 if (violations.isEmpty()) {
-                    routeContext.getResponse().send(contact.toString());
+                    routeContext.send(contact.toString());
                 } else {
                     // makes violations available to template via flash (response.getLocals().get("flash"))
                     Flash flash = routeContext.getResponse().getFlash();
                     for (ConstraintViolation<Contact> violation : violations) {
                         flash.error(violation.getPropertyPath() + " " + violation.getMessage());
                     }
-                    Map<String, Object> model = new HashMap<>();
-                    model.put("contact", contact);
-                    routeContext.getResponse().render("contact", model);
+
+                    routeContext.putLocal("contact", contact);
+                    routeContext.render("contact");
                 }
             }
 
