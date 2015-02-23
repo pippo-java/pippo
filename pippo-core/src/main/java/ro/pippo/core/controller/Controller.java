@@ -40,7 +40,7 @@ public class Controller {
     }
 
     public Application getApplication() {
-        return Application.get();
+        return routeContext.getApplication();
     }
 
     protected void init(RouteContext routeContext) {
