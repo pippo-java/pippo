@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2014 the original author or authors.
+ * Copyright (C) 2015 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,20 +18,23 @@ package ro.pippo.core.route;
 import ro.pippo.core.Application;
 import ro.pippo.core.Request;
 import ro.pippo.core.Response;
-import ro.pippo.core.RouteContext;
 
 import java.util.List;
 
 /**
- * This factory constructs the default route handler chain.
+ * This factory constructs the Pippo DefaultRouteContext class.
  *
  * @author James Moger
  */
-public class DefaultRouteHandlerChainFactory implements RouteHandlerChainFactory {
+public class DefaultRouteContextFactory implements RouteContextFactory<DefaultRouteContext> {
 
     @Override
-    public RouteHandlerChain createChain(RouteContext routeContext, List<RouteMatch> routeMatches) {
-        return new DefaultRouteHandlerChain(routeContext, routeMatches);
+    public DefaultRouteContext createRouteContext(Application application,
+                                                  Request request,
+                                                  Response response,
+                                                  List<RouteMatch> routeMatches) {
+
+        return new DefaultRouteContext(application, request, response, routeMatches);
     }
 
     @Override
@@ -41,5 +44,4 @@ public class DefaultRouteHandlerChainFactory implements RouteHandlerChainFactory
     @Override
     public void destroy(Application application) {
     }
-
 }

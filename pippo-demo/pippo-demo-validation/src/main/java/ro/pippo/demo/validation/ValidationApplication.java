@@ -17,10 +17,9 @@ package ro.pippo.demo.validation;
 
 import ro.pippo.core.Application;
 import ro.pippo.core.Flash;
-import ro.pippo.core.RouteContext;
+import ro.pippo.core.route.RouteContext;
 import ro.pippo.core.route.PublicResourceHandler;
 import ro.pippo.core.route.RouteHandler;
-import ro.pippo.core.route.RouteHandlerChain;
 import ro.pippo.core.route.WebjarsResourceHandler;
 
 import javax.validation.ConstraintViolation;
@@ -49,7 +48,7 @@ public class ValidationApplication extends Application {
         GET("/", new RouteHandler() {
 
             @Override
-            public void handle(RouteContext routeContext, RouteHandlerChain chain) {
+            public void handle(RouteContext routeContext) {
                 Contact contact = new Contact();
                 Map<String, Object> model = new HashMap<>();
                 model.put("contact", contact);
@@ -61,7 +60,7 @@ public class ValidationApplication extends Application {
         POST("/", new RouteHandler() {
 
             @Override
-            public void handle(RouteContext routeContext, RouteHandlerChain chain) {
+            public void handle(RouteContext routeContext) {
                 Contact contact = routeContext.getRequest().createEntityFromParameters(Contact.class);
 
                 // check for validation

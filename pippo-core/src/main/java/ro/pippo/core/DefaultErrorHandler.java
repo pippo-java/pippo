@@ -15,18 +15,17 @@
  */
 package ro.pippo.core;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import ro.pippo.core.route.Route;
+import ro.pippo.core.route.RouteContext;
 import ro.pippo.core.util.StringUtils;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
-import java.lang.*;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * @author Decebal Suiu
@@ -53,7 +52,7 @@ public class DefaultErrorHandler implements ErrorHandler {
             if (!StringUtils.isNullOrEmpty(routeContext.getRequest().getAcceptType())) {
                 String acceptType = routeContext.getRequest().getAcceptType();
                 if (acceptType.startsWith(HttpConstants.ContentType.TEXT_HTML)
-                        || acceptType.startsWith(HttpConstants.ContentType.TEXT_XHTML)) {
+                    || acceptType.startsWith(HttpConstants.ContentType.TEXT_XHTML)) {
 
                     // exception during a browser request
                     contentType = HttpConstants.ContentType.TEXT_HTML;
@@ -101,7 +100,7 @@ public class DefaultErrorHandler implements ErrorHandler {
             String template = getTemplateForStatusCode(statusCode);
             if (template == null) {
                 log.debug("There is no {} template for status code '{}'", application.getTemplateEngine().getClass()
-                        .getSimpleName(), statusCode);
+                    .getSimpleName(), statusCode);
                 renderDirectly(routeContext);
             } else {
                 try {

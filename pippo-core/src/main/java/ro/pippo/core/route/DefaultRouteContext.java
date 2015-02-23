@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2014 the original author or authors.
+ * Copyright (C) 2015 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,26 +17,46 @@ package ro.pippo.core.route;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import ro.pippo.core.RouteContext;
+import ro.pippo.core.Application;
+import ro.pippo.core.Request;
+import ro.pippo.core.Response;
 
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
 /**
- * @author Decebal Suiu
+ * @author James Moger
  */
-public class DefaultRouteHandlerChain implements RouteHandlerChain {
+public class DefaultRouteContext implements RouteContext {
 
-    private static final Logger log = LoggerFactory.getLogger(DefaultRouteHandlerChain.class);
+    private static final Logger log = LoggerFactory.getLogger(DefaultRouteContext.class);
 
-    protected RouteContext routeContext;
-    protected Iterator<RouteMatch> iterator;
+    protected final Application application;
+    protected final Request request;
+    protected final Response response;
+    protected final Iterator<RouteMatch> iterator;
 
-    public DefaultRouteHandlerChain(RouteContext routeContext, List<RouteMatch> routeMatches) {
-        this.routeContext = routeContext;
+    protected DefaultRouteContext(Application application, Request request, Response response, List<RouteMatch> routeMatches) {
+        this.application = application;
+        this.request = request;
+        this.response = response;
+        this.iterator = routeMatches.iterator();
+    }
 
-        iterator = routeMatches.iterator();
+    @Override
+    public Application getApplication() {
+        return application;
+    }
+
+    @Override
+    public Request getRequest() {
+        return request;
+    }
+
+    @Override
+    public Response getResponse() {
+        return response;
     }
 
     @Override
@@ -50,7 +70,7 @@ public class DefaultRouteHandlerChain implements RouteHandlerChain {
             // set the new path parameters in request
             Map<String, String> pathParameters = routeMatch.getPathParameters();
             if (pathParameters != null) {
-                routeContext.getRequest().setPathParameters(pathParameters);
+                request.setPathParameters(pathParameters);
                 log.debug("Added path parameters to request");
             }
 
@@ -82,7 +102,6 @@ public class DefaultRouteHandlerChain implements RouteHandlerChain {
     }
 
     protected void handleRoute(Route route) {
-        route.getRouteHandler().handle(routeContext, this);
+        route.getRouteHandler().handle(this);
     }
-
 }

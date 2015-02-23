@@ -16,7 +16,6 @@
 package ro.pippo.demo.custom;
 
 import ro.pippo.core.Application;
-import ro.pippo.core.route.RouteHandlerChain;
 
 /**
  * @author Decebal Suiu
@@ -31,7 +30,7 @@ public class CustomApplication extends Application {
         GET("/", new CustomContextHandler() {
 
             @Override
-            public void handle(CustomContext customContext, RouteHandlerChain chain) {
+            public void handle(CustomContext customContext) {
                 customContext.sendHelloMyFriend();
             }
 

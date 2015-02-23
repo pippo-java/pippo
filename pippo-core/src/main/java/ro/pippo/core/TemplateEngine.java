@@ -41,6 +41,7 @@ public interface TemplateEngine {
     public void init(Application application);
 
     public void renderString(String templateContent, Map<String, Object> model, Writer writer);
+
     public void renderResource(String templateName, Map<String, Object> model, Writer writer);
 
 }

@@ -19,7 +19,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ro.pippo.core.PippoConstants;
 import ro.pippo.core.PippoSettings;
-import ro.pippo.core.RouteContext;
+import ro.pippo.core.route.RouteContext;
 
 import java.io.InputStream;
 import java.net.URL;

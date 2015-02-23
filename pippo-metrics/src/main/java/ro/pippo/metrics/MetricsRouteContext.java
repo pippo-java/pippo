@@ -18,14 +18,14 @@ package ro.pippo.metrics;
 import com.codahale.metrics.MetricRegistry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import ro.pippo.core.Application;
 import ro.pippo.core.Request;
 import ro.pippo.core.Response;
-import ro.pippo.core.RouteContext;
+import ro.pippo.core.route.DefaultRouteContext;
+import ro.pippo.core.route.RouteContext;
 import ro.pippo.core.controller.ControllerHandler;
-import ro.pippo.core.route.DefaultRouteHandlerChain;
 import ro.pippo.core.route.Route;
 import ro.pippo.core.route.RouteHandler;
-import ro.pippo.core.route.RouteHandlerChain;
 import ro.pippo.core.route.RouteMatch;
 import ro.pippo.core.util.LangUtils;
 
@@ -35,14 +35,15 @@ import java.util.List;
 /**
  * @author James Moger
  */
-public class MetricsRouteHandlerChain extends DefaultRouteHandlerChain {
+public class MetricsRouteContext extends DefaultRouteContext {
 
-    private static final Logger log = LoggerFactory.getLogger(MetricsRouteHandlerChain.class);
+    private static final Logger log = LoggerFactory.getLogger(MetricsRouteContext.class);
 
     private final MetricRegistry metricRegistry;
 
-    public MetricsRouteHandlerChain(MetricRegistry metricRegistry, RouteContext routeContext, List<RouteMatch> routeMatches) {
-        super(routeContext, routeMatches);
+    public MetricsRouteContext(MetricRegistry metricRegistry, Application application, Request request,
+                               Response response, List<RouteMatch> routeMatches) {
+        super(application, request, response, routeMatches);
 
         this.metricRegistry = metricRegistry;
     }
@@ -57,7 +58,7 @@ public class MetricsRouteHandlerChain extends DefaultRouteHandlerChain {
                 ControllerHandler controllerHandler = (ControllerHandler) handler;
                 method = controllerHandler.getMethod();
             } else {
-                method = route.getRouteHandler().getClass().getMethod("handle", RouteContext.class, RouteHandlerChain.class);
+                method = route.getRouteHandler().getClass().getMethod("handle", RouteContext.class);
             }
 
             String metricName = MetricRegistry.name(method.getDeclaringClass(), method.getName());
@@ -91,7 +92,7 @@ public class MetricsRouteHandlerChain extends DefaultRouteHandlerChain {
             log.error("Failed to get method?!", e);
         }
 
-        handler.handle(routeContext, this);
+        handler.handle(this);
     }
 
 }

@@ -28,9 +28,9 @@ import org.slf4j.LoggerFactory;
 import ro.pippo.core.Application;
 import ro.pippo.core.PippoConstants;
 import ro.pippo.core.PippoSettings;
-import ro.pippo.core.RouteContext;
-import ro.pippo.core.route.RouteHandlerChain;
-import ro.pippo.core.route.RouteHandlerChainFactory;
+import ro.pippo.core.Request;
+import ro.pippo.core.Response;
+import ro.pippo.core.route.RouteContextFactory;
 import ro.pippo.core.route.RouteMatch;
 import ro.pippo.core.util.ServiceLocator;
 
@@ -46,7 +46,7 @@ import java.util.Map;
  *
  * @author James Moger
  */
-public class PippoMetrics implements RouteHandlerChainFactory {
+public class PippoMetrics implements RouteContextFactory<MetricsRouteContext> {
 
     private static final Logger log = LoggerFactory.getLogger(PippoMetrics.class);
 
@@ -113,8 +113,8 @@ public class PippoMetrics implements RouteHandlerChainFactory {
     }
 
     @Override
-    public RouteHandlerChain createChain(RouteContext routeContext, List<RouteMatch> routeMatches) {
-        return new MetricsRouteHandlerChain(metricRegistry, routeContext, routeMatches);
+    public MetricsRouteContext createRouteContext(Application application, Request request, Response response, List<RouteMatch> routeMatches) {
+        return new MetricsRouteContext(metricRegistry, application, request, response, routeMatches);
     }
 
     private void registerAll(String prefix, MetricSet metrics) throws IllegalArgumentException {

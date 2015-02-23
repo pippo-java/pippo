@@ -19,7 +19,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ro.pippo.core.HttpConstants;
 import ro.pippo.core.PippoRuntimeException;
-import ro.pippo.core.RouteContext;
 import ro.pippo.core.util.HttpCacheToolkit;
 import ro.pippo.core.util.MimeTypes;
 import ro.pippo.core.util.StringUtils;
@@ -61,7 +60,7 @@ public abstract class StaticResourceHandler implements RouteHandler {
     }
 
     @Override
-    public final void handle(RouteContext routeContext, RouteHandlerChain chain) {
+    public final void handle(RouteContext routeContext) {
         String resourcePath = getResourcePath(routeContext);
         log.trace("Request resource '{}'", resourcePath);
 
@@ -72,7 +71,7 @@ public abstract class StaticResourceHandler implements RouteHandler {
             streamResource(url, routeContext);
         }
 
-        chain.next();
+        routeContext.next();
     }
 
     public abstract URL getResourceUrl(String resourcePath);

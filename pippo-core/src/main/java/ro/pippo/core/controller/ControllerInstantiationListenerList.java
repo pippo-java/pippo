@@ -21,7 +21,7 @@ import ro.pippo.core.util.ListenerList;
  * @author Decebal Suiu
  */
 public class ControllerInstantiationListenerList extends ListenerList<ControllerInstantiationListener>
-        implements ControllerInstantiationListener {
+    implements ControllerInstantiationListener {
 
     @Override
     public void onInstantiation(final Controller controller) {

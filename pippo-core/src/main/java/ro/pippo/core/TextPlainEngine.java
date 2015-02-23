@@ -40,7 +40,7 @@ public class TextPlainEngine implements ContentTypeEngine {
     @Override
     public <T> T fromString(String content, Class<T> classOfT) {
         throw new PippoRuntimeException("Sorry, can not transform '{}' content to '{}'", getContentType(),
-                classOfT.getName());
+            classOfT.getName());
     }
 
 }

@@ -16,9 +16,8 @@
 package ro.pippo.demo.template;
 
 import ro.pippo.core.Languages;
-import ro.pippo.core.RouteContext;
+import ro.pippo.core.route.RouteContext;
 import ro.pippo.core.route.RequestLanguageFilter;
-import ro.pippo.core.route.RouteHandlerChain;
 
 /**
  * Binds the available languages to the response.
@@ -32,9 +31,9 @@ public class LanguageFilter extends RequestLanguageFilter {
     }
 
     @Override
-    public void handle(RouteContext routeContext, RouteHandlerChain chain) {
+    public void handle(RouteContext routeContext) {
         routeContext.getResponse().bind("languageChoices", languages.getRegisteredLanguages());
-        super.handle(routeContext, chain);
+        super.handle(routeContext);
     }
 
 }

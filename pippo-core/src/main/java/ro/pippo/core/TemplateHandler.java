@@ -15,8 +15,8 @@
  */
 package ro.pippo.core;
 
+import ro.pippo.core.route.RouteContext;
 import ro.pippo.core.route.RouteHandler;
-import ro.pippo.core.route.RouteHandlerChain;
 
 /**
  * A very simple route handler that renders a template.
@@ -26,7 +26,6 @@ import ro.pippo.core.route.RouteHandlerChain;
  * </p>
  *
  * @author James Moger
- *
  */
 public class TemplateHandler implements RouteHandler {
 
@@ -37,7 +36,7 @@ public class TemplateHandler implements RouteHandler {
     }
 
     @Override
-    public void handle(RouteContext routeContext, RouteHandlerChain chain) {
+    public void handle(RouteContext routeContext) {
         routeContext.getResponse().render(template);
     }
 

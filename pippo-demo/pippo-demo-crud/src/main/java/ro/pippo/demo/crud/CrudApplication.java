@@ -18,10 +18,9 @@ package ro.pippo.demo.crud;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ro.pippo.core.Application;
-import ro.pippo.core.RouteContext;
+import ro.pippo.core.route.RouteContext;
 import ro.pippo.core.route.PublicResourceHandler;
 import ro.pippo.core.route.RouteHandler;
-import ro.pippo.core.route.RouteHandlerChain;
 import ro.pippo.core.route.WebjarsResourceHandler;
 import ro.pippo.demo.common.Contact;
 import ro.pippo.demo.common.ContactService;
@@ -53,9 +52,9 @@ public class CrudApplication extends Application {
         ALL("/.*", new RouteHandler() {
 
             @Override
-            public void handle(RouteContext routeContext, RouteHandlerChain chain) {
+            public void handle(RouteContext routeContext) {
                 log.info("Request for {} '{}'", routeContext.getRequest().getMethod(), routeContext.getRequest().getUri());
-                chain.next();
+                routeContext.next();
             }
 
         });
@@ -64,12 +63,12 @@ public class CrudApplication extends Application {
         GET("/contact.*", new RouteHandler() {
 
             @Override
-            public void handle(RouteContext routeContext, RouteHandlerChain chain) {
+            public void handle(RouteContext routeContext) {
                 if (routeContext.getRequest().getSession().get("username") == null) {
                     routeContext.getRequest().getSession().put("originalDestination", routeContext.getRequest().getContextUriWithQuery());
                     routeContext.getResponse().redirectToContextPath("/login");
                 } else {
-                    chain.next();
+                    routeContext.next();
                 }
             }
 
@@ -78,7 +77,7 @@ public class CrudApplication extends Application {
         GET("/login", new RouteHandler() {
 
             @Override
-            public void handle(RouteContext routeContext, RouteHandlerChain chain) {
+            public void handle(RouteContext routeContext) {
                 routeContext.getResponse().render("login");
             }
 
@@ -87,7 +86,7 @@ public class CrudApplication extends Application {
         POST("/login", new RouteHandler() {
 
             @Override
-            public void handle(RouteContext routeContext, RouteHandlerChain chain) {
+            public void handle(RouteContext routeContext) {
                 String username = routeContext.getRequest().getParameter("username").toString();
                 String password = routeContext.getRequest().getParameter("password").toString();
                 if (authenticate(username, password)) {
@@ -109,7 +108,7 @@ public class CrudApplication extends Application {
         GET("/", new RouteHandler() {
 
             @Override
-            public void handle(RouteContext routeContext, RouteHandlerChain chain) {
+            public void handle(RouteContext routeContext) {
                 routeContext.getResponse().redirectToContextPath("/contacts");
             }
 
@@ -119,7 +118,7 @@ public class CrudApplication extends Application {
 
             @Metered("getContactsList")
             @Override
-            public void handle(RouteContext routeContext, RouteHandlerChain chain) {
+            public void handle(RouteContext routeContext) {
                 /*
                 // variant 1
                 Map<String, Object> model = new HashMap<>();
@@ -137,7 +136,7 @@ public class CrudApplication extends Application {
 
             @Metered("getContact")
             @Override
-            public void handle(RouteContext routeContext, RouteHandlerChain chain) {
+            public void handle(RouteContext routeContext) {
                 int id = routeContext.getRequest().getParameter("id").toInt(0);
                 String action = routeContext.getRequest().getParameter("action").toString("new");
                 if ("delete".equals(action)) {
@@ -166,7 +165,7 @@ public class CrudApplication extends Application {
         POST("/contact", new RouteHandler() {
 
             @Override
-            public void handle(RouteContext routeContext, RouteHandlerChain chain) {
+            public void handle(RouteContext routeContext) {
                 String action = routeContext.getRequest().getParameter("action").toString();
                 if ("save".equals(action)) {
                     Contact contact = routeContext.getRequest().createEntityFromParameters(Contact.class);

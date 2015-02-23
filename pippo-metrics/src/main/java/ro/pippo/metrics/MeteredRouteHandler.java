@@ -17,9 +17,8 @@ package ro.pippo.metrics;
 
 import com.codahale.metrics.Meter;
 import com.codahale.metrics.MetricRegistry;
-import ro.pippo.core.RouteContext;
+import ro.pippo.core.route.RouteContext;
 import ro.pippo.core.route.RouteHandler;
-import ro.pippo.core.route.RouteHandlerChain;
 
 /**
  * @author James Moger
@@ -37,12 +36,12 @@ public class MeteredRouteHandler implements RouteHandler {
     }
 
     @Override
-    public void handle(RouteContext routeContext, RouteHandlerChain chain) {
+    public void handle(RouteContext routeContext) {
         Meter meter = metricRegistry.meter(meterName);
         meter.mark();
 
         try {
-            routeHandler.handle(routeContext, chain);
+            routeHandler.handle(routeContext);
         } finally {
 
         }

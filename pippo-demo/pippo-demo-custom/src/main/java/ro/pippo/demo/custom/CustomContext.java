@@ -2,18 +2,20 @@ package ro.pippo.demo.custom;
 
 import ro.pippo.core.Application;
 import ro.pippo.core.HttpConstants;
-import ro.pippo.core.DefaultRouteContext;
+import ro.pippo.core.Request;
+import ro.pippo.core.Response;
+import ro.pippo.core.route.DefaultRouteContext;
+import ro.pippo.core.route.RouteMatch;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import java.util.List;
 
 /**
  * @author James Moger
  */
 public class CustomContext extends DefaultRouteContext {
 
-    protected CustomContext(Application application, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
-        super(application, httpServletRequest, httpServletResponse);
+    protected CustomContext(Application application, Request request, Response response, List<RouteMatch> routeMatches) {
+        super(application, request, response, routeMatches);
     }
 
     public void sendHelloMyFriend() {

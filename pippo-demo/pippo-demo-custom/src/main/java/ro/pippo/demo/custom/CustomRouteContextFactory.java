@@ -1,19 +1,21 @@
 package ro.pippo.demo.custom;
 
 import ro.pippo.core.Application;
-import ro.pippo.core.RouteContext;
-import ro.pippo.core.RouteContextFactory;
+import ro.pippo.core.Request;
+import ro.pippo.core.Response;
+import ro.pippo.core.route.RouteContextFactory;
+import ro.pippo.core.route.RouteMatch;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import java.util.List;
 
 /**
  * @author James Moger
  */
-public class CustomRouteContextFactory implements RouteContextFactory {
+public class CustomRouteContextFactory implements RouteContextFactory<CustomContext> {
+
     @Override
-    public RouteContext createRouteContext(Application application, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
-        return new CustomContext(application, httpServletRequest, httpServletResponse);
+    public CustomContext createRouteContext(Application application, Request request, Response response, List<RouteMatch> routeMatches) {
+        return new CustomContext(application, request, response, routeMatches);
     }
 
     @Override

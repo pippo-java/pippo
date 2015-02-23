@@ -18,8 +18,7 @@ package ro.pippo.core.controller;
 import ro.pippo.core.Application;
 import ro.pippo.core.Request;
 import ro.pippo.core.Response;
-import ro.pippo.core.RouteContext;
-import ro.pippo.core.route.RouteHandlerChain;
+import ro.pippo.core.route.RouteContext;
 
 /**
  * @author Decebal Suiu
@@ -27,7 +26,6 @@ import ro.pippo.core.route.RouteHandlerChain;
 public class Controller {
 
     private RouteContext routeContext;
-    private RouteHandlerChain chain;
 
     public final RouteContext getRouteContext() {
         return routeContext;
@@ -41,17 +39,12 @@ public class Controller {
         return routeContext.getResponse();
     }
 
-    public final RouteHandlerChain getChain() {
-        return chain;
-    }
-
     public Application getApplication() {
         return Application.get();
     }
 
-    protected void init(RouteContext routeContext, RouteHandlerChain chain) {
+    protected void init(RouteContext routeContext) {
         this.routeContext = routeContext;
-        this.chain = chain;
     }
 
 }

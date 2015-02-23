@@ -15,16 +15,15 @@
  */
 package ro.pippo.core.util;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import ro.pippo.core.HttpConstants;
 import ro.pippo.core.PippoConstants;
 import ro.pippo.core.PippoSettings;
+import ro.pippo.core.route.RouteContext;
 
 import java.text.ParseException;
 import java.util.Date;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import ro.pippo.core.RouteContext;
 
 /**
  * HttpCacheToolkit adapted from Ninja Web Framework

@@ -315,9 +315,8 @@ public class ParameterValue implements Serializable {
      * a string pattern to assist in the type conversion.
      *
      * @param classOfT
-     * @param pattern
-     *            optional pattern for interpreting the underlying request
-     *            string value. (used for date & time conversions)
+     * @param pattern  optional pattern for interpreting the underlying request
+     *                 string value. (used for date & time conversions)
      * @return an object
      */
     @SuppressWarnings("unchecked")
@@ -330,7 +329,7 @@ public class ParameterValue implements Serializable {
             Class<?> componentType = classOfT.getComponentType();
             Object array = Array.newInstance(componentType, values.length);
             // cheat by not instantiating a ParameterValue for every value
-            ParameterValue parameterValue = new ParameterValue(new String[] { "PLACEHOLDER" });
+            ParameterValue parameterValue = new ParameterValue(new String[]{"PLACEHOLDER"});
             for (int i = 0; i < values.length; i++) {
                 String value = values[i];
                 parameterValue.values[0] = value;

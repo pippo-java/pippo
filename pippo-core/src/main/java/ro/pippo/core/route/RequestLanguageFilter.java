@@ -15,15 +15,13 @@
  */
 package ro.pippo.core.route;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import ro.pippo.core.Languages;
 import ro.pippo.core.PippoConstants;
-import ro.pippo.core.RouteContext;
 import ro.pippo.core.util.StringUtils;
 
 import java.util.Locale;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * The RequestLanguageFilter determines the appropriate language, binds the lang
@@ -51,9 +49,9 @@ public class RequestLanguageFilter implements RouteHandler {
     }
 
     @Override
-    public void handle(RouteContext routeContext, RouteHandlerChain chain) {
+    public void handle(RouteContext routeContext) {
         String language = enableQueryParameter ? routeContext.getRequest().getParameter(PippoConstants.REQUEST_PARAMETER_LANG).toString()
-                : null;
+            : null;
 
         if (StringUtils.isNullOrEmpty(language)) {
             language = languages.getLanguageOrDefault(routeContext);
@@ -63,7 +61,7 @@ public class RequestLanguageFilter implements RouteHandler {
         routeContext.getResponse().bind(PippoConstants.REQUEST_PARAMETER_LANG, language);
         routeContext.getResponse().bind(PippoConstants.REQUEST_PARAMETER_LOCALE, locale);
 
-        chain.next();
+        routeContext.next();
     }
 
 }

@@ -13,15 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package ro.pippo.core;
+package ro.pippo.core.route;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import ro.pippo.core.Application;
+import ro.pippo.core.Request;
+import ro.pippo.core.Response;
 
 /**
  * @author James Moger
  */
-public interface RouteContextFactory<T extends RouteContext> extends Initializer {
+public interface RouteContext {
 
-    public T createRouteContext(Application application, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse);
+    Application getApplication();
+
+    Request getRequest();
+
+    Response getResponse();
+
+    void next();
+
+    void runFinallyRoutes();
 }

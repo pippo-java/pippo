@@ -15,13 +15,11 @@
  */
 package ro.pippo.core.route;
 
-import ro.pippo.core.RouteContext;
-
 /**
  * @author Decebal Suiu
  */
 public interface RouteHandler<T extends RouteContext> {
 
-    public void handle(T routeContext, RouteHandlerChain chain);
+    public void handle(T routeContext);
 
 }

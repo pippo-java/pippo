@@ -17,9 +17,9 @@ package ro.pippo.core;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import ro.pippo.core.route.DefaultRouteHandlerChainFactory;
-import ro.pippo.core.route.RouteHandlerChain;
-import ro.pippo.core.route.RouteHandlerChainFactory;
+import ro.pippo.core.route.DefaultRouteContextFactory;
+import ro.pippo.core.route.RouteContext;
+import ro.pippo.core.route.RouteContextFactory;
 import ro.pippo.core.route.RouteMatch;
 import ro.pippo.core.route.Router;
 import ro.pippo.core.util.ClasspathUtils;
@@ -85,7 +85,6 @@ public class PippoFilter implements Filter {
         + "(__)  (____)(__)  (__)  (_____)  {}\n";
 
     private RouteContextFactory routeContextFactory;
-    private RouteHandlerChainFactory routeHandlerChainFactory;
     private Application application;
     private List<Initializer> initializers;
     private Set<String> ignorePaths;
@@ -128,10 +127,6 @@ public class PippoFilter implements Filter {
             routeContextFactory = getRouteContextFactory();
             initializers.add(routeContextFactory);
             log.debug("RouteContext factory is '{}'", routeContextFactory.getClass().getName());
-
-            routeHandlerChainFactory = getRouteHandlerChainFactory();
-            initializers.add(routeHandlerChainFactory);
-            log.debug("Route handler chain factory is '{}'", routeHandlerChainFactory.getClass().getName());
 
             initializers.addAll(getInitializers());
             for (Initializer initializer : initializers) {
@@ -182,29 +177,29 @@ public class PippoFilter implements Filter {
         }
 
         log.debug("Request {} '{}'", requestMethod, relativePath);
-        final RouteContext routeContext = routeContextFactory.createRouteContext(application, httpServletRequest, httpServletResponse);
+        final Request request = new Request(httpServletRequest, application);
+        final Response response = new Response(httpServletResponse, application);
+
         ErrorHandler errorHandler = application.getErrorHandler();
 
-        processFlash(routeContext);
-
-        RouteHandlerChain handlerChain = null;
+        RouteContext routeContext = null;
         try {
-            // Force the initial Response status code to Integer.MAX_VALUE.
-            // The chain is expected to properly set a Response status code.
-            // Note: Some containers (e.g. Jetty) prohibit setting 0.
-            routeContext.getResponse().status(Integer.MAX_VALUE);
-
             Router router = application.getRouter();
             List<RouteMatch> routeMatches = router.findRoutes(relativePath, requestMethod);
+            routeContext = routeContextFactory.createRouteContext(application, request, response, routeMatches);
 
             if (routeMatches.isEmpty()) {
                 errorHandler.handle(HttpConstants.StatusCode.NOT_FOUND, routeContext);
-                handlerChain = routeHandlerChainFactory.createChain(routeContext, new ArrayList<RouteMatch>());
             } else {
-                handlerChain = routeHandlerChainFactory.createChain(routeContext, routeMatches);
+                // Force the initial Response status code to Integer.MAX_VALUE.
+                // The chain is expected to properly set a Response status code.
+                // Note: Some containers (e.g. Jetty) prohibit setting 0.
+                routeContext.getResponse().status(Integer.MAX_VALUE);
+
+                processFlash(routeContext);
             }
 
-            handlerChain.next();
+            routeContext.next();
 
             if (!routeContext.getResponse().isCommitted()) {
                 if (routeContext.getResponse().getStatus() == Integer.MAX_VALUE) {
@@ -224,7 +219,7 @@ public class PippoFilter implements Filter {
             log.error(e.getMessage(), e);
             errorHandler.handle(e, routeContext);
         } finally {
-            handlerChain.runFinallyRoutes();
+            routeContext.runFinallyRoutes();
             log.debug("Returned status code {} for {} '{}'", routeContext.getResponse().getStatus(), requestMethod, relativePath);
             ThreadContext.restore(previousThreadContext);
         }
@@ -389,15 +384,6 @@ public class PippoFilter implements Filter {
         RouteContextFactory factory = ServiceLocator.locate(RouteContextFactory.class);
         if (factory == null) {
             factory = new DefaultRouteContextFactory();
-        }
-
-        return factory;
-    }
-
-    private RouteHandlerChainFactory getRouteHandlerChainFactory() {
-        RouteHandlerChainFactory factory = ServiceLocator.locate(RouteHandlerChainFactory.class);
-        if (factory == null) {
-            factory = new DefaultRouteHandlerChainFactory();
         }
 
         return factory;

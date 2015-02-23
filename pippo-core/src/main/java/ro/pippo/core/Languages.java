@@ -17,6 +17,7 @@ package ro.pippo.core;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import ro.pippo.core.route.RouteContext;
 import ro.pippo.core.util.StringUtils;
 
 import javax.servlet.http.Cookie;

@@ -17,11 +17,10 @@ package ro.pippo.demo.template;
 
 import ro.pippo.core.Application;
 import ro.pippo.core.PippoRuntimeException;
-import ro.pippo.core.RouteContext;
+import ro.pippo.core.route.RouteContext;
 import ro.pippo.core.TemplateEngine;
 import ro.pippo.core.route.PublicResourceHandler;
 import ro.pippo.core.route.RouteHandler;
-import ro.pippo.core.route.RouteHandlerChain;
 import ro.pippo.core.route.WebjarsResourceHandler;
 import ro.pippo.metrics.Metered;
 import ro.pippo.metrics.Timed;
@@ -60,7 +59,7 @@ public class TemplateApplication extends Application {
 
             @Metered("getRoot")
             @Override
-            public void handle(RouteContext routeContext, RouteHandlerChain chain) {
+            public void handle(RouteContext routeContext) {
                 Calendar calendar = Calendar.getInstance();
                 calendar.add(Calendar.DATE, -5);
                 Date testDate = calendar.getTime();
@@ -80,7 +79,7 @@ public class TemplateApplication extends Application {
 
             @Timed("getException")
             @Override
-            public void handle(RouteContext routeContext, RouteHandlerChain chain) {
+            public void handle(RouteContext routeContext) {
                 throw new PippoRuntimeException("Exception \"&nbsp;\" <#{}>", ++counter);
             }
 

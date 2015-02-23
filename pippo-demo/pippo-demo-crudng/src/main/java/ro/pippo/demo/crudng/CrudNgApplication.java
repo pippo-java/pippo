@@ -19,11 +19,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ro.pippo.core.Application;
 import ro.pippo.core.RedirectHandler;
-import ro.pippo.core.RouteContext;
+import ro.pippo.core.route.RouteContext;
 import ro.pippo.core.TemplateHandler;
 import ro.pippo.core.route.PublicResourceHandler;
 import ro.pippo.core.route.RouteHandler;
-import ro.pippo.core.route.RouteHandlerChain;
 import ro.pippo.core.route.WebjarsResourceHandler;
 import ro.pippo.demo.common.ContactService;
 import ro.pippo.demo.common.InMemoryContactService;
@@ -56,9 +55,9 @@ public class CrudNgApplication extends Application {
         ALL("/.*", new RouteHandler() {
 
             @Override
-            public void handle(RouteContext routeContext, RouteHandlerChain chain) {
+            public void handle(RouteContext routeContext) {
                 log.info("Request for {} '{}'", routeContext.getRequest().getMethod(), routeContext.getRequest().getUri());
-                chain.next();
+                routeContext.next();
             }
 
         });
@@ -69,12 +68,12 @@ public class CrudNgApplication extends Application {
         GET("/contact.*", new RouteHandler() {
 
             @Override
-            public void handle(RouteContext routeContext, RouteHandlerChain chain) {
+            public void handle(RouteContext routeContext) {
                 if (routeContext.getRequest().getSession().get("username") == null) {
                     routeContext.getRequest().getSession().put("originalDestination", routeContext.getRequest().getContextUriWithQuery());
                     routeContext.getResponse().redirectToContextPath("/login");
                 } else {
-                    chain.next();
+                    routeContext.next();
                 }
             }
 
@@ -83,7 +82,7 @@ public class CrudNgApplication extends Application {
         GET("/login", new RouteHandler() {
 
             @Override
-            public void handle(RouteContext routeContext, RouteHandlerChain chain) {
+            public void handle(RouteContext routeContext) {
                 routeContext.getResponse().render("login");
             }
 
@@ -92,7 +91,7 @@ public class CrudNgApplication extends Application {
         POST("/login", new RouteHandler() {
 
             @Override
-            public void handle(RouteContext routeContext, RouteHandlerChain chain) {
+            public void handle(RouteContext routeContext) {
                 String username = routeContext.getRequest().getParameter("username").toString();
                 String password = routeContext.getRequest().getParameter("password").toString();
                 if (authenticate(username, password)) {

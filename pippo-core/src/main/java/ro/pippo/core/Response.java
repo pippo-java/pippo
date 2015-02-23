@@ -38,7 +38,7 @@ import org.slf4j.LoggerFactory;
 /**
  * @author Decebal Suiu
  */
-public class Response {
+public final class Response {
 
     private static final Logger log = LoggerFactory.getLogger(Response.class);
 

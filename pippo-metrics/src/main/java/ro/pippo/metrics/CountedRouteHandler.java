@@ -17,9 +17,8 @@ package ro.pippo.metrics;
 
 import com.codahale.metrics.Counter;
 import com.codahale.metrics.MetricRegistry;
-import ro.pippo.core.RouteContext;
+import ro.pippo.core.route.RouteContext;
 import ro.pippo.core.route.RouteHandler;
-import ro.pippo.core.route.RouteHandlerChain;
 
 /**
  * @author James Moger
@@ -39,12 +38,12 @@ public class CountedRouteHandler implements RouteHandler {
     }
 
     @Override
-    public void handle(RouteContext routeContext, RouteHandlerChain chain) {
+    public void handle(RouteContext routeContext) {
         Counter counter = metricRegistry.counter(counterName);
         counter.inc();
 
         try {
-            routeHandler.handle(routeContext, chain);
+            routeHandler.handle(routeContext);
         } finally {
             if (isActive) {
                 counter.dec();

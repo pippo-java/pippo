@@ -21,8 +21,7 @@ import ro.pippo.core.Application;
 import ro.pippo.core.Param;
 import ro.pippo.core.ParameterValue;
 import ro.pippo.core.PippoRuntimeException;
-import ro.pippo.core.RouteContext;
-import ro.pippo.core.route.RouteHandlerChain;
+import ro.pippo.core.route.RouteContext;
 import ro.pippo.core.util.LangUtils;
 import ro.pippo.core.util.StringUtils;
 
@@ -69,7 +68,7 @@ public class DefaultControllerHandler implements ControllerHandler {
     }
 
     @Override
-    public void handle(RouteContext routeContext, RouteHandlerChain chain) {
+    public void handle(RouteContext routeContext) {
         log.debug("Invoke method '{}'", LangUtils.toString(method));
         try {
             // create the controller instance
@@ -77,7 +76,7 @@ public class DefaultControllerHandler implements ControllerHandler {
             Application.get().getControllerInstantiationListeners().onInstantiation(controller);
 
             // init controller
-            controller.init(routeContext, chain);
+            controller.init(routeContext);
             Application.get().getControllerInitializationListeners().onInitialize(controller);
 
             // invoke action (a method from controller)
@@ -89,7 +88,7 @@ public class DefaultControllerHandler implements ControllerHandler {
             throw new PippoRuntimeException(e);
         }
 
-        chain.next();
+        routeContext.next();
     }
 
     protected Method findMethod(Class<? extends Controller> controllerClass, String name) {

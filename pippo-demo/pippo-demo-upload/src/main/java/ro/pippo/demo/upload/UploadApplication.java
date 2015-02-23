@@ -18,9 +18,8 @@ package ro.pippo.demo.upload;
 import ro.pippo.core.Application;
 import ro.pippo.core.FileItem;
 import ro.pippo.core.PippoRuntimeException;
-import ro.pippo.core.RouteContext;
+import ro.pippo.core.route.RouteContext;
 import ro.pippo.core.route.RouteHandler;
-import ro.pippo.core.route.RouteHandlerChain;
 
 import java.io.File;
 import java.io.IOException;
@@ -39,7 +38,7 @@ public class UploadApplication extends Application {
         GET("/", new RouteHandler() {
 
             @Override
-            public void handle(RouteContext routeContext, RouteHandlerChain chain) {
+            public void handle(RouteContext routeContext) {
                 routeContext.getResponse().render("upload");
             }
 
@@ -48,7 +47,7 @@ public class UploadApplication extends Application {
         POST("/upload", new RouteHandler() {
 
             @Override
-            public void handle(RouteContext routeContext, RouteHandlerChain chain) {
+            public void handle(RouteContext routeContext) {
                 String submitter = routeContext.getRequest().getParameter("submitter").toString();
                 System.out.println("submitter = " + submitter);
 

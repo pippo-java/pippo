@@ -35,7 +35,7 @@ public class IoUtils {
      * Copies all data from an InputStream to an OutputStream.
      *
      * @return the number of bytes copied
-     * @exception IOException if an I/O error occurs
+     * @throws IOException if an I/O error occurs
      */
     public static long copy(InputStream input, OutputStream output) throws IOException {
         byte buffer[] = new byte[2 * 1024];
@@ -91,7 +91,7 @@ public class IoUtils {
             if (closeable != null) {
                 closeable.close();
             }
-        } catch(IOException e) {
+        } catch (IOException e) {
             return e;
         }
 

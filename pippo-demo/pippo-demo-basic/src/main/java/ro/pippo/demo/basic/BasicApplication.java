@@ -19,10 +19,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ro.pippo.core.Application;
 import ro.pippo.core.HttpConstants;
-import ro.pippo.core.RouteContext;
+import ro.pippo.core.route.RouteContext;
 import ro.pippo.core.route.FileResourceHandler;
 import ro.pippo.core.route.RouteHandler;
-import ro.pippo.core.route.RouteHandlerChain;
 import ro.pippo.demo.common.Contact;
 
 import java.io.File;
@@ -44,7 +43,7 @@ public class BasicApplication extends Application {
         GET("/", new RouteHandler() {
 
             @Override
-            public void handle(RouteContext routeContext, RouteHandlerChain chain) {
+            public void handle(RouteContext routeContext) {
                 routeContext.getResponse().send("Hello World");
             }
 
@@ -54,7 +53,7 @@ public class BasicApplication extends Application {
         GET("/file", new RouteHandler() {
 
             @Override
-            public void handle(RouteContext routeContext, RouteHandlerChain chain) {
+            public void handle(RouteContext routeContext) {
                 routeContext.getResponse().file(new File("pom.xml"));
             }
 
@@ -64,7 +63,7 @@ public class BasicApplication extends Application {
         GET("/json", new RouteHandler() {
 
             @Override
-            public void handle(RouteContext routeContext, RouteHandlerChain chain) {
+            public void handle(RouteContext routeContext) {
                 Contact contact = new Contact()
                     .setId(12345)
                     .setName("John")
@@ -82,7 +81,7 @@ public class BasicApplication extends Application {
         GET("/xml", new RouteHandler() {
 
             @Override
-            public void handle(RouteContext routeContext, RouteHandlerChain chain) {
+            public void handle(RouteContext routeContext) {
                 Contact contact = new Contact()
                     .setId(12345)
                     .setName("John")
@@ -100,7 +99,7 @@ public class BasicApplication extends Application {
         GET("/text", new RouteHandler() {
 
             @Override
-            public void handle(RouteContext routeContext, RouteHandlerChain chain) {
+            public void handle(RouteContext routeContext) {
                 Contact contact = new Contact()
                     .setId(12345)
                     .setName("John")
@@ -115,7 +114,7 @@ public class BasicApplication extends Application {
         GET("/negotiate", new RouteHandler() {
 
             @Override
-            public void handle(RouteContext routeContext, RouteHandlerChain chain) {
+            public void handle(RouteContext routeContext) {
                 Contact contact = new Contact()
                     .setId(12345)
                     .setName("John")
@@ -130,7 +129,7 @@ public class BasicApplication extends Application {
         GET("/template", new RouteHandler() {
 
             @Override
-            public void handle(RouteContext routeContext, RouteHandlerChain chain) {
+            public void handle(RouteContext routeContext) {
                 String message;
 
                 String lang = routeContext.getRequest().getParameter("lang").toString();
@@ -151,7 +150,7 @@ public class BasicApplication extends Application {
         GET("/error", new RouteHandler() {
 
             @Override
-            public void handle(RouteContext routeContext, RouteHandlerChain chain) {
+            public void handle(RouteContext routeContext) {
                 int statusCode = routeContext.getRequest().getParameter("code").toInt(HttpConstants.StatusCode.INTERNAL_ERROR);
                 // do not commit the response
                 // this delegates response representation to PippoFilter
@@ -167,7 +166,7 @@ public class BasicApplication extends Application {
         GET("/exception", new RouteHandler() {
 
             @Override
-            public void handle(RouteContext routeContext, RouteHandlerChain chain) {
+            public void handle(RouteContext routeContext) {
                 throw new RuntimeException("My programatically error");
             }
 
@@ -178,7 +177,7 @@ public class BasicApplication extends Application {
         ALL("/.*", new RouteHandler() {
 
             @Override
-            public void handle(RouteContext routeContext, RouteHandlerChain chain) {
+            public void handle(RouteContext routeContext) {
                 log.info(">>> Cleanup here");
             }
 

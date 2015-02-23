@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2014 the original author or authors.
+ * Copyright (C) 2015 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,16 +15,20 @@
  */
 package ro.pippo.core.route;
 
+import ro.pippo.core.Application;
 import ro.pippo.core.Initializer;
-import ro.pippo.core.RouteContext;
+import ro.pippo.core.Request;
+import ro.pippo.core.Response;
 
 import java.util.List;
 
 /**
  * @author James Moger
  */
-public interface RouteHandlerChainFactory extends Initializer {
+public interface RouteContextFactory<T extends RouteContext> extends Initializer {
 
-    public RouteHandlerChain createChain(RouteContext routeContext, List<RouteMatch> routeMatches);
-
+    public T createRouteContext(Application application,
+                                Request request,
+                                Response response,
+                                List<RouteMatch> routeMatches);
 }

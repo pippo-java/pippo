@@ -17,9 +17,8 @@ package ro.pippo.metrics;
 
 import com.codahale.metrics.MetricRegistry;
 import com.codahale.metrics.Timer;
-import ro.pippo.core.RouteContext;
+import ro.pippo.core.route.RouteContext;
 import ro.pippo.core.route.RouteHandler;
-import ro.pippo.core.route.RouteHandlerChain;
 
 /**
  * @author James Moger
@@ -37,11 +36,11 @@ public class TimedRouteHandler implements RouteHandler {
     }
 
     @Override
-    public void handle(RouteContext routeContext, RouteHandlerChain chain) {
+    public void handle(RouteContext routeContext) {
         Timer.Context timerContext = metricRegistry.timer(timerName).time();
 
         try {
-            routeHandler.handle(routeContext, chain);
+            routeHandler.handle(routeContext);
         } finally {
             timerContext.stop();
         }

@@ -53,11 +53,11 @@ public class StringUtils {
     /**
      * <p>Removes a substring only if it is at the start of a source string,
      * otherwise returns the source string.</p>
-     *
+     * <p/>
      * <p>A {@code null} source string will return {@code null}.
      * An empty ("") source string will return the empty string.
      * A {@code null} search string will return the source string.</p>
-     *
+     * <p/>
      * <pre>
      * StringUtils.removeStart(null, *)      = null
      * StringUtils.removeStart("", *)        = ""
@@ -66,10 +66,10 @@ public class StringUtils {
      * StringUtils.removeStart("abc", "")    = "abc"
      * </pre>
      *
-     * @param str  the source String to search, may be null
-     * @param remove  the String to search for and remove, may be null
+     * @param str    the source String to search, may be null
+     * @param remove the String to search for and remove, may be null
      * @return the substring with the string removed if found,
-     *  {@code null} if null String input
+     * {@code null} if null String input
      */
     public static String removeStart(String str, String remove) {
         if (isNullOrEmpty(str) || isNullOrEmpty(remove)) {
@@ -86,11 +86,11 @@ public class StringUtils {
     /**
      * <p>Removes a substring only if it is at the end of a source string,
      * otherwise returns the source string.</p>
-     *
+     * <p/>
      * <p>A {@code null} source string will return {@code null}.
      * An empty ("") source string will return the empty string.
      * A {@code null} search string will return the source string.</p>
-     *
+     * <p/>
      * <pre>
      * StringUtils.removeEnd(null, *)      = null
      * StringUtils.removeEnd("", *)        = ""
@@ -101,10 +101,10 @@ public class StringUtils {
      * StringUtils.removeEnd("abc", "")    = "abc"
      * </pre>
      *
-     * @param str  the source String to search, may be null
-     * @param remove  the String to search for and remove, may be null
+     * @param str    the source String to search, may be null
+     * @param remove the String to search for and remove, may be null
      * @return the substring with the string removed if found,
-     *  {@code null} if null String input
+     * {@code null} if null String input
      */
     public static String removeEnd(String str, String remove) {
         if (isNullOrEmpty(str) || isNullOrEmpty(remove)) {
@@ -121,11 +121,11 @@ public class StringUtils {
     /**
      * <p>Adds a substring only if the source string does not already start with the substring,
      * otherwise returns the source string.</p>
-     *
+     * <p/>
      * <p>A {@code null} source string will return {@code null}.
      * An empty ("") source string will return the empty string.
      * A {@code null} search string will return the source string.</p>
-     *
+     * <p/>
      * <pre>
      * StringUtils.addStart(null, *)      = *
      * StringUtils.addStart("", *)        = *
@@ -134,8 +134,8 @@ public class StringUtils {
      * StringUtils.addStart("abc123", "abc")    = "abc123"
      * </pre>
      *
-     * @param str  the source String to search, may be null
-     * @param add  the String to search for and add, may be null
+     * @param str the source String to search, may be null
+     * @param add the String to search for and add, may be null
      * @return the substring with the string added if required
      */
     public static String addStart(String str, String add) {
@@ -157,11 +157,11 @@ public class StringUtils {
     /**
      * <p>Adds a substring only if the source string does not already end with the substring,
      * otherwise returns the source string.</p>
-     *
+     * <p/>
      * <p>A {@code null} source string will return {@code null}.
      * An empty ("") source string will return the empty string.
      * A {@code null} search string will return the source string.</p>
-     *
+     * <p/>
      * <pre>
      * StringUtils.addEnd(null, *)      = *
      * StringUtils.addEnd("", *)        = *
@@ -170,8 +170,8 @@ public class StringUtils {
      * StringUtils.addEnd("123abc", "abc")    = "123abc"
      * </pre>
      *
-     * @param str  the source String to search, may be null
-     * @param add  the String to search for and add, may be null
+     * @param str the source String to search, may be null
+     * @param add the String to search for and add, may be null
      * @return the substring with the string added if required
      */
     public static String addEnd(String str, String add) {
