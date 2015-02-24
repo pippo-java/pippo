@@ -69,8 +69,8 @@ public class CrudNgApplication extends Application {
 
             @Override
             public void handle(RouteContext routeContext) {
-                if (routeContext.fromSession("username") == null) {
-                    routeContext.putSession("originalDestination", routeContext.getRequest().getContextUriWithQuery());
+                if (routeContext.getSession("username") == null) {
+                    routeContext.setSession("originalDestination", routeContext.getRequest().getContextUriWithQuery());
                     routeContext.redirect("/login");
                 } else {
                     routeContext.next();
@@ -92,13 +92,13 @@ public class CrudNgApplication extends Application {
 
             @Override
             public void handle(RouteContext routeContext) {
-                String username = routeContext.fromRequest("username").toString();
-                String password = routeContext.fromRequest("password").toString();
+                String username = routeContext.getParameter("username").toString();
+                String password = routeContext.getParameter("password").toString();
                 if (authenticate(username, password)) {
                     String originalDestination = routeContext.removeSession("originalDestination");
                     routeContext.resetSession();
 
-                    routeContext.putSession("username", username);
+                    routeContext.setSession("username", username);
                     routeContext.redirect(originalDestination != null ? originalDestination : "/contacts");
                 } else {
                     routeContext.flashError("Authentication failed");

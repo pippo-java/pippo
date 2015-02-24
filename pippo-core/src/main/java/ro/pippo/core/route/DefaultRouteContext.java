@@ -93,13 +93,13 @@ public class DefaultRouteContext implements RouteContext {
     }
 
     @Override
-    public <T> T putSession(String name, T t) {
+    public <T> T setSession(String name, T t) {
         getSession().put(name, t);
         return t;
     }
 
     @Override
-    public <T> T fromSession(String name) {
+    public <T> T getSession(String name) {
         if (hasSession()) {
             T t = request.getSession().get(name);
             return t;
@@ -117,18 +117,18 @@ public class DefaultRouteContext implements RouteContext {
     }
 
     @Override
-    public <T> T putLocal(String name, T t) {
+    public <T> T setLocal(String name, T t) {
         response.getLocals().put(name, t);
         return t;
     }
 
     @Override
-    public void putLocals(Map<String, Object> locals) {
+    public void setLocals(Map<String, Object> locals) {
         response.getLocals().putAll(locals);
     }
 
     @Override
-    public <T> T fromLocal(String name) {
+    public <T> T getLocal(String name) {
         T t = (T) response.getLocals().get(name);
         return t;
     }
@@ -140,19 +140,19 @@ public class DefaultRouteContext implements RouteContext {
     }
 
     @Override
-    public ParameterValue fromRequest(String name) {
+    public ParameterValue getParameter(String name) {
         ParameterValue parameterValue = request.getParameter(name);
         return parameterValue;
     }
 
     @Override
-    public ParameterValue fromHeader(String name) {
+    public ParameterValue getHeader(String name) {
         ParameterValue parameterValue = request.getParameter(name);
         return parameterValue;
     }
 
     @Override
-    public <T> T putHeader(String name, T t) {
+    public <T> T setHeader(String name, T t) {
         response.header(name, t.toString());
         return t;
     }

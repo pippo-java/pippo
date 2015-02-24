@@ -48,7 +48,7 @@ public class UploadApplication extends Application {
 
             @Override
             public void handle(RouteContext routeContext) {
-                String submitter = routeContext.fromRequest("submitter").toString();
+                String submitter = routeContext.getParameter("submitter").toString();
                 System.out.println("submitter = " + submitter);
 
                 // retrieves the value for 'file'

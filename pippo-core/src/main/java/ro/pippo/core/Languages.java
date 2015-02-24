@@ -198,13 +198,13 @@ public class Languages {
 
         // Step 3: Look for a lang parameter in the response locals
         if (routeContext.getResponse().getLocals().containsKey(PippoConstants.REQUEST_PARAMETER_LANG)) {
-            String language = routeContext.fromLocal(PippoConstants.REQUEST_PARAMETER_LANG);
+            String language = routeContext.getLocal(PippoConstants.REQUEST_PARAMETER_LANG);
             language = getLanguageOrDefault(language);
             return language;
         }
 
         // Step 4: Look for a language in the Accept-Language header.
-        String acceptLanguage = routeContext.fromHeader(HttpConstants.Header.ACCEPT_LANGUAGE).toString();
+        String acceptLanguage = routeContext.getHeader(HttpConstants.Header.ACCEPT_LANGUAGE).toString();
         String language = getLanguageOrDefault(acceptLanguage);
 
         return language;

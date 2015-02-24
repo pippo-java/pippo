@@ -50,7 +50,7 @@ public class RequestLanguageFilter implements RouteHandler {
 
     @Override
     public void handle(RouteContext routeContext) {
-        String language = enableQueryParameter ? routeContext.fromRequest(PippoConstants.REQUEST_PARAMETER_LANG).toString()
+        String language = enableQueryParameter ? routeContext.getParameter(PippoConstants.REQUEST_PARAMETER_LANG).toString()
             : null;
 
         if (StringUtils.isNullOrEmpty(language)) {
@@ -58,8 +58,8 @@ public class RequestLanguageFilter implements RouteHandler {
         }
         Locale locale = languages.getLocaleOrDefault(language);
 
-        routeContext.putLocal(PippoConstants.REQUEST_PARAMETER_LANG, language);
-        routeContext.putLocal(PippoConstants.REQUEST_PARAMETER_LOCALE, locale);
+        routeContext.setLocal(PippoConstants.REQUEST_PARAMETER_LANG, language);
+        routeContext.setLocal(PippoConstants.REQUEST_PARAMETER_LOCALE, locale);
 
         routeContext.next();
     }

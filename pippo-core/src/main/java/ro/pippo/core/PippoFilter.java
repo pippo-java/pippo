@@ -453,7 +453,7 @@ public class PippoFilter implements Filter {
         }
 
         // make current flash available to templates
-        routeContext.putLocal("flash", flash);
+        routeContext.setLocal("flash", flash);
     }
 
 }

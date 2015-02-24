@@ -62,8 +62,8 @@ public class TemplateApplication extends Application {
                 calendar.add(Calendar.DATE, -5);
                 Date testDate = calendar.getTime();
 
-                routeContext.putLocal("testDate", testDate);
-                routeContext.putLocal("mode", getRuntimeMode());
+                routeContext.setLocal("testDate", testDate);
+                routeContext.setLocal("mode", getRuntimeMode());
 
                 routeContext.render(template);
             }

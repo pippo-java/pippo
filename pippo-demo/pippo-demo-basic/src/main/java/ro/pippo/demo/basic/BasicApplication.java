@@ -130,14 +130,14 @@ public class BasicApplication extends Application {
             public void handle(RouteContext routeContext) {
                 String message;
 
-                String lang = routeContext.fromRequest("lang").toString();
+                String lang = routeContext.getParameter("lang").toString();
                 if (lang == null) {
                     message = getMessages().get("pippo.greeting", routeContext);
                 } else {
                     message = getMessages().get("pippo.greeting", lang);
                 }
 
-                routeContext.putLocal("greeting", message);
+                routeContext.setLocal("greeting", message);
                 routeContext.render("hello");
             }
 
@@ -148,7 +148,7 @@ public class BasicApplication extends Application {
 
             @Override
             public void handle(RouteContext routeContext) {
-                int statusCode = routeContext.fromRequest("code").toInt(HttpConstants.StatusCode.INTERNAL_ERROR);
+                int statusCode = routeContext.getParameter("code").toInt(HttpConstants.StatusCode.INTERNAL_ERROR);
                 // do not commit the response
                 // this delegates response representation to PippoFilter
                 routeContext.status(statusCode);

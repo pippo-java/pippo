@@ -47,25 +47,25 @@ public interface RouteContext {
 
     void invalidateSession();
 
-    <T> T putSession(String name, T t);
+    <T> T setSession(String name, T t);
 
-    <T> T fromSession(String name);
+    <T> T getSession(String name);
 
     <T> T removeSession(String name);
 
-    <T> T putLocal(String name, T t);
+    <T> T setLocal(String name, T t);
 
-    void putLocals(Map<String, Object> locals);
+    void setLocals(Map<String, Object> locals);
 
-    <T> T fromLocal(String name);
+    <T> T getLocal(String name);
 
     <T> T removeLocal(String name);
 
-    ParameterValue fromRequest(String name);
+    ParameterValue getParameter(String name);
 
-    ParameterValue fromHeader(String name);
+    ParameterValue getHeader(String name);
 
-    <T> T putHeader(String name, T t);
+    <T> T setHeader(String name, T t);
 
     void flashError(String message, Object... args);
 

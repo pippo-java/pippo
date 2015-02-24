@@ -48,7 +48,7 @@ public class ValidationApplication extends Application {
             @Override
             public void handle(RouteContext routeContext) {
                 Contact contact = new Contact();
-                routeContext.putLocal("contact", contact);
+                routeContext.setLocal("contact", contact);
                 routeContext.render("contact");
             }
 
@@ -71,7 +71,7 @@ public class ValidationApplication extends Application {
                         flash.error(violation.getPropertyPath() + " " + violation.getMessage());
                     }
 
-                    routeContext.putLocal("contact", contact);
+                    routeContext.setLocal("contact", contact);
                     routeContext.render("contact");
                 }
             }

@@ -61,8 +61,8 @@ public class CrudApplication extends Application {
 
             @Override
             public void handle(RouteContext routeContext) {
-                if (routeContext.fromSession("username") == null) {
-                    routeContext.putSession("originalDestination", routeContext.getRequest().getContextUriWithQuery());
+                if (routeContext.getSession("username") == null) {
+                    routeContext.setSession("originalDestination", routeContext.getRequest().getContextUriWithQuery());
                     routeContext.redirect("/login");
                 } else {
                     routeContext.next();
@@ -84,13 +84,13 @@ public class CrudApplication extends Application {
 
             @Override
             public void handle(RouteContext routeContext) {
-                String username = routeContext.fromRequest("username").toString();
-                String password = routeContext.fromRequest("password").toString();
+                String username = routeContext.getParameter("username").toString();
+                String password = routeContext.getParameter("password").toString();
                 if (authenticate(username, password)) {
                     String originalDestination = routeContext.removeSession("originalDestination");
                     routeContext.resetSession();
 
-                    routeContext.putSession("username", username);
+                    routeContext.setSession("username", username);
                     routeContext.redirect(originalDestination != null ? originalDestination : "/contacts");
                 } else {
                     routeContext.flashError("Authentication failed");
@@ -126,7 +126,7 @@ public class CrudApplication extends Application {
                 */
 
                 // variant 2
-                routeContext.putLocal("contacts", contactService.getContacts());
+                routeContext.setLocal("contacts", contactService.getContacts());
                 routeContext.render("contacts");
             }
 
@@ -137,8 +137,8 @@ public class CrudApplication extends Application {
             @Metered("getContact")
             @Override
             public void handle(RouteContext routeContext) {
-                int id = routeContext.fromRequest("id").toInt(0);
-                String action = routeContext.fromRequest("action").toString("new");
+                int id = routeContext.getParameter("id").toInt(0);
+                String action = routeContext.getParameter("action").toString("new");
                 if ("delete".equals(action)) {
                     contactService.delete(id);
                     routeContext.redirect("/contacts");
@@ -147,15 +147,15 @@ public class CrudApplication extends Application {
                 }
 
                 Contact contact = (id > 0) ? contactService.getContact(id) : new Contact();
-                routeContext.putLocal("contact", contact);
+                routeContext.setLocal("contact", contact);
                 StringBuilder editAction = new StringBuilder();
                 editAction.append("/contact?action=save");
                 if (id > 0) {
                     editAction.append("&id=");
                     editAction.append(id);
                 }
-                routeContext.putLocal("editAction", getRouter().uriFor(editAction.toString()));
-                routeContext.putLocal("backAction", getRouter().uriFor("/contacts"));
+                routeContext.setLocal("editAction", getRouter().uriFor(editAction.toString()));
+                routeContext.setLocal("backAction", getRouter().uriFor("/contacts"));
                 routeContext.render("contact");
             }
 
@@ -165,7 +165,7 @@ public class CrudApplication extends Application {
 
             @Override
             public void handle(RouteContext routeContext) {
-                String action = routeContext.fromRequest("action").toString();
+                String action = routeContext.getParameter("action").toString();
                 if ("save".equals(action)) {
                     Contact contact = routeContext.createEntityFromParameters(Contact.class);
                     contactService.save(contact);

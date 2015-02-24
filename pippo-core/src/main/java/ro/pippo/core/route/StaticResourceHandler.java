@@ -77,7 +77,7 @@ public abstract class StaticResourceHandler implements RouteHandler {
     public abstract URL getResourceUrl(String resourcePath);
 
     protected String getResourcePath(RouteContext routeContext) {
-        return getNormalizedPath(routeContext.fromRequest(PATH_PARAMETER).toString());
+        return getNormalizedPath(routeContext.getParameter(PATH_PARAMETER).toString());
     }
 
     protected String getNormalizedPath(String path) {

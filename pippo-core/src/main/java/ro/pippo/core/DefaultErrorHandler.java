@@ -107,7 +107,7 @@ public class DefaultErrorHandler implements ErrorHandler {
                     Error error = prepareError(statusCode, routeContext);
                     Map<String, Object> bindings = error.asMap();
                     bindings.putAll(prepareTemplateBindings(statusCode, routeContext));
-                    routeContext.putLocals(bindings);
+                    routeContext.setLocals(bindings);
                     routeContext.render(template);
                 } catch (Exception e) {
                     log.error("Unexpected error rendering your '{}' template!", template, e);
@@ -126,7 +126,7 @@ public class DefaultErrorHandler implements ErrorHandler {
 
         String message = exception.getMessage();
         if (!StringUtils.isNullOrEmpty(message) && !routeContext.getResponse().getLocals().containsKey("message")) {
-            routeContext.putLocal("message", message);
+            routeContext.setLocal("message", message);
         }
 
         if (application.getPippoSettings().isDev()) {
@@ -134,7 +134,7 @@ public class DefaultErrorHandler implements ErrorHandler {
             PrintWriter printWriter = new PrintWriter(stringWriter);
             exception.printStackTrace(printWriter);
             String stackTrace = stringWriter.toString();
-            routeContext.putLocal("stacktrace", stackTrace);
+            routeContext.setLocal("stacktrace", stackTrace);
         }
 
         handle(HttpConstants.StatusCode.INTERNAL_ERROR, routeContext);
@@ -204,8 +204,8 @@ public class DefaultErrorHandler implements ErrorHandler {
         error.requestMethod = routeContext.getRequestMethod();
         error.requestUri = routeContext.getRequestUri();
         error.requestUri = routeContext.getRequestUri();
-        error.stacktrace = routeContext.fromLocal("stacktrace");
-        error.message = routeContext.fromLocal("message");
+        error.stacktrace = routeContext.getLocal("stacktrace");
+        error.message = routeContext.getLocal("message");
 
         return error;
     }

@@ -161,7 +161,7 @@ public class DefaultControllerHandler implements ControllerHandler {
                 Object value = routeContext.createEntityFromParameters(type);
                 args[i] = value;
             } else {
-                ParameterValue value = routeContext.fromRequest(name);
+                ParameterValue value = routeContext.getParameter(name);
                 args[i] = value.to(type);
             }
         }
