@@ -39,8 +39,8 @@ public class Controller {
         return routeContext.getResponse();
     }
 
-    public Application getApplication() {
-        return routeContext.getApplication();
+    public <T extends Application> T getApplication() {
+        return (T) routeContext.getApplication();
     }
 
     protected void init(RouteContext routeContext) {
