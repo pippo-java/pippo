@@ -29,88 +29,88 @@ import java.util.Map;
  */
 public interface RouteContext {
 
-    Application getApplication();
+    public Application getApplication();
 
-    Request getRequest();
+    public Request getRequest();
 
-    Response getResponse();
+    public Response getResponse();
 
-    boolean hasSession();
+    public boolean hasSession();
 
-    Session getSession();
+    public Session getSession();
 
-    void recreateSession();
+    public void recreateSession();
 
-    void resetSession();
+    public void resetSession();
 
-    void touchSession();
+    public void touchSession();
 
-    void invalidateSession();
+    public void invalidateSession();
 
-    <T> T setSession(String name, T t);
+    public <T> T setSession(String name, T t);
 
-    <T> T getSession(String name);
+    public <T> T getSession(String name);
 
-    <T> T removeSession(String name);
+    public <T> T removeSession(String name);
 
-    <T> T setLocal(String name, T t);
+    public <T> T setLocal(String name, T t);
 
-    void setLocals(Map<String, Object> locals);
+    public void setLocals(Map<String, Object> locals);
 
-    <T> T getLocal(String name);
+    public <T> T getLocal(String name);
 
-    <T> T removeLocal(String name);
+    public <T> T removeLocal(String name);
 
-    ParameterValue getParameter(String name);
+    public ParameterValue getParameter(String name);
 
-    ParameterValue getHeader(String name);
+    public ParameterValue getHeader(String name);
 
-    <T> T setHeader(String name, T t);
+    public <T> T setHeader(String name, T t);
 
-    void flashError(String message, Object... args);
+    public void flashError(String message, Object... args);
 
-    void flashWarning(String message, Object... args);
+    public void flashWarning(String message, Object... args);
 
-    void flashInfo(String message, Object... args);
+    public void flashInfo(String message, Object... args);
 
-    void flashSuccess(String message, Object... args);
+    public void flashSuccess(String message, Object... args);
 
-    <T> T createEntityFromParameters(Class<T> classOfT);
+    public <T> T createEntityFromParameters(Class<T> classOfT);
 
-    <T> T createEntityFromBody(Class<T> classOfT);
+    public <T> T createEntityFromBody(Class<T> classOfT);
 
-    String getRequestUri();
+    public String getRequestUri();
 
-    String getRequestMethod();
+    public String getRequestMethod();
 
-    boolean isRequestMethod(String method);
+    public boolean isRequestMethod(String method);
 
-    void render(String templateName);
+    public void render(String templateName);
 
-    void send(CharSequence content);
+    public void send(CharSequence content);
 
-    void send(File file);
+    public void send(File file);
 
-    void send(Object object);
+    public void send(Object object);
 
-    void redirect(String path);
+    public void redirect(String path);
 
-    void next();
+    public void next();
 
-    void runFinallyRoutes();
+    public void runFinallyRoutes();
 
-    RouteContext text();
+    public RouteContext text();
 
-    RouteContext xml();
+    public RouteContext xml();
 
-    RouteContext json();
+    public RouteContext json();
 
-    RouteContext yaml();
+    public RouteContext yaml();
 
-    RouteContext html();
+    public RouteContext html();
 
-    RouteContext negotiateContentType();
+    public RouteContext negotiateContentType();
 
-    RouteContext status(int code);
+    public RouteContext status(int code);
 
 }
