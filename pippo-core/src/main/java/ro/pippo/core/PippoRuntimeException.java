@@ -25,12 +25,12 @@ public class PippoRuntimeException extends RuntimeException {
     public PippoRuntimeException() {
     }
 
-    public PippoRuntimeException(String message, Object... parameters) {
-        super(StringUtils.format(message, parameters));
+    public PippoRuntimeException(String message, Object... args) {
+        super(StringUtils.format(message, args));
     }
 
-    public PippoRuntimeException(String message, Throwable cause, Object... parameters) {
-        super(StringUtils.format(message, parameters), cause);
+    public PippoRuntimeException(String message, Throwable cause, Object... args) {
+        super(StringUtils.format(message, args), cause);
     }
 
     public PippoRuntimeException(Throwable cause) {

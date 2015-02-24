@@ -95,8 +95,8 @@ public class PippoHelper {
         return messageValue;
     }
 
-    public String i18n(String messageKey, Object... parameters) {
-        String messageValue = messages.get(messageKey, language, parameters);
+    public String i18n(String messageKey, Object... args) {
+        String messageValue = messages.get(messageKey, language, args);
         return messageValue;
     }
 

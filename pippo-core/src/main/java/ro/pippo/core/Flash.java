@@ -77,8 +77,8 @@ public class Flash implements Iterable<Flash.Message>, Serializable {
         add(Message.ERROR, message);
     }
 
-    public void error(String message, Object... parameters) {
-        add(Message.ERROR, StringUtils.format(message, parameters));
+    public void error(String message, Object... args) {
+        add(Message.ERROR, StringUtils.format(message, args));
     }
 
     public boolean hasError() {
@@ -97,8 +97,8 @@ public class Flash implements Iterable<Flash.Message>, Serializable {
         add(Message.SUCCESS, message);
     }
 
-    public void success(String message, Object... parameters) {
-        add(Message.SUCCESS, StringUtils.format(message, parameters));
+    public void success(String message, Object... args) {
+        add(Message.SUCCESS, StringUtils.format(message, args));
     }
 
     public boolean hasSuccess() {
@@ -117,8 +117,8 @@ public class Flash implements Iterable<Flash.Message>, Serializable {
         add(Message.WARNING, message);
     }
 
-    public void warning(String message, Object... parameters) {
-        add(Message.WARNING, StringUtils.format(message, parameters));
+    public void warning(String message, Object... args) {
+        add(Message.WARNING, StringUtils.format(message, args));
     }
 
     public boolean hasWarning() {
@@ -137,8 +137,8 @@ public class Flash implements Iterable<Flash.Message>, Serializable {
         add(Message.INFO, message);
     }
 
-    public void info(String message, Object... parameters) {
-        add(Message.INFO, StringUtils.format(message, parameters));
+    public void info(String message, Object... args) {
+        add(Message.INFO, StringUtils.format(message, args));
     }
 
     public boolean hasInfo() {

@@ -69,7 +69,7 @@ public class Messages {
      * <li>Return the default resource message
      * </ol>
      * <p>
-     * The message can be formatted with optional parameters using the
+     * The message can be formatted with optional arguments using the
      * {@link java.text.MessageFormat} syntax.
      * </p>
      * <p>
@@ -79,12 +79,12 @@ public class Messages {
      *
      * @param key
      * @param routeContext
-     * @param parameters
+     * @param args
      * @return the message or the key if the key does not exist
      */
-    public String get(String key, RouteContext routeContext, Object... parameters) {
+    public String get(String key, RouteContext routeContext, Object... args) {
         String language = languages.getLanguageOrDefault(routeContext);
-        return get(key, language, parameters);
+        return get(key, language, args);
     }
 
     /**
@@ -97,7 +97,7 @@ public class Messages {
      * <li>Return the default resource message
      * </ol>
      * <p>
-     * The message can be formatted with optional parameters using the
+     * The message can be formatted with optional arguments using the
      * {@link java.text.MessageFormat} syntax.
      * </p>
      * <p>
@@ -107,14 +107,14 @@ public class Messages {
      *
      * @param key
      * @param language
-     * @param parameters
+     * @param args
      * @return the message or the key if the key does not exist
      */
-    public String get(String key, String language, Object... parameters) {
+    public String get(String key, String language, Object... args) {
         Properties messages = getMessagesForLanguage(language);
         String value = messages.getProperty(key);
         if (value != null) {
-            String message = formatMessage(value, language, parameters);
+            String message = formatMessage(value, language, args);
             return message;
         } else {
             log.warn("Failed to find '{}' in Messages", key);
@@ -135,7 +135,7 @@ public class Messages {
      * <li>Return the supplied default message
      * </ol>
      * <p>
-     * The message can be formatted with optional parameters using the
+     * The message can be formatted with optional arguments using the
      * {@link java.text.MessageFormat} syntax.
      * </p>
      * <p>
@@ -146,13 +146,13 @@ public class Messages {
      * @param key
      * @param defaultMessage
      * @param routeContext
-     * @param parameters
+     * @param args
      * @return the message or the key if the key does not exist
      */
     public String getWithDefault(String key, String defaultMessage,
-                                 RouteContext routeContext, Object... parameters) {
+                                 RouteContext routeContext, Object... args) {
         String language = languages.getLanguageOrDefault(routeContext);
-        return getWithDefault(key, defaultMessage, language, parameters);
+        return getWithDefault(key, defaultMessage, language, args);
     }
 
     /**
@@ -168,20 +168,20 @@ public class Messages {
      * <li>Return supplied default message
      * </ol>
      * <p>
-     * The message can be formatted with optional parameters using the
+     * The message can be formatted with optional arguments using the
      * {@link java.text.MessageFormat} syntax.
      * </p>
      *
      * @param key
      * @param defaultMessage
-     * @param parameters
+     * @param args
      * @return the message or the key if the key does not exist
      */
-    public String getWithDefault(String key, String defaultMessage, String language, Object... parameters) {
-        String value = get(key, language, parameters);
+    public String getWithDefault(String key, String defaultMessage, String language, Object... args) {
+        String value = get(key, language, args);
         if (value.equals(key)) {
             // key does not exist, format default message
-            value = formatMessage(defaultMessage, language, parameters);
+            value = formatMessage(defaultMessage, language, args);
         }
 
         return value;
@@ -400,15 +400,15 @@ public class Messages {
      *
      * @param message
      * @param language
-     * @param parameters
+     * @param args
      * @return the message
      */
-    private String formatMessage(String message, String language, Object... parameters) {
-        if (parameters != null && parameters.length > 0) {
-            // only format a message if we have parameters
+    private String formatMessage(String message, String language, Object... args) {
+        if (args != null && args.length > 0) {
+            // only format a message if we have arguments
             Locale locale = languages.getLocaleOrDefault(language);
             MessageFormat messageFormat = new MessageFormat(message, locale);
-            return messageFormat.format(parameters);
+            return messageFormat.format(args);
         }
 
         return message;

@@ -48,7 +48,6 @@ import ro.pippo.core.util.StringUtils;
  * Base class for Pippo Groovy Templates.
  *
  * @author James Moger
- *
  */
 public abstract class PippoGroovyTemplate extends BaseTemplate {
 
@@ -143,8 +142,8 @@ public abstract class PippoGroovyTemplate extends BaseTemplate {
         return messageValue;
     }
 
-    public String i18n(String messageKey, Object... parameters) throws IOException {
-        String messageValue = messages.get(messageKey, language, parameters);
+    public String i18n(String messageKey, Object... args) throws IOException {
+        String messageValue = messages.get(messageKey, language, args);
         return messageValue;
     }
 
