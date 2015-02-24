@@ -16,27 +16,24 @@
 package ro.pippo.demo.template;
 
 import ro.pippo.core.Languages;
-import ro.pippo.core.Request;
-import ro.pippo.core.Response;
+import ro.pippo.core.route.RouteContext;
 import ro.pippo.core.route.RequestLanguageFilter;
-import ro.pippo.core.route.RouteHandlerChain;
 
 /**
  * Binds the available languages to the response.
  *
  * @author James Moger
- *
  */
 public class LanguageFilter extends RequestLanguageFilter {
 
-	public LanguageFilter(Languages languages, boolean enableQueryParameter) {
-		super(languages, enableQueryParameter);
-	}
+    public LanguageFilter(Languages languages, boolean enableQueryParameter) {
+        super(languages, enableQueryParameter);
+    }
 
-	@Override
-	public void handle(Request request, Response response, RouteHandlerChain chain) {
-		response.bind("languageChoices", languages.getRegisteredLanguages());
-		super.handle(request, response, chain);
-	}
+    @Override
+    public void handle(RouteContext routeContext) {
+        routeContext.setLocal("languageChoices", languages.getRegisteredLanguages());
+        super.handle(routeContext);
+    }
 
 }

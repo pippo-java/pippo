@@ -39,7 +39,7 @@ import java.util.Set;
  *
  * @author Decebal Suiu
  */
-public class Request {
+public final class Request {
 
     private static final Logger log = LoggerFactory.getLogger(Request.class);
 
@@ -55,7 +55,7 @@ public class Request {
 
     private String body; // cache
 
-    protected Request(HttpServletRequest servletRequest, Application application) {
+    public Request(HttpServletRequest servletRequest, Application application) {
         this.httpServletRequest = servletRequest;
         this.contentTypeEngines = application.getContentTypeEngines();
         this.sessionFactory = application.getSessionFactory();
@@ -149,15 +149,15 @@ public class Request {
 
             if (StringUtils.isNullOrEmpty(contentType)) {
                 throw new PippoRuntimeException(
-                        "Failed to create entity '{}' from request body because 'content-type' is not specified!",
-                        entityClass.getName());
+                    "Failed to create entity '{}' from request body because 'content-type' is not specified!",
+                    entityClass.getName());
             }
 
             ContentTypeEngine engine = contentTypeEngines.getContentTypeEngine(contentType);
             if (engine == null) {
                 throw new PippoRuntimeException(
-                        "Failed to create entity '{}' from request body because a content engine for '{}' could not be found!",
-                        entityClass.getName(), contentType);
+                    "Failed to create entity '{}' from request body because a content engine for '{}' could not be found!",
+                    entityClass.getName(), contentType);
             }
 
             entity = engine.fromString(body, entityClass);
@@ -430,9 +430,9 @@ public class Request {
     @Override
     public String toString() {
         return "Request{" +
-                "requestMethod='" + getMethod() + '\'' +
-                ", uriPattern='" + getContextUri() + '\'' +
-                '}';
+            "requestMethod='" + getMethod() + '\'' +
+            ", uriPattern='" + getContextUri() + '\'' +
+            '}';
     }
 
 }

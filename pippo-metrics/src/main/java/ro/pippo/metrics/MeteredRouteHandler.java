@@ -15,39 +15,36 @@
  */
 package ro.pippo.metrics;
 
-import ro.pippo.core.Request;
-import ro.pippo.core.Response;
-import ro.pippo.core.route.RouteHandler;
-import ro.pippo.core.route.RouteHandlerChain;
-
 import com.codahale.metrics.Meter;
 import com.codahale.metrics.MetricRegistry;
+import ro.pippo.core.route.RouteContext;
+import ro.pippo.core.route.RouteHandler;
 
 /**
  * @author James Moger
  */
 public class MeteredRouteHandler implements RouteHandler {
 
-	final String meterName;
-	final RouteHandler routeHandler;
-	final MetricRegistry metricRegistry;
+    final String meterName;
+    final RouteHandler routeHandler;
+    final MetricRegistry metricRegistry;
 
-	public MeteredRouteHandler(String meterName, RouteHandler routeHandler, MetricRegistry metricRegistry) {
-		this.meterName = meterName;
-		this.routeHandler = routeHandler;
-		this.metricRegistry = metricRegistry;
-	}
+    public MeteredRouteHandler(String meterName, RouteHandler routeHandler, MetricRegistry metricRegistry) {
+        this.meterName = meterName;
+        this.routeHandler = routeHandler;
+        this.metricRegistry = metricRegistry;
+    }
 
-	@Override
-	public void handle(Request request, Response response, RouteHandlerChain chain) {
-		Meter meter = metricRegistry.meter(meterName);
-		meter.mark();
+    @Override
+    public void handle(RouteContext routeContext) {
+        Meter meter = metricRegistry.meter(meterName);
+        meter.mark();
 
-		try {
-			routeHandler.handle(request, response, chain);
-		} finally {
+        try {
+            routeHandler.handle(routeContext);
+        } finally {
 
-		}
-	}
+        }
+    }
 
 }

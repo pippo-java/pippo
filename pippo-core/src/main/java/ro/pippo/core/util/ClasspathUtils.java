@@ -15,10 +15,10 @@
  */
 package ro.pippo.core.util;
 
-import java.net.URL;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.net.URL;
 
 /**
  * Classpath utility functions.
@@ -30,10 +30,9 @@ public class ClasspathUtils {
     /**
      * Tries to find a resource with the given name in the classpath.
      *
-     * @param resourceName
-     *            the name of the resource
+     * @param resourceName the name of the resource
      * @return the URL to the found resource or <b>null</b> if the resource
-     *         cannot be found
+     * cannot be found
      */
     public static URL locateOnClasspath(String resourceName) {
         URL url = null;

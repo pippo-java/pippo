@@ -17,9 +17,9 @@ package ro.pippo.core;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import ro.pippo.core.route.DefaultRouteHandlerChainFactory;
-import ro.pippo.core.route.RouteHandlerChain;
-import ro.pippo.core.route.RouteHandlerChainFactory;
+import ro.pippo.core.route.DefaultRouteContextFactory;
+import ro.pippo.core.route.RouteContext;
+import ro.pippo.core.route.RouteContextFactory;
 import ro.pippo.core.route.RouteMatch;
 import ro.pippo.core.route.Router;
 import ro.pippo.core.util.ClasspathUtils;
@@ -84,9 +84,7 @@ public class PippoFilter implements Filter {
         + " ) __/ _)(_  ) __/ ) __/ )(_)(   http://pippo.ro\n"
         + "(__)  (____)(__)  (__)  (_____)  {}\n";
 
-    private RequestFactory requestFactory;
-    private ResponseFactory responseFactory;
-    private RouteHandlerChainFactory routeHandlerChainFactory;
+    private RouteContextFactory routeContextFactory;
     private Application application;
     private List<Initializer> initializers;
     private Set<String> ignorePaths;
@@ -126,17 +124,9 @@ public class PippoFilter implements Filter {
 
             initializers = new ArrayList<>();
 
-            requestFactory = getRequestFactory();
-            initializers.add(requestFactory);
-            log.debug("Request factory is '{}'", requestFactory.getClass().getName());
-
-            responseFactory = getResponseFactory();
-            initializers.add(responseFactory);
-            log.debug("Response factory is '{}'", responseFactory.getClass().getName());
-
-            routeHandlerChainFactory = getRouteHandlerChainFactory();
-            initializers.add(routeHandlerChainFactory);
-            log.debug("Route handler chain factory is '{}'", routeHandlerChainFactory.getClass().getName());
+            routeContextFactory = getRouteContextFactory();
+            initializers.add(routeContextFactory);
+            log.debug("RouteContext factory is '{}'", routeContextFactory.getClass().getName());
 
             initializers.addAll(getInitializers());
             for (Initializer initializer : initializers) {
@@ -187,51 +177,50 @@ public class PippoFilter implements Filter {
         }
 
         log.debug("Request {} '{}'", requestMethod, relativePath);
-        final Request request = requestFactory.createRequest(httpServletRequest, application);
-        final Response response = responseFactory.createResponse(httpServletResponse, application);
+        final Request request = new Request(httpServletRequest, application);
+        final Response response = new Response(httpServletResponse, application);
+
         ErrorHandler errorHandler = application.getErrorHandler();
 
-        processFlash(request, response);
-
-        RouteHandlerChain handlerChain = null;
+        RouteContext routeContext = null;
         try {
-            // Force the initial Response status code to Integer.MAX_VALUE.
-            // The chain is expected to properly set a Response status code.
-            // Note: Some containers (e.g. Jetty) prohibit setting 0.
-            response.status(Integer.MAX_VALUE);
-
             Router router = application.getRouter();
             List<RouteMatch> routeMatches = router.findRoutes(relativePath, requestMethod);
+            routeContext = routeContextFactory.createRouteContext(application, request, response, routeMatches);
 
             if (routeMatches.isEmpty()) {
-                errorHandler.handle(HttpConstants.StatusCode.NOT_FOUND, request, response);
-                handlerChain = routeHandlerChainFactory.createChain(request, response, new ArrayList<RouteMatch>());
+                errorHandler.handle(HttpConstants.StatusCode.NOT_FOUND, routeContext);
             } else {
-                handlerChain = routeHandlerChainFactory.createChain(request, response, routeMatches);
+                // Force the initial Response status code to Integer.MAX_VALUE.
+                // The chain is expected to properly set a Response status code.
+                // Note: Some containers (e.g. Jetty) prohibit setting 0.
+                routeContext.status(Integer.MAX_VALUE);
+
+                processFlash(routeContext);
             }
 
-            handlerChain.next();
+            routeContext.next();
 
-            if (!response.isCommitted()) {
-                if (response.getStatus() == Integer.MAX_VALUE) {
+            if (!routeContext.getResponse().isCommitted()) {
+                if (routeContext.getResponse().getStatus() == Integer.MAX_VALUE) {
                     log.info("Handlers in chain did not set a status code for {} '{}'", requestMethod, relativePath);
-                    response.notFound();
+                    routeContext.getResponse().notFound();
                 }
                 log.debug("Auto-committing response for {} '{}'", requestMethod, relativePath);
-                if (response.getStatus() >= HttpConstants.StatusCode.BAD_REQUEST) {
+                if (routeContext.getResponse().getStatus() >= HttpConstants.StatusCode.BAD_REQUEST) {
                     // delegate response to the error handler.
                     // this will generate response content appropriate for the request/
-                    errorHandler.handle(response.getStatus(), request, response);
+                    errorHandler.handle(routeContext.getResponse().getStatus(), routeContext);
                 } else {
-                    response.commit();
+                    routeContext.getResponse().commit();
                 }
             }
         } catch (Exception e) {
             log.error(e.getMessage(), e);
-            errorHandler.handle(e, request, response);
+            errorHandler.handle(e, routeContext);
         } finally {
-            handlerChain.runFinallyRoutes();
-            log.debug("Returned status code {} for {} '{}'", response.getStatus(), requestMethod, relativePath);
+            routeContext.runFinallyRoutes();
+            log.debug("Returned status code {} for {} '{}'", routeContext.getResponse().getStatus(), requestMethod, relativePath);
             ThreadContext.restore(previousThreadContext);
         }
     }
@@ -391,28 +380,10 @@ public class PippoFilter implements Filter {
         return path;
     }
 
-    private RequestFactory getRequestFactory() {
-        RequestFactory factory = ServiceLocator.locate(RequestFactory.class);
+    private RouteContextFactory getRouteContextFactory() {
+        RouteContextFactory factory = ServiceLocator.locate(RouteContextFactory.class);
         if (factory == null) {
-            factory = new DefaultRequestFactory();
-        }
-
-        return factory;
-    }
-
-    private ResponseFactory getResponseFactory() {
-        ResponseFactory factory = ServiceLocator.locate(ResponseFactory.class);
-        if (factory == null) {
-            factory = new DefaultResponseFactory();
-        }
-
-        return factory;
-    }
-
-    private RouteHandlerChainFactory getRouteHandlerChainFactory() {
-        RouteHandlerChainFactory factory = ServiceLocator.locate(RouteHandlerChainFactory.class);
-        if (factory == null) {
-            factory = new DefaultRouteHandlerChainFactory();
+            factory = new DefaultRouteContextFactory();
         }
 
         return factory;
@@ -465,12 +436,13 @@ public class PippoFilter implements Filter {
         return pippoVersion;
     }
 
-    private void processFlash(Request request, Response response) {
+    private void processFlash(RouteContext routeContext) {
         Flash flash = null;
 
-        Session session = request.getSession(false);
-        if (session != null) {
+
+        if (routeContext.hasSession()) {
             // get flash from session
+            Session session = routeContext.getSession();
             flash = session.remove("flash");
             // put an empty flash (outcoming flash) in session; defense against session.get("flash")
             session.put("flash", new Flash());
@@ -481,7 +453,7 @@ public class PippoFilter implements Filter {
         }
 
         // make current flash available to templates
-        response.bind("flash", flash);
+        routeContext.setLocal("flash", flash);
     }
 
 }

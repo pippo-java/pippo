@@ -15,14 +15,11 @@
  */
 package ro.pippo.core.route;
 
-import ro.pippo.core.Request;
-import ro.pippo.core.Response;
-
 /**
  * @author Decebal Suiu
  */
-public interface RouteHandler<A extends Request, B extends Response> {
+public interface RouteHandler<T extends RouteContext> {
 
-    public void handle(A request, B response, RouteHandlerChain chain);
+    public void handle(T routeContext);
 
 }

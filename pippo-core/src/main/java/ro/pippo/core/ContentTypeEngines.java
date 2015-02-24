@@ -15,6 +15,8 @@
  */
 package ro.pippo.core;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import ro.pippo.core.util.StringUtils;
 
 import java.util.ArrayList;
@@ -23,16 +25,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 /**
  * Container for registered content type engines. The main purpose of this
  * object is to gracefully handle mapping a complex content-type or accept
  * header to an engine.
  *
  * @author James Moger
- *
  */
 public class ContentTypeEngines {
 
@@ -87,14 +85,14 @@ public class ContentTypeEngines {
             setContentTypeEngine(engine);
         } else {
             log.debug("'{}' content engine already registered, ignoring '{}'", engine.getContentType(),
-                    engineClass.getName());
+                engineClass.getName());
         }
     }
 
     /**
      * Returns the first matching content type engine for a simple content type
      * or a complex accept header like:
-     *
+     * <p/>
      * <pre>
      * text/html,application/xhtml+xml,application/xml;q=0.9,image/webp
      * </pre>
@@ -132,7 +130,7 @@ public class ContentTypeEngines {
     /**
      * Cleans a complex content-type or accept header value by removing the
      * quality scores.
-     *
+     * <p/>
      * <pre>
      * text/html,application/xhtml+xml,application/xml;q=0.9,image/webp
      * </pre>

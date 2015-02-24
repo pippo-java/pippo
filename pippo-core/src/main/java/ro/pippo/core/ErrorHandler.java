@@ -16,13 +16,15 @@
 package ro.pippo.core;
 
 
+import ro.pippo.core.route.RouteContext;
+
 /**
  * @author Decebal Suiu
  */
 public interface ErrorHandler {
 
-    public void handle(int statusCode, Request request, Response response);
+    public void handle(int statusCode, RouteContext routeContext);
 
-    public void handle(Exception exception, Request request, Response response);
+    public void handle(Exception exception, RouteContext routeContext);
 
 }

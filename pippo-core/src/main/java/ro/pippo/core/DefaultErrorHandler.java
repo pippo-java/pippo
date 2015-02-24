@@ -15,18 +15,17 @@
  */
 package ro.pippo.core;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import ro.pippo.core.route.Route;
+import ro.pippo.core.route.RouteContext;
 import ro.pippo.core.util.StringUtils;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
-import java.lang.*;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * @author Decebal Suiu
@@ -43,17 +42,17 @@ public class DefaultErrorHandler implements ErrorHandler {
     }
 
     @Override
-    public void handle(int statusCode, Request request, Response response) {
-        response.status(statusCode);
+    public void handle(int statusCode, RouteContext routeContext) {
+        routeContext.status(statusCode);
 
         // start with the content type specified for the response
-        String contentType = response.getContentType();
+        String contentType = routeContext.getResponse().getContentType();
 
         if (StringUtils.isNullOrEmpty(contentType)) {
-            if (!StringUtils.isNullOrEmpty(request.getAcceptType())) {
-                String acceptType = request.getAcceptType();
+            if (!StringUtils.isNullOrEmpty(routeContext.getRequest().getAcceptType())) {
+                String acceptType = routeContext.getRequest().getAcceptType();
                 if (acceptType.startsWith(HttpConstants.ContentType.TEXT_HTML)
-                        || acceptType.startsWith(HttpConstants.ContentType.TEXT_XHTML)) {
+                    || acceptType.startsWith(HttpConstants.ContentType.TEXT_XHTML)) {
 
                     // exception during a browser request
                     contentType = HttpConstants.ContentType.TEXT_HTML;
@@ -62,72 +61,72 @@ public class DefaultErrorHandler implements ErrorHandler {
 
             if (StringUtils.isNullOrEmpty(contentType)) {
                 // unspecified so negotiate a content type based on the request
-                response.contentType(request);
+                routeContext.negotiateContentType();
 
                 // retrieve the negotiated type
-                contentType = response.getContentType();
+                contentType = routeContext.getResponse().getContentType();
             }
         }
 
         if (StringUtils.isNullOrEmpty(contentType)) {
             log.debug("No accept type nor content type specified! Defaulting to text/html.");
-            renderHtml(statusCode, request, response);
+            renderHtml(statusCode, routeContext);
         } else if (contentType.equals(HttpConstants.ContentType.TEXT_HTML)) {
             // render an html page
-            renderHtml(statusCode, request, response);
+            renderHtml(statusCode, routeContext);
         } else {
             // render an object representation
             ContentTypeEngine engine = application.getContentTypeEngine(contentType);
             if (engine == null) {
                 log.warn("No registered content type engine for '{}'", contentType);
-                renderHtml(statusCode, request, response);
+                renderHtml(statusCode, routeContext);
             } else {
-                Error error = prepareError(statusCode, request, response);
+                Error error = prepareError(statusCode, routeContext);
                 try {
-                    response.contentType(engine.getContentType()).send(error);
+                    routeContext.getResponse().contentType(engine.getContentType()).send(error);
                 } catch (Exception e) {
                     log.error("Unexpected error generating '{}' as '{}'!", Error.class.getName(), contentType, e);
-                    response.status(HttpConstants.StatusCode.INTERNAL_ERROR);
-                    response.text(application.getMessages().get("pippo.statusCode500", request, response));
+                    routeContext.status(HttpConstants.StatusCode.INTERNAL_ERROR);
+                    routeContext.send(application.getMessages().get("pippo.statusCode500", routeContext));
                 }
             }
         }
     }
 
-    protected void renderHtml(int statusCode, Request request, Response response) {
+    protected void renderHtml(int statusCode, RouteContext routeContext) {
         if (application.getTemplateEngine() == null) {
-            renderDirectly(request, response);
+            renderDirectly(routeContext);
         } else {
             String template = getTemplateForStatusCode(statusCode);
             if (template == null) {
                 log.debug("There is no {} template for status code '{}'", application.getTemplateEngine().getClass()
-                        .getSimpleName(), statusCode);
-                renderDirectly(request, response);
+                    .getSimpleName(), statusCode);
+                renderDirectly(routeContext);
             } else {
                 try {
-                    Error error = prepareError(statusCode, request, response);
+                    Error error = prepareError(statusCode, routeContext);
                     Map<String, Object> bindings = error.asMap();
-                    bindings.putAll(prepareTemplateBindings(statusCode, request, response));
-                    response.getLocals().putAll(bindings);
-                    response.render(template);
+                    bindings.putAll(prepareTemplateBindings(statusCode, routeContext));
+                    routeContext.setLocals(bindings);
+                    routeContext.render(template);
                 } catch (Exception e) {
                     log.error("Unexpected error rendering your '{}' template!", template, e);
-                    handle(e, request, response);
+                    handle(e, routeContext);
                 }
             }
         }
     }
 
     @Override
-    public void handle(Exception exception, Request request, Response response) {
-        if (response.isCommitted()) {
+    public void handle(Exception exception, RouteContext routeContext) {
+        if (routeContext.getResponse().isCommitted()) {
             log.debug("The response has already been committed. Cannot use the exception handler.");
             return;
         }
 
         String message = exception.getMessage();
-        if (!StringUtils.isNullOrEmpty(message) && !response.getLocals().containsKey("message")) {
-            response.bind("message", message);
+        if (!StringUtils.isNullOrEmpty(message) && !routeContext.getResponse().getLocals().containsKey("message")) {
+            routeContext.setLocal("message", message);
         }
 
         if (application.getPippoSettings().isDev()) {
@@ -135,26 +134,25 @@ public class DefaultErrorHandler implements ErrorHandler {
             PrintWriter printWriter = new PrintWriter(stringWriter);
             exception.printStackTrace(printWriter);
             String stackTrace = stringWriter.toString();
-            response.bind("stacktrace", stackTrace);
+            routeContext.setLocal("stacktrace", stackTrace);
         }
 
-        handle(HttpConstants.StatusCode.INTERNAL_ERROR, request, response);
+        handle(HttpConstants.StatusCode.INTERNAL_ERROR, routeContext);
     }
 
     /**
      * Render the result directly.
      *
-     * @param request
-     * @param response
+     * @param routeContext
      */
-    protected void renderDirectly(Request request, Response response) {
+    protected void renderDirectly(RouteContext routeContext) {
         StringBuilder content = new StringBuilder();
         content.append("<html><body>");
         content.append("<div>");
         content.append("Cannot find a route for '");
-        content.append(request.getMethod());
+        content.append(routeContext.getRequestMethod());
         content.append(" ");
-        content.append(request.getUri());
+        content.append(routeContext.getRequestUri());
         content.append("'</div>");
         content.append("<div>Available routes:</div>");
         content.append("<ul style=\" list-style-type: none; margin: 0; \">");
@@ -169,17 +167,16 @@ public class DefaultErrorHandler implements ErrorHandler {
         content.append("</ul>");
         content.append("</body></html>");
 
-        response.send(content);
+        routeContext.send(content);
     }
 
     /**
      * Get the template bindings for the error response.
      *
-     * @param request
-     * @param response
+     * @param routeContext
      * @return bindings map
      */
-    protected Map<String, Object> prepareTemplateBindings(int statusCode, Request request, Response response) {
+    protected Map<String, Object> prepareTemplateBindings(int statusCode, RouteContext routeContext) {
         Map<String, Object> locals = new LinkedHashMap<>();
         locals.put("applicationName", application.getApplicationName());
         locals.put("applicationVersion", application.getApplicationVersion());
@@ -195,20 +192,20 @@ public class DefaultErrorHandler implements ErrorHandler {
      * Prepares an Error instance for the error response.
      *
      * @param statusCode
-     * @param request
-     * @param response
+     * @param routeContext
      * @return an Error
      */
-    protected Error prepareError(int statusCode, Request request, Response response) {
+    protected Error prepareError(int statusCode, RouteContext routeContext) {
         String messageKey = "pippo.statusCode" + statusCode;
 
         Error error = new Error();
         error.statusCode = statusCode;
-        error.statusMessage = application.getMessages().get(messageKey, request, response);
-        error.requestMethod = request.getMethod();
-        error.requestUri = request.getContextUri();
-        error.stacktrace = (String) response.getLocals().get("stacktrace");
-        error.message = (String) response.getLocals().get("message");
+        error.statusMessage = application.getMessages().get(messageKey, routeContext);
+        error.requestMethod = routeContext.getRequestMethod();
+        error.requestUri = routeContext.getRequestUri();
+        error.requestUri = routeContext.getRequestUri();
+        error.stacktrace = routeContext.getLocal("stacktrace");
+        error.message = routeContext.getLocal("message");
 
         return error;
     }

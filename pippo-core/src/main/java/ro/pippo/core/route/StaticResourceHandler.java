@@ -19,8 +19,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ro.pippo.core.HttpConstants;
 import ro.pippo.core.PippoRuntimeException;
-import ro.pippo.core.Request;
-import ro.pippo.core.Response;
 import ro.pippo.core.util.HttpCacheToolkit;
 import ro.pippo.core.util.MimeTypes;
 import ro.pippo.core.util.StringUtils;
@@ -62,24 +60,24 @@ public abstract class StaticResourceHandler implements RouteHandler {
     }
 
     @Override
-    public final void handle(Request request, Response response, RouteHandlerChain chain) {
-        String resourcePath = getResourcePath(request);
+    public final void handle(RouteContext routeContext) {
+        String resourcePath = getResourcePath(routeContext);
         log.trace("Request resource '{}'", resourcePath);
 
         URL url = getResourceUrl(resourcePath);
         if (url == null) {
-            response.notFound().commit();
+            routeContext.getResponse().notFound().commit();
         } else {
-            streamResource(url, request, response);
+            streamResource(url, routeContext);
         }
 
-        chain.next();
+        routeContext.next();
     }
 
     public abstract URL getResourceUrl(String resourcePath);
 
-    protected String getResourcePath(Request request) {
-        return getNormalizedPath(request.getParameter(PATH_PARAMETER).toString());
+    protected String getResourcePath(RouteContext routeContext) {
+        return getNormalizedPath(routeContext.getParameter(PATH_PARAMETER).toString());
     }
 
     protected String getNormalizedPath(String path) {
@@ -93,30 +91,30 @@ public abstract class StaticResourceHandler implements RouteHandler {
         return path;
     }
 
-    protected void streamResource(URL resourceUrl, Request request, Response response) {
+    protected void streamResource(URL resourceUrl, RouteContext routeContext) {
         try {
             URLConnection urlConnection = resourceUrl.openConnection();
             long lastModified = urlConnection.getLastModified();
-            httpCacheToolkit.addEtag(request, response, lastModified);
+            httpCacheToolkit.addEtag(routeContext, lastModified);
 
-            if (response.getStatus() == HttpConstants.StatusCode.NOT_MODIFIED) {
+            if (routeContext.getResponse().getStatus() == HttpConstants.StatusCode.NOT_MODIFIED) {
                 // Do not stream anything out. Simply return 304
-                response.commit();
+                routeContext.getResponse().commit();
             } else {
                 String filename = resourceUrl.getFile();
 
                 // Try to set the mimetype:
-                String mimeType = mimeTypes.getContentType(request, response, filename);
+                String mimeType = mimeTypes.getContentType(routeContext, filename);
 
                 if (!StringUtils.isNullOrEmpty(mimeType)) {
                     // stream the resource
                     log.debug("Streaming as resource '{}'", resourceUrl);
-                    response.contentType(mimeType);
-                    response.ok().resource(urlConnection.getInputStream());
+                    routeContext.getResponse().contentType(mimeType);
+                    routeContext.getResponse().ok().resource(urlConnection.getInputStream());
                 } else {
                     // stream the file
                     log.debug("Streaming as file '{}'", resourceUrl);
-                    response.ok().file(filename, urlConnection.getInputStream());
+                    routeContext.getResponse().ok().file(filename, urlConnection.getInputStream());
                 }
             }
         } catch (Exception e) {

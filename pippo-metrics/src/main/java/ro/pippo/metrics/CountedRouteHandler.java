@@ -15,43 +15,40 @@
  */
 package ro.pippo.metrics;
 
-import ro.pippo.core.Request;
-import ro.pippo.core.Response;
-import ro.pippo.core.route.RouteHandler;
-import ro.pippo.core.route.RouteHandlerChain;
-
 import com.codahale.metrics.Counter;
 import com.codahale.metrics.MetricRegistry;
+import ro.pippo.core.route.RouteContext;
+import ro.pippo.core.route.RouteHandler;
 
 /**
  * @author James Moger
  */
 public class CountedRouteHandler implements RouteHandler {
 
-	final String counterName;
-	final boolean isActive;
-	final RouteHandler routeHandler;
-	final MetricRegistry metricRegistry;
+    final String counterName;
+    final boolean isActive;
+    final RouteHandler routeHandler;
+    final MetricRegistry metricRegistry;
 
-	public CountedRouteHandler(String counterName, boolean isActive, RouteHandler routeHandler, MetricRegistry metricRegistry) {
-		this.counterName = counterName;
-		this.isActive = isActive;
-		this.routeHandler = routeHandler;
-		this.metricRegistry = metricRegistry;
-	}
+    public CountedRouteHandler(String counterName, boolean isActive, RouteHandler routeHandler, MetricRegistry metricRegistry) {
+        this.counterName = counterName;
+        this.isActive = isActive;
+        this.routeHandler = routeHandler;
+        this.metricRegistry = metricRegistry;
+    }
 
-	@Override
-	public void handle(Request request, Response response, RouteHandlerChain chain) {
-		Counter counter = metricRegistry.counter(counterName);
-		counter.inc();
+    @Override
+    public void handle(RouteContext routeContext) {
+        Counter counter = metricRegistry.counter(counterName);
+        counter.inc();
 
-		try {
-			routeHandler.handle(request, response, chain);
-		} finally {
-			if (isActive) {
-				counter.dec();
-			}
-		}
-	}
+        try {
+            routeHandler.handle(routeContext);
+        } finally {
+            if (isActive) {
+                counter.dec();
+            }
+        }
+    }
 
 }

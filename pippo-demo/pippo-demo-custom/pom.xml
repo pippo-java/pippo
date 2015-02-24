@@ -19,12 +19,10 @@
     </properties>
 
     <dependencies>
-        <!-- Servlet -->
         <dependency>
-            <groupId>javax.servlet</groupId>
-            <artifactId>javax.servlet-api</artifactId>
-            <version>${servlet.version}</version>
-            <scope>provided</scope>
+            <groupId>ro.pippo</groupId>
+            <artifactId>pippo-demo-common</artifactId>
+            <version>${project.version}</version>
         </dependency>
 
         <dependency>
@@ -33,24 +31,6 @@
             <version>${project.version}</version>
         </dependency>
 
-        <dependency>
-            <groupId>ro.pippo</groupId>
-            <artifactId>pippo-freemarker</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-
-        <!-- Webjars -->
-        <dependency>
-            <groupId>org.webjars</groupId>
-            <artifactId>bootstrap</artifactId>
-            <version>3.3.1</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.webjars</groupId>
-            <artifactId>font-awesome</artifactId>
-            <version>4.2.0</version>
-        </dependency>
     </dependencies>
 
 </project>

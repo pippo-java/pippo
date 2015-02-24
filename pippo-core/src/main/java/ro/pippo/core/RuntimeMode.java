@@ -55,7 +55,7 @@ public enum RuntimeMode {
         }
 
         throw new NoSuchElementException("Cannot found Pippo runtime mode with name '" + name +
-                "'. Must be 'dev', 'test', or 'prod'.");
+            "'. Must be 'dev', 'test', or 'prod'.");
     }
 
     public static RuntimeMode getCurrent() {

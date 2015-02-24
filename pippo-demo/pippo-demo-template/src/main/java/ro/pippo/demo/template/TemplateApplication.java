@@ -17,20 +17,16 @@ package ro.pippo.demo.template;
 
 import ro.pippo.core.Application;
 import ro.pippo.core.PippoRuntimeException;
-import ro.pippo.core.Request;
-import ro.pippo.core.Response;
 import ro.pippo.core.TemplateEngine;
 import ro.pippo.core.route.PublicResourceHandler;
+import ro.pippo.core.route.RouteContext;
 import ro.pippo.core.route.RouteHandler;
-import ro.pippo.core.route.RouteHandlerChain;
 import ro.pippo.core.route.WebjarsResourceHandler;
 import ro.pippo.metrics.Metered;
 import ro.pippo.metrics.Timed;
 
 import java.util.Calendar;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * @author James Moger
@@ -61,15 +57,15 @@ public class TemplateApplication extends Application {
 
             @Metered("getRoot")
             @Override
-            public void handle(Request request, Response response, RouteHandlerChain chain) {
-            	Calendar calendar = Calendar.getInstance();
-            	calendar.add(Calendar.DATE, -5);
-            	Date testDate = calendar.getTime();
-                Map<String, Object> model = new HashMap<>();
-                model.put("testDate", testDate);
-                model.put("mode", getRuntimeMode());
+            public void handle(RouteContext routeContext) {
+                Calendar calendar = Calendar.getInstance();
+                calendar.add(Calendar.DATE, -5);
+                Date testDate = calendar.getTime();
 
-                response.render(template, model);
+                routeContext.setLocal("testDate", testDate);
+                routeContext.setLocal("mode", getRuntimeMode());
+
+                routeContext.render(template);
             }
 
         });
@@ -81,7 +77,7 @@ public class TemplateApplication extends Application {
 
             @Timed("getException")
             @Override
-            public void handle(Request request, Response response, RouteHandlerChain chain) {
+            public void handle(RouteContext routeContext) {
                 throw new PippoRuntimeException("Exception \"&nbsp;\" <#{}>", ++counter);
             }
 

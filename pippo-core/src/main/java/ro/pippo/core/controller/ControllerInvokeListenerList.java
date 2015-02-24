@@ -23,7 +23,7 @@ import java.lang.reflect.Method;
  * @author Decebal Suiu
  */
 public class ControllerInvokeListenerList extends ListenerList<ControllerInvokeListener>
-        implements ControllerInvokeListener {
+    implements ControllerInvokeListener {
 
     @Override
     public void onInvoke(final Controller controller, final Method method) {

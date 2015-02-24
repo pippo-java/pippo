@@ -66,10 +66,10 @@ public class ThreadContext {
                 threadLocal.set(context);
             } else {
 				/*
-				 * There is no ThreadContext set, but the threadLocal.get() operation has registered
+				 * Th/*
+                 * There is no ThreadContext set, but the threadLocal.get() operation has registered
 				 * the threadLocal in this Thread's ThreadLocal map. We must now remove it.
-				 */
-                threadLocal.remove();
+				 */     threadLocal.remove();
             }
         }
 

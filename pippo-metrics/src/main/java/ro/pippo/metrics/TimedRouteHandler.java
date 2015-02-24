@@ -15,38 +15,35 @@
  */
 package ro.pippo.metrics;
 
-import ro.pippo.core.Request;
-import ro.pippo.core.Response;
-import ro.pippo.core.route.RouteHandler;
-import ro.pippo.core.route.RouteHandlerChain;
-
 import com.codahale.metrics.MetricRegistry;
 import com.codahale.metrics.Timer;
+import ro.pippo.core.route.RouteContext;
+import ro.pippo.core.route.RouteHandler;
 
 /**
  * @author James Moger
  */
 public class TimedRouteHandler implements RouteHandler {
 
-	final String timerName;
-	final RouteHandler routeHandler;
-	final MetricRegistry metricRegistry;
+    final String timerName;
+    final RouteHandler routeHandler;
+    final MetricRegistry metricRegistry;
 
-	public TimedRouteHandler(String timerName, RouteHandler routeHandler, MetricRegistry metricRegistry) {
-		this.timerName = timerName;
-		this.routeHandler = routeHandler;
-		this.metricRegistry = metricRegistry;
-	}
+    public TimedRouteHandler(String timerName, RouteHandler routeHandler, MetricRegistry metricRegistry) {
+        this.timerName = timerName;
+        this.routeHandler = routeHandler;
+        this.metricRegistry = metricRegistry;
+    }
 
-	@Override
-	public void handle(Request request, Response response, RouteHandlerChain chain) {
-		Timer.Context timerContext = metricRegistry.timer(timerName).time();
+    @Override
+    public void handle(RouteContext routeContext) {
+        Timer.Context timerContext = metricRegistry.timer(timerName).time();
 
-		try {
-			routeHandler.handle(request, response, chain);
-		} finally {
-			timerContext.stop();
-		}
-	}
+        try {
+            routeHandler.handle(routeContext);
+        } finally {
+            timerContext.stop();
+        }
+    }
 
 }

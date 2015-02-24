@@ -15,8 +15,12 @@
  */
 package ro.pippo.core;
 
-import static org.hamcrest.CoreMatchers.equalTo;
-
+import org.junit.After;
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.Rule;
+import org.junit.Test;
+import org.junit.rules.ExpectedException;
 import ro.pippo.core.route.DefaultRouter;
 import ro.pippo.core.route.Route;
 import ro.pippo.core.route.RouteMatch;
@@ -26,12 +30,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.junit.After;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.ExpectedException;
+import static org.hamcrest.CoreMatchers.equalTo;
 
 /**
  * @author Decebal Suiu
@@ -178,7 +177,7 @@ public class DefaultRouterTest extends Assert {
     @Test
     public void testIntIdRoute2() throws Exception {
         Route route = new Route("/contact/{id: [0-9]+}/something/{else: [A-z]*}", HttpConstants.Method.GET,
-                new EmptyRouteHandler());
+            new EmptyRouteHandler());
         router.addRoute(route);
 
         List<RouteMatch> routeMatches = router.findRoutes("/contact/3/something/borrowed", HttpConstants.Method.GET);
@@ -200,7 +199,7 @@ public class DefaultRouterTest extends Assert {
         router.addRoute(route);
 
         List<RouteMatch> routeMatches = router.findRoutes("/webjars/bootstrap/3.0.2/css/bootstrap.min.css",
-                HttpConstants.Method.GET);
+            HttpConstants.Method.GET);
         assertEquals(1, routeMatches.size());
 
     }
@@ -300,7 +299,7 @@ public class DefaultRouterTest extends Assert {
     @Test
     public void testParametersDontCrossSlashes() throws Exception {
         router.addRoute(new Route("/blah/{id}/{id2}/{id3}/morestuff/at/the/end", HttpConstants.Method.GET,
-                new EmptyRouteHandler()));
+            new EmptyRouteHandler()));
 
         // this must match
         assertEquals(1, router.findRoutes("/blah/id/id2/id3/morestuff/at/the/end", HttpConstants.Method.GET).size());

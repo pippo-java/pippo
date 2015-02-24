@@ -18,37 +18,33 @@ package ro.pippo.core.controller;
 import ro.pippo.core.Application;
 import ro.pippo.core.Request;
 import ro.pippo.core.Response;
-import ro.pippo.core.route.RouteHandlerChain;
+import ro.pippo.core.route.RouteContext;
 
 /**
  * @author Decebal Suiu
  */
 public class Controller {
 
-    private Request request;
-    private Response response;
-    private RouteHandlerChain chain;
+    private RouteContext routeContext;
+
+    public final RouteContext getRouteContext() {
+        return routeContext;
+    }
 
     public final Request getRequest() {
-        return request;
+        return routeContext.getRequest();
     }
 
     public final Response getResponse() {
-        return response;
+        return routeContext.getResponse();
     }
 
-    public final RouteHandlerChain getChain() {
-        return chain;
+    public <T extends Application> T getApplication() {
+        return (T) routeContext.getApplication();
     }
 
-    public Application getApplication() {
-        return Application.get();
-    }
-
-    protected void init(Request request, Response response, RouteHandlerChain chain) {
-        this.request = request;
-        this.response = response;
-        this.chain = chain;
+    protected void init(RouteContext routeContext) {
+        this.routeContext = routeContext;
     }
 
 }

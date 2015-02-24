@@ -101,7 +101,7 @@ public class PebbleTemplateEngine implements TemplateEngine {
     public void renderString(String templateContent, Map<String, Object> model, Writer writer) {
         String language = (String) model.get(PippoConstants.REQUEST_PARAMETER_LANG);
         if (StringUtils.isNullOrEmpty(language)) {
-            language = languages.getLanguageOrDefault(null);
+            language = languages.getLanguageOrDefault(language);
         }
         Locale locale = (Locale) model.get(PippoConstants.REQUEST_PARAMETER_LOCALE);
         if (locale == null) {
@@ -125,7 +125,7 @@ public class PebbleTemplateEngine implements TemplateEngine {
     public void renderResource(String templateName, Map<String, Object> model, Writer writer) {
         String language = (String) model.get(PippoConstants.REQUEST_PARAMETER_LANG);
         if (StringUtils.isNullOrEmpty(language)) {
-            language = languages.getLanguageOrDefault(null);
+            language = languages.getLanguageOrDefault(language);
         }
         Locale locale = (Locale) model.get(PippoConstants.REQUEST_PARAMETER_LOCALE);
         if (locale == null) {

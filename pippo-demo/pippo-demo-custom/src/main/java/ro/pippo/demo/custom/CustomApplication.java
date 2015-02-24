@@ -16,7 +16,6 @@
 package ro.pippo.demo.custom;
 
 import ro.pippo.core.Application;
-import ro.pippo.core.route.RouteHandlerChain;
 
 /**
  * @author Decebal Suiu
@@ -27,12 +26,12 @@ public class CustomApplication extends Application {
     public void init() {
         super.init();
 
-        // use custom Request and Response types
-        GET("/", new CustomHandler() {
+        // use a custom route context
+        GET("/", new CustomContextHandler() {
 
             @Override
-            public void handle(CustomRequest request, CustomResponse response, RouteHandlerChain chain) {
-                response.sendHelloMyFriend();
+            public void handle(CustomContext customContext) {
+                customContext.sendHelloMyFriend();
             }
 
         });

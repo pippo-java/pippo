@@ -15,11 +15,13 @@
  */
 package ro.pippo.core;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import ro.pippo.core.route.RouteContext;
 import ro.pippo.core.util.ClasspathUtils;
 import ro.pippo.core.util.StringUtils;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
@@ -33,13 +35,10 @@ import java.util.Properties;
 import java.util.Set;
 import java.util.TreeMap;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 /**
  * Loads and caches message resource files based on the registered languages in
  * application.properties.
- *
+ * <p/>
  * This class is based on MessagesImpl.java from the Ninja Web Framework.
  *
  * @author James Moger
@@ -59,7 +58,7 @@ public class Messages {
 
     /**
      * Gets the requested localized message.
-     *
+     * <p/>
      * <p>
      * The current Request and Response are used to help determine the messages
      * resource to use.
@@ -79,19 +78,18 @@ public class Messages {
      * </p>
      *
      * @param key
-     * @param request
-     * @param response
+     * @param routeContext
      * @param parameters
      * @return the message or the key if the key does not exist
      */
-    public String get(String key, Request request, Response response, Object... parameters) {
-        String language = languages.getLanguageOrDefault(request, response);
+    public String get(String key, RouteContext routeContext, Object... parameters) {
+        String language = languages.getLanguageOrDefault(routeContext);
         return get(key, language, parameters);
     }
 
     /**
      * Gets the requested localized message.
-     *
+     * <p/>
      * <ol>
      * <li>Exact locale match, return the registered locale message
      * <li>Language match but not a locale match, return the registered language
@@ -126,7 +124,7 @@ public class Messages {
 
     /**
      * Gets the requested localized message.
-     *
+     * <p/>
      * <p>
      * The current Request and Response are used to help determine the messages
      * resource to use.
@@ -147,20 +145,19 @@ public class Messages {
      *
      * @param key
      * @param defaultMessage
-     * @param request
-     * @param response
+     * @param routeContext
      * @param parameters
      * @return the message or the key if the key does not exist
      */
     public String getWithDefault(String key, String defaultMessage,
-            Request request, Response response, Object... parameters) {
-        String language = languages.getLanguageOrDefault(request, response);
+                                 RouteContext routeContext, Object... parameters) {
+        String language = languages.getLanguageOrDefault(routeContext);
         return getWithDefault(key, defaultMessage, language, parameters);
     }
 
     /**
      * Gets the requested localized message.
-     *
+     * <p/>
      * <p>
      * The current Request and Response are used to help determine the messages
      * resource to use.
@@ -203,12 +200,11 @@ public class Messages {
      * </ol>
      * </p>
      *
-     * @param request
-     * @param response
+     * @param routeContext
      * @return all localized messages
      */
-    public Map<String, String> getAll(Request request, Response response) {
-        String language = languages.getLanguageOrDefault(request, response);
+    public Map<String, String> getAll(RouteContext routeContext) {
+        String language = languages.getLanguageOrDefault(routeContext);
         return getAll(language);
     }
 
@@ -279,7 +275,7 @@ public class Messages {
         Properties defaultMessages = loadMessages(String.format(name, ""));
         if (defaultMessages == null) {
             log.error("Could not locate the default messages resource '{}', please create it.",
-                    String.format(name, ""));
+                String.format(name, ""));
         } else {
             messageResources.put("", defaultMessages);
         }
@@ -309,9 +305,9 @@ public class Messages {
             // be there.
             if (messages == null) {
                 log.error(
-                        "Could not locate the '{}' messages resource '{}' specified in '{}'.",
-                        language, String.format(name, "_" + language),
-                        PippoConstants.SETTING_APPLICATION_LANGUAGES);
+                    "Could not locate the '{}' messages resource '{}' specified in '{}'.",
+                    language, String.format(name, "_" + language),
+                    PippoConstants.SETTING_APPLICATION_LANGUAGES);
             } else {
                 // add a new language
 
@@ -363,11 +359,10 @@ public class Messages {
     /**
      * Retrieves the messages from an arbitrary one or two component language
      * String ("en-US", or "en" or "de"...).
-     * <p>
+     * <p/>
      *
-     * @param language
-     *            A one or two component language code such as "en", "en-US", or
-     *            "en-US,en;q=0.8,de;q=0.6".
+     * @param language A one or two component language code such as "en", "en-US", or
+     *                 "en-US,en;q=0.8,de;q=0.6".
      * @return The messages for the requested language or the default messages.
      */
     private Properties getMessagesForLanguage(String language) {

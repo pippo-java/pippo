@@ -19,12 +19,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ro.pippo.core.Application;
 import ro.pippo.core.RedirectHandler;
-import ro.pippo.core.Request;
-import ro.pippo.core.Response;
+import ro.pippo.core.route.RouteContext;
 import ro.pippo.core.TemplateHandler;
 import ro.pippo.core.route.PublicResourceHandler;
 import ro.pippo.core.route.RouteHandler;
-import ro.pippo.core.route.RouteHandlerChain;
 import ro.pippo.core.route.WebjarsResourceHandler;
 import ro.pippo.demo.common.ContactService;
 import ro.pippo.demo.common.InMemoryContactService;
@@ -57,9 +55,9 @@ public class CrudNgApplication extends Application {
         ALL("/.*", new RouteHandler() {
 
             @Override
-            public void handle(Request request, Response response, RouteHandlerChain chain) {
-                log.info("Request for {} '{}'", request.getMethod(), request.getUri());
-                chain.next();
+            public void handle(RouteContext routeContext) {
+                log.info("Request for {} '{}'", routeContext.getRequestMethod(), routeContext.getRequestUri());
+                routeContext.next();
             }
 
         });
@@ -70,12 +68,12 @@ public class CrudNgApplication extends Application {
         GET("/contact.*", new RouteHandler() {
 
             @Override
-            public void handle(Request request, Response response, RouteHandlerChain chain) {
-                if (request.getSession().get("username") == null) {
-                    request.getSession().put("originalDestination", request.getContextUriWithQuery());
-                    response.redirectToContextPath("/login");
+            public void handle(RouteContext routeContext) {
+                if (routeContext.getSession("username") == null) {
+                    routeContext.setSession("originalDestination", routeContext.getRequest().getContextUriWithQuery());
+                    routeContext.redirect("/login");
                 } else {
-                    chain.next();
+                    routeContext.next();
                 }
             }
 
@@ -84,8 +82,8 @@ public class CrudNgApplication extends Application {
         GET("/login", new RouteHandler() {
 
             @Override
-            public void handle(Request request, Response response, RouteHandlerChain chain) {
-                response.render("login");
+            public void handle(RouteContext routeContext) {
+                routeContext.render("login");
             }
 
         });
@@ -93,16 +91,18 @@ public class CrudNgApplication extends Application {
         POST("/login", new RouteHandler() {
 
             @Override
-            public void handle(Request request, Response response, RouteHandlerChain chain) {
-                String username = request.getParameter("username").toString();
-                String password = request.getParameter("password").toString();
+            public void handle(RouteContext routeContext) {
+                String username = routeContext.getParameter("username").toString();
+                String password = routeContext.getParameter("password").toString();
                 if (authenticate(username, password)) {
-                    request.getSession().put("username", username);
-                    String originalDestination = request.getSession().remove("originalDestination");
-                    response.redirectToContextPath(originalDestination != null ? originalDestination : "/contacts");
+                    String originalDestination = routeContext.removeSession("originalDestination");
+                    routeContext.resetSession();
+
+                    routeContext.setSession("username", username);
+                    routeContext.redirect(originalDestination != null ? originalDestination : "/contacts");
                 } else {
-                    request.getSession().getFlash().error("Authentication failed");
-                    response.redirectToContextPath("/login");
+                    routeContext.flashError("Authentication failed");
+                    routeContext.redirect("/login");
                 }
             }
 

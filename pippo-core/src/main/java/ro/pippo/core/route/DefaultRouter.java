@@ -207,7 +207,7 @@ public class DefaultRouter implements Router {
             if (routeHandler instanceof ControllerHandler) {
                 ControllerHandler controllerHandler = (ControllerHandler) routeHandler;
                 if (controllerClass == controllerHandler.getControllerClass()
-                        && methodName.equals(controllerHandler.getMethodName())) {
+                    && methodName.equals(controllerHandler.getMethodName())) {
                     return route;
                 }
             }
@@ -286,13 +286,13 @@ public class DefaultRouter implements Router {
 
     /**
      * Transforms an url pattern like "/{name}/id/*" into a regex like "/([^/]*)/id/*."
-     *
+     * <p/>
      * Also handles regular expressions if defined inside routes:
      * For instance "/users/{username: [a-zA-Z][a-zA-Z_0-9]}" becomes
      * "/users/([a-zA-Z][a-zA-Z_0-9])"
      *
      * @return The converted regex with default matching regex - or the regex
-     *          specified by the user.
+     * specified by the user.
      */
     private String getRegex(String urlPattern) {
         StringBuffer buffer = new StringBuffer();
@@ -323,9 +323,9 @@ public class DefaultRouter implements Router {
 
     /**
      * Extracts the name of the parameters from a route
-     *
+     * <p/>
      * /{my_id}/{my_name}
-     *
+     * <p/>
      * would return a List with "my_id" and "my_name"
      *
      * @param uriPattern
@@ -404,7 +404,7 @@ public class DefaultRouter implements Router {
             while (iterator.hasNext()) {
                 Entry<String, Object> parameterEntry = iterator.next();
                 String parameterName = parameterEntry.getKey();
-                Object parameterValue =  parameterEntry.getValue();
+                Object parameterValue = parameterEntry.getValue();
                 // TODO consider using URLEncoder on the parameter value
                 query.append(parameterName).append("=").append(parameterValue.toString());
 
@@ -446,10 +446,10 @@ public class DefaultRouter implements Router {
         @Override
         public String toString() {
             return "PatternBinding{" +
-                    "pattern=" + pattern +
-                    ", route=" + route +
-                    ", parameterNames=" + parameterNames +
-                    '}';
+                "pattern=" + pattern +
+                ", route=" + route +
+                ", parameterNames=" + parameterNames +
+                '}';
         }
 
     }

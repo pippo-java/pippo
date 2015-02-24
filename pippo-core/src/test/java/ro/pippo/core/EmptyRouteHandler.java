@@ -15,8 +15,8 @@
  */
 package ro.pippo.core;
 
+import ro.pippo.core.route.RouteContext;
 import ro.pippo.core.route.RouteHandler;
-import ro.pippo.core.route.RouteHandlerChain;
 
 /**
  * @author Decebal Suiu
@@ -24,7 +24,7 @@ import ro.pippo.core.route.RouteHandlerChain;
 public class EmptyRouteHandler implements RouteHandler {
 
     @Override
-    public void handle(Request request, Response response, RouteHandlerChain chain) {
+    public void handle(RouteContext routeContext) {
     }
 
 }

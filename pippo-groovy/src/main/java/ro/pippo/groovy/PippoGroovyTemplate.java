@@ -95,7 +95,7 @@ public abstract class PippoGroovyTemplate extends BaseTemplate {
 
         String language = (String) getModel().get(PippoConstants.REQUEST_PARAMETER_LANG);
         if (StringUtils.isNullOrEmpty(language)) {
-            language = languages.getLanguageOrDefault(null);
+            language = languages.getLanguageOrDefault(language);
         }
         this.language = language;
 

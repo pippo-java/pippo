@@ -13,12 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package ro.pippo.demo.custom;
+package ro.pippo.core.route;
 
-import ro.pippo.core.route.RouteHandler;
+import ro.pippo.core.Application;
+import ro.pippo.core.Initializer;
+import ro.pippo.core.Request;
+import ro.pippo.core.Response;
+
+import java.util.List;
 
 /**
  * @author James Moger
  */
-public interface CustomHandler extends RouteHandler<CustomRequest, CustomResponse> {
+public interface RouteContextFactory<T extends RouteContext> extends Initializer {
+
+    public T createRouteContext(Application application,
+                                Request request,
+                                Response response,
+                                List<RouteMatch> routeMatches);
 }

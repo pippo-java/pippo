@@ -13,21 +13,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package ro.pippo.core;
+package ro.pippo.core.route;
 
-import javax.servlet.http.HttpServletRequest;
+import ro.pippo.core.Application;
+import ro.pippo.core.Request;
+import ro.pippo.core.Response;
+
+import java.util.List;
 
 /**
- * This factory constructs the Pippo default Request class.
+ * This factory constructs the Pippo DefaultRouteContext class.
  *
  * @author James Moger
- *
  */
-public class DefaultRequestFactory implements RequestFactory<Request> {
+public class DefaultRouteContextFactory implements RouteContextFactory<DefaultRouteContext> {
 
     @Override
-    public Request createRequest(HttpServletRequest httpServletRequest, Application application) {
-        return new Request(httpServletRequest, application);
+    public DefaultRouteContext createRouteContext(Application application,
+                                                  Request request,
+                                                  Response response,
+                                                  List<RouteMatch> routeMatches) {
+
+        return new DefaultRouteContext(application, request, response, routeMatches);
     }
 
     @Override

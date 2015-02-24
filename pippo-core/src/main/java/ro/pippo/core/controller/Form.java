@@ -26,6 +26,6 @@ import java.lang.annotation.Target;
  * @author James Moger
  */
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ ElementType.PARAMETER })
+@Target({ElementType.PARAMETER})
 public @interface Form {
 }

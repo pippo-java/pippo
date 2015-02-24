@@ -21,7 +21,7 @@ import ro.pippo.core.util.ListenerList;
  * @author Decebal Suiu
  */
 public class ControllerInitializationListenerList extends ListenerList<ControllerInitializationListener>
-        implements ControllerInitializationListener {
+    implements ControllerInitializationListener {
 
     @Override
     public void onInitialize(final Controller controller) {

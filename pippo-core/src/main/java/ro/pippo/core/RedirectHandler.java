@@ -15,15 +15,14 @@
  */
 package ro.pippo.core;
 
+import ro.pippo.core.route.RouteContext;
 import ro.pippo.core.route.RouteHandler;
-import ro.pippo.core.route.RouteHandlerChain;
 
 /**
  * A very simple route handler that redirects a context request to another
  * context path.
  *
  * @author James Moger
- *
  */
 public class RedirectHandler implements RouteHandler {
 
@@ -34,8 +33,8 @@ public class RedirectHandler implements RouteHandler {
     }
 
     @Override
-    public void handle(Request request, Response response, RouteHandlerChain chain) {
-        response.redirectToContextPath(path);
+    public void handle(RouteContext routeContext) {
+        routeContext.redirect(path);
     }
 
 }

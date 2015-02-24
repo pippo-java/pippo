@@ -13,14 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package ro.pippo.core;
+package ro.pippo.demo.custom;
 
-import javax.servlet.http.HttpServletRequest;
+import ro.pippo.core.route.RouteHandler;
 
 /**
  * @author James Moger
  */
-public interface RequestFactory<T extends Request> extends Initializer {
-
-    public T createRequest(HttpServletRequest httpServletRequest, Application application);
+public interface CustomContextHandler extends RouteHandler<CustomContext> {
 }

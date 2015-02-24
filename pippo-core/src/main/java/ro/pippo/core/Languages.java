@@ -15,22 +15,21 @@
  */
 package ro.pippo.core;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import ro.pippo.core.route.RouteContext;
 import ro.pippo.core.util.StringUtils;
 
+import javax.servlet.http.Cookie;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import javax.servlet.http.Cookie;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 /**
  * The Languages class manages the language and Locale of a Request & Response
  * cycle. It can optionally persist a Language preference as a cookie.
- *
+ * <p/>
  * This class is based on LangImpl.java from the Ninja Web Framework.
  *
  * @author James Moger
@@ -53,12 +52,12 @@ public class Languages {
         this.pippoSettings = pippoSettings;
 
         this.applicationCookiePrefix = pippoSettings.getString(
-                PippoConstants.SETTING_APPLICATION_COOKIE_PREFIX, "PIPPO");
+            PippoConstants.SETTING_APPLICATION_COOKIE_PREFIX, "PIPPO");
 
         // build a lookup of supported languages
         this.languageLookup = new ConcurrentHashMap<>();
         List<String> languages = pippoSettings
-                .getStrings(PippoConstants.SETTING_APPLICATION_LANGUAGES);
+            .getStrings(PippoConstants.SETTING_APPLICATION_LANGUAGES);
 
         for (String language : languages) {
             String lang = language.toLowerCase();
@@ -153,14 +152,14 @@ public class Languages {
      * </p>
      *
      * @param language
-     * @param response
+     * @param routeContext
      * @throws PippoRuntimeException
      */
-    public void setLanguageCookie(String language, Response response) {
+    public void setLanguageCookie(String language, RouteContext routeContext) {
         String lang = getLanguageOrDefault(language);
         if (lang.equals(language)) {
             Cookie cookie = generateLanguageCookie(language);
-            response.cookie(cookie);
+            routeContext.getResponse().cookie(cookie);
         } else {
             throw new PippoRuntimeException("'{}' is not a registered language!", language);
         }
@@ -171,28 +170,25 @@ public class Languages {
      * Response cookies, the Request ACCEPT_LANGUAGE header, and finally the
      * application default language.
      *
-     * @param request
-     * @param response
+     * @param routeContext
      * @return the language for the request
      */
-    public String getLanguageOrDefault(Request request, Response response) {
+    public String getLanguageOrDefault(RouteContext routeContext) {
         final String cookieName = generateLanguageCookie(defaultLanguage).getName();
 
         // Step 1: Look for a Response cookie.
         // The Response always has priority over the Request because it may have
         // been set earlier in the HandlerChain.
-        if (response != null) {
-            Cookie cookie = response.getCookie(cookieName);
-            if (cookie != null) {
-                if (!StringUtils.isNullOrEmpty(cookie.getValue())) {
-                    String language = getLanguageOrDefault(cookie.getValue());
-                    return language;
-                }
+        Cookie cookie = routeContext.getResponse().getCookie(cookieName);
+        if (cookie != null) {
+            if (!StringUtils.isNullOrEmpty(cookie.getValue())) {
+                String language = getLanguageOrDefault(cookie.getValue());
+                return language;
             }
         }
 
         // Step 2: Look for a Request cookie.
-        Cookie cookie = request.getCookie(cookieName);
+        cookie = routeContext.getRequest().getCookie(cookieName);
         if (cookie != null) {
             if (!StringUtils.isNullOrEmpty(cookie.getValue())) {
                 String language = getLanguageOrDefault(cookie.getValue());
@@ -201,14 +197,14 @@ public class Languages {
         }
 
         // Step 3: Look for a lang parameter in the response locals
-        if (response.getLocals().containsKey(PippoConstants.REQUEST_PARAMETER_LANG)) {
-            String language = response.getLocals().get(PippoConstants.REQUEST_PARAMETER_LANG).toString();
+        if (routeContext.getResponse().getLocals().containsKey(PippoConstants.REQUEST_PARAMETER_LANG)) {
+            String language = routeContext.getLocal(PippoConstants.REQUEST_PARAMETER_LANG);
             language = getLanguageOrDefault(language);
             return language;
         }
 
         // Step 4: Look for a language in the Accept-Language header.
-        String acceptLanguage = request.getHeader(HttpConstants.Header.ACCEPT_LANGUAGE);
+        String acceptLanguage = routeContext.getHeader(HttpConstants.Header.ACCEPT_LANGUAGE).toString();
         String language = getLanguageOrDefault(acceptLanguage);
 
         return language;
@@ -219,12 +215,11 @@ public class Languages {
      * specified in the Request/Response cycle can not be mapped to a Java
      * Locale, the default language Locale is returned.
      *
-     * @param request
-     * @param response
+     * @param routeContext
      * @return a Java Locale
      */
-    public Locale getLocaleOrDefault(Request request, Response response) {
-        String language = getLanguageOrDefault(request, response);
+    public Locale getLocaleOrDefault(RouteContext routeContext) {
+        String language = getLanguageOrDefault(routeContext);
         return Locale.forLanguageTag(language);
     }
 
@@ -292,7 +287,7 @@ public class Languages {
     private String getDefaultLanguage(List<String> applicationLanguages) {
         if (applicationLanguages.isEmpty()) {
             String NO_LANGUAGES_TEXT = "Please specify the supported languages in 'application.properties'."
-                    + " For example 'application.languages=en, ro, de, pt-BR' makes 'en' your default language.";
+                + " For example 'application.languages=en, ro, de, pt-BR' makes 'en' your default language.";
 
             log.error(NO_LANGUAGES_TEXT);
             return "en";
