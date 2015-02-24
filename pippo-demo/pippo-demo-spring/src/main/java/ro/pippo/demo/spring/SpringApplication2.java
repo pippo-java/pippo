@@ -44,8 +44,4 @@ public class SpringApplication2 extends Application {
         return contactService;
     }
 
-    public static SpringApplication2 get() {
-        return (SpringApplication2) Application.get();
-    }
-
 }

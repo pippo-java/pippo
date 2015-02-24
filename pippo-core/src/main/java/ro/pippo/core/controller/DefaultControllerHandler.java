@@ -73,14 +73,16 @@ public class DefaultControllerHandler implements ControllerHandler {
         try {
             // create the controller instance
             Controller controller = controllerClass.newInstance();
-            Application.get().getControllerInstantiationListeners().onInstantiation(controller);
+            Application application = routeContext.getApplication();
+
+            application.getControllerInstantiationListeners().onInstantiation(controller);
 
             // init controller
             controller.init(routeContext);
-            Application.get().getControllerInitializationListeners().onInitialize(controller);
+            application.getControllerInitializationListeners().onInitialize(controller);
 
             // invoke action (a method from controller)
-            Application.get().getControllerInvokeListeners().onInvoke(controller, method);
+            application.getControllerInvokeListeners().onInvoke(controller, method);
 
             Object[] args = prepareMethodArgs(routeContext);
             method.invoke(controller, args);
@@ -91,7 +93,7 @@ public class DefaultControllerHandler implements ControllerHandler {
         routeContext.next();
     }
 
-    protected Method findMethod(Class<? extends Controller> controllerClass, String name) {
+    protected Method findMethod(Class<? extends Controller> controllerClass, String methodName) {
         // identify first method which matches the name
         Method controllerMethod = null;
         for (Method method : controllerClass.getMethods()) {
@@ -107,7 +109,6 @@ public class DefaultControllerHandler implements ControllerHandler {
                     // mapped parameters
                     parameterNames = new String[types.length];
                     for (int i = 0; i < types.length; i++) {
-
                         if (isBodyParameter(controllerMethod, i)) {
                             // entity built from request body
                             parameterNames[i] = BODY;
@@ -131,7 +132,6 @@ public class DefaultControllerHandler implements ControllerHandler {
                             parameterNames[i] = parameterName;
                         }
                     }
-
                 } else {
                     throw new PippoRuntimeException(
                         "Found overloaded controller method '{}.{}'. Method names must be unique!",
@@ -175,6 +175,7 @@ public class DefaultControllerHandler implements ControllerHandler {
             Param parameter = (Param) annotation;
             return parameter.value();
         }
+
         return null;
     }
 
@@ -195,6 +196,8 @@ public class DefaultControllerHandler implements ControllerHandler {
                 return annotation;
             }
         }
+
         return null;
     }
+
 }

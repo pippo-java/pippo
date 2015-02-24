@@ -69,6 +69,7 @@ public class Application {
      *
      * @return The current thread's Application
      */
+    /*
     public static Application get() {
         Application application = ThreadContext.getApplication();
         if (application == null) {
@@ -78,6 +79,7 @@ public class Application {
 
         return application;
     }
+    */
 
     public Application() {
         this(new PippoSettings(RuntimeMode.getCurrent()));

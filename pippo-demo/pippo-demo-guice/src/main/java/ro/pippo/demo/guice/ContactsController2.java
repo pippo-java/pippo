@@ -24,7 +24,8 @@ import ro.pippo.demo.common.ContactService;
 public class ContactsController2 extends Controller {
 
     public void index() {
-        ContactService contactService = GuiceApplication2.get().getContactService();
+        GuiceApplication2 application = getApplication();
+        ContactService contactService = application.getContactService();
         getResponse().bind("contacts", contactService.getContacts());
         getResponse().render("contacts");
     }

@@ -43,8 +43,4 @@ public class GuiceApplication2 extends Application {
         return contactService;
     }
 
-    public static GuiceApplication2 get() {
-        return (GuiceApplication2) Application.get();
-    }
-
 }
