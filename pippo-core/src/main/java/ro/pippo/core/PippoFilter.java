@@ -115,8 +115,6 @@ public class PippoFilter implements Filter {
             log.debug("Created application '{}'", application);
         }
 
-        ThreadContext.setApplication(application);
-
         try {
             String contextPath = StringUtils.addStart(filterConfig.getServletContext().getContextPath(), "/");
             application.setContextPath(contextPath);
@@ -141,22 +139,17 @@ public class PippoFilter implements Filter {
         } catch (Exception e) {
             destroy();
             throw new ServletException(e);
-        } finally {
-            ThreadContext.detach();
         }
     }
 
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain chain)
         throws IOException, ServletException {
-        final ThreadContext previousThreadContext = ThreadContext.detach();
-
         HttpServletRequest httpServletRequest = (HttpServletRequest) servletRequest;
         HttpServletResponse httpServletResponse = (HttpServletResponse) servletResponse;
 
         // TODO test for redirect
         // no redirect; process the request
-        ThreadContext.setApplication(application);
 
         String requestMethod = httpServletRequest.getMethod();
 
@@ -193,21 +186,21 @@ public class PippoFilter implements Filter {
             } else {
                 // Force the initial Response status code to NOT_FOUND.
                 // The chain is expected to properly set a Response status code.
-                routeContext.getResponse().notFound();
+                response.notFound();
 
                 processFlash(routeContext);
             }
 
             routeContext.next();
 
-            if (!routeContext.getResponse().isCommitted()) {
+            if (!response.isCommitted()) {
                 log.debug("Auto-committing response for {} '{}'", requestMethod, relativePath);
-                if (routeContext.getResponse().getStatus() >= HttpConstants.StatusCode.BAD_REQUEST) {
+                if (response.getStatus() >= HttpConstants.StatusCode.BAD_REQUEST) {
                     // delegate response to the error handler.
                     // this will generate response content appropriate for the request/
-                    errorHandler.handle(routeContext.getResponse().getStatus(), routeContext);
+                    errorHandler.handle(response.getStatus(), routeContext);
                 } else {
-                    routeContext.getResponse().commit();
+                    response.commit();
                 }
             }
         } catch (Exception e) {
@@ -215,8 +208,7 @@ public class PippoFilter implements Filter {
             errorHandler.handle(e, routeContext);
         } finally {
             routeContext.runFinallyRoutes();
-            log.debug("Returned status code {} for {} '{}'", routeContext.getResponse().getStatus(), requestMethod, relativePath);
-            ThreadContext.restore(previousThreadContext);
+            log.debug("Returned status code {} for {} '{}'", response.getStatus(), requestMethod, relativePath);
         }
     }
 
@@ -247,8 +239,6 @@ public class PippoFilter implements Filter {
     @Override
     public void destroy() {
         if (application != null) {
-            ThreadContext.setApplication(application);
-
             try {
                 for (Initializer initializer : initializers) {
                     initializer.destroy(application);
@@ -257,7 +247,6 @@ public class PippoFilter implements Filter {
 
                 log.info("Pippo destroyed");
             } finally {
-                ThreadContext.detach();
                 application = null;
             }
         }
@@ -386,6 +375,7 @@ public class PippoFilter implements Filter {
 
     private List<Initializer> getInitializers() throws Exception {
         List<Initializer> initializers = new ArrayList<>();
+
         ClassLoader classLoader = getClass().getClassLoader();
         Enumeration<URL> urls = classLoader.getResources("pippo.properties");
         while (urls.hasMoreElements()) {
@@ -409,7 +399,7 @@ public class PippoFilter implements Filter {
      *
      * @return The version of Pippo. Eg. "1.6-SNAPSHOT" while developing of "1.6" when released.
      */
-    private final String readPippoVersion() {
+    private String readPippoVersion() {
         // and the key inside the properties file.
         String PIPPO_VERSION_PROPERTY_KEY = "pippo.version";
 
@@ -433,7 +423,6 @@ public class PippoFilter implements Filter {
 
     private void processFlash(RouteContext routeContext) {
         Flash flash = null;
-
 
         if (routeContext.hasSession()) {
             // get flash from session
