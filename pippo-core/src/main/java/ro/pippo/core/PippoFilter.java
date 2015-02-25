@@ -191,10 +191,9 @@ public class PippoFilter implements Filter {
             if (routeMatches.isEmpty()) {
                 errorHandler.handle(HttpConstants.StatusCode.NOT_FOUND, routeContext);
             } else {
-                // Force the initial Response status code to Integer.MAX_VALUE.
+                // Force the initial Response status code to NOT_FOUND.
                 // The chain is expected to properly set a Response status code.
-                // Note: Some containers (e.g. Jetty) prohibit setting 0.
-                routeContext.status(Integer.MAX_VALUE);
+                routeContext.getResponse().notFound();
 
                 processFlash(routeContext);
             }
@@ -202,10 +201,6 @@ public class PippoFilter implements Filter {
             routeContext.next();
 
             if (!routeContext.getResponse().isCommitted()) {
-                if (routeContext.getResponse().getStatus() == Integer.MAX_VALUE) {
-                    log.info("Handlers in chain did not set a status code for {} '{}'", requestMethod, relativePath);
-                    routeContext.getResponse().notFound();
-                }
                 log.debug("Auto-committing response for {} '{}'", requestMethod, relativePath);
                 if (routeContext.getResponse().getStatus() >= HttpConstants.StatusCode.BAD_REQUEST) {
                     // delegate response to the error handler.
