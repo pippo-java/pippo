@@ -7,7 +7,7 @@
 //-   3. localized messages
 //-   4. localized relative date formatting
 //-   5. localized date formatting
-//- 
+//-
 extends ./base
 
 block content
@@ -32,7 +32,7 @@ block content
           =pippo.i18n("pippo.languageChoices")
           &nbsp;
           span(class="caret")
-              
+
         ul(class="dropdown-menu", role="menu", aria-labelledby="languageMenu")
           each choice in languageChoices
             li(role="presentation")
@@ -46,8 +46,8 @@ block content
         div(class="panel-body")
           ul
             li
-              a(href="#{contextPath}/satisfaction?lang=#{lang}")
+              a(href="#{contextPath}/satisfaction")
                 =pippo.i18n("pippo.unmatchedRoute")
             li
-              a(href="#{contextPath}/exception?lang=#{lang}")
+              a(href="#{contextPath}/exception")
                 =pippo.i18n("pippo.exceptionHandling")

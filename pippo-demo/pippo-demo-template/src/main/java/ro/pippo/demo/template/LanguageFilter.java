@@ -26,8 +26,8 @@ import ro.pippo.core.route.RequestLanguageFilter;
  */
 public class LanguageFilter extends RequestLanguageFilter {
 
-    public LanguageFilter(Languages languages, boolean enableQueryParameter) {
-        super(languages, enableQueryParameter);
+    public LanguageFilter(Languages languages, boolean enableQueryParameter, boolean setCookie) {
+        super(languages, enableQueryParameter, setCookie);
     }
 
     @Override

@@ -51,7 +51,7 @@ public class TemplateApplication extends Application {
         GET(new PublicResourceHandler());
 
         // filter all requests and setup the language and locale
-        GET("/.*", new LanguageFilter(getLanguages(), true));
+        GET("/.*", new LanguageFilter(getLanguages(), true, true));
 
         GET("/", new RouteHandler() {
 

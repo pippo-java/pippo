@@ -35,6 +35,7 @@ public class RequestLanguageFilter implements RouteHandler {
 
     protected final Languages languages;
     protected final boolean enableQueryParameter;
+    protected final boolean setCookie;
 
     /**
      * Create the language filter with optional support for accepting the
@@ -42,10 +43,12 @@ public class RequestLanguageFilter implements RouteHandler {
      *
      * @param languages
      * @param enableQueryParameter
+     * @param setCookie
      */
-    public RequestLanguageFilter(Languages languages, boolean enableQueryParameter) {
+    public RequestLanguageFilter(Languages languages, boolean enableQueryParameter, boolean setCookie) {
         this.languages = languages;
         this.enableQueryParameter = enableQueryParameter;
+        this.setCookie = setCookie;
     }
 
     @Override
@@ -60,6 +63,14 @@ public class RequestLanguageFilter implements RouteHandler {
 
         routeContext.setLocal(PippoConstants.REQUEST_PARAMETER_LANG, language);
         routeContext.setLocal(PippoConstants.REQUEST_PARAMETER_LOCALE, locale);
+
+        if (setCookie) {
+            if (routeContext.getResponse().isCommitted()) {
+                log.debug("LANG cookie NOT set, Response already committed!");
+            } else {
+                languages.setLanguageCookie(language, routeContext);
+            }
+        }
 
         routeContext.next();
     }

@@ -1,6 +1,6 @@
 <#------------------------------------------------------------------
     hello.ftl
-   
+
     This demonstrates:
       1. template inheritance
       2. variable binding & inheritance
@@ -16,12 +16,12 @@
       <p> ${i18n("pippo.yourLanguageAndLocale", lang, locale)}</p>
       <p> ${i18n("pippo.theContextPath", contextPath)}</p>
       <p>${formatTime(testDate, "full")} (${prettyTime(testDate)})</p>
-    
+
       <div class="dropdown">
         <button class="btn btn-default dropdown-toggle" type="button" id="languageMenu" data-toggle="dropdown" aria-expanded="true">
           ${i18n("pippo.languageChoices")}
           <span class="caret"></span>
-        </button>    
+        </button>
         <ul class="dropdown-menu" role="menu" aria-labelledby="languageMenu">
           <#list languageChoices as choice>
             <li role="presentation"><a role="menuitem" tabindex="-1" href="?lang=${choice}">${choice}</a></li>
@@ -29,7 +29,7 @@
         </ul>
       </div>
     </div>
-    
+
     <div class="col-sm-4">
       <div class="panel panel-default">
         <div class="panel-heading">
@@ -37,8 +37,8 @@
         </div>
         <div class="panel-body">
           <ul>
-            <li><a href="${contextPath}/satisfaction?lang=${lang}">${i18n("pippo.unmatchedRoute")}</a></li>
-            <li><a href="${contextPath}/exception?lang=${lang}">${i18n("pippo.exceptionHandling")}</a></li>
+            <li><a href="${contextPath}/satisfaction">${i18n("pippo.unmatchedRoute")}</a></li>
+            <li><a href="${contextPath}/exception">${i18n("pippo.exceptionHandling")}</a></li>
           </ul>
         </div>
       </div>
