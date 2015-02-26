@@ -322,6 +322,11 @@ public final class Response {
     public void redirect(String location) {
         checkCommitted();
 
+        // add cookies
+        for (Cookie cookie : getCookies()) {
+            httpServletResponse.addCookie(cookie);
+        }
+
         try {
             httpServletResponse.sendRedirect(location);
         } catch (IOException e) {
@@ -355,6 +360,11 @@ public final class Response {
      */
     public void redirect(String location, int statusCode) {
         checkCommitted();
+
+        // add cookies
+        for (Cookie cookie : getCookies()) {
+            httpServletResponse.addCookie(cookie);
+        }
 
         status(statusCode);
         header(HttpConstants.Header.LOCATION, location);
