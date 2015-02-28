@@ -399,10 +399,13 @@ public final class Request {
             Map<String, ParameterValue> tmp = new HashMap<>();
             // add query parameters
             tmp.putAll(parameters);
+
             // add path parameters
-            Set<String> names = pathParameters.keySet();
-            for (String name : names) {
-                tmp.put(name, new ParameterValue(pathParameters.get(name)));
+            if (pathParameters != null) {
+                Set<String> names = pathParameters.keySet();
+                for (String name : names) {
+                    tmp.put(name, new ParameterValue(pathParameters.get(name)));
+                }
             }
             allParameters = Collections.unmodifiableMap(tmp);
         }
