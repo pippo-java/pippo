@@ -31,6 +31,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
+import java.util.TreeSet;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -59,12 +61,14 @@ public class DefaultRouter implements Router {
     private Map<String, List<PatternBinding>> bindingsCache;
 
     private List<Route> routes;
+    private Set<String> ignorePaths;
     // key = request method
     private Map<String, List<Route>> cache;
     private String contextPath;
 
     public DefaultRouter() {
         routes = new ArrayList<>();
+        ignorePaths = new TreeSet<String>();
         cache = new HashMap<>();
         bindingsCache = new HashMap<>();
         contextPath = "";
@@ -92,6 +96,18 @@ public class DefaultRouter implements Router {
      */
     private String prefixContextPath(String path) {
         return contextPath + StringUtils.addStart(path, "/");
+    }
+
+    @Override
+    public Set<String> getIgnorePaths() {
+        return ignorePaths;
+    }
+
+    @Override
+    public void ignorePaths(String... pathPrefixes) {
+        for (String pathPrefix : pathPrefixes) {
+            this.ignorePaths.add(StringUtils.addStart(pathPrefix, "/"));
+        }
     }
 
     @Override

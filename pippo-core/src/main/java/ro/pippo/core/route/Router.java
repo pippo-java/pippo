@@ -19,6 +19,7 @@ import ro.pippo.core.controller.Controller;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * This class allows you to do route requests based on the HTTP verb (request method) and the request URI,
@@ -42,6 +43,10 @@ public interface Router {
      * @param contextPath
      */
     public void setContextPath(String contextPath);
+
+    public Set<String> getIgnorePaths();
+
+    public void ignorePaths(String... paths);
 
     public void addRoute(Route route);
 
