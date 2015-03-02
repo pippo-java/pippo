@@ -24,6 +24,7 @@ public class Route {
     private String requestMethod;
     private RouteHandler routeHandler;
     private boolean runAsFinally;
+    private String name;
 
     public Route(String uriPattern, String requestMethod, RouteHandler routeHandler) {
         this.uriPattern = uriPattern;
@@ -53,6 +54,20 @@ public class Route {
      */
     public void runAsFinally() {
         runAsFinally = true;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public Route named(String name) {
+        this.name = name;
+
+        return this;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     @Override
