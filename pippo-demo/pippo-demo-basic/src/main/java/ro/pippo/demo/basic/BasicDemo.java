@@ -15,11 +15,7 @@
  */
 package ro.pippo.demo.basic;
 
-import ro.pippo.core.Application;
 import ro.pippo.core.Pippo;
-import ro.pippo.core.PippoFilter;
-
-import java.util.Collections;
 
 /**
  * @author Decebal Suiu
@@ -27,17 +23,7 @@ import java.util.Collections;
 public class BasicDemo {
 
     public static void main(String[] args) {
-        Pippo pippo = new Pippo(new BasicApplication()) {
-
-            @Override
-            protected PippoFilter createPippoFilter(Application application) {
-                PippoFilter pippoFilter = super.createPippoFilter(application);
-                pippoFilter.setIgnorePaths(Collections.singleton("/favicon.ico"));
-
-                return pippoFilter;
-            }
-
-        };
+        Pippo pippo = new Pippo(new BasicApplication());
         pippo.start();
     }
 

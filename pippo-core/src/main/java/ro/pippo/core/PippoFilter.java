@@ -44,10 +44,8 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Enumeration;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Properties;
-import java.util.Set;
 
 /**
  * @author Decebal Suiu
@@ -87,17 +85,11 @@ public class PippoFilter implements Filter {
     private RouteContextFactory routeContextFactory;
     private Application application;
     private List<Initializer> initializers;
-    private Set<String> ignorePaths;
     private String filterPath;
 
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
         log.info(PIPPO_LOGO, readPippoVersion());
-
-        if (ignorePaths == null) {
-            initIgnorePaths(filterConfig);
-        }
-        log.debug("Ignore paths '{}'", ignorePaths);
 
         if (filterPath == null) {
             initFilterPath(filterConfig);
@@ -220,14 +212,6 @@ public class PippoFilter implements Filter {
         this.application = application;
     }
 
-    public Set<String> getIgnorePaths() {
-        return ignorePaths;
-    }
-
-    public void setIgnorePaths(Set<String> ignorePaths) {
-        this.ignorePaths = ignorePaths;
-    }
-
     public String getFilterPath() {
         return filterPath;
     }
@@ -252,33 +236,14 @@ public class PippoFilter implements Filter {
         }
     }
 
-    private boolean shouldIgnorePath(String path) {
-        if (ignorePaths.size() > 0) {
-            if (path != null && !path.isEmpty()) {
-                for (String ignorePath : ignorePaths) {
-                    if (path.startsWith(ignorePath)) {
-                        return true;
-                    }
-                }
+    private boolean shouldIgnorePath(String requestUri) {
+        for (String path : application.getRouter().getIgnorePaths()) {
+            if (requestUri.startsWith(path)) {
+                return true;
             }
         }
 
         return false;
-    }
-
-    private void initIgnorePaths(FilterConfig filterConfig) {
-        ignorePaths = new HashSet<>();
-        String paths = filterConfig.getInitParameter(IGNORE_PATHS_PARAM);
-        if (paths != null && !paths.isEmpty()) {
-            String[] parts = paths.split(",");
-            for (String path : parts) {
-                path = path.trim();
-                if (path.startsWith("/")) {
-                    path = path.substring(1);
-                }
-                ignorePaths.add(path);
-            }
-        }
     }
 
     private void initFilterPath(FilterConfig filterConfig) {

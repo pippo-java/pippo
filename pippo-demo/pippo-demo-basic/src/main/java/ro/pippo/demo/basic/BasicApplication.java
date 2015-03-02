@@ -37,6 +37,8 @@ public class BasicApplication extends Application {
     public void init() {
         super.init();
 
+        getRouter().ignorePaths("/favicon.ico");
+
         // send 'Hello World' as response
         GET("/", new RouteHandler() {
 
