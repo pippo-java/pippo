@@ -65,11 +65,6 @@ public class PippoFilter implements Filter {
     public static final String APPLICATION_CLASS_PARAM = "applicationClassName";
 
     /**
-     * Name of parameter used to express a comma separated list of paths that should be ignored.
-     */
-    public static final String IGNORE_PATHS_PARAM = "ignorePaths";
-
-    /**
      * The name of the context parameter that specifies the runtime mode.
      */
     public static final String MODE_PARAM = "mode";
