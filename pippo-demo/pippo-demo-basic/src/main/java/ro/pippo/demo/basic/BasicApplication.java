@@ -18,6 +18,7 @@ package ro.pippo.demo.basic;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ro.pippo.core.Application;
+import ro.pippo.core.ExceptionHandler;
 import ro.pippo.core.HttpConstants;
 import ro.pippo.core.route.FileResourceHandler;
 import ro.pippo.core.route.RouteContext;
@@ -171,6 +172,27 @@ public class BasicApplication extends Application {
 
         });
 
+        // throw an exception that gets handled by a registered ExceptionHandler
+        GET("/whoops", new RouteHandler() {
+
+            @Override
+            public void handle(RouteContext routeContext) {
+                throw new ForbiddenException("You didn't say the magic word!");
+
+            }
+
+        });
+
+        // register a custom ExceptionHandler
+        getErrorHandler().setExceptionHandler(ForbiddenException.class, new ExceptionHandler() {
+            @Override
+            public void handle(Exception e, RouteContext routeContext) {
+                log.info("Called custom exception handler");
+                routeContext.setLocal("message", e.getMessage());
+                getErrorHandler().handle(403, routeContext);
+            }
+        });
+
         // use a finally filter (invoked even when exceptions were raised in previous routes)
         // test with route "/" and "/exception"
         ALL("/.*", new RouteHandler() {
@@ -183,4 +205,10 @@ public class BasicApplication extends Application {
         }).runAsFinally();
     }
 
+    public static class ForbiddenException extends RuntimeException {
+
+        public ForbiddenException(String message) {
+            super(message);
+        }
+    }
 }

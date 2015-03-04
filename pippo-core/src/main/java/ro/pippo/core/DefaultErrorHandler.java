@@ -23,11 +23,16 @@ import ro.pippo.core.util.StringUtils;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
 /**
+ * DefaultErrorHandler is the core ExceptionHandler that integrates with
+ * the TemplateEngine & ContentTypeEngines.  It generates a representation
+ * of an exception or error result.
+ *
  * @author Decebal Suiu
  * @author James Moger
  */
@@ -37,8 +42,48 @@ public class DefaultErrorHandler implements ErrorHandler {
 
     private Application application;
 
+    private final Map<Class<? extends Exception>, ExceptionHandler> exceptionHandlers;
+
     public DefaultErrorHandler(Application application) {
         this.application = application;
+        this.exceptionHandlers = new HashMap<>();
+    }
+
+    @Override
+    public void setExceptionHandler(Class<? extends Exception> exceptionClass, ExceptionHandler exceptionHandler) {
+        exceptionHandlers.put(exceptionClass, exceptionHandler);
+    }
+
+    /**
+     * Returns an ExceptionHandler registered for this exception type.
+     * If no handler is found it returns null and the default handle
+     * (this class) is used.
+     *
+     * @param exception
+     * @return an exception handler or null
+     */
+    @Override
+    public ExceptionHandler getExceptionHandler(Exception exception) {
+        Class<? extends Exception> exceptionClass = exception.getClass();
+        if (!exceptionHandlers.containsKey(exceptionClass)) {
+
+            Class<?> superClass = exceptionClass.getSuperclass();
+            while (superClass != null) {
+                if (exceptionHandlers.containsKey(superClass)) {
+                    ExceptionHandler exceptionHandler = exceptionHandlers.get(exceptionClass);
+                    exceptionHandlers.put(exceptionClass, exceptionHandler);
+                    return exceptionHandler;
+                }
+
+                superClass = superClass.getSuperclass();
+            }
+
+            // avoid superclass traversal in the future if we didn't find a handler
+            exceptionHandlers.put(exceptionClass, null);
+        }
+
+        ExceptionHandler exceptionHandler = exceptionHandlers.get(exceptionClass);
+        return exceptionHandler;
     }
 
     @Override
@@ -119,6 +164,15 @@ public class DefaultErrorHandler implements ErrorHandler {
 
     @Override
     public void handle(Exception exception, RouteContext routeContext) {
+        ExceptionHandler exceptionHandler = getExceptionHandler(exception);
+        if (exceptionHandler != null) {
+            log.debug("Handling '{}' with '{}'", exception.getClass().getSimpleName(), exceptionHandler.getClass().getName());
+            exceptionHandler.handle(exception, routeContext);
+            return;
+        }
+
+        log.error(exception.getMessage(), exception);
+
         if (routeContext.getResponse().isCommitted()) {
             log.debug("The response has already been committed. Cannot use the exception handler.");
             return;
