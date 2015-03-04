@@ -196,7 +196,6 @@ public class PippoFilter implements Filter {
                 }
             }
         } catch (Exception e) {
-            log.error(e.getMessage(), e);
             errorHandler.handle(e, routeContext);
         } finally {
             routeContext.runFinallyRoutes();

@@ -19,12 +19,21 @@ package ro.pippo.core;
 import ro.pippo.core.route.RouteContext;
 
 /**
+ * ErrorHandler is the core ExceptionHandler.
+ * <p>
+ * ErrorHandler can register custom ExceptionHandlers and will handle an exception
+ * with a matching ExceptionHandler, if found.  Otherwise ErrorHandler will fallback
+ * to itself to handle the exception.
+ * </p>
+ *
  * @author Decebal Suiu
  */
-public interface ErrorHandler {
+public interface ErrorHandler extends ExceptionHandler {
+
+    public void setExceptionHandler(Class<? extends Exception> exceptionClass, ExceptionHandler exceptionHandler);
+
+    public ExceptionHandler getExceptionHandler(Exception exception);
 
     public void handle(int statusCode, RouteContext routeContext);
-
-    public void handle(Exception exception, RouteContext routeContext);
 
 }
