@@ -47,7 +47,7 @@ public class BasicApplication extends Application {
                 routeContext.send("Hello World");
             }
 
-        });
+        }).named("Hello World handler");
 
         // send a file as response
         GET("/file", new RouteHandler() {
@@ -180,7 +180,7 @@ public class BasicApplication extends Application {
                 log.info(">>> Cleanup here");
             }
 
-        }).runAsFinally();
+        }).named("cleanup filter").runAsFinally();
     }
 
 }

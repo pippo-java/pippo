@@ -188,62 +188,62 @@ public class Application {
         getRouter().setContextPath(contextPath);
     }
 
-    public void GET(StaticResourceHandler resourceHandler) {
+    public Route GET(StaticResourceHandler resourceHandler) {
         if (getRouter().uriPatternFor(resourceHandler.getClass()) != null) {
             throw new PippoRuntimeException("You may only register one route for {}",
                     resourceHandler.getClass().getSimpleName());
         }
         resourceHandler.setMimeTypes(mimeTypes);
         resourceHandler.setHttpCacheToolkit(httpCacheToolkit);
-        addRoute(resourceHandler.getUriPattern(), HttpConstants.Method.GET, resourceHandler);
+        return addRoute(resourceHandler.getUriPattern(), HttpConstants.Method.GET, resourceHandler);
     }
 
-    public void GET(String uriPattern, RouteHandler routeHandler) {
-        addRoute(uriPattern, HttpConstants.Method.GET, routeHandler);
+    public Route GET(String uriPattern, RouteHandler routeHandler) {
+        return addRoute(uriPattern, HttpConstants.Method.GET, routeHandler);
     }
 
-    public void GET(String uriPattern, Class<? extends Controller> controllerClass, String methodName) {
-        addRoute(uriPattern, HttpConstants.Method.GET, controllerClass, methodName);
+    public Route GET(String uriPattern, Class<? extends Controller> controllerClass, String methodName) {
+        return addRoute(uriPattern, HttpConstants.Method.GET, controllerClass, methodName);
     }
 
-    public void POST(String uriPattern, RouteHandler routeHandler) {
-        addRoute(uriPattern, HttpConstants.Method.POST, routeHandler);
+    public Route POST(String uriPattern, RouteHandler routeHandler) {
+        return addRoute(uriPattern, HttpConstants.Method.POST, routeHandler);
     }
 
-    public void POST(String uriPattern, Class<? extends Controller> controllerClass, String methodName) {
-        addRoute(uriPattern, HttpConstants.Method.POST, controllerClass, methodName);
+    public Route POST(String uriPattern, Class<? extends Controller> controllerClass, String methodName) {
+        return addRoute(uriPattern, HttpConstants.Method.POST, controllerClass, methodName);
     }
 
-    public void DELETE(String uriPattern, RouteHandler routeHandler) {
-        addRoute(uriPattern, HttpConstants.Method.DELETE, routeHandler);
+    public Route DELETE(String uriPattern, RouteHandler routeHandler) {
+        return addRoute(uriPattern, HttpConstants.Method.DELETE, routeHandler);
     }
 
-    public void DELETE(String uriPattern, Class<? extends Controller> controllerClass, String methodName) {
-        addRoute(uriPattern, HttpConstants.Method.DELETE, controllerClass, methodName);
+    public Route DELETE(String uriPattern, Class<? extends Controller> controllerClass, String methodName) {
+        return addRoute(uriPattern, HttpConstants.Method.DELETE, controllerClass, methodName);
     }
 
-    public void HEAD(String uriPattern, RouteHandler routeHandler) {
-        addRoute(uriPattern, HttpConstants.Method.HEAD, routeHandler);
+    public Route HEAD(String uriPattern, RouteHandler routeHandler) {
+        return addRoute(uriPattern, HttpConstants.Method.HEAD, routeHandler);
     }
 
-    public void HEAD(String uriPattern, Class<? extends Controller> controllerClass, String methodName) {
-        addRoute(uriPattern, HttpConstants.Method.HEAD, controllerClass, methodName);
+    public Route HEAD(String uriPattern, Class<? extends Controller> controllerClass, String methodName) {
+        return addRoute(uriPattern, HttpConstants.Method.HEAD, controllerClass, methodName);
     }
 
-    public void PUT(String uriPattern, RouteHandler routeHandler) {
-        addRoute(uriPattern, HttpConstants.Method.PUT, routeHandler);
+    public Route PUT(String uriPattern, RouteHandler routeHandler) {
+        return addRoute(uriPattern, HttpConstants.Method.PUT, routeHandler);
     }
 
-    public void PUT(String uriPattern, Class<? extends Controller> controllerClass, String methodName) {
-        addRoute(uriPattern, HttpConstants.Method.PUT, controllerClass, methodName);
+    public Route PUT(String uriPattern, Class<? extends Controller> controllerClass, String methodName) {
+        return addRoute(uriPattern, HttpConstants.Method.PUT, controllerClass, methodName);
     }
 
-    public void PATCH(String uriPattern, RouteHandler routeHandler) {
-        addRoute(uriPattern, HttpConstants.Method.PATCH, routeHandler);
+    public Route PATCH(String uriPattern, RouteHandler routeHandler) {
+        return addRoute(uriPattern, HttpConstants.Method.PATCH, routeHandler);
     }
 
-    public void PATCH(String uriPattern, Class<? extends Controller> controllerClass, String methodName) {
-        addRoute(uriPattern, HttpConstants.Method.PATCH, controllerClass, methodName);
+    public Route PATCH(String uriPattern, Class<? extends Controller> controllerClass, String methodName) {
+        return addRoute(uriPattern, HttpConstants.Method.PATCH, controllerClass, methodName);
     }
 
     public Route ALL(String uriPattern, RouteHandler routeHandler) {
