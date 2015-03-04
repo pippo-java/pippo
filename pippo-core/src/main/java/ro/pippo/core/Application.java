@@ -30,11 +30,21 @@ import ro.pippo.core.util.HttpCacheToolkit;
 import ro.pippo.core.util.MimeTypes;
 import ro.pippo.core.util.ServiceLocator;
 
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.Reader;
+import java.net.URL;
+import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.Enumeration;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import ro.pippo.core.util.StringUtils;
 
 /**
  * @author Decebal Suiu
@@ -54,6 +64,8 @@ public class Application {
     private ErrorHandler errorHandler;
     private ControllerHandlerFactory controllerHandlerFactory;
     private SessionFactory sessionFactory;
+
+    private List<Initializer> initializers;
 
     private String uploadLocation = System.getProperty("java.io.tmpdir");
     private long maximumUploadSize = -1L;
@@ -75,9 +87,36 @@ public class Application {
         this.mimeTypes = new MimeTypes(settings);
         this.httpCacheToolkit = new HttpCacheToolkit(settings);
         this.engines = new ContentTypeEngines();
+        this.initializers = new ArrayList<>();
 
         registerContentTypeEngine(TextPlainEngine.class);
         registerContentTypeEngine(JaxbEngine.class);
+    }
+
+    public final void start() {
+        initializers.addAll(getInitializers());
+        for (Initializer initializer : initializers) {
+            log.debug("Initializing '{}'", initializer.getClass().getName());
+            try {
+                initializer.init(this);
+            } catch (Exception e) {
+                log.error("Failed to initialize '{}'", initializer.getClass().getName(), e);
+            }
+        }
+
+        init();
+    }
+
+    public final void stop() {
+        destroy();
+        for (Initializer initializer : initializers) {
+            log.debug("Destroying '{}'", initializer.getClass().getName());
+            try {
+                initializer.destroy(this);
+            } catch (Exception e) {
+                log.error("Failed to destroy '{}'", initializer.getClass().getName(), e);
+            }
+        }
     }
 
     public void init() {
@@ -361,6 +400,41 @@ public class Application {
         }
 
         return locals;
+    }
+
+    private List<Initializer> getInitializers() {
+        try {
+            List<Initializer> initializers = new ArrayList<>();
+
+            ClassLoader classLoader = getClass().getClassLoader();
+            Enumeration<URL> resources = classLoader.getResources("pippo.properties");
+            while (resources.hasMoreElements()) {
+                URL resource = resources.nextElement();
+                log.debug("Read '{}'", resource.getFile());
+                Properties properties = new Properties();
+                try (Reader reader = new InputStreamReader(resource.openStream(), StandardCharsets.UTF_8)) {
+                    properties.load(reader);
+                } catch (IOException e) {
+                    log.error("Failed to read '{}'", resource.getFile(), e);
+                    continue;
+                }
+
+                String initializerClassName = properties.getProperty("initializer");
+                if (StringUtils.isNullOrEmpty(initializerClassName)) {
+                    log.warn("'{}' does not specify an 'initializer' setting!", resource.getFile());
+                } else {
+                    log.debug("Found initializer '{}'", initializerClassName);
+                    Class<Initializer> initializerClass = (Class<Initializer>) classLoader.loadClass(initializerClassName);
+
+                    Initializer initializer = initializerClass.newInstance();
+                    initializers.add(initializer);
+                }
+            }
+
+            return initializers;
+        } catch (IOException | InstantiationException | IllegalAccessException | ClassNotFoundException e) {
+            throw new PippoRuntimeException("Failed to locate Initializers", e);
+        }
     }
 
     @Override
