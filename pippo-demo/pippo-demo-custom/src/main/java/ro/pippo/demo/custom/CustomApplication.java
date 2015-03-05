@@ -23,8 +23,7 @@ import ro.pippo.core.Application;
 public class CustomApplication extends Application {
 
     @Override
-    public void init() {
-        super.init();
+    protected void onInit() {
 
         // use a custom route context
         GET("/", new CustomContextHandler() {

@@ -41,8 +41,7 @@ public class CrudNgApplication extends Application {
     }
 
     @Override
-    public void init() {
-        super.init();
+    protected void onInit() {
 
         GET(new WebjarsResourceHandler());
         GET(new PublicResourceHandler());

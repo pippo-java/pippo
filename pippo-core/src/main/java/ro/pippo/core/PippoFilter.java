@@ -103,7 +103,7 @@ public class PippoFilter implements Filter {
             log.debug("Serving application on context path '{}'", contextPath);
 
             log.debug("Initializing application '{}'", application);
-            application.start();
+            application.init();
 
             routeContextFactory = getRouteContextFactory();
             routeContextFactory.init(application);
@@ -206,7 +206,7 @@ public class PippoFilter implements Filter {
     public void destroy() {
         if (application != null) {
             try {
-                application.stop();
+                application.destroy();
 
                 log.info("Pippo destroyed");
             } finally {

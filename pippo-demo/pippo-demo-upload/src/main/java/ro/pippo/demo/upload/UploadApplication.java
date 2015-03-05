@@ -30,8 +30,7 @@ import java.io.IOException;
 public class UploadApplication extends Application {
 
     @Override
-    public void init() {
-        super.init();
+    protected void onInit() {
 
 //        setMaximumUploadSize(100 * 1024); // 100k
 

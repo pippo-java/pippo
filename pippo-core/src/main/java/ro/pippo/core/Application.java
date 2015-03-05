@@ -93,7 +93,7 @@ public class Application {
         registerContentTypeEngine(JaxbEngine.class);
     }
 
-    public final void start() {
+    public final void init() {
         initializers.addAll(getInitializers());
         for (Initializer initializer : initializers) {
             log.debug("Initializing '{}'", initializer.getClass().getName());
@@ -104,11 +104,11 @@ public class Application {
             }
         }
 
-        init();
+        onInit();
     }
 
-    public final void stop() {
-        destroy();
+    public final void destroy() {
+        onDestroy();
         for (Initializer initializer : initializers) {
             log.debug("Destroying '{}'", initializer.getClass().getName());
             try {
@@ -119,10 +119,10 @@ public class Application {
         }
     }
 
-    public void init() {
+    protected void onInit() {
     }
 
-    public void destroy() {
+    protected void onDestroy() {
     }
 
     /**

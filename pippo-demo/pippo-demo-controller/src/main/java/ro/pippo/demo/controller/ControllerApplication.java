@@ -25,8 +25,7 @@ import ro.pippo.core.route.WebjarsResourceHandler;
 public class ControllerApplication extends Application {
 
     @Override
-    public void init() {
-        super.init();
+    protected void onInit() {
 
         GET(new WebjarsResourceHandler());
         GET(new PublicResourceHandler());

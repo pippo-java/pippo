@@ -28,8 +28,7 @@ import ro.pippo.spring.SpringControllerInjector;
 public class SpringApplication extends Application {
 
     @Override
-    public void init() {
-        super.init();
+    protected void onInit() {
 
         GET(new WebjarsResourceHandler());
         GET(new PublicResourceHandler());
