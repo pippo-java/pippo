@@ -47,6 +47,8 @@ public class DefaultErrorHandler implements ErrorHandler {
     public DefaultErrorHandler(Application application) {
         this.application = application;
         this.exceptionHandlers = new HashMap<>();
+
+        setExceptionHandler(StatusCodeException.class, new StatusCodeExceptionHandler(this));
     }
 
     @Override
