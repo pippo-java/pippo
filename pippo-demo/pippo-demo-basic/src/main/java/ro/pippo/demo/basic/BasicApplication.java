@@ -35,8 +35,7 @@ public class BasicApplication extends Application {
     private final static Logger log = LoggerFactory.getLogger(BasicApplication.class);
 
     @Override
-    public void init() {
-        super.init();
+    protected void onInit() {
 
         getRouter().ignorePaths("/favicon.ico");
 

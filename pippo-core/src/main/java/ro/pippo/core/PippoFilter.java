@@ -37,13 +37,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.Reader;
 import java.net.URI;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Enumeration;
 import java.util.List;
 import java.util.Properties;
 
@@ -79,7 +75,6 @@ public class PippoFilter implements Filter {
 
     private RouteContextFactory routeContextFactory;
     private Application application;
-    private List<Initializer> initializers;
     private String filterPath;
 
     @Override
@@ -107,19 +102,12 @@ public class PippoFilter implements Filter {
             application.setContextPath(contextPath);
             log.debug("Serving application on context path '{}'", contextPath);
 
-            initializers = new ArrayList<>();
-
-            routeContextFactory = getRouteContextFactory();
-            initializers.add(routeContextFactory);
-            log.debug("RouteContext factory is '{}'", routeContextFactory.getClass().getName());
-
-            initializers.addAll(getInitializers());
-            for (Initializer initializer : initializers) {
-                initializer.init(application);
-            }
-
             log.debug("Initializing application '{}'", application);
             application.init();
+
+            routeContextFactory = getRouteContextFactory();
+            routeContextFactory.init(application);
+            log.debug("RouteContext factory is '{}'", routeContextFactory.getClass().getName());
 
             String runtimeMode = application.getRuntimeMode().toString().toUpperCase();
             log.info("Pippo started ({})", runtimeMode);
@@ -218,9 +206,6 @@ public class PippoFilter implements Filter {
     public void destroy() {
         if (application != null) {
             try {
-                for (Initializer initializer : initializers) {
-                    initializer.destroy(application);
-                }
                 application.destroy();
 
                 log.info("Pippo destroyed");
@@ -330,26 +315,6 @@ public class PippoFilter implements Filter {
         }
 
         return factory;
-    }
-
-    private List<Initializer> getInitializers() throws Exception {
-        List<Initializer> initializers = new ArrayList<>();
-
-        ClassLoader classLoader = getClass().getClassLoader();
-        Enumeration<URL> urls = classLoader.getResources("pippo.properties");
-        while (urls.hasMoreElements()) {
-            URL url = urls.nextElement();
-            log.debug("Read '{}'", url.getFile());
-            Reader reader = new InputStreamReader(url.openStream(), "UTF-8");
-            Properties properties = new Properties();
-            properties.load(reader);
-            String initializerClassName = properties.getProperty("initializer");
-            log.debug("Found initializer '{}'", initializerClassName);
-            Class<Initializer> initializerClass = (Class<Initializer>) classLoader.loadClass(initializerClassName);
-            initializers.add(initializerClass.newInstance());
-        }
-
-        return initializers;
     }
 
     /**

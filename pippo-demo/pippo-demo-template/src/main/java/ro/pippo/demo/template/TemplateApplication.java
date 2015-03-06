@@ -43,8 +43,7 @@ public class TemplateApplication extends Application {
     }
 
     @Override
-    public void init() {
-        super.init();
+    protected void onInit() {
 
         // add classpath resource handlers
         GET(new WebjarsResourceHandler());

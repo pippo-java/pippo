@@ -31,8 +31,7 @@ public class SpringApplication2 extends Application {
     private ContactService contactService;
 
     @Override
-    public void init() {
-        super.init();
+    protected void onInit() {
 
         GET(new WebjarsResourceHandler());
         GET(new PublicResourceHandler());

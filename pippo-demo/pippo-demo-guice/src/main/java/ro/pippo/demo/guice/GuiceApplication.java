@@ -28,8 +28,7 @@ import ro.pippo.guice.GuiceControllerInjector;
 public class GuiceApplication extends Application {
 
     @Override
-    public void init() {
-        super.init();
+    protected void onInit() {
 
         GET(new WebjarsResourceHandler());
         GET(new PublicResourceHandler());

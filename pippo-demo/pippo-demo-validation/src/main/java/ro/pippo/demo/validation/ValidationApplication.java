@@ -34,8 +34,7 @@ import java.util.Set;
 public class ValidationApplication extends Application {
 
     @Override
-    public void init() {
-        super.init();
+    protected void onInit() {
 
         GET(new WebjarsResourceHandler());
         GET(new PublicResourceHandler());
