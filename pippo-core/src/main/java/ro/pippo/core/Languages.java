@@ -204,7 +204,7 @@ public class Languages {
         }
 
         // Step 4: Look for a language in the Accept-Language header.
-        String acceptLanguage = routeContext.getHeader(HttpConstants.Header.ACCEPT_LANGUAGE).toString();
+        String acceptLanguage = routeContext.getHeader(HttpConstants.Header.ACCEPT_LANGUAGE);
         String language = getLanguageOrDefault(acceptLanguage);
 
         return language;

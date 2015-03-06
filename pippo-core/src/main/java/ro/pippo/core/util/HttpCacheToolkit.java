@@ -39,12 +39,12 @@ public class HttpCacheToolkit {
     }
 
     public boolean isModified(String etag, long lastModified, RouteContext routeContext) {
-        final String browserEtag = routeContext.getHeader(HttpConstants.Header.IF_NONE_MATCH).toString();
+        final String browserEtag = routeContext.getHeader(HttpConstants.Header.IF_NONE_MATCH);
         if (browserEtag != null && !StringUtils.isNullOrEmpty(etag)) {
             return !(browserEtag.equals(etag));
         }
 
-        final String ifModifiedSince = routeContext.getHeader(HttpConstants.Header.IF_MODIFIED_SINCE).toString();
+        final String ifModifiedSince = routeContext.getHeader(HttpConstants.Header.IF_MODIFIED_SINCE);
         if ((lastModified > 0) && !StringUtils.isNullOrEmpty(ifModifiedSince)) {
             try {
                 Date browserDate = DateUtils.parseHttpDateFormat(ifModifiedSince);
