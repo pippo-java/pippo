@@ -88,6 +88,8 @@ public class DefaultErrorHandler implements ErrorHandler {
 
     @Override
     public void handle(int statusCode, RouteContext routeContext) {
+        checkForRecursion(routeContext);
+
         routeContext.status(statusCode);
 
         // start with the content type specified for the response
@@ -164,6 +166,8 @@ public class DefaultErrorHandler implements ErrorHandler {
 
     @Override
     public void handle(Exception exception, RouteContext routeContext) {
+        checkForRecursion(routeContext);
+
         ExceptionHandler exceptionHandler = getExceptionHandler(exception);
         if (exceptionHandler != null) {
             log.debug("Handling '{}' with '{}'", exception.getClass().getSimpleName(), exceptionHandler.getClass().getName());
@@ -291,6 +295,18 @@ public class DefaultErrorHandler implements ErrorHandler {
                 return TemplateEngine.OVERLOADED_502;
             case HttpConstants.StatusCode.SERVICE_UNAVAILABLE:
                 return TemplateEngine.SERVICE_UNAVAILABLE_503;
+        }
+    }
+
+    private void checkForRecursion(RouteContext routeContext) {
+        Integer depth = routeContext.removeLocal("__errorHandlerDepth");
+        if (depth == null) {
+            depth = 0;
+        }
+        depth += 1;
+        routeContext.setLocal("__errorHandlerDepth", depth);
+        if (depth > 2) {
+            throw new PippoRuntimeException("Recursion in error handler");
         }
     }
 
