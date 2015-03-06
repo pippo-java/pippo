@@ -63,7 +63,7 @@ public interface RouteContext {
 
     public ParameterValue getParameter(String name);
 
-    public ParameterValue getHeader(String name);
+    public String getHeader(String name);
 
     public <T> T setHeader(String name, T t);
 

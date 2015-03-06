@@ -147,9 +147,8 @@ public class DefaultRouteContext implements RouteContext {
     }
 
     @Override
-    public ParameterValue getHeader(String name) {
-        ParameterValue parameterValue = request.getParameter(name);
-        return parameterValue;
+    public String getHeader(String name) {
+        return request.getHeader(name);
     }
 
     @Override
