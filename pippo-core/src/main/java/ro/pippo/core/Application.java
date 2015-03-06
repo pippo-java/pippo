@@ -15,6 +15,8 @@
  */
 package ro.pippo.core;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import ro.pippo.core.controller.Controller;
 import ro.pippo.core.controller.ControllerHandlerFactory;
 import ro.pippo.core.controller.ControllerInitializationListenerList;
@@ -22,13 +24,16 @@ import ro.pippo.core.controller.ControllerInstantiationListenerList;
 import ro.pippo.core.controller.ControllerInvokeListenerList;
 import ro.pippo.core.controller.DefaultControllerHandlerFactory;
 import ro.pippo.core.route.DefaultRouter;
-import ro.pippo.core.route.StaticResourceHandler;
 import ro.pippo.core.route.Route;
 import ro.pippo.core.route.RouteHandler;
+import ro.pippo.core.route.RoutePostDispatchListenerList;
+import ro.pippo.core.route.RoutePreDispatchListenerList;
 import ro.pippo.core.route.Router;
+import ro.pippo.core.route.StaticResourceHandler;
 import ro.pippo.core.util.HttpCacheToolkit;
 import ro.pippo.core.util.MimeTypes;
 import ro.pippo.core.util.ServiceLocator;
+import ro.pippo.core.util.StringUtils;
 
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -41,10 +46,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import ro.pippo.core.util.StringUtils;
 
 /**
  * @author Decebal Suiu
@@ -73,6 +74,9 @@ public class Application {
     private ControllerInstantiationListenerList controllerInstantiationListeners;
     private ControllerInitializationListenerList controllerInitializationListeners;
     private ControllerInvokeListenerList controllerInvokeListeners;
+
+    private RoutePreDispatchListenerList routePreDispatchListeners;
+    private RoutePostDispatchListenerList routePostDispatchListeners;
 
     private Map<String, Object> locals;
 
@@ -202,7 +206,7 @@ public class Application {
     }
 
     public ContentTypeEngine getContentTypeEngine(String contentType) {
-       return engines.getContentTypeEngine(contentType);
+        return engines.getContentTypeEngine(contentType);
     }
 
     public void setContentTypeEngine(ContentTypeEngine engine) {
@@ -230,7 +234,7 @@ public class Application {
     public Route GET(StaticResourceHandler resourceHandler) {
         if (getRouter().uriPatternFor(resourceHandler.getClass()) != null) {
             throw new PippoRuntimeException("You may only register one route for {}",
-                    resourceHandler.getClass().getSimpleName());
+                resourceHandler.getClass().getSimpleName());
         }
         resourceHandler.setMimeTypes(mimeTypes);
         resourceHandler.setHttpCacheToolkit(httpCacheToolkit);
@@ -392,6 +396,22 @@ public class Application {
         }
 
         return controllerInvokeListeners;
+    }
+
+    public RoutePreDispatchListenerList getRoutePreDispatchListeners() {
+        if (routePreDispatchListeners == null) {
+            routePreDispatchListeners = new RoutePreDispatchListenerList();
+        }
+
+        return routePreDispatchListeners;
+    }
+
+    public RoutePostDispatchListenerList getRoutePostDispatchListeners() {
+        if (routePostDispatchListeners == null) {
+            routePostDispatchListeners = new RoutePostDispatchListenerList();
+        }
+
+        return routePostDispatchListeners;
     }
 
     public Map<String, Object> getLocals() {
