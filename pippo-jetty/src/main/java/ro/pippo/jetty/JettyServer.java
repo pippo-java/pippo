@@ -79,8 +79,7 @@ public class JettyServer extends AbstractWebServer {
             try {
                 server.stop();
             } catch (Exception e) {
-                log.error("Cannot stop Jetty Server", e);
-                System.exit(100);
+                throw new PippoRuntimeException("Cannot stop Jetty Server", e);
             }
         }
     }

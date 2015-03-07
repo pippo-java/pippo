@@ -56,7 +56,7 @@ public class Pippo {
         if (server == null) {
             server = ServiceLocator.locate(WebServer.class);
             if (server == null) {
-                throw new PippoRuntimeException("Cannot found a WebServer");
+                throw new PippoRuntimeException("Cannot find a WebServer");
             }
 
             PippoFilter pippoFilter = createPippoFilter(application);
