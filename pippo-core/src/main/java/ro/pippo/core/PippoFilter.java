@@ -17,13 +17,8 @@ package ro.pippo.core;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import ro.pippo.core.route.DefaultRouteContextFactory;
-import ro.pippo.core.route.RouteContext;
-import ro.pippo.core.route.RouteContextFactory;
-import ro.pippo.core.route.RouteMatch;
-import ro.pippo.core.route.Router;
-import ro.pippo.core.util.ClasspathUtils;
-import ro.pippo.core.util.ServiceLocator;
+import ro.pippo.core.route.RouteDispatcher;
+import ro.pippo.core.util.PippoUtils;
 import ro.pippo.core.util.StringUtils;
 
 import javax.servlet.Filter;
@@ -36,12 +31,8 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.URI;
-import java.net.URL;
 import java.util.Collection;
-import java.util.List;
-import java.util.Properties;
 
 /**
  * @author Decebal Suiu
@@ -67,19 +58,13 @@ public class PippoFilter implements Filter {
 
     private static final String slash = "/";
 
-    private final String PIPPO_LOGO = "\n"
-        + " ____  ____  ____  ____  _____\n"
-        + "(  _ \\(_  _)(  _ \\(  _ \\(  _  )\n"
-        + " ) __/ _)(_  ) __/ ) __/ )(_)(   http://pippo.ro\n"
-        + "(__)  (____)(__)  (__)  (_____)  {}\n";
-
-    private RouteContextFactory routeContextFactory;
+    private RouteDispatcher routeDispatcher;
     private Application application;
     private String filterPath;
 
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
-        log.info(PIPPO_LOGO, readPippoVersion());
+        log.info(PippoUtils.getPippoLogo());
 
         if (filterPath == null) {
             initFilterPath(filterConfig);
@@ -102,12 +87,9 @@ public class PippoFilter implements Filter {
             application.setContextPath(contextPath);
             log.debug("Serving application on context path '{}'", contextPath);
 
-            log.debug("Initializing application '{}'", application);
-            application.init();
-
-            routeContextFactory = getRouteContextFactory();
-            routeContextFactory.init(application);
-            log.debug("RouteContext factory is '{}'", routeContextFactory.getClass().getName());
+            log.debug("Initializing Route Dispatcher");
+            routeDispatcher = new RouteDispatcher(application);
+            routeDispatcher.init();
 
             String runtimeMode = application.getRuntimeMode().toString().toUpperCase();
             log.info("Pippo started ({})", runtimeMode);
@@ -148,42 +130,7 @@ public class PippoFilter implements Filter {
         final Request request = new Request(httpServletRequest, application);
         final Response response = new Response(httpServletResponse, application);
 
-        ErrorHandler errorHandler = application.getErrorHandler();
-
-        RouteContext routeContext = null;
-        try {
-            Router router = application.getRouter();
-            List<RouteMatch> routeMatches = router.findRoutes(relativePath, requestMethod);
-            routeContext = routeContextFactory.createRouteContext(application, request, response, routeMatches);
-
-            if (routeMatches.isEmpty()) {
-                errorHandler.handle(HttpConstants.StatusCode.NOT_FOUND, routeContext);
-            } else {
-                // Force the initial Response status code to NOT_FOUND.
-                // The chain is expected to properly set a Response status code.
-                response.notFound();
-
-                processFlash(routeContext);
-            }
-
-            routeContext.next();
-
-            if (!response.isCommitted()) {
-                log.debug("Auto-committing response for {} '{}'", requestMethod, relativePath);
-                if (response.getStatus() >= HttpConstants.StatusCode.BAD_REQUEST) {
-                    // delegate response to the error handler.
-                    // this will generate response content appropriate for the request/
-                    errorHandler.handle(response.getStatus(), routeContext);
-                } else {
-                    response.commit();
-                }
-            }
-        } catch (Exception e) {
-            errorHandler.handle(e, routeContext);
-        } finally {
-            routeContext.runFinallyRoutes();
-            log.debug("Returned status code {} for {} '{}'", response.getStatus(), requestMethod, relativePath);
-        }
+        routeDispatcher.dispatch(request, response);
     }
 
     public Application getApplication() {
@@ -306,62 +253,6 @@ public class PippoFilter implements Filter {
         }
 
         return path;
-    }
-
-    private RouteContextFactory getRouteContextFactory() {
-        RouteContextFactory factory = ServiceLocator.locate(RouteContextFactory.class);
-        if (factory == null) {
-            factory = new DefaultRouteContextFactory();
-        }
-
-        return factory;
-    }
-
-    /**
-     * Simply reads a property resource file that contains the version of this
-     * Pippo build. Helps to identify the Pippo version currently running.
-     *
-     * @return The version of Pippo. Eg. "1.6-SNAPSHOT" while developing of "1.6" when released.
-     */
-    private String readPippoVersion() {
-        // and the key inside the properties file.
-        String PIPPO_VERSION_PROPERTY_KEY = "pippo.version";
-
-        String pippoVersion;
-
-        try {
-            Properties prop = new Properties();
-            URL url = ClasspathUtils.locateOnClasspath(PippoConstants.LOCATION_OF_PIPPO_BUILTIN_PROPERTIES);
-            InputStream stream = url.openStream();
-            prop.load(stream);
-
-            pippoVersion = prop.getProperty(PIPPO_VERSION_PROPERTY_KEY);
-        } catch (Exception e) {
-            //this should not happen. Never.
-            throw new PippoRuntimeException("Something is wrong with your build. Cannot find resource {}",
-                PippoConstants.LOCATION_OF_PIPPO_BUILTIN_PROPERTIES);
-        }
-
-        return pippoVersion;
-    }
-
-    private void processFlash(RouteContext routeContext) {
-        Flash flash = null;
-
-        if (routeContext.hasSession()) {
-            // get flash from session
-            Session session = routeContext.getSession();
-            flash = session.remove("flash");
-            // put an empty flash (outcoming flash) in session; defense against session.get("flash")
-            session.put("flash", new Flash());
-        }
-
-        if (flash == null) {
-            flash = new Flash();
-        }
-
-        // make current flash available to templates
-        routeContext.setLocal("flash", flash);
     }
 
 }
