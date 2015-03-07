@@ -18,6 +18,7 @@ package ro.pippo.core;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ro.pippo.core.route.RouteDispatcher;
+import ro.pippo.core.util.PippoUtils;
 import ro.pippo.core.util.StringUtils;
 
 import javax.servlet.Filter;
@@ -63,7 +64,7 @@ public class PippoFilter implements Filter {
 
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
-        log.info(PippoConstants.getPippoLogo());
+        log.info(PippoUtils.getPippoLogo());
 
         if (filterPath == null) {
             initFilterPath(filterConfig);
@@ -87,8 +88,7 @@ public class PippoFilter implements Filter {
             log.debug("Serving application on context path '{}'", contextPath);
 
             log.debug("Initializing Route Dispatcher");
-            routeDispatcher = new RouteDispatcher();
-            routeDispatcher.setApplication(application);
+            routeDispatcher = new RouteDispatcher(application);
             routeDispatcher.init();
 
             String runtimeMode = application.getRuntimeMode().toString().toUpperCase();

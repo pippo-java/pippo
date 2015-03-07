@@ -15,13 +15,7 @@
  */
 package ro.pippo.core;
 
-import ro.pippo.core.util.ClasspathUtils;
-import ro.pippo.core.util.StringUtils;
-
-import java.io.InputStream;
-import java.net.URL;
 import java.nio.charset.StandardCharsets;
-import java.util.Properties;
 
 public final class PippoConstants {
 
@@ -72,45 +66,6 @@ public final class PippoConstants {
     public static final String REQUEST_PARAMETER_LOCALE = "locale";
 
     public static final String UTF8 = StandardCharsets.UTF_8.toString();
-
-    public static final String PIPPO_LOGO = "\n"
-        + " ____  ____  ____  ____  _____\n"
-        + "(  _ \\(_  _)(  _ \\(  _ \\(  _  )\n"
-        + " ) __/ _)(_  ) __/ ) __/ )(_)(   http://pippo.ro\n"
-        + "(__)  (____)(__)  (__)  (_____)  {}\n";
-
-    public static String getPippoLogo() {
-        return StringUtils.format(PIPPO_LOGO, getPippoVersion());
-    }
-
-    /**
-     * Simply reads a property resource file that contains the version of this
-     * Pippo build. Helps to identify the Pippo version currently running.
-     *
-     * @return The version of Pippo. Eg. "1.6-SNAPSHOT" while developing of "1.6" when released.
-     */
-    public static String getPippoVersion() {
-        // and the key inside the properties file.
-        String PIPPO_VERSION_PROPERTY_KEY = "pippo.version";
-
-        String pippoVersion;
-
-        try {
-            Properties prop = new Properties();
-            URL url = ClasspathUtils.locateOnClasspath(PippoConstants.LOCATION_OF_PIPPO_BUILTIN_PROPERTIES);
-            InputStream stream = url.openStream();
-            prop.load(stream);
-
-            pippoVersion = prop.getProperty(PIPPO_VERSION_PROPERTY_KEY);
-        } catch (Exception e) {
-            //this should not happen. Never.
-            throw new PippoRuntimeException("Something is wrong with your build. Cannot find resource {}",
-                PippoConstants.LOCATION_OF_PIPPO_BUILTIN_PROPERTIES);
-        }
-
-        return pippoVersion;
-    }
-
 
     private PippoConstants() {
         // restrict instantiation

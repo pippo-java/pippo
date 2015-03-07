@@ -18,6 +18,7 @@ package ro.pippo.core;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ro.pippo.core.route.RouteDispatcher;
+import ro.pippo.core.util.PippoUtils;
 import ro.pippo.core.util.StringUtils;
 
 import javax.servlet.ServletConfig;
@@ -64,7 +65,7 @@ public class PippoServlet extends HttpServlet {
 
     @Override
     public void init(ServletConfig servletConfig) {
-        log.info(PippoConstants.getPippoLogo());
+        log.info(PippoUtils.getPippoLogo());
 
         // check for runtime mode in filter init parameter
         String mode = servletConfig.getInitParameter(MODE_PARAM);
@@ -82,8 +83,7 @@ public class PippoServlet extends HttpServlet {
         log.debug("Serving application on context path '{}'", contextPath);
 
         log.debug("Initializing Route Dispatcher");
-        routeDispatcher = new RouteDispatcher();
-        routeDispatcher.setApplication(application);
+        routeDispatcher = new RouteDispatcher(application);
         routeDispatcher.init();
 
         String runtimeMode = application.getRuntimeMode().toString().toUpperCase();
@@ -96,8 +96,8 @@ public class PippoServlet extends HttpServlet {
         HttpServletRequest httpRequest = (HttpServletRequest) req;
         HttpServletResponse httpResponse = (HttpServletResponse) resp;
 
-        Request request = new Request(httpRequest, routeDispatcher.getApplication());
-        Response response = new Response(httpResponse, routeDispatcher.getApplication());
+        Request request = new Request(httpRequest, application);
+        Response response = new Response(httpResponse, application);
 
         routeDispatcher.dispatch(request, response);
 

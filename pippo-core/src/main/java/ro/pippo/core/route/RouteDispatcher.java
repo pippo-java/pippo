@@ -61,11 +61,7 @@ public class RouteDispatcher {
         return (T) ROUTE_CONTEXT_THREAD_LOCAL.get();
     }
 
-    public RouteDispatcher() {
-        super();
-    }
-
-    public void setApplication(Application application) {
+    public RouteDispatcher(Application application) {
         this.application = application;
     }
 
