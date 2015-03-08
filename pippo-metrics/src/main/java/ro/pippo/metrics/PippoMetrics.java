@@ -98,6 +98,11 @@ public class PippoMetrics implements RouteContextFactory<MetricsRouteContext> {
             reporter.start(pippoSettings, metricRegistry);
             reporters.add(reporter);
         }
+
+        // Add the metrics dispatch listener
+        MetricsDispatchListener metricsDispatchListener = new MetricsDispatchListener(metricRegistry);
+        application.getRoutePreDispatchListeners().add(metricsDispatchListener);
+        application.getRoutePostDispatchListeners().add(metricsDispatchListener);
     }
 
     @Override
