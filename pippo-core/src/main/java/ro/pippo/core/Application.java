@@ -15,8 +15,6 @@
  */
 package ro.pippo.core;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import ro.pippo.core.controller.Controller;
 import ro.pippo.core.controller.ControllerHandlerFactory;
 import ro.pippo.core.controller.ControllerInitializationListenerList;
@@ -24,33 +22,21 @@ import ro.pippo.core.controller.ControllerInstantiationListenerList;
 import ro.pippo.core.controller.ControllerInvokeListenerList;
 import ro.pippo.core.controller.DefaultControllerHandlerFactory;
 import ro.pippo.core.route.DefaultRouter;
+import ro.pippo.core.route.StaticResourceHandler;
 import ro.pippo.core.route.Route;
 import ro.pippo.core.route.RouteHandler;
-import ro.pippo.core.route.RoutePostDispatchListenerList;
-import ro.pippo.core.route.RoutePreDispatchListenerList;
 import ro.pippo.core.route.Router;
-<<<<<<< HEAD
-import ro.pippo.core.route.StaticResourceHandler;
-=======
->>>>>>> d47ba05... I began working on CookieSession
 import ro.pippo.core.session.DefaultSessionFactory;
 import ro.pippo.core.session.SessionFactory;
 import ro.pippo.core.util.HttpCacheToolkit;
 import ro.pippo.core.util.MimeTypes;
 import ro.pippo.core.util.ServiceLocator;
-import ro.pippo.core.util.StringUtils;
 
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.Reader;
-import java.net.URL;
-import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.Enumeration;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.Properties;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author Decebal Suiu
@@ -71,17 +57,12 @@ public class Application {
     private ControllerHandlerFactory controllerHandlerFactory;
     private SessionFactory sessionFactory;
 
-    private List<Initializer> initializers;
-
     private String uploadLocation = System.getProperty("java.io.tmpdir");
     private long maximumUploadSize = -1L;
 
     private ControllerInstantiationListenerList controllerInstantiationListeners;
     private ControllerInitializationListenerList controllerInitializationListeners;
     private ControllerInvokeListenerList controllerInvokeListeners;
-
-    private RoutePreDispatchListenerList routePreDispatchListeners;
-    private RoutePostDispatchListenerList routePostDispatchListeners;
 
     private Map<String, Object> locals;
 
@@ -96,42 +77,15 @@ public class Application {
         this.mimeTypes = new MimeTypes(settings);
         this.httpCacheToolkit = new HttpCacheToolkit(settings);
         this.engines = new ContentTypeEngines();
-        this.initializers = new ArrayList<>();
 
         registerContentTypeEngine(TextPlainEngine.class);
         registerContentTypeEngine(JaxbEngine.class);
     }
 
-    public final void init() {
-        initializers.addAll(getInitializers());
-        for (Initializer initializer : initializers) {
-            log.debug("Initializing '{}'", initializer.getClass().getName());
-            try {
-                initializer.init(this);
-            } catch (Exception e) {
-                log.error("Failed to initialize '{}'", initializer.getClass().getName(), e);
-            }
-        }
-
-        onInit();
+    public void init() {
     }
 
-    public final void destroy() {
-        onDestroy();
-        for (Initializer initializer : initializers) {
-            log.debug("Destroying '{}'", initializer.getClass().getName());
-            try {
-                initializer.destroy(this);
-            } catch (Exception e) {
-                log.error("Failed to destroy '{}'", initializer.getClass().getName(), e);
-            }
-        }
-    }
-
-    protected void onInit() {
-    }
-
-    protected void onDestroy() {
+    public void destroy() {
     }
 
     /**
@@ -211,7 +165,7 @@ public class Application {
     }
 
     public ContentTypeEngine getContentTypeEngine(String contentType) {
-        return engines.getContentTypeEngine(contentType);
+       return engines.getContentTypeEngine(contentType);
     }
 
     public void setContentTypeEngine(ContentTypeEngine engine) {
@@ -236,62 +190,62 @@ public class Application {
         getRouter().setContextPath(contextPath);
     }
 
-    public Route GET(StaticResourceHandler resourceHandler) {
+    public void GET(StaticResourceHandler resourceHandler) {
         if (getRouter().uriPatternFor(resourceHandler.getClass()) != null) {
             throw new PippoRuntimeException("You may only register one route for {}",
-                resourceHandler.getClass().getSimpleName());
+                    resourceHandler.getClass().getSimpleName());
         }
         resourceHandler.setMimeTypes(mimeTypes);
         resourceHandler.setHttpCacheToolkit(httpCacheToolkit);
-        return addRoute(resourceHandler.getUriPattern(), HttpConstants.Method.GET, resourceHandler);
+        addRoute(resourceHandler.getUriPattern(), HttpConstants.Method.GET, resourceHandler);
     }
 
-    public Route GET(String uriPattern, RouteHandler routeHandler) {
-        return addRoute(uriPattern, HttpConstants.Method.GET, routeHandler);
+    public void GET(String uriPattern, RouteHandler routeHandler) {
+        addRoute(uriPattern, HttpConstants.Method.GET, routeHandler);
     }
 
-    public Route GET(String uriPattern, Class<? extends Controller> controllerClass, String methodName) {
-        return addRoute(uriPattern, HttpConstants.Method.GET, controllerClass, methodName);
+    public void GET(String uriPattern, Class<? extends Controller> controllerClass, String methodName) {
+        addRoute(uriPattern, HttpConstants.Method.GET, controllerClass, methodName);
     }
 
-    public Route POST(String uriPattern, RouteHandler routeHandler) {
-        return addRoute(uriPattern, HttpConstants.Method.POST, routeHandler);
+    public void POST(String uriPattern, RouteHandler routeHandler) {
+        addRoute(uriPattern, HttpConstants.Method.POST, routeHandler);
     }
 
-    public Route POST(String uriPattern, Class<? extends Controller> controllerClass, String methodName) {
-        return addRoute(uriPattern, HttpConstants.Method.POST, controllerClass, methodName);
+    public void POST(String uriPattern, Class<? extends Controller> controllerClass, String methodName) {
+        addRoute(uriPattern, HttpConstants.Method.POST, controllerClass, methodName);
     }
 
-    public Route DELETE(String uriPattern, RouteHandler routeHandler) {
-        return addRoute(uriPattern, HttpConstants.Method.DELETE, routeHandler);
+    public void DELETE(String uriPattern, RouteHandler routeHandler) {
+        addRoute(uriPattern, HttpConstants.Method.DELETE, routeHandler);
     }
 
-    public Route DELETE(String uriPattern, Class<? extends Controller> controllerClass, String methodName) {
-        return addRoute(uriPattern, HttpConstants.Method.DELETE, controllerClass, methodName);
+    public void DELETE(String uriPattern, Class<? extends Controller> controllerClass, String methodName) {
+        addRoute(uriPattern, HttpConstants.Method.DELETE, controllerClass, methodName);
     }
 
-    public Route HEAD(String uriPattern, RouteHandler routeHandler) {
-        return addRoute(uriPattern, HttpConstants.Method.HEAD, routeHandler);
+    public void HEAD(String uriPattern, RouteHandler routeHandler) {
+        addRoute(uriPattern, HttpConstants.Method.HEAD, routeHandler);
     }
 
-    public Route HEAD(String uriPattern, Class<? extends Controller> controllerClass, String methodName) {
-        return addRoute(uriPattern, HttpConstants.Method.HEAD, controllerClass, methodName);
+    public void HEAD(String uriPattern, Class<? extends Controller> controllerClass, String methodName) {
+        addRoute(uriPattern, HttpConstants.Method.HEAD, controllerClass, methodName);
     }
 
-    public Route PUT(String uriPattern, RouteHandler routeHandler) {
-        return addRoute(uriPattern, HttpConstants.Method.PUT, routeHandler);
+    public void PUT(String uriPattern, RouteHandler routeHandler) {
+        addRoute(uriPattern, HttpConstants.Method.PUT, routeHandler);
     }
 
-    public Route PUT(String uriPattern, Class<? extends Controller> controllerClass, String methodName) {
-        return addRoute(uriPattern, HttpConstants.Method.PUT, controllerClass, methodName);
+    public void PUT(String uriPattern, Class<? extends Controller> controllerClass, String methodName) {
+        addRoute(uriPattern, HttpConstants.Method.PUT, controllerClass, methodName);
     }
 
-    public Route PATCH(String uriPattern, RouteHandler routeHandler) {
-        return addRoute(uriPattern, HttpConstants.Method.PATCH, routeHandler);
+    public void PATCH(String uriPattern, RouteHandler routeHandler) {
+        addRoute(uriPattern, HttpConstants.Method.PATCH, routeHandler);
     }
 
-    public Route PATCH(String uriPattern, Class<? extends Controller> controllerClass, String methodName) {
-        return addRoute(uriPattern, HttpConstants.Method.PATCH, controllerClass, methodName);
+    public void PATCH(String uriPattern, Class<? extends Controller> controllerClass, String methodName) {
+        addRoute(uriPattern, HttpConstants.Method.PATCH, controllerClass, methodName);
     }
 
     public Route ALL(String uriPattern, RouteHandler routeHandler) {
@@ -403,63 +357,12 @@ public class Application {
         return controllerInvokeListeners;
     }
 
-    public RoutePreDispatchListenerList getRoutePreDispatchListeners() {
-        if (routePreDispatchListeners == null) {
-            routePreDispatchListeners = new RoutePreDispatchListenerList();
-        }
-
-        return routePreDispatchListeners;
-    }
-
-    public RoutePostDispatchListenerList getRoutePostDispatchListeners() {
-        if (routePostDispatchListeners == null) {
-            routePostDispatchListeners = new RoutePostDispatchListenerList();
-        }
-
-        return routePostDispatchListeners;
-    }
-
     public Map<String, Object> getLocals() {
         if (locals == null) {
             locals = new HashMap<>();
         }
 
         return locals;
-    }
-
-    private List<Initializer> getInitializers() {
-        try {
-            List<Initializer> initializers = new ArrayList<>();
-
-            ClassLoader classLoader = getClass().getClassLoader();
-            Enumeration<URL> resources = classLoader.getResources("pippo.properties");
-            while (resources.hasMoreElements()) {
-                URL resource = resources.nextElement();
-                log.debug("Read '{}'", resource.getFile());
-                Properties properties = new Properties();
-                try (Reader reader = new InputStreamReader(resource.openStream(), StandardCharsets.UTF_8)) {
-                    properties.load(reader);
-                } catch (IOException e) {
-                    log.error("Failed to read '{}'", resource.getFile(), e);
-                    continue;
-                }
-
-                String initializerClassName = properties.getProperty("initializer");
-                if (StringUtils.isNullOrEmpty(initializerClassName)) {
-                    log.warn("'{}' does not specify an 'initializer' setting!", resource.getFile());
-                } else {
-                    log.debug("Found initializer '{}'", initializerClassName);
-                    Class<Initializer> initializerClass = (Class<Initializer>) classLoader.loadClass(initializerClassName);
-
-                    Initializer initializer = initializerClass.newInstance();
-                    initializers.add(initializer);
-                }
-            }
-
-            return initializers;
-        } catch (IOException | InstantiationException | IllegalAccessException | ClassNotFoundException e) {
-            throw new PippoRuntimeException("Failed to locate Initializers", e);
-        }
     }
 
     @Override

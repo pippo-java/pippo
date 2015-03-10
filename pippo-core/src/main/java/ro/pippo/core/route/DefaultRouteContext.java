@@ -22,7 +22,6 @@ import ro.pippo.core.ParameterValue;
 import ro.pippo.core.Request;
 import ro.pippo.core.Response;
 import ro.pippo.core.session.Session;
-import ro.pippo.core.util.StringUtils;
 
 import java.io.File;
 import java.util.Iterator;
@@ -147,8 +146,9 @@ public class DefaultRouteContext implements RouteContext {
     }
 
     @Override
-    public String getHeader(String name) {
-        return request.getHeader(name);
+    public ParameterValue getHeader(String name) {
+        ParameterValue parameterValue = request.getParameter(name);
+        return parameterValue;
     }
 
     @Override
@@ -233,18 +233,19 @@ public class DefaultRouteContext implements RouteContext {
             // retrieves the next route
             RouteMatch routeMatch = iterator.next();
             Route route = routeMatch.getRoute();
-            log.trace("Found {}", route);
+            log.debug("Found {}", route);
 
             // set the new path parameters in request
             Map<String, String> pathParameters = routeMatch.getPathParameters();
             if (pathParameters != null) {
                 request.setPathParameters(pathParameters);
-                log.trace("Added path parameters to request");
+                log.debug("Added path parameters to request");
             }
 
             // remove route from chain
             iterator.remove();
 
+            log.debug("Call handler for {}", route);
             handleRoute(route);
         }
     }
@@ -255,21 +256,15 @@ public class DefaultRouteContext implements RouteContext {
     @Override
     public void runFinallyRoutes() {
         while (iterator.hasNext()) {
-            Route route = iterator.next().getRoute();
-            if (route.isRunAsFinally()) {
+            RouteMatch routeMatch = iterator.next();
+            if (routeMatch.getRoute().isRunAsFinally()) {
                 try {
-                    handleRoute(route);
+                    handleRoute(routeMatch.getRoute());
                 } catch (Exception e) {
                     log.error("Unexpected error in Finally Route", e);
                 }
             } else if (log.isDebugEnabled()) {
-                if (StringUtils.isNullOrEmpty(route.getName())) {
-                    log.debug("context.next() not called, skipping handler for {} '{}'", route.getRequestMethod(),
-                        route.getUriPattern());
-                } else {
-                    log.debug("context.next() not called, skipping '{}' for {} '{}'", route.getName(),
-                        route.getRequestMethod(), route.getUriPattern());
-                }
+                log.debug("chain.next() not called, skipping {}", routeMatch);
             }
         }
     }
@@ -325,11 +320,6 @@ public class DefaultRouteContext implements RouteContext {
 
 
     protected void handleRoute(Route route) {
-        if (StringUtils.isNullOrEmpty(route.getName())) {
-            log.debug("Executing handler for {} '{}'", route.getRequestMethod(), route.getUriPattern());
-        } else {
-            log.debug("Executing '{}' for {} '{}'", route.getName(), route.getRequestMethod(), route.getUriPattern());
-        }
         route.getRouteHandler().handle(this);
     }
 }
