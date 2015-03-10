@@ -17,19 +17,8 @@ package ro.pippo.core;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-<<<<<<< HEAD
 import ro.pippo.core.route.RouteDispatcher;
 import ro.pippo.core.util.PippoUtils;
-=======
-import ro.pippo.core.route.DefaultRouteHandlerChainFactory;
-import ro.pippo.core.route.RouteHandlerChain;
-import ro.pippo.core.route.RouteHandlerChainFactory;
-import ro.pippo.core.route.RouteMatch;
-import ro.pippo.core.route.Router;
-import ro.pippo.core.session.Session;
-import ro.pippo.core.util.ClasspathUtils;
-import ro.pippo.core.util.ServiceLocator;
->>>>>>> d47ba05... I began working on CookieSession
 import ro.pippo.core.util.StringUtils;
 
 import javax.servlet.Filter;

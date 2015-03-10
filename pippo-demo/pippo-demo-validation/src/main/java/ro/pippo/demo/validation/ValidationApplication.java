@@ -16,14 +16,7 @@
 package ro.pippo.demo.validation;
 
 import ro.pippo.core.Application;
-import ro.pippo.core.session.CookieSessionFactory;
 import ro.pippo.core.Flash;
-<<<<<<< HEAD
-=======
-import ro.pippo.core.Request;
-import ro.pippo.core.Response;
-import ro.pippo.core.session.SessionFactory;
->>>>>>> d47ba05... I began working on CookieSession
 import ro.pippo.core.route.PublicResourceHandler;
 import ro.pippo.core.route.RouteContext;
 import ro.pippo.core.route.RouteHandler;
