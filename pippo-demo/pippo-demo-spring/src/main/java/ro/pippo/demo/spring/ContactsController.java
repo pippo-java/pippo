@@ -15,7 +15,7 @@
  */
 package ro.pippo.demo.spring;
 
-import ro.pippo.core.controller.Controller;
+import ro.pippo.controller.Controller;
 import ro.pippo.demo.common.ContactService;
 
 import javax.inject.Inject;

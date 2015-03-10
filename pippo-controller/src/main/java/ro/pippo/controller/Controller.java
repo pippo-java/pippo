@@ -13,9 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package ro.pippo.core.controller;
+package ro.pippo.controller;
 
-import ro.pippo.core.Application;
 import ro.pippo.core.Request;
 import ro.pippo.core.Response;
 import ro.pippo.core.route.RouteContext;
@@ -39,7 +38,7 @@ public class Controller {
         return routeContext.getResponse();
     }
 
-    public <T extends Application> T getApplication() {
+    public <T extends ControllerApplication> T getApplication() {
         return (T) routeContext.getApplication();
     }
 

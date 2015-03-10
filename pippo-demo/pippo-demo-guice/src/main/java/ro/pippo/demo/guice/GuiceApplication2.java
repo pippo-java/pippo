@@ -16,6 +16,7 @@
 package ro.pippo.demo.guice;
 
 import com.google.inject.Inject;
+import ro.pippo.controller.ControllerApplication;
 import ro.pippo.core.Application;
 import ro.pippo.core.route.PublicResourceHandler;
 import ro.pippo.core.route.WebjarsResourceHandler;
@@ -24,7 +25,7 @@ import ro.pippo.demo.common.ContactService;
 /**
  * @author James Moger
  */
-public class GuiceApplication2 extends Application {
+public class GuiceApplication2 extends ControllerApplication {
 
     @Inject
     private ContactService contactService;

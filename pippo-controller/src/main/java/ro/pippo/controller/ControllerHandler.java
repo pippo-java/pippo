@@ -13,21 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package ro.pippo.core.controller;
+package ro.pippo.controller;
+
+import ro.pippo.core.route.RouteHandler;
+
+import java.lang.reflect.Method;
 
 /**
- * Listener interface that receives messages when controllers are initialized
- * (after Controller#init method has been executed).
+ * Interface that declares a handler for controller methods.
  *
- * @author Decebal Suiu
+ * @author James Moger
  */
-public interface ControllerInitializationListener {
+public interface ControllerHandler extends RouteHandler {
 
-    /**
-     * Called for every controller after its Controller#init method has been executed.
-     *
-     * @param controller
-     */
-    public void onInitialize(Controller controller);
+    public Class<? extends Controller> getControllerClass();
+
+    public String getMethodName();
+
+    public Method getMethod();
 
 }

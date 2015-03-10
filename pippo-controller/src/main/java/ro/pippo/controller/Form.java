@@ -13,22 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package ro.pippo.core.controller;
+package ro.pippo.controller;
 
-import java.lang.reflect.Method;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
 /**
- * Listener interface that receives messages when controllers methods are invoked.
+ * Annotation that identifies that request parameters should be mapped to a Java object.
  *
- * @author Decebal Suiu
+ * @author James Moger
  */
-public interface ControllerInvokeListener {
-
-    /**
-     * Called for every controller before its action method is invoke.
-     *
-     * @param controller
-     */
-    public void onInvoke(Controller controller, Method method);
-
+@Retention(RetentionPolicy.RUNTIME)
+@Target({ElementType.PARAMETER})
+public @interface Form {
 }

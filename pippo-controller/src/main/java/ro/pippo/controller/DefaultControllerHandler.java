@@ -13,11 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package ro.pippo.core.controller;
+package ro.pippo.controller;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import ro.pippo.core.Application;
 import ro.pippo.core.Param;
 import ro.pippo.core.ParameterValue;
 import ro.pippo.core.PippoRuntimeException;
@@ -73,7 +72,7 @@ public class DefaultControllerHandler implements ControllerHandler {
         try {
             // create the controller instance
             Controller controller = controllerClass.newInstance();
-            Application application = routeContext.getApplication();
+            ControllerApplication application = (ControllerApplication) routeContext.getApplication();
 
             application.getControllerInstantiationListeners().onInstantiation(controller);
 

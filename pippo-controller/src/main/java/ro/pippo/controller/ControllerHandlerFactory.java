@@ -13,21 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package ro.pippo.core.controller;
+package ro.pippo.controller;
 
-/**
- * Listener interface that receives messages when controllers are constructed.
- * It be used to implement things like dependency injection support etc.
- *
- * @author Decebal Suiu
+import ro.pippo.core.Initializer;
+import ro.pippo.core.route.RouteHandler;
+
+/*
+ * @author James Moger
  */
-public interface ControllerInstantiationListener {
+public interface ControllerHandlerFactory extends Initializer {
 
-    /**
-     * Called for every controller that is instantiated.
-     *
-     * @param controller
-     */
-    public void onInstantiation(Controller controller);
+    public RouteHandler createHandler(Class<? extends Controller> controllerClass, String methodName);
 
 }

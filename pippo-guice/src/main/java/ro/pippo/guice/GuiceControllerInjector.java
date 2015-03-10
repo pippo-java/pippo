@@ -15,8 +15,8 @@
  */
 package ro.pippo.guice;
 
-import ro.pippo.core.controller.Controller;
-import ro.pippo.core.controller.ControllerInstantiationListener;
+import ro.pippo.controller.Controller;
+import ro.pippo.controller.ControllerInstantiationListener;
 
 import com.google.inject.Injector;
 

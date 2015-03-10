@@ -15,8 +15,6 @@
  */
 package ro.pippo.core.route;
 
-import ro.pippo.core.controller.Controller;
-
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -59,10 +57,6 @@ public interface Router {
     public String uriFor(String uri);
 
     public String uriFor(String uriPattern, Map<String, Object> parameters);
-
-    public String uriFor(Class<? extends Controller> controllerClass, String methodName, Map<String, Object> parameters);
-
-    public String uriFor(Class<? extends Controller> controllerClass, String methodName);
 
     public String uriPatternFor(Class<? extends StaticResourceHandler> resourceHandlerClass);
 

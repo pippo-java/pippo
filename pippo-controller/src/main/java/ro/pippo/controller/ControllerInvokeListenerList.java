@@ -13,19 +13,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package ro.pippo.core.controller;
+package ro.pippo.controller;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import ro.pippo.core.util.ListenerList;
+
+import java.lang.reflect.Method;
 
 /**
- * Annotation that identifies that request parameters should be mapped to a Java object.
- *
- * @author James Moger
+ * @author Decebal Suiu
  */
-@Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.PARAMETER})
-public @interface Form {
+public class ControllerInvokeListenerList extends ListenerList<ControllerInvokeListener>
+    implements ControllerInvokeListener {
+
+    @Override
+    public void onInvoke(final Controller controller, final Method method) {
+        notify(new Notifier<ControllerInvokeListener>() {
+
+            @Override
+            public void notify(ControllerInvokeListener listener) {
+                listener.onInvoke(controller, method);
+            }
+
+        });
+    }
+
 }

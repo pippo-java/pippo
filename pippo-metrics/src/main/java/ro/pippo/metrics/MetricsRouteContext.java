@@ -23,7 +23,6 @@ import ro.pippo.core.Request;
 import ro.pippo.core.Response;
 import ro.pippo.core.route.DefaultRouteContext;
 import ro.pippo.core.route.RouteContext;
-import ro.pippo.core.controller.ControllerHandler;
 import ro.pippo.core.route.Route;
 import ro.pippo.core.route.RouteHandler;
 import ro.pippo.core.route.RouteMatch;
@@ -53,6 +52,8 @@ public class MetricsRouteContext extends DefaultRouteContext {
         RouteHandler handler = route.getRouteHandler();
 
         try {
+            // TODO resolve
+            /*
             Method method;
             if (handler instanceof ControllerHandler) {
                 ControllerHandler controllerHandler = (ControllerHandler) handler;
@@ -60,6 +61,8 @@ public class MetricsRouteContext extends DefaultRouteContext {
             } else {
                 method = route.getRouteHandler().getClass().getMethod("handle", RouteContext.class);
             }
+            */
+            Method method = route.getRouteHandler().getClass().getMethod("handle", RouteContext.class);
 
             String metricName = MetricRegistry.name(method.getDeclaringClass(), method.getName());
 

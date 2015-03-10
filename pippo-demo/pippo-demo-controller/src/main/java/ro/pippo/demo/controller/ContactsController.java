@@ -15,8 +15,9 @@
  */
 package ro.pippo.demo.controller;
 
+import ro.pippo.controller.Controller;
+import ro.pippo.controller.ControllerRouter;
 import ro.pippo.core.Param;
-import ro.pippo.core.controller.Controller;
 import ro.pippo.demo.common.ContactService;
 import ro.pippo.demo.common.InMemoryContactService;
 import ro.pippo.metrics.Metered;
@@ -46,7 +47,8 @@ public class ContactsController extends Controller {
         Map<String, Object> parameters = new HashMap<>();
         parameters.put("id", id);
         parameters.put("action", "new");
-        String uri = getApplication().getRouter().uriFor(ContactsController.class, "uriFor", parameters);
+        ControllerRouter router = (ControllerRouter) getApplication().getRouter();
+        String uri = router.uriFor(ContactsController.class, "uriFor", parameters);
 
         getResponse().send("id = " + id + "; uri = " + uri);
     }

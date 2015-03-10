@@ -17,7 +17,7 @@ package ro.pippo.demo.crudng;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import ro.pippo.core.Application;
+import ro.pippo.controller.ControllerApplication;
 import ro.pippo.core.RedirectHandler;
 import ro.pippo.core.route.RouteContext;
 import ro.pippo.core.TemplateHandler;
@@ -30,7 +30,7 @@ import ro.pippo.demo.common.InMemoryContactService;
 /**
  * @author James Moger
  */
-public class CrudNgApplication extends Application {
+public class CrudNgApplication extends ControllerApplication {
 
     private static final Logger log = LoggerFactory.getLogger(CrudNgApplication.class);
 

@@ -13,16 +13,29 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package ro.pippo.core.controller;
+package ro.pippo.controller;
 
-import ro.pippo.core.Initializer;
+import ro.pippo.core.Application;
 import ro.pippo.core.route.RouteHandler;
 
-/*
+/**
+ * This factory constructs the default controller handler.
+ *
  * @author James Moger
  */
-public interface ControllerHandlerFactory extends Initializer {
+public class DefaultControllerHandlerFactory implements ControllerHandlerFactory {
 
-    public RouteHandler createHandler(Class<? extends Controller> controllerClass, String methodName);
+    @Override
+    public RouteHandler createHandler(Class<? extends Controller> controllerClass, String methodName) {
+        return new DefaultControllerHandler(controllerClass, methodName);
+    }
+
+    @Override
+    public void init(Application application) {
+    }
+
+    @Override
+    public void destroy(Application application) {
+    }
 
 }

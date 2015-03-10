@@ -17,7 +17,7 @@ package ro.pippo.demo.spring;
 
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
-import ro.pippo.core.Application;
+import ro.pippo.controller.ControllerApplication;
 import ro.pippo.core.route.PublicResourceHandler;
 import ro.pippo.core.route.WebjarsResourceHandler;
 import ro.pippo.spring.SpringControllerInjector;
@@ -25,7 +25,7 @@ import ro.pippo.spring.SpringControllerInjector;
 /**
  * @author Decebal Suiu
  */
-public class SpringApplication extends Application {
+public class SpringApplication extends ControllerApplication {
 
     @Override
     protected void onInit() {

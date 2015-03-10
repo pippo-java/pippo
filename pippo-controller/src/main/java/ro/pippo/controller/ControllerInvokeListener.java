@@ -13,28 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package ro.pippo.core.route;
+package ro.pippo.controller;
 
-import ro.pippo.core.Request;
-import ro.pippo.core.Response;
-import ro.pippo.core.util.ListenerList;
+import java.lang.reflect.Method;
 
 /**
- * @author James Moger
+ * Listener interface that receives messages when controllers methods are invoked.
+ *
+ * @author Decebal Suiu
  */
-public class RoutePostDispatchListenerList extends ListenerList<RoutePostDispatchListener>
-    implements RoutePostDispatchListener {
+public interface ControllerInvokeListener {
 
-    @Override
-    public void onPostDispatch(final Request request, final Response response) {
-        notify(new Notifier<RoutePostDispatchListener>() {
-
-            @Override
-            public void notify(RoutePostDispatchListener listener) {
-                listener.onPostDispatch(request, response);
-            }
-
-        });
-    }
+    /**
+     * Called for every controller before its action method is invoke.
+     *
+     * @param controller
+     */
+    public void onInvoke(Controller controller, Method method);
 
 }

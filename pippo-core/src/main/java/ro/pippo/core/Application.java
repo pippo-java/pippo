@@ -17,12 +17,6 @@ package ro.pippo.core;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import ro.pippo.core.controller.Controller;
-import ro.pippo.core.controller.ControllerHandlerFactory;
-import ro.pippo.core.controller.ControllerInitializationListenerList;
-import ro.pippo.core.controller.ControllerInstantiationListenerList;
-import ro.pippo.core.controller.ControllerInvokeListenerList;
-import ro.pippo.core.controller.DefaultControllerHandlerFactory;
 import ro.pippo.core.route.DefaultRouter;
 import ro.pippo.core.route.Route;
 import ro.pippo.core.route.RouteHandler;
@@ -63,17 +57,12 @@ public class Application {
     private ContentTypeEngines engines;
     private Router router;
     private ErrorHandler errorHandler;
-    private ControllerHandlerFactory controllerHandlerFactory;
     private SessionFactory sessionFactory;
 
     private List<Initializer> initializers;
 
     private String uploadLocation = System.getProperty("java.io.tmpdir");
     private long maximumUploadSize = -1L;
-
-    private ControllerInstantiationListenerList controllerInstantiationListeners;
-    private ControllerInitializationListenerList controllerInitializationListeners;
-    private ControllerInvokeListenerList controllerInvokeListeners;
 
     private RoutePreDispatchListenerList routePreDispatchListeners;
     private RoutePostDispatchListenerList routePostDispatchListeners;
@@ -245,63 +234,28 @@ public class Application {
         return addRoute(uriPattern, HttpConstants.Method.GET, routeHandler);
     }
 
-    public Route GET(String uriPattern, Class<? extends Controller> controllerClass, String methodName) {
-        return addRoute(uriPattern, HttpConstants.Method.GET, controllerClass, methodName);
-    }
-
     public Route POST(String uriPattern, RouteHandler routeHandler) {
         return addRoute(uriPattern, HttpConstants.Method.POST, routeHandler);
-    }
-
-    public Route POST(String uriPattern, Class<? extends Controller> controllerClass, String methodName) {
-        return addRoute(uriPattern, HttpConstants.Method.POST, controllerClass, methodName);
     }
 
     public Route DELETE(String uriPattern, RouteHandler routeHandler) {
         return addRoute(uriPattern, HttpConstants.Method.DELETE, routeHandler);
     }
 
-    public Route DELETE(String uriPattern, Class<? extends Controller> controllerClass, String methodName) {
-        return addRoute(uriPattern, HttpConstants.Method.DELETE, controllerClass, methodName);
-    }
-
     public Route HEAD(String uriPattern, RouteHandler routeHandler) {
         return addRoute(uriPattern, HttpConstants.Method.HEAD, routeHandler);
-    }
-
-    public Route HEAD(String uriPattern, Class<? extends Controller> controllerClass, String methodName) {
-        return addRoute(uriPattern, HttpConstants.Method.HEAD, controllerClass, methodName);
     }
 
     public Route PUT(String uriPattern, RouteHandler routeHandler) {
         return addRoute(uriPattern, HttpConstants.Method.PUT, routeHandler);
     }
 
-    public Route PUT(String uriPattern, Class<? extends Controller> controllerClass, String methodName) {
-        return addRoute(uriPattern, HttpConstants.Method.PUT, controllerClass, methodName);
-    }
-
     public Route PATCH(String uriPattern, RouteHandler routeHandler) {
         return addRoute(uriPattern, HttpConstants.Method.PATCH, routeHandler);
     }
 
-    public Route PATCH(String uriPattern, Class<? extends Controller> controllerClass, String methodName) {
-        return addRoute(uriPattern, HttpConstants.Method.PATCH, controllerClass, methodName);
-    }
-
     public Route ALL(String uriPattern, RouteHandler routeHandler) {
         return addRoute(uriPattern, HttpConstants.Method.ALL, routeHandler);
-    }
-
-    public Route ALL(String uriPattern, Class<? extends Controller> controllerClass, String methodName) {
-        return addRoute(uriPattern, HttpConstants.Method.ALL, controllerClass, methodName);
-    }
-
-    public Route addRoute(String uriPattern, String requestMethod, Class<? extends Controller> controllerClass, String methodName) {
-        RouteHandler routeHandler = getControllerHandlerFactory().createHandler(controllerClass, methodName);
-        Route route = addRoute(uriPattern, requestMethod, routeHandler);
-
-        return route;
     }
 
     public Route addRoute(String uriPattern, String requestMethod, RouteHandler routeHandler) {
@@ -309,19 +263,6 @@ public class Application {
         getRouter().addRoute(route);
 
         return route;
-    }
-
-    public ControllerHandlerFactory getControllerHandlerFactory() {
-        if (controllerHandlerFactory == null) {
-            ControllerHandlerFactory factory = ServiceLocator.locate(ControllerHandlerFactory.class);
-            if (factory == null) {
-                factory = new DefaultControllerHandlerFactory();
-            }
-            factory.init(this);
-            controllerHandlerFactory = factory;
-        }
-
-        return controllerHandlerFactory;
     }
 
     public SessionFactory getSessionFactory() {
@@ -372,30 +313,6 @@ public class Application {
 
     public void setMaximumUploadSize(long maximumUploadSize) {
         this.maximumUploadSize = maximumUploadSize;
-    }
-
-    public ControllerInstantiationListenerList getControllerInstantiationListeners() {
-        if (controllerInstantiationListeners == null) {
-            controllerInstantiationListeners = new ControllerInstantiationListenerList();
-        }
-
-        return controllerInstantiationListeners;
-    }
-
-    public ControllerInitializationListenerList getControllerInitializationListeners() {
-        if (controllerInitializationListeners == null) {
-            controllerInitializationListeners = new ControllerInitializationListenerList();
-        }
-
-        return controllerInitializationListeners;
-    }
-
-    public ControllerInvokeListenerList getControllerInvokeListeners() {
-        if (controllerInvokeListeners == null) {
-            controllerInvokeListeners = new ControllerInvokeListenerList();
-        }
-
-        return controllerInvokeListeners;
     }
 
     public RoutePreDispatchListenerList getRoutePreDispatchListeners() {

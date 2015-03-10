@@ -17,7 +17,7 @@ package ro.pippo.demo.guice;
 
 import com.google.inject.Guice;
 import com.google.inject.Injector;
-import ro.pippo.core.Application;
+import ro.pippo.controller.ControllerApplication;
 import ro.pippo.core.route.PublicResourceHandler;
 import ro.pippo.core.route.WebjarsResourceHandler;
 import ro.pippo.guice.GuiceControllerInjector;
@@ -25,7 +25,7 @@ import ro.pippo.guice.GuiceControllerInjector;
 /**
  * @author James Moger
  */
-public class GuiceApplication extends Application {
+public class GuiceApplication extends ControllerApplication {
 
     @Override
     protected void onInit() {
