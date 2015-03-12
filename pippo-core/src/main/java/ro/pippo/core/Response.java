@@ -663,6 +663,7 @@ public final class Response {
             // client accepts all types
             return this;
         }
+
         ContentTypeEngine engine = contentTypeEngines.getContentTypeEngine(request.getAcceptType());
         if (engine != null) {
             log.debug("Negotiated '{}' from request Accept header", engine.getContentType());
@@ -679,6 +680,7 @@ public final class Response {
                     request.getAcceptType(), request.getContentType());
             return this;
         }
+
         return contentType(engine.getContentType());
     }
 
