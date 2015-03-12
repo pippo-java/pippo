@@ -21,6 +21,7 @@ Artifacts
 - Web Server
      - Pippo Jetty `pippo-jetty` (jar)
      - Pippo Undertow `pippo-undertow` (jar)
+     - Pippo Twjs `pippo-twjs` (jar)
 - JSON
      - Pippo Gson `pippo-gson` (jar)
      - Pippo Fastjson `pippo-fastjson` (jar)

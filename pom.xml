@@ -106,6 +106,7 @@
         <module>pippo-core</module>
         <module>pippo-jetty</module>
         <module>pippo-undertow</module>
+        <module>pippo-tjws</module>
         <module>pippo-freemarker</module>
         <module>pippo-groovy</module>
         <module>pippo-jade</module>

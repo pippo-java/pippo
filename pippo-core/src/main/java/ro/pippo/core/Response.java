@@ -46,8 +46,11 @@ public final class Response {
     private ContentTypeEngines contentTypeEngines;
     private TemplateEngine templateEngine;
     private Map<String, Object> locals;
+    private Map<String, String> headers;
     private Map<String, Cookie> cookies;
     private String contextPath;
+
+    private int status;
 
     public Response(HttpServletResponse httpServletResponse, Application application) {
         this.httpServletResponse = httpServletResponse;
@@ -55,6 +58,7 @@ public final class Response {
         this.templateEngine = application.getTemplateEngine();
         this.httpServletResponse.setCharacterEncoding(StandardCharsets.UTF_8.toString());
         this.contextPath = application.getRouter().getContextPath();
+        this.status = 0;
     }
 
     /**
@@ -241,7 +245,7 @@ public final class Response {
     }
 
     private boolean isHeaderEmpty(String name) {
-        return StringUtils.isNullOrEmpty(getHttpServletResponse().getHeader(name));
+        return StringUtils.isNullOrEmpty(getHeaderMap().get(name));
     }
 
     /**
@@ -254,9 +258,17 @@ public final class Response {
     public Response header(String name, String value) {
         checkCommitted();
 
-        httpServletResponse.setHeader(name, value);
+        getHeaderMap().put(name, value);
 
         return this;
+    }
+
+    private Map<String, String> getHeaderMap() {
+        if (headers == null) {
+            headers = new HashMap<>();
+        }
+
+        return headers;
     }
 
     /**
@@ -288,7 +300,7 @@ public final class Response {
      * @return the status code
      */
     public int getStatus() {
-        return httpServletResponse.getStatus();
+        return status;
     }
 
     /**
@@ -301,6 +313,7 @@ public final class Response {
         checkCommitted();
 
         httpServletResponse.setStatus(status);
+        this.status = status;
 
         return this;
     }
@@ -321,11 +334,7 @@ public final class Response {
      */
     public void redirect(String location) {
         checkCommitted();
-
-        // add cookies
-        for (Cookie cookie : getCookies()) {
-            httpServletResponse.addCookie(cookie);
-        }
+        finalizeResponse();
 
         try {
             httpServletResponse.sendRedirect(location);
@@ -360,11 +369,7 @@ public final class Response {
      */
     public void redirect(String location, int statusCode) {
         checkCommitted();
-
-        // add cookies
-        for (Cookie cookie : getCookies()) {
-            httpServletResponse.addCookie(cookie);
-        }
+        finalizeResponse();
 
         status(statusCode);
         header(HttpConstants.Header.LOCATION, location);
@@ -800,16 +805,7 @@ public final class Response {
      */
     public void resource(InputStream input) {
         checkCommitted();
-
-        // set status to OK if it's not set
-        if (getStatus() == 0 || getStatus() == Integer.MAX_VALUE) {
-            ok();
-        }
-
-        // add cookies
-        for (Cookie cookie : getCookies()) {
-            httpServletResponse.addCookie(cookie);
-        }
+        finalizeResponse();
 
         // content type to OCTET_STREAM if it's not set
         if (getContentType() == null) {
@@ -852,16 +848,7 @@ public final class Response {
      */
     public void file(String filename, InputStream input) {
         checkCommitted();
-
-        // set status to OK if it's not set
-        if (getStatus() == 0 || getStatus() == Integer.MAX_VALUE) {
-            ok();
-        }
-
-        // add cookies
-        for (Cookie cookie : getCookies()) {
-            httpServletResponse.addCookie(cookie);
-        }
+        finalizeResponse();
 
         // content type to OCTET_STREAM if it's not set
         if (getContentType() == null) {
@@ -945,16 +932,7 @@ public final class Response {
 
     private void commit(CharSequence content) {
         checkCommitted();
-
-        // add cookies
-        for (Cookie cookie : getCookies()) {
-            httpServletResponse.addCookie(cookie);
-        }
-
-        // set status to OK if it's not set
-        if (getStatus() == 0 || getStatus() == Integer.MAX_VALUE) {
-            ok();
-        }
+        finalizeResponse();
 
         // content type to TEXT_HTML if it's not set
         if (getContentType() == null) {
@@ -969,6 +947,23 @@ public final class Response {
             httpServletResponse.flushBuffer();
         } catch (IOException e) {
             throw new PippoRuntimeException(e);
+        }
+    }
+
+    private void finalizeResponse() {
+        // add headers
+        for (Map.Entry<String, String> header : getHeaderMap().entrySet()) {
+            httpServletResponse.setHeader(header.getKey(), header.getValue());
+        }
+
+        // add cookies
+        for (Cookie cookie : getCookies()) {
+            httpServletResponse.addCookie(cookie);
+        }
+
+        // set status to OK if it's not set
+        if (getStatus() == 0 || getStatus() == Integer.MAX_VALUE) {
+            ok();
         }
     }
 
