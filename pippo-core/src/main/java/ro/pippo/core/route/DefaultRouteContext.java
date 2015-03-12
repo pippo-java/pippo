@@ -96,30 +96,26 @@ public class DefaultRouteContext implements RouteContext {
     @Override
     public <T> T setSession(String name, T t) {
         getSession().put(name, t);
+
         return t;
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public <T> T getSession(String name) {
-        if (hasSession()) {
-            T t = request.getSession().get(name);
-            return t;
-        }
-        return null;
+        return hasSession() ? (T) request.getSession().get(name) : null;
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public <T> T removeSession(String name) {
-        if (hasSession()) {
-            T t = request.getSession().remove(name);
-            return t;
-        }
-        return null;
+        return hasSession() ? (T) request.getSession().remove(name) : null;
     }
 
     @Override
     public <T> T setLocal(String name, T t) {
         response.getLocals().put(name, t);
+
         return t;
     }
 
@@ -129,21 +125,20 @@ public class DefaultRouteContext implements RouteContext {
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public <T> T getLocal(String name) {
-        T t = (T) response.getLocals().get(name);
-        return t;
+        return (T) response.getLocals().get(name);
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public <T> T removeLocal(String name) {
-        T t = (T) response.getLocals().remove(name);
-        return t;
+        return (T) response.getLocals().remove(name);
     }
 
     @Override
     public ParameterValue getParameter(String name) {
-        ParameterValue parameterValue = request.getParameter(name);
-        return parameterValue;
+        return request.getParameter(name);
     }
 
     @Override
@@ -154,6 +149,7 @@ public class DefaultRouteContext implements RouteContext {
     @Override
     public <T> T setHeader(String name, T t) {
         response.header(name, t.toString());
+
         return t;
     }
 
@@ -323,7 +319,7 @@ public class DefaultRouteContext implements RouteContext {
         return this;
     }
 
-
+    @SuppressWarnings("unchecked")
     protected void handleRoute(Route route) {
         if (StringUtils.isNullOrEmpty(route.getName())) {
             log.debug("Executing handler for {} '{}'", route.getRequestMethod(), route.getUriPattern());
@@ -332,4 +328,5 @@ public class DefaultRouteContext implements RouteContext {
         }
         route.getRouteHandler().handle(this);
     }
+
 }
