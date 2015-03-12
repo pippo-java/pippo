@@ -43,20 +43,18 @@ import java.util.List;
  */
 public class RouteDispatcher {
 
-    private final static ThreadLocal<RouteContext> ROUTE_CONTEXT_THREAD_LOCAL = new ThreadLocal<>();
-
     private final static Logger log = LoggerFactory.getLogger(RouteDispatcher.class);
 
-    protected final List<RouteMatch> noMatches = Collections.emptyList();
+    private final static ThreadLocal<RouteContext> ROUTE_CONTEXT_THREAD_LOCAL = new ThreadLocal<>();
+
+    protected static final List<RouteMatch> noMatches = Collections.emptyList();
 
     protected RouteContextFactory<?> routeContextFactory;
-
     protected Application application;
-
     protected Router router;
-
     protected ErrorHandler errorHandler;
 
+    @SuppressWarnings("unchecked")
     public static <T extends RouteContext> T getRouteContext() {
         return (T) ROUTE_CONTEXT_THREAD_LOCAL.get();
     }
@@ -121,7 +119,6 @@ public class RouteDispatcher {
      * @param response
      */
     protected void onRouteDispatch(Request request, Response response) {
-
         final String contextPath = router.getContextPath();
         final String requestUri = URI.create(request.getHttpServletRequest().getRequestURL().toString()).getPath();
         final String contextRequestPath = contextPath.equals("") ? requestUri : requestUri.substring(contextPath.length());
@@ -133,6 +130,7 @@ public class RouteDispatcher {
             RouteContext context = routeContextFactory.createRouteContext(application, request, response, noMatches);
             errorHandler.handle(HttpServletResponse.SC_NOT_FOUND, context);
             log.debug("Returned status code {} for {} '{}' (IGNORED)", response.getStatus(), requestMethod, requestPath);
+
             return;
         }
 
@@ -169,7 +167,6 @@ public class RouteDispatcher {
                     response.commit();
                 }
             }
-
         } catch (Exception e) {
             errorHandler.handle(e, routeContext);
         } finally {
@@ -177,7 +174,6 @@ public class RouteDispatcher {
             log.debug("Returned status code {} for {} '{}'", response.getStatus(), requestMethod, requestPath);
             ROUTE_CONTEXT_THREAD_LOCAL.remove();
         }
-
     }
 
     /**
@@ -230,4 +226,5 @@ public class RouteDispatcher {
         // make current flash available to templates
         routeContext.setLocal("flash", flash);
     }
+
 }
