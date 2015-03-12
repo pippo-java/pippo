@@ -25,11 +25,9 @@ import ro.pippo.core.PippoServlet;
 import ro.pippo.core.WebServer;
 import ro.pippo.core.WebServerSettings;
 
-import javax.servlet.Servlet;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
-import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
@@ -77,7 +75,6 @@ public class TjwsServer implements WebServer {
 
     @Override
     public void start() {
-
         pippoServlet = new PippoServlet();
         pippoServlet.setApplication(application);
 
@@ -114,4 +111,5 @@ public class TjwsServer implements WebServer {
             }
         }
     }
+
 }
