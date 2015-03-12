@@ -145,9 +145,9 @@ public class RouteDispatcher {
                 // NOT FOUND (404)
                 errorHandler.handle(HttpConstants.StatusCode.NOT_FOUND, routeContext);
             } else {
-                // Force the initial Response status code to NOT_FOUND.
+                // Force the initial Response status code to 0.
                 // The chain is expected to properly set a Response status code
-                response.notFound();
+                response.status(0);
 
                 processFlash(routeContext);
             }
@@ -156,6 +156,10 @@ public class RouteDispatcher {
             routeContext.next();
 
             if (!response.isCommitted()) {
+                if (response.getStatus() == 0) {
+                    log.debug("Status code not set for {} '{}'", requestMethod, requestPath);
+                    response.notFound();
+                }
                 log.debug("Auto-committing response for {} '{}'", requestMethod, requestPath);
                 if (response.getStatus() >= HttpServletResponse.SC_BAD_REQUEST) {
                     // delegate response to the error handler.
