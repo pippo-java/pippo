@@ -15,14 +15,13 @@
  */
 package ro.pippo.demo.controller;
 
-import ro.pippo.core.Application;
 import ro.pippo.core.route.PublicResourceHandler;
 import ro.pippo.core.route.WebjarsResourceHandler;
 
 /**
  * @author Decebal Suiu
  */
-public class ControllerApplication extends Application {
+public class ControllerApplication extends ro.pippo.controller.ControllerApplication {
 
     @Override
     protected void onInit() {

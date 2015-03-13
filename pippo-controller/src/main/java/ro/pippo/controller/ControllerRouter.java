@@ -13,28 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package ro.pippo.core.controller;
+package ro.pippo.controller;
 
-import ro.pippo.core.util.ListenerList;
+import ro.pippo.core.route.Router;
 
-import java.lang.reflect.Method;
+import java.util.Map;
 
 /**
  * @author Decebal Suiu
  */
-public class ControllerInvokeListenerList extends ListenerList<ControllerInvokeListener>
-    implements ControllerInvokeListener {
+public interface ControllerRouter extends Router {
 
-    @Override
-    public void onInvoke(final Controller controller, final Method method) {
-        notify(new Notifier<ControllerInvokeListener>() {
+    public String uriFor(Class<? extends Controller> controllerClass, String methodName, Map<String, Object> parameters);
 
-            @Override
-            public void notify(ControllerInvokeListener listener) {
-                listener.onInvoke(controller, method);
-            }
-
-        });
-    }
+    public String uriFor(Class<? extends Controller> controllerClass, String methodName);
 
 }

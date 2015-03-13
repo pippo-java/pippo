@@ -15,6 +15,7 @@
  */
 package ro.pippo.demo.spring;
 
+import ro.pippo.controller.ControllerApplication;
 import ro.pippo.core.Application;
 import ro.pippo.core.route.PublicResourceHandler;
 import ro.pippo.core.route.WebjarsResourceHandler;
@@ -25,7 +26,7 @@ import javax.inject.Inject;
 /**
  * @author Decebal Suiu
  */
-public class SpringApplication2 extends Application {
+public class SpringApplication2 extends ControllerApplication {
 
     @Inject
     private ContactService contactService;

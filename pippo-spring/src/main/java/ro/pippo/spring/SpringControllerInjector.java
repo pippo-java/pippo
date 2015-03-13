@@ -16,8 +16,8 @@
 package ro.pippo.spring;
 
 import org.springframework.context.ApplicationContext;
-import ro.pippo.core.controller.Controller;
-import ro.pippo.core.controller.ControllerInstantiationListener;
+import ro.pippo.controller.Controller;
+import ro.pippo.controller.ControllerInstantiationListener;
 import ro.pippo.ioc.FieldValueProvider;
 import ro.pippo.ioc.Injector;
 

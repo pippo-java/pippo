@@ -13,19 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package ro.pippo.core.controller;
-
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+package ro.pippo.controller;
 
 /**
- * Annotation that identifies that a request body should be mapped to a Java object.
+ * Listener interface that receives messages when controllers are initialized
+ * (after Controller#init method has been executed).
  *
- * @author James Moger
+ * @author Decebal Suiu
  */
-@Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.PARAMETER})
-public @interface Body {
+public interface ControllerInitializationListener {
+
+    /**
+     * Called for every controller after its Controller#init method has been executed.
+     *
+     * @param controller
+     */
+    public void onInitialize(Controller controller);
+
 }

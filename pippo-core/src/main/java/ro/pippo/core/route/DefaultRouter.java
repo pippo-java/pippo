@@ -19,8 +19,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ro.pippo.core.HttpConstants;
 import ro.pippo.core.PippoRuntimeException;
-import ro.pippo.core.controller.Controller;
-import ro.pippo.core.controller.ControllerHandler;
 import ro.pippo.core.util.StringUtils;
 
 import java.util.ArrayList;
@@ -68,7 +66,7 @@ public class DefaultRouter implements Router {
 
     public DefaultRouter() {
         routes = new ArrayList<>();
-        ignorePaths = new TreeSet<String>();
+        ignorePaths = new TreeSet<>();
         cache = new HashMap<>();
         bindingsCache = new HashMap<>();
         contextPath = "";
@@ -94,7 +92,7 @@ public class DefaultRouter implements Router {
      * @param path
      * @return an absolute path
      */
-    private String prefixContextPath(String path) {
+    protected String prefixContextPath(String path) {
         return contextPath + StringUtils.addStart(path, "/");
     }
 
@@ -200,36 +198,6 @@ public class DefaultRouter implements Router {
         PatternBinding binding = getBinding(uriPattern);
 
         return (binding != null) ? prefixContextPath(uriFor(binding, parameters)) : null;
-    }
-
-    @Override
-    public String uriFor(Class<? extends Controller> controllerClass, String methodName) {
-        Route route = getRoute(controllerClass, methodName);
-
-        return (route != null) ? route.getUriPattern() : null;
-    }
-
-    @Override
-    public String uriFor(Class<? extends Controller> controllerClass, String methodName, Map<String, Object> parameters) {
-        Route route = getRoute(controllerClass, methodName);
-
-        return (route != null) ? prefixContextPath(uriFor(route.getUriPattern(), parameters)) : null;
-    }
-
-    private Route getRoute(Class<? extends Controller> controllerClass, String methodName) {
-        List<Route> routes = getRoutes();
-        for (Route route : routes) {
-            RouteHandler routeHandler = route.getRouteHandler();
-            if (routeHandler instanceof ControllerHandler) {
-                ControllerHandler controllerHandler = (ControllerHandler) routeHandler;
-                if (controllerClass == controllerHandler.getControllerClass()
-                    && methodName.equals(controllerHandler.getMethodName())) {
-                    return route;
-                }
-            }
-        }
-
-        return null;
     }
 
     @Override

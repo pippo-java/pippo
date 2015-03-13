@@ -13,26 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package ro.pippo.core.controller;
-
-import ro.pippo.core.util.ListenerList;
+package ro.pippo.controller;
 
 /**
+ * Listener interface that receives messages when controllers are constructed.
+ * It be used to implement things like dependency injection support etc.
+ *
  * @author Decebal Suiu
  */
-public class ControllerInitializationListenerList extends ListenerList<ControllerInitializationListener>
-    implements ControllerInitializationListener {
+public interface ControllerInstantiationListener {
 
-    @Override
-    public void onInitialize(final Controller controller) {
-        notify(new Notifier<ControllerInitializationListener>() {
-
-            @Override
-            public void notify(ControllerInitializationListener listener) {
-                listener.onInitialize(controller);
-            }
-
-        });
-    }
+    /**
+     * Called for every controller that is instantiated.
+     *
+     * @param controller
+     */
+    public void onInstantiation(Controller controller);
 
 }

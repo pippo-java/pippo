@@ -16,7 +16,7 @@
 package ro.pippo.demo.guice;
 
 import com.google.inject.Inject;
-import ro.pippo.core.controller.Controller;
+import ro.pippo.controller.Controller;
 import ro.pippo.demo.common.ContactService;
 
 /**

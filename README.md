@@ -46,6 +46,8 @@ Artifacts
      - [Pippo Metrics Graphite Reporter](https://github.com/decebals/pippo/tree/master/pippo-metrics-graphite) `pippo-metrics-graphite` (jar)
      - [Pippo Metrics InfluxDB Reporter](https://github.com/decebals/pippo/tree/master/pippo-metrics-influxdb) `pippo-metrics-influxdb` (jar)
      - [Pippo Metrics Librato Reporter](https://github.com/decebals/pippo/tree/master/pippo-metrics-librato) `pippo-metrics-librato` (jar)
+- Generic
+     - Pippo Controller `pippo-controller` (jar) 
 
 Using Maven
 -------------------
