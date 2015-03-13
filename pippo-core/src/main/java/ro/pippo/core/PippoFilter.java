@@ -18,6 +18,8 @@ package ro.pippo.core;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ro.pippo.core.route.RouteDispatcher;
+import ro.pippo.core.session.SessionHttpServletRequest;
+import ro.pippo.core.session.SessionManager;
 import ro.pippo.core.util.PippoUtils;
 import ro.pippo.core.util.StringUtils;
 
@@ -103,7 +105,7 @@ public class PippoFilter implements Filter {
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain chain)
         throws IOException, ServletException {
         HttpServletRequest httpServletRequest = (HttpServletRequest) servletRequest;
-        HttpServletResponse httpServletResponse = (HttpServletResponse) servletResponse;
+        final HttpServletResponse httpServletResponse = (HttpServletResponse) servletResponse;
 
         // TODO test for redirect
         // no redirect; process the request
@@ -127,9 +129,30 @@ public class PippoFilter implements Filter {
         }
 
         log.debug("Request {} '{}'", requestMethod, relativePath);
-        final Request request = new Request(httpServletRequest, application);
-        final Response response = new Response(httpServletResponse, application);
 
+        // create response
+        Response response = new Response(httpServletResponse, application);
+
+        // check for (custom) session manager
+        Request request;
+        SessionManager sessionManager = application.getSessionManager();
+        if (sessionManager != null) {
+            final SessionHttpServletRequest sessionHttpServletRequest = new SessionHttpServletRequest(httpServletRequest, sessionManager);
+            response.getFinalizeListeners().add(new ResponseFinalizeListener() {
+
+                @Override
+                public void onFinalize(Response response) {
+                    sessionHttpServletRequest.commitSession(httpServletResponse);
+                }
+
+            });
+
+            request = new Request(sessionHttpServletRequest, application);
+        } else {
+            request = new Request(httpServletRequest, application);
+        }
+
+        // dispatch route(s)
         routeDispatcher.dispatch(request, response);
     }
 

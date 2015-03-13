@@ -13,21 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package ro.pippo.core;
 
 /**
  * @author Decebal Suiu
  */
-public interface SessionFactory {
+public interface ResponseFinalizeListener {
 
-    /**
-     * Returns the current <code>Session</code> associated with a request or, if there is no
-     * current session and <code>create</code> is true, returns a new session.
-     *
-     * @param request
-     * @param create
-     * @return
-     */
-    public Session getSession(Request request, boolean create);
+    public void onFinalize(Response response);
 
 }

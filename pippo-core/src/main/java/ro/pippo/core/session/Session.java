@@ -13,7 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package ro.pippo.core;
+package ro.pippo.core.session;
+
+import ro.pippo.core.Flash;
 
 import javax.servlet.http.HttpSession;
 import java.util.Enumeration;
@@ -21,54 +23,48 @@ import java.util.Enumeration;
 /**
  * @author Decebal Suiu
  */
-public class DefaultSession implements Session {
+public class Session {
 
     private HttpSession httpSession;
 
-    public DefaultSession(HttpSession httpSession) {
+    public Session(HttpSession httpSession) {
         this.httpSession = httpSession;
     }
 
-    @Override
     public String getId() {
         return httpSession.getId();
     }
 
-    @Override
     public void put(String name, Object value) {
         httpSession.setAttribute(name, value);
     }
 
-    @Override
+    @SuppressWarnings("unchecked")
     public <T> T get(String name) {
         return (T) httpSession.getAttribute(name);
     }
 
-    @Override
     public Enumeration<String> getKeys() {
         return httpSession.getAttributeNames();
     }
 
-    @Override
     public <T> T remove(String name) {
         T t = get(name);
         httpSession.removeAttribute(name);
+
         return t;
     }
 
-    @Override
     public void invalidate() {
         httpSession.invalidate();
     }
 
-    @Override
     public void touch() {
         // modify the session to keep it alive
         put("__touch", "DOES_NOT_MATTER");
         remove("__touch");
     }
 
-    @Override
     public Flash getFlash() {
         Flash flash = get("flash");
         if (flash == null) {

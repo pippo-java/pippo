@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2014 the original author or authors.
+ * Copyright (C) 2015 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,33 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package ro.pippo.core;
-
-import java.util.Enumeration;
+package ro.pippo.core.session;
 
 /**
+ * Perform CRUD operations for SessionData.
+ *
  * @author Decebal Suiu
  */
-public interface Session {
+public interface SessionDataStorage {
 
-    public String getId();
+    public SessionData create();
 
-    public void put(String name, Object value);
+    public void save(SessionData sessionData);
 
-    public <T> T get(String name);
+    public SessionData get(String sessionId);
 
-    public Enumeration<String> getKeys();
-
-    public <T> T remove(String name);
-
-    public void invalidate();
-
-    public void touch();
-
-    /**
-     * Shortcut for <code>get("flash")</code>.
-     * @return
-     */
-    public Flash getFlash();
+    public void delete(String sessionId);
 
 }

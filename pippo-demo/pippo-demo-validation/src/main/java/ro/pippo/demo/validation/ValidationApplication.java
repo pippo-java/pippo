@@ -21,6 +21,7 @@ import ro.pippo.core.route.PublicResourceHandler;
 import ro.pippo.core.route.RouteContext;
 import ro.pippo.core.route.RouteHandler;
 import ro.pippo.core.route.WebjarsResourceHandler;
+import ro.pippo.core.session.SessionManager;
 
 import javax.validation.ConstraintViolation;
 import javax.validation.Validation;
@@ -35,6 +36,7 @@ public class ValidationApplication extends Application {
 
     @Override
     protected void onInit() {
+        setSessionManager(new SessionManager());
 
         GET(new WebjarsResourceHandler());
         GET(new PublicResourceHandler());
@@ -46,6 +48,11 @@ public class ValidationApplication extends Application {
 
             @Override
             public void handle(RouteContext routeContext) {
+                System.out.println(">>>>>>>>>>>>>>>>>>>>>>>");
+                System.out.println(routeContext.getRequest().getHttpServletRequest());
+                System.out.println(routeContext.getRequest().getSession(false));
+                System.out.println("<<<<<<<<<<<<<<<<<<<<<<<");
+
                 Contact contact = new Contact();
                 routeContext.setLocal("contact", contact);
                 routeContext.render("contact");
@@ -73,6 +80,18 @@ public class ValidationApplication extends Application {
                     routeContext.setLocal("contact", contact);
                     routeContext.render("contact");
                 }
+            }
+
+        });
+
+        GET("/session", new RouteHandler() {
+
+            @Override
+            public void handle(RouteContext routeContext) {
+//                routeContext.flashError("Test 123");
+                routeContext.setSession("test", "aaaaa");
+                routeContext.redirect("/");
+                System.out.println("_______________________");
             }
 
         });

@@ -13,24 +13,31 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package ro.pippo.core;
-
-import javax.servlet.http.HttpSession;
+package ro.pippo.core.session;
 
 /**
  * @author Decebal Suiu
  */
-public class DefaultSessionFactory implements SessionFactory {
+public class SessionManager {
 
-    @Override
-    public Session getSession(Request request, boolean create) {
-        HttpSession httpSession = request.getHttpServletRequest().getSession(create);
-        if (httpSession == null) {
-            // without a servlet session we can not have a DefaultSession
-            return null;
-        }
+    private SessionDataStorage sessionDataStorage;
+    private SessionStrategy sessionStrategy;
 
-        return new DefaultSession(httpSession);
+    public SessionManager() {
+        this(new MemorySessionDataStorage(), new CookieSessionStrategy());
+    }
+
+    public SessionManager(SessionDataStorage sessionDataStorage, SessionStrategy sessionStrategy) {
+        this.sessionDataStorage = sessionDataStorage;
+        this.sessionStrategy = sessionStrategy;
+    }
+
+    public SessionDataStorage getSessionDataStorage() {
+        return sessionDataStorage;
+    }
+
+    public SessionStrategy getSessionStrategy() {
+        return sessionStrategy;
     }
 
 }
