@@ -145,7 +145,7 @@ public class RouteDispatcher {
             } else {
                 // Force the initial Response status code to 0.
                 // The chain is expected to properly set a Response status code
-                response.status(0);
+//                response.status(0);
 
                 processFlash(routeContext);
             }
