@@ -36,7 +36,6 @@ public class BasicApplication extends Application {
 
     @Override
     protected void onInit() {
-
         getRouter().ignorePaths("/favicon.ico");
 
         // send 'Hello World' as response
