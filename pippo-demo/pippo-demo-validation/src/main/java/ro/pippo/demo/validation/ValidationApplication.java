@@ -22,8 +22,8 @@ import ro.pippo.core.route.PublicResourceHandler;
 import ro.pippo.core.route.RouteContext;
 import ro.pippo.core.route.RouteHandler;
 import ro.pippo.core.route.WebjarsResourceHandler;
-import ro.pippo.core.session.SessionManager;
-import ro.pippo.core.session.SessionRequestResponseFactory;
+import ro.pippo.session.SessionManager;
+import ro.pippo.session.SessionRequestResponseFactory;
 
 import javax.validation.ConstraintViolation;
 import javax.validation.Validation;

@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package ro.pippo.core.session;
+package ro.pippo.session;
 
 /**
  * @author Decebal Suiu

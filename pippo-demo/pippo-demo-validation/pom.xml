@@ -27,6 +27,12 @@
             <version>${project.version}</version>
         </dependency>
 
+        <dependency>
+            <groupId>ro.pippo</groupId>
+            <artifactId>pippo-session</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
         <!-- Validation -->
         <dependency>
             <groupId>org.hibernate</groupId>

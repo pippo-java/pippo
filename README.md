@@ -47,7 +47,8 @@ Artifacts
      - [Pippo Metrics InfluxDB Reporter](https://github.com/decebals/pippo/tree/master/pippo-metrics-influxdb) `pippo-metrics-influxdb` (jar)
      - [Pippo Metrics Librato Reporter](https://github.com/decebals/pippo/tree/master/pippo-metrics-librato) `pippo-metrics-librato` (jar)
 - Generic
-     - Pippo Controller `pippo-controller` (jar) 
+     - Pippo Controller `pippo-controller` (jar)
+     - Pippo Session `pippo-session` (jar)
 
 Using Maven
 -------------------
