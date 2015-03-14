@@ -17,11 +17,13 @@ package ro.pippo.demo.validation;
 
 import ro.pippo.core.Application;
 import ro.pippo.core.Flash;
+import ro.pippo.core.RequestResponseFactory;
 import ro.pippo.core.route.PublicResourceHandler;
 import ro.pippo.core.route.RouteContext;
 import ro.pippo.core.route.RouteHandler;
 import ro.pippo.core.route.WebjarsResourceHandler;
 import ro.pippo.core.session.SessionManager;
+import ro.pippo.core.session.SessionRequestResponseFactory;
 
 import javax.validation.ConstraintViolation;
 import javax.validation.Validation;
@@ -36,8 +38,6 @@ public class ValidationApplication extends Application {
 
     @Override
     protected void onInit() {
-        setSessionManager(new SessionManager());
-
         GET(new WebjarsResourceHandler());
         GET(new PublicResourceHandler());
 
@@ -95,6 +95,11 @@ public class ValidationApplication extends Application {
             }
 
         });
+    }
+
+    @Override
+    protected RequestResponseFactory createRequestResponseFactory() {
+        return new SessionRequestResponseFactory(this, new SessionManager());
     }
 
 }

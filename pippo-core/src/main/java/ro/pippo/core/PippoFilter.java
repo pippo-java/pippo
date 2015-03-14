@@ -18,8 +18,6 @@ package ro.pippo.core;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ro.pippo.core.route.RouteDispatcher;
-import ro.pippo.core.session.SessionHttpServletRequest;
-import ro.pippo.core.session.SessionManager;
 import ro.pippo.core.util.PippoUtils;
 import ro.pippo.core.util.StringUtils;
 
@@ -130,27 +128,10 @@ public class PippoFilter implements Filter {
 
         log.debug("Request {} '{}'", requestMethod, relativePath);
 
-        // create response
-        Response response = new Response(httpServletResponse, application);
-
-        // check for (custom) session manager
-        Request request;
-        SessionManager sessionManager = application.getSessionManager();
-        if (sessionManager != null) {
-            final SessionHttpServletRequest sessionHttpServletRequest = new SessionHttpServletRequest(httpServletRequest, sessionManager);
-            response.getFinalizeListeners().add(new ResponseFinalizeListener() {
-
-                @Override
-                public void onFinalize(Response response) {
-                    sessionHttpServletRequest.commitSession(httpServletResponse);
-                }
-
-            });
-
-            request = new Request(sessionHttpServletRequest, application);
-        } else {
-            request = new Request(httpServletRequest, application);
-        }
+        // create Request, Response objects
+        RequestResponseFactory requestResponseFactory = application.getRequestResponseFactory();
+        Response response = requestResponseFactory.createResponse(httpServletResponse);
+        Request request = requestResponseFactory.createRequest(httpServletRequest, response);
 
         // dispatch route(s)
         routeDispatcher.dispatch(request, response);
@@ -248,6 +229,7 @@ public class PippoFilter implements Filter {
             log.error("Filter init param '{}' is missing", APPLICATION_CLASS_PARAM);
             throw new ServletException("Cannot found application class name");
         }
+
         try {
             Class<?> applicationClass = Class.forName(applicationClassName);
             application = (Application) applicationClass.newInstance();

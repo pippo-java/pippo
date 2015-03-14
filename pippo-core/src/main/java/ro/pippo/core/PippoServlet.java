@@ -91,16 +91,18 @@ public class PippoServlet extends HttpServlet {
     }
 
     @Override
-    public void service(ServletRequest req, ServletResponse resp) throws IOException, ServletException {
+    public void service(ServletRequest servletRequest, ServletResponse servletResponse)
+        throws IOException, ServletException {
+        HttpServletRequest httpServletRequest = (HttpServletRequest) servletRequest;
+        HttpServletResponse httpServletResponse = (HttpServletResponse) servletResponse;
 
-        HttpServletRequest httpRequest = (HttpServletRequest) req;
-        HttpServletResponse httpResponse = (HttpServletResponse) resp;
+        // create Request, Response objects
+        RequestResponseFactory requestResponseFactory = application.getRequestResponseFactory();
+        Response response = requestResponseFactory.createResponse(httpServletResponse);
+        Request request = requestResponseFactory.createRequest(httpServletRequest, response);
 
-        Request request = new Request(httpRequest, application);
-        Response response = new Response(httpResponse, application);
-
+        // dispatch route(s)
         routeDispatcher.dispatch(request, response);
-
     }
 
     @Override
@@ -116,13 +118,13 @@ public class PippoServlet extends HttpServlet {
         }
     }
 
-
     private void createApplication(ServletConfig servletConfig) {
         String applicationClassName = servletConfig.getInitParameter(APPLICATION_CLASS_PARAM);
         if (applicationClassName == null) {
             log.error("Servlet init param '{}' is missing", APPLICATION_CLASS_PARAM);
             throw new PippoRuntimeException("Cannot found application class name");
         }
+
         try {
             Class<?> applicationClass = Class.forName(applicationClassName);
             application = (Application) applicationClass.newInstance();
@@ -131,4 +133,5 @@ public class PippoServlet extends HttpServlet {
             throw new PippoRuntimeException(e);
         }
     }
+
 }

@@ -17,7 +17,6 @@ package ro.pippo.core;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import ro.pippo.core.session.Session;
 import ro.pippo.core.util.IoUtils;
 import ro.pippo.core.util.StringUtils;
 

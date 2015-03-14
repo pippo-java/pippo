@@ -21,7 +21,7 @@ import ro.pippo.core.Application;
 import ro.pippo.core.ParameterValue;
 import ro.pippo.core.Request;
 import ro.pippo.core.Response;
-import ro.pippo.core.session.Session;
+import ro.pippo.core.Session;
 import ro.pippo.core.util.StringUtils;
 
 import java.io.File;

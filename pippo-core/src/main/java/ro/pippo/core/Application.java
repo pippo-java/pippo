@@ -57,7 +57,7 @@ public class Application {
     private ContentTypeEngines engines;
     private Router router;
     private ErrorHandler errorHandler;
-    private SessionManager sessionManager;
+    private RequestResponseFactory requestResponseFactory;
 
     private List<Initializer> initializers;
 
@@ -277,12 +277,21 @@ public class Application {
         this.errorHandler = errorHandler;
     }
 
-    public SessionManager getSessionManager() {
-        return sessionManager;
+    public final RequestResponseFactory getRequestResponseFactory() {
+        if (requestResponseFactory == null) {
+            requestResponseFactory = createRequestResponseFactory();
+        }
+
+        return requestResponseFactory;
     }
 
-    public void setSessionManager(SessionManager sessionManager) {
-        this.sessionManager = sessionManager;
+    /**
+     * Override this method if you want a custom RequestResponseFactory.
+     *
+     * @return
+     */
+    protected RequestResponseFactory createRequestResponseFactory() {
+        return new RequestResponseFactory(this);
     }
 
     /**
