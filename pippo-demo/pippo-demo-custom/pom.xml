@@ -14,10 +14,6 @@
     <name>Pippo Demo Custom</name>
     <description>Custom demo application</description>
 
-    <properties>
-        <servlet.version>3.0.1</servlet.version>
-    </properties>
-
     <dependencies>
         <dependency>
             <groupId>ro.pippo</groupId>
