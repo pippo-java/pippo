@@ -15,6 +15,8 @@
  */
 package ro.pippo.session;
 
+import ro.pippo.core.util.CookieUtils;
+
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -64,16 +66,7 @@ public class CookieSessionStrategy implements SessionStrategy {
     }
 
     private Cookie getSessionIdCookie(HttpServletRequest request) {
-        Cookie cookies[] = request.getCookies();
-        if (cookies != null) {
-            for (Cookie cookie : cookies) {
-                if (SESSION_ID_COOKIE_NAME.equals(cookie.getName())) {
-                    return cookie;
-                }
-            }
-        }
-
-        return null;
+        return CookieUtils.getCookie(request, SESSION_ID_COOKIE_NAME);
     }
 
 }
