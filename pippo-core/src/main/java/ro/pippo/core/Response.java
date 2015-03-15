@@ -15,6 +15,7 @@
  */
 package ro.pippo.core;
 
+import ro.pippo.core.route.RouteDispatcher;
 import ro.pippo.core.util.IoUtils;
 import ro.pippo.core.util.StringUtils;
 
@@ -982,6 +983,10 @@ public final class Response {
         }
 
         return finalizeListeners;
+    }
+
+    public static Response get() {
+        return RouteDispatcher.getRouteContext().getResponse();
     }
 
 }

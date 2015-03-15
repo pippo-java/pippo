@@ -19,6 +19,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ro.pippo.core.route.DefaultRouter;
 import ro.pippo.core.route.Route;
+import ro.pippo.core.route.RouteDispatcher;
 import ro.pippo.core.route.RouteHandler;
 import ro.pippo.core.route.RoutePostDispatchListenerList;
 import ro.pippo.core.route.RoutePreDispatchListenerList;
@@ -341,6 +342,10 @@ public class Application {
         }
 
         return locals;
+    }
+
+    public static Application get() {
+        return RouteDispatcher.getRouteContext().getApplication();
     }
 
     private List<Initializer> getInitializers() {
