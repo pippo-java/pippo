@@ -22,6 +22,7 @@ import ro.pippo.core.util.StringUtils;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import javax.servlet.http.Part;
 import java.lang.reflect.Field;
 import java.util.Arrays;
@@ -45,7 +46,6 @@ public final class Request {
 
     private HttpServletRequest httpServletRequest;
     private ContentTypeEngines contentTypeEngines;
-    private SessionFactory sessionFactory;
     private Map<String, ParameterValue> parameters;
     private Map<String, String> pathParameters;
     private Map<String, ParameterValue> allParameters; // parameters + pathParameters
@@ -58,7 +58,6 @@ public final class Request {
     public Request(HttpServletRequest servletRequest, Application application) {
         this.httpServletRequest = servletRequest;
         this.contentTypeEngines = application.getContentTypeEngines();
-        this.sessionFactory = application.getSessionFactory();
 
         // fill (query) parameters if any
         Map<String, ParameterValue> tmp = new HashMap<>();
@@ -323,7 +322,10 @@ public final class Request {
 
     public Session getSession(boolean create) {
         if (session == null) {
-            session = sessionFactory.getSession(this, create);
+            HttpSession httpSession = httpServletRequest.getSession(create);
+            if (httpSession != null) {
+                session = new Session(httpSession);
+            }
         }
 
         return session;

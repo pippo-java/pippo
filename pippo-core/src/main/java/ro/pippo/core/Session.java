@@ -15,31 +15,71 @@
  */
 package ro.pippo.core;
 
+import ro.pippo.core.Flash;
+
+import javax.servlet.http.HttpSession;
 import java.util.Enumeration;
 
 /**
  * @author Decebal Suiu
  */
-public interface Session {
+public class Session {
 
-    public String getId();
+    private HttpSession httpSession;
 
-    public void put(String name, Object value);
+    public Session(HttpSession httpSession) {
+        this.httpSession = httpSession;
+    }
 
-    public <T> T get(String name);
+    public String getId() {
+        return httpSession.getId();
+    }
 
-    public Enumeration<String> getKeys();
+    public void put(String name, Object value) {
+        httpSession.setAttribute(name, value);
+    }
 
-    public <T> T remove(String name);
+    @SuppressWarnings("unchecked")
+    public <T> T get(String name) {
+        return (T) httpSession.getAttribute(name);
+    }
 
-    public void invalidate();
+    public Enumeration<String> getKeys() {
+        return httpSession.getAttributeNames();
+    }
 
-    public void touch();
+    public <T> T remove(String name) {
+        T t = get(name);
+        httpSession.removeAttribute(name);
 
-    /**
-     * Shortcut for <code>get("flash")</code>.
-     * @return
-     */
-    public Flash getFlash();
+        return t;
+    }
+
+    public void invalidate() {
+        httpSession.invalidate();
+    }
+
+    public void touch() {
+        // modify the session to keep it alive
+        put("__touch", "DOES_NOT_MATTER");
+        remove("__touch");
+    }
+
+    public Flash getFlash() {
+        Flash flash = get("flash");
+        if (flash == null) {
+            put("flash", flash = new Flash());
+        }
+
+        return flash;
+    }
+
+    public boolean isNew() {
+        return httpSession.isNew();
+    }
+
+    public HttpSession getHttpSession() {
+        return httpSession;
+    }
 
 }

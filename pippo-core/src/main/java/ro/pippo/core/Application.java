@@ -26,7 +26,6 @@ import ro.pippo.core.route.Router;
 import ro.pippo.core.route.StaticResourceHandler;
 import ro.pippo.core.util.HttpCacheToolkit;
 import ro.pippo.core.util.MimeTypes;
-import ro.pippo.core.util.ServiceLocator;
 import ro.pippo.core.util.StringUtils;
 
 import java.io.IOException;
@@ -57,7 +56,7 @@ public class Application {
     private ContentTypeEngines engines;
     private Router router;
     private ErrorHandler errorHandler;
-    private SessionFactory sessionFactory;
+    private RequestResponseFactory requestResponseFactory;
 
     private List<Initializer> initializers;
 
@@ -265,18 +264,6 @@ public class Application {
         return route;
     }
 
-    public SessionFactory getSessionFactory() {
-        if (sessionFactory == null) {
-            SessionFactory factory = ServiceLocator.locate(SessionFactory.class);
-            if (factory == null) {
-                factory = new DefaultSessionFactory();
-            }
-            sessionFactory = factory;
-        }
-
-        return sessionFactory;
-    }
-
     public ErrorHandler getErrorHandler() {
         if (errorHandler == null) {
             errorHandler = new DefaultErrorHandler(this);
@@ -287,6 +274,23 @@ public class Application {
 
     public void setErrorHandler(ErrorHandler errorHandler) {
         this.errorHandler = errorHandler;
+    }
+
+    public final RequestResponseFactory getRequestResponseFactory() {
+        if (requestResponseFactory == null) {
+            requestResponseFactory = createRequestResponseFactory();
+        }
+
+        return requestResponseFactory;
+    }
+
+    /**
+     * Override this method if you want a custom RequestResponseFactory.
+     *
+     * @return
+     */
+    protected RequestResponseFactory createRequestResponseFactory() {
+        return new RequestResponseFactory(this);
     }
 
     /**

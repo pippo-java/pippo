@@ -103,7 +103,7 @@ public class PippoFilter implements Filter {
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain chain)
         throws IOException, ServletException {
         HttpServletRequest httpServletRequest = (HttpServletRequest) servletRequest;
-        HttpServletResponse httpServletResponse = (HttpServletResponse) servletResponse;
+        final HttpServletResponse httpServletResponse = (HttpServletResponse) servletResponse;
 
         // TODO test for redirect
         // no redirect; process the request
@@ -127,9 +127,13 @@ public class PippoFilter implements Filter {
         }
 
         log.debug("Request {} '{}'", requestMethod, relativePath);
-        final Request request = new Request(httpServletRequest, application);
-        final Response response = new Response(httpServletResponse, application);
 
+        // create Request, Response objects
+        RequestResponseFactory requestResponseFactory = application.getRequestResponseFactory();
+        Response response = requestResponseFactory.createResponse(httpServletResponse);
+        Request request = requestResponseFactory.createRequest(httpServletRequest, response);
+
+        // dispatch route(s)
         routeDispatcher.dispatch(request, response);
     }
 
@@ -225,6 +229,7 @@ public class PippoFilter implements Filter {
             log.error("Filter init param '{}' is missing", APPLICATION_CLASS_PARAM);
             throw new ServletException("Cannot found application class name");
         }
+
         try {
             Class<?> applicationClass = Class.forName(applicationClassName);
             application = (Application) applicationClass.newInstance();

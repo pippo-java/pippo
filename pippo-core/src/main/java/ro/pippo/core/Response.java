@@ -49,6 +49,7 @@ public final class Response {
     private Map<String, String> headers;
     private Map<String, Cookie> cookies;
     private String contextPath;
+    private ResponseFinalizeListenerList finalizeListeners;
 
     private int status;
 
@@ -58,6 +59,7 @@ public final class Response {
         this.templateEngine = application.getTemplateEngine();
         this.httpServletResponse.setCharacterEncoding(StandardCharsets.UTF_8.toString());
         this.contextPath = application.getRouter().getContextPath();
+
         this.status = 0;
     }
 
@@ -967,6 +969,19 @@ public final class Response {
         if (getStatus() == 0 || getStatus() == Integer.MAX_VALUE) {
             ok();
         }
+
+        // call finalize listeners
+        if ((finalizeListeners != null) && !finalizeListeners.isEmpty()) {
+            finalizeListeners.onFinalize(this);
+        }
+    }
+
+    public ResponseFinalizeListenerList getFinalizeListeners() {
+        if (finalizeListeners == null) {
+            finalizeListeners = new ResponseFinalizeListenerList();
+        }
+
+        return finalizeListeners;
     }
 
 }

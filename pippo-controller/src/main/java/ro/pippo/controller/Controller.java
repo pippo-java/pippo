@@ -38,6 +38,7 @@ public class Controller {
         return routeContext.getResponse();
     }
 
+    @SuppressWarnings("unchecked")
     public <T extends ControllerApplication> T getApplication() {
         return (T) routeContext.getApplication();
     }

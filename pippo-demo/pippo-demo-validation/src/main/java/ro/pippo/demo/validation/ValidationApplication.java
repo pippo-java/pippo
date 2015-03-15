@@ -17,10 +17,13 @@ package ro.pippo.demo.validation;
 
 import ro.pippo.core.Application;
 import ro.pippo.core.Flash;
+import ro.pippo.core.RequestResponseFactory;
 import ro.pippo.core.route.PublicResourceHandler;
 import ro.pippo.core.route.RouteContext;
 import ro.pippo.core.route.RouteHandler;
 import ro.pippo.core.route.WebjarsResourceHandler;
+import ro.pippo.session.SessionManager;
+import ro.pippo.session.SessionRequestResponseFactory;
 
 import javax.validation.ConstraintViolation;
 import javax.validation.Validation;
@@ -35,7 +38,6 @@ public class ValidationApplication extends Application {
 
     @Override
     protected void onInit() {
-
         GET(new WebjarsResourceHandler());
         GET(new PublicResourceHandler());
 
@@ -46,6 +48,11 @@ public class ValidationApplication extends Application {
 
             @Override
             public void handle(RouteContext routeContext) {
+                System.out.println(">>>>>>>>>>>>>>>>>>>>>>>");
+                System.out.println(routeContext.getRequest().getHttpServletRequest());
+                System.out.println(routeContext.getRequest().getSession(false));
+                System.out.println("<<<<<<<<<<<<<<<<<<<<<<<");
+
                 Contact contact = new Contact();
                 routeContext.setLocal("contact", contact);
                 routeContext.render("contact");
@@ -76,6 +83,23 @@ public class ValidationApplication extends Application {
             }
 
         });
+
+        GET("/session", new RouteHandler() {
+
+            @Override
+            public void handle(RouteContext routeContext) {
+//                routeContext.flashError("Test 123");
+                routeContext.setSession("test", "aaaaa");
+                routeContext.redirect("/");
+                System.out.println("_______________________");
+            }
+
+        });
+    }
+
+    @Override
+    protected RequestResponseFactory createRequestResponseFactory() {
+        return new SessionRequestResponseFactory(this, new SessionManager());
     }
 
 }

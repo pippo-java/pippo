@@ -126,6 +126,7 @@
         <module>pippo-metrics-influxdb</module>
         <module>pippo-metrics-librato</module>
         <module>pippo-controller</module>
+        <module>pippo-session</module>
     </modules>
 
 </project>

@@ -13,21 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package ro.pippo.core;
+package ro.pippo.session;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 /**
  * @author Decebal Suiu
  */
-public interface SessionFactory {
+public interface SessionStrategy {
 
-    /**
-     * Returns the current <code>Session</code> associated with a request or, if there is no
-     * current session and <code>create</code> is true, returns a new session.
-     *
-     * @param request
-     * @param create
-     * @return
-     */
-    public Session getSession(Request request, boolean create);
+    public String getRequestedSessionId(HttpServletRequest request);
+
+    public void onNewSession(HttpServletRequest request, HttpServletResponse response, SessionData sessionData);
+
+    public void onInvalidatedSession(HttpServletRequest request, HttpServletResponse response);
 
 }
