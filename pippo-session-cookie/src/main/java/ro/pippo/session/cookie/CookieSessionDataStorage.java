@@ -57,7 +57,7 @@ public class CookieSessionDataStorage implements SessionDataStorage {
     @Override
     public SessionData get(String sessionId) {
         Cookie cookie = getSessionCookie(getHttpServletRequest());
-        System.out.println("cookie = " + cookie);
+//        System.out.println("cookie = " + cookie);
 
         if (cookie == null) {
             // TODO or a new SessionData with and an warning/error in log ?!
