@@ -130,6 +130,7 @@
         <module>pippo-metrics-librato</module>
         <module>pippo-controller</module>
         <module>pippo-session</module>
+        <module>pippo-session-cookie</module>
     </modules>
 
 </project>

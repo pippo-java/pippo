@@ -24,7 +24,11 @@ public class SessionManager {
     private SessionStrategy sessionStrategy;
 
     public SessionManager() {
-        this(new MemorySessionDataStorage(), new CookieSessionStrategy());
+        this(new MemorySessionDataStorage());
+    }
+
+    public SessionManager(SessionDataStorage sessionDataStorage) {
+        this(sessionDataStorage, new CookieSessionStrategy());
     }
 
     public SessionManager(SessionDataStorage sessionDataStorage, SessionStrategy sessionStrategy) {

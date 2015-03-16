@@ -14,10 +14,6 @@
     <name>Pippo Demo Parent</name>
     <description>Demo applications</description>
 
-    <properties>
-        <slf4j.version>1.7.7</slf4j.version>
-    </properties>
-
     <dependencies>
         <!-- Logging -->
         <dependency>
@@ -51,6 +47,7 @@
         <module>pippo-demo-spring</module>
         <module>pippo-demo-guice</module>
         <module>pippo-demo-template</module>
+        <module>pippo-demo-session</module>
     </modules>
 
     <profiles>
