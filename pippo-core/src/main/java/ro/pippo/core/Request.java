@@ -18,6 +18,7 @@ package ro.pippo.core;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ro.pippo.core.route.RouteDispatcher;
+import ro.pippo.core.util.CookieUtils;
 import ro.pippo.core.util.IoUtils;
 import ro.pippo.core.util.StringUtils;
 
@@ -26,7 +27,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.servlet.http.Part;
 import java.lang.reflect.Field;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Enumeration;
@@ -417,20 +417,11 @@ public final class Request {
     }
 
     public List<Cookie> getCookies() {
-        Cookie[] cookies = httpServletRequest.getCookies();
-        if (cookies == null) {
-            return Collections.emptyList();
-        }
-        return Arrays.asList(cookies);
+        return CookieUtils.getCookies(httpServletRequest);
     }
 
     public Cookie getCookie(String name) {
-        for (Cookie cookie : getCookies()) {
-            if (cookie.getName().equals(name)) {
-                return cookie;
-            }
-        }
-        return null;
+        return CookieUtils.getCookie(httpServletRequest, name);
     }
 
     public static Request get() {
