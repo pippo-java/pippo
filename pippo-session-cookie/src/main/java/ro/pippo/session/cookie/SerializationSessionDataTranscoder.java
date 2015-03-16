@@ -27,9 +27,11 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 
 /**
+ * A {@link SessionDataTranscoder} that serializes {@link SessionData}s using java serialization.
+ *
  * @author Decebal Suiu
  */
-public class SerializeSessionDataTranscoder implements SessionDataTranscoder {
+public class SerializationSessionDataTranscoder implements SessionDataTranscoder {
 
     @Override
     public String encode(SessionData sessionData) {

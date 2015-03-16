@@ -35,7 +35,7 @@ public class CookieSessionDataStorage implements SessionDataStorage {
     private final SessionDataTranscoder transcoder;
 
     public CookieSessionDataStorage() {
-        this(new SerializeSessionDataTranscoder());
+        this(new SerializationSessionDataTranscoder());
     }
 
     public CookieSessionDataStorage(SessionDataTranscoder transcoder) {

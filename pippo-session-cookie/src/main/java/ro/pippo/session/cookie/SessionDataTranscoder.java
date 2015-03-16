@@ -18,6 +18,9 @@ package ro.pippo.session.cookie;
 import ro.pippo.session.SessionData;
 
 /**
+ * By default <code>CookieSessionDataStorage</code> uses Java's serialization to serialize session data
+ * so that it can be sent to cookie. The same applies to deserialization of course.
+ *
  * @author Decebal Suiu
  */
 public interface SessionDataTranscoder {
