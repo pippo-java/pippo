@@ -16,4 +16,4 @@ The framework is based on Java Servlet 3.0 and requires Java 7.
 
 Documentation
 -------------------
-Documentation is available on [wwww.pippo.ro](http://www.pippo.ro).
+Documentation is available on [wwww.pippo.ro](http://www.pippo.ro)
