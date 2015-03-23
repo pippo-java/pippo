@@ -87,6 +87,8 @@ public interface RouteContext {
 
     public void render(String templateName);
 
+    public void render(String templateName, Map<String, Object> model);
+
     public void send(CharSequence content);
 
     public void send(File file);

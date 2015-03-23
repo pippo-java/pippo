@@ -204,6 +204,11 @@ public class DefaultRouteContext implements RouteContext {
     }
 
     @Override
+    public void render(String templateName, Map<String, Object> model) {
+        response.render(templateName, model);
+    }
+
+    @Override
     public void send(CharSequence content) {
         response.send(content);
     }
