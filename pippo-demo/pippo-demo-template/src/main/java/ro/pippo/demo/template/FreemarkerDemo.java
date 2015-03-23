@@ -16,6 +16,7 @@
 package ro.pippo.demo.template;
 
 import ro.pippo.core.Pippo;
+import ro.pippo.freemarker.FreemarkerTemplateEngine;
 
 /**
  * @author James Moger
@@ -24,8 +25,7 @@ public class FreemarkerDemo {
 
     public static void main(String[] args) {
         // .ftl is the default file extension
-//        Pippo pippo = new Pippo(new TemplateDemoApplication(new FreemarkerTemplateEngine(), "freemarker/hello"));
-        Pippo pippo = new Pippo(new FreemarkerApplication());
+        Pippo pippo = new Pippo(new TemplateApplication(new FreemarkerTemplateEngine(), "freemarker/hello"));
         pippo.start();
     }
 
