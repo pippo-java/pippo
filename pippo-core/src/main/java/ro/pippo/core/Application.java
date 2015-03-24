@@ -386,11 +386,8 @@ public class Application {
     @Override
     public String toString() {
         String toString = (getApplicationName() + " " + getApplicationVersion()).trim();
-        if (toString.isEmpty()) {
-            super.toString();
-        }
 
-        return toString;
+        return toString.isEmpty() ? super.toString() : toString;
     }
 
 }
