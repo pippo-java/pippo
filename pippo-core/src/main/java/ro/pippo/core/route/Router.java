@@ -54,7 +54,13 @@ public interface Router {
 
     public List<Route> getRoutes();
 
-    public String uriFor(String uri);
+    /**
+     * Get uri with context path.
+     *
+     * @param relativeUri
+     * @return
+     */
+    public String uriFor(String relativeUri);
 
     public String uriFor(String uriPattern, Map<String, Object> parameters);
 

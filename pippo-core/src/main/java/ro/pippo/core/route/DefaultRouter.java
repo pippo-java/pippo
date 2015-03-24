@@ -189,8 +189,8 @@ public class DefaultRouter implements Router {
     }
 
     @Override
-    public String uriFor(String uri) {
-        return prefixContextPath(uri);
+    public String uriFor(String relativeUri) {
+        return prefixContextPath(relativeUri);
     }
 
     @Override
