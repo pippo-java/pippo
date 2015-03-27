@@ -348,10 +348,10 @@ public final class Request {
 
         // preserve the session data
         Map<String, Object> values = new HashMap<>();
-        Enumeration<String> keys = getSession().getKeys();
-        while (keys.hasMoreElements()) {
-            String key = keys.nextElement();
-            values.put(key, getSession().get(key));
+        Enumeration<String> names = getSession().getNames();
+        while (names.hasMoreElements()) {
+            String name = names.nextElement();
+            values.put(name, getSession().get(name));
         }
 
         // preserve the flash data

@@ -44,7 +44,7 @@ public class Session {
         return (T) httpSession.getAttribute(name);
     }
 
-    public Enumeration<String> getKeys() {
+    public Enumeration<String> getNames() {
         return httpSession.getAttributeNames();
     }
 

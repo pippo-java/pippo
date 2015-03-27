@@ -47,9 +47,9 @@ public class SessionApplication extends Application {
 
                 if (session != null) {
                     // show attributes
-                    Enumeration<String> keys = session.getKeys();
-                    while (keys.hasMoreElements()) {
-                        String name = keys.nextElement();
+                    Enumeration<String> names = session.getNames();
+                    while (names.hasMoreElements()) {
+                        String name = names.nextElement();
                         builder.append("&nbsp;&nbsp;&nbsp;" + name + " > " + session.get(name));
                         builder.append("<br>");
                     }
