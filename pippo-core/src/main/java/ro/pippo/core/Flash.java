@@ -26,7 +26,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Flash messages are server-side messages that are that is only available for a single request after
+ * Flash messages are server-side messages that are only available for a single request after
  * the current one (this is useful for displaying messages after a redirect).
  *
  * @author Decebal Suiu
