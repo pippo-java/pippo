@@ -44,7 +44,6 @@
     <build>
         <plugins>
             <plugin>
-                <inherited>true</inherited>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>2.5.1</version>
@@ -55,6 +54,18 @@
                     <encoding>UTF-8</encoding>
                     <showWarnings>true</showWarnings>
                     <showDeprecation>true</showDeprecation>
+                </configuration>
+                <inherited>true</inherited>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-release-plugin</artifactId>
+                <version>2.5</version>
+                <configuration>
+                    <goals>deploy</goals>
+                    <autoVersionSubmodules>true</autoVersionSubmodules>
+                    <tagNameFormat>release-@{project.version}</tagNameFormat>
                 </configuration>
             </plugin>
         </plugins>
