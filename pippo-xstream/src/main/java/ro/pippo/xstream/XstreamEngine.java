@@ -44,8 +44,7 @@ public class XstreamEngine implements ContentTypeEngine {
 
 	@Override
 	public <T> T fromString(String content, Class<T> classOfT) {
-		Object o = new XStream().fromXML(content);
-		return (T) o;
+		return (T) new XStream().fromXML(content);
 	}
 
 }
