@@ -25,6 +25,7 @@ import java.io.OutputStream;
 import java.io.Reader;
 import java.io.StringWriter;
 import java.io.Writer;
+import java.nio.charset.StandardCharsets;
 
 /**
  * @author Decebal Suiu
@@ -69,7 +70,7 @@ public class IoUtils {
     }
 
     public static long copy(InputStream input, Writer writer) throws IOException {
-        return copy(new InputStreamReader(input), writer);
+        return copy(new InputStreamReader(input, StandardCharsets.UTF_8), writer);
     }
 
     public static long copy(InputStream input, File file) throws IOException {
