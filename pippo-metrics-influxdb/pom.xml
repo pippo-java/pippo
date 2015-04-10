@@ -22,7 +22,7 @@
 	<description>InfluxDB Metrics integration</description>
 
 	<properties>
-		<influxdb.version>0.5.0</influxdb.version>
+		<influxdb.version>0.6.0</influxdb.version>
 	</properties>
 
 	<dependencies>

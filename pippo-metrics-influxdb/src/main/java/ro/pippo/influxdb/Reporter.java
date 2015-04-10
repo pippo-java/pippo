@@ -18,7 +18,7 @@ package ro.pippo.influxdb;
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
-import metrics_influxdb.Influxdb;
+import metrics_influxdb.InfluxdbHttp;
 import metrics_influxdb.InfluxdbReporter;
 
 import org.slf4j.Logger;
@@ -56,7 +56,7 @@ public class Reporter implements MetricsReporter {
 
 			try {
 
-				Influxdb influxdb = new Influxdb(address, port, database, username, password);
+				InfluxdbHttp influxdb = new InfluxdbHttp(address, port, database, username, password);
 				reporter = InfluxdbReporter.forRegistry(metricRegistry).prefixedWith(hostname)
 						.convertRatesTo(TimeUnit.SECONDS).convertDurationsTo(TimeUnit.MILLISECONDS)
 						.filter(MetricFilter.ALL).build(influxdb);
