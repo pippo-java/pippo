@@ -55,7 +55,7 @@ public class Application {
     private HttpCacheToolkit httpCacheToolkit;
     private TemplateEngine templateEngine;
     private ContentTypeEngines engines;
-    private Router router;
+    protected Router router;
     private ErrorHandler errorHandler;
     private RequestResponseFactory requestResponseFactory;
 

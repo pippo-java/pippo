@@ -17,9 +17,11 @@ package ro.pippo.controller;
 
 import ro.pippo.core.Application;
 import ro.pippo.core.HttpConstants;
+import ro.pippo.core.PippoRuntimeException;
 import ro.pippo.core.PippoSettings;
 import ro.pippo.core.route.Route;
 import ro.pippo.core.route.RouteHandler;
+import ro.pippo.core.route.Router;
 import ro.pippo.core.util.ServiceLocator;
 
 /**
@@ -110,6 +112,24 @@ public class ControllerApplication extends Application {
         }
 
         return controllerInvokeListeners;
+    }
+
+    @Override
+    public Router getRouter() {
+        if (router == null) {
+            router = new DefaultControllerRouter();
+        }
+
+        return router;
+    }
+
+    @Override
+    public void setRouter(Router router) {
+        if (!(router instanceof ControllerRouter)) {
+            throw new PippoRuntimeException("'router' must be an instance of '{}'", ControllerRouter.class.getName());
+        }
+
+        super.setRouter(router);
     }
 
 }
