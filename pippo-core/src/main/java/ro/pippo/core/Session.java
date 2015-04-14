@@ -15,10 +15,12 @@
  */
 package ro.pippo.core;
 
-import ro.pippo.core.Flash;
+import ro.pippo.core.route.RouteDispatcher;
 
 import javax.servlet.http.HttpSession;
 import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @author Decebal Suiu
@@ -80,6 +82,26 @@ public class Session {
 
     public HttpSession getHttpSession() {
         return httpSession;
+    }
+
+    public static Session get() {
+        return RouteDispatcher.getRouteContext().getRequest().getSession(false);
+    }
+
+    public Map<String, Object> getAll() {
+        Map<String, Object> all = new HashMap<>();
+
+        Enumeration<String> names = getNames();
+        while (names.hasMoreElements() ) {
+            String name = names.nextElement();
+            if ("flash".equalsIgnoreCase(name)) {
+                continue;
+            }
+
+            all.put(name, get(name));
+        }
+
+        return all;
     }
 
 }
