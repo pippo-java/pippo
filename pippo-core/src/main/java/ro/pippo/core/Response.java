@@ -907,6 +907,13 @@ public final class Response {
         // merge the model passed with the locals data
         model.putAll(getLocals());
 
+        // add session (if exists) to model
+        Session session = Session.get();
+        if (session != null) {
+//            model.put("session", session.getAll());
+            model.put("session", session);
+        }
+
         // render the template using the merged model
         StringWriter stringWriter = new StringWriter();
         templateEngine.renderResource(templateName, model, stringWriter);
