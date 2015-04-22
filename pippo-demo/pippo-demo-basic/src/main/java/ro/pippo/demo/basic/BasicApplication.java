@@ -183,12 +183,14 @@ public class BasicApplication extends Application {
 
         // register a custom ExceptionHandler
         getErrorHandler().setExceptionHandler(ForbiddenException.class, new ExceptionHandler() {
+
             @Override
             public void handle(Exception e, RouteContext routeContext) {
                 log.info("Called custom exception handler");
                 routeContext.setLocal("message", e.getMessage());
                 getErrorHandler().handle(403, routeContext);
             }
+
         });
 
         // use a finally filter (invoked even when exceptions were raised in previous routes)
@@ -208,5 +210,7 @@ public class BasicApplication extends Application {
         public ForbiddenException(String message) {
             super(message);
         }
+
     }
+
 }

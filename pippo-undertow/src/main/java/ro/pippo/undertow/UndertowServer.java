@@ -117,8 +117,8 @@ public class UndertowServer extends AbstractWebServer {
         }
 
         builder.setHandler(contextHandler);
-        Undertow server = builder.build();
-        return server;
+
+        return builder.build();
     }
 
     protected HttpHandler createContextHandler(HttpHandler pippoHandler) throws ServletException {
@@ -134,20 +134,18 @@ public class UndertowServer extends AbstractWebServer {
     }
 
     protected DeploymentManager createPippoDeploymentManager() throws ServletException {
-
         DeploymentInfo info = Servlets.deployment();
         info.setDeploymentName("Pippo");
         info.setClassLoader(this.getClass().getClassLoader());
         info.setContextPath(settings.getContextPath());
         info.setIgnoreFlush(true);
 
-        String filterPath = pippoFilter.getFilterPath();
-        if (StringUtils.isNullOrEmpty(filterPath)) {
-            filterPath = "/*"; // default value
+        if (StringUtils.isNullOrEmpty(pippoFilterPath)) {
+            pippoFilterPath = "/*"; // default value
         }
 
         info.addFilters(new FilterInfo("PippoFilter", PippoFilter.class, new ImmediateInstanceFactory<>(pippoFilter)));
-        info.addFilterUrlMapping("PippoFilter", filterPath, DispatcherType.REQUEST);
+        info.addFilterUrlMapping("PippoFilter", pippoFilterPath, DispatcherType.REQUEST);
 
         ServletInfo defaultServlet = new ServletInfo("DefaultServlet", DefaultServlet.class);
         defaultServlet.addMapping("/");
@@ -161,7 +159,7 @@ public class UndertowServer extends AbstractWebServer {
 
         DeploymentManager deploymentManager = Servlets.defaultContainer().addDeployment(info);
         deploymentManager.deploy();
-        log.debug("Using pippo filter for path '{}'", filterPath);
+        log.debug("Using pippo filter for path '{}'", pippoFilterPath);
 
         return deploymentManager;
     }
@@ -195,6 +193,8 @@ public class UndertowServer extends AbstractWebServer {
         } else {
             log.error("Failed to find keystore '{}'!", filename);
         }
+
         return loadedKeystore;
     }
+
 }

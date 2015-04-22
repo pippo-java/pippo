@@ -56,8 +56,6 @@ public class PippoFilter implements Filter {
      */
     public static final String MODE_PARAM = "mode";
 
-    private static final String slash = "/";
-
     private RouteDispatcher routeDispatcher;
     private Application application;
     private String filterPath;
@@ -65,11 +63,6 @@ public class PippoFilter implements Filter {
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
         log.info(PippoUtils.getPippoLogo());
-
-        if (filterPath == null) {
-            initFilterPath(filterConfig);
-        }
-        log.debug("The filter path is '{}'", filterPath);
 
         // check for runtime mode in filter init parameter
         String mode = filterConfig.getInitParameter(MODE_PARAM);
@@ -84,8 +77,14 @@ public class PippoFilter implements Filter {
 
         try {
             String contextPath = StringUtils.addStart(filterConfig.getServletContext().getContextPath(), "/");
-            application.setContextPath(contextPath);
+            application.getRouter().setContextPath(contextPath);
             log.debug("Serving application on context path '{}'", contextPath);
+
+            if (filterPath == null) {
+                initFilterPath(filterConfig);
+            }
+            application.getRouter().setFilterPath(filterPath);
+            log.debug("The filter path is '{}'", filterPath);
 
             log.debug("Initializing Route Dispatcher");
             routeDispatcher = new RouteDispatcher(application);
@@ -132,6 +131,7 @@ public class PippoFilter implements Filter {
         RequestResponseFactory requestResponseFactory = application.getRequestResponseFactory();
         Response response = requestResponseFactory.createResponse(httpServletResponse);
         Request request = requestResponseFactory.createRequest(httpServletRequest, response);
+        request.setRelativePath(relativePath);
 
         // dispatch route(s)
         routeDispatcher.dispatch(request, response);
@@ -143,14 +143,6 @@ public class PippoFilter implements Filter {
 
     public void setApplication(Application application) {
         this.application = application;
-    }
-
-    public String getFilterPath() {
-        return filterPath;
-    }
-
-    public void setFilterPath(String filterPath) {
-        this.filterPath = filterPath;
     }
 
     @Override
@@ -239,25 +231,30 @@ public class PippoFilter implements Filter {
         }
     }
 
+    /**
+     * Returns a relative path to the filter path and context root.
+     */
     private String getRelativePath(String contextPath, String path) {
-        path = path.substring(contextPath.length());
-        if (path.length() > 0) {
-            path = path.substring(1);
-        }
-        if (!path.startsWith(filterPath) && filterPath.equals(path + slash)) {
-            path += slash;
-        }
-        if (path.startsWith(filterPath)) {
-            path = path.substring(filterPath.length());
-        }
-        if (!path.startsWith(slash)) {
-            path = slash + path;
-        }
-        if (path.length() > 1 && path.endsWith(slash)) {
-            path = path.substring(0, path.length() - 1);
+        String relativePath = path.substring(contextPath.length());
+
+        if (relativePath.length() > 0) {
+            relativePath = relativePath.substring(1);
         }
 
-        return path;
+        if (!relativePath.startsWith(filterPath))  {
+            if (filterPath.equals(relativePath + "/"))  {
+                relativePath += "/";
+            }
+        }
+        if (relativePath.startsWith(filterPath)) {
+            relativePath = relativePath.substring(filterPath.length());
+        }
+
+        if (!relativePath.startsWith("/")) {
+            relativePath = "/" + relativePath;
+        }
+
+        return relativePath;
     }
 
 }

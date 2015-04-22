@@ -53,6 +53,8 @@ public final class Request {
     private Map<String, FileItem> files;
     private Session session;
     private String contextPath;
+    private String filterPath;
+    private String relativePath;
 
     private String body; // cache
 
@@ -70,6 +72,7 @@ public final class Request {
         }
         parameters = Collections.unmodifiableMap(tmp);
         contextPath = application.getRouter().getContextPath();
+        filterPath = application.getRouter().getFilterPath();
     }
 
     public Map<String, ParameterValue> getParameters() {
@@ -246,6 +249,7 @@ public final class Request {
         if (getQuery() != null) {
             sb.append('?').append(getQuery());
         }
+
         return sb.toString();
     }
 
@@ -426,6 +430,25 @@ public final class Request {
 
     public static Request get() {
         return RouteDispatcher.getRouteContext().getRequest();
+    }
+
+    public String getContextPath() {
+        return contextPath;
+    }
+
+    public String getFilterPath() {
+        return filterPath;
+    }
+
+    /**
+     * Returns a relative path to the filter path and context root.
+     */
+    public String getRelativePath() {
+        return relativePath;
+    }
+
+    void setRelativePath(String relativePath) {
+        this.relativePath = relativePath;
     }
 
     @Override

@@ -111,16 +111,15 @@ public class JettyServer extends AbstractWebServer {
         ServletContextHandler handler = new PippoHandler(ServletContextHandler.SESSIONS, multipartConfig);
         handler.setContextPath(settings.getContextPath());
 
-        String filterPath = pippoFilter.getFilterPath();
-        if (filterPath == null) {
-            filterPath = "/*"; // default value
+        if (pippoFilterPath == null) {
+            pippoFilterPath = "/*"; // default value
         }
 
         EnumSet<DispatcherType> dispatches = EnumSet.of(DispatcherType.REQUEST, DispatcherType.ERROR);
 
         FilterHolder pippoFilterHolder = new FilterHolder(pippoFilter);
-        handler.addFilter(pippoFilterHolder, filterPath, dispatches);
-        log.debug("Using pippo filter for path '{}'", filterPath);
+        handler.addFilter(pippoFilterHolder, pippoFilterPath, dispatches);
+        log.debug("Using pippo filter for path '{}'", pippoFilterPath);
 
         return handler;
     }

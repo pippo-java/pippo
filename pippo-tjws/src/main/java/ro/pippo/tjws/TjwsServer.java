@@ -18,12 +18,11 @@ package ro.pippo.tjws;
 import Acme.Serve.Serve;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import ro.pippo.core.AbstractWebServer;
 import ro.pippo.core.Application;
 import ro.pippo.core.PippoFilter;
 import ro.pippo.core.PippoRuntimeException;
 import ro.pippo.core.PippoServlet;
-import ro.pippo.core.WebServer;
-import ro.pippo.core.WebServerSettings;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -42,26 +41,14 @@ import java.util.Properties;
  *
  * @author James Moger
  */
-public class TjwsServer implements WebServer {
+public class TjwsServer extends AbstractWebServer {
 
     private static final Logger log = LoggerFactory.getLogger(TjwsServer.class);
-
-    private WebServerSettings settings;
 
     private Application application;
 
     private Serve server;
     private PippoServlet pippoServlet;
-
-    @Override
-    public WebServerSettings getSettings() {
-        return settings;
-    }
-
-    @Override
-    public void setSettings(WebServerSettings settings) {
-        this.settings = settings;
-    }
 
     @Override
     public PippoFilter getPippoFilter() {

@@ -28,6 +28,10 @@ public interface WebServer {
 
     public void setPippoFilter(PippoFilter pippoFilter);
 
+    public String getPippoFilterPath();
+
+    public void setPippoFilterPath(String pippoFilterPath);
+
     public void start();
 
     public void stop();

@@ -66,4 +66,11 @@ public interface Router {
 
     public String uriPatternFor(Class<? extends StaticResourceHandler> resourceHandlerClass);
 
+    /**
+     * Returns the path to which PippoFilter is mapped.
+     */
+    public String getFilterPath();
+
+    public void setFilterPath(String filterPath);
+
 }

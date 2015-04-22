@@ -22,6 +22,7 @@ public abstract class AbstractWebServer implements WebServer {
 
     protected WebServerSettings settings;
     protected PippoFilter pippoFilter;
+    protected String pippoFilterPath;
 
     @Override
     public WebServerSettings getSettings() {
@@ -41,6 +42,16 @@ public abstract class AbstractWebServer implements WebServer {
     @Override
     public void setPippoFilter(PippoFilter pippoFilter) {
         this.pippoFilter = pippoFilter;
+    }
+
+    @Override
+    public String getPippoFilterPath() {
+        return pippoFilterPath;
+    }
+
+    @Override
+    public void setPippoFilterPath(String pippoFilterPath) {
+        this.pippoFilterPath = pippoFilterPath;
     }
 
 }

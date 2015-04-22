@@ -24,12 +24,10 @@ import ro.pippo.core.HttpConstants;
 import ro.pippo.core.Request;
 import ro.pippo.core.Response;
 import ro.pippo.core.util.ServiceLocator;
-import ro.pippo.core.util.StringUtils;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.net.URI;
 import java.util.Collections;
 import java.util.List;
 
@@ -119,10 +117,7 @@ public class RouteDispatcher {
      * @param response
      */
     protected void onRouteDispatch(Request request, Response response) {
-        final String contextPath = router.getContextPath();
-        final String requestUri = URI.create(request.getHttpServletRequest().getRequestURL().toString()).getPath();
-        final String contextRequestPath = contextPath.equals("") ? requestUri : requestUri.substring(contextPath.length());
-        final String requestPath = StringUtils.isNullOrEmpty(contextRequestPath) ? "/" : contextRequestPath;
+        final String requestPath = request.getRelativePath();
         final String requestMethod = request.getMethod();
 
         if (shouldIgnorePath(requestPath)) {
@@ -143,10 +138,6 @@ public class RouteDispatcher {
                 // NOT FOUND (404)
                 errorHandler.handle(HttpConstants.StatusCode.NOT_FOUND, routeContext);
             } else {
-                // Force the initial Response status code to 0.
-                // The chain is expected to properly set a Response status code
-//                response.status(0);
-
                 processFlash(routeContext);
             }
 

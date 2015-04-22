@@ -60,9 +60,9 @@ public class DefaultRouter implements Router {
 
     private List<Route> routes;
     private Set<String> ignorePaths;
-    // key = request method
-    private Map<String, List<Route>> cache;
+    private Map<String, List<Route>> cache; // key = request method
     private String contextPath;
+    private String filterPath;
 
     public DefaultRouter() {
         routes = new ArrayList<>();
@@ -205,6 +205,16 @@ public class DefaultRouter implements Router {
         Route route = getRoute(resourceHandlerClass);
 
         return (route != null) ? route.getUriPattern() : null;
+    }
+
+    @Override
+    public String getFilterPath() {
+        return filterPath;
+    }
+
+    @Override
+    public void setFilterPath(String filterPath) {
+        this.filterPath = filterPath;
     }
 
     private Route getRoute(Class<? extends StaticResourceHandler> resourceHandlerClass) {
