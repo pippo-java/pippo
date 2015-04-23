@@ -24,13 +24,23 @@
         </license>
     </licenses>
 
-
     <scm>
         <connection>scm:git:https://github.com/decebals/pippo.git</connection>
         <developerConnection>scm:git:https://github.com/decebals/pippo.git</developerConnection>
         <url>git@github.com/decebals/pippo.git</url>
         <tag>HEAD</tag>
     </scm>
+
+    <distributionManagement>
+        <snapshotRepository>
+            <id>sonatype-nexus-snapshots</id>
+            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+        </snapshotRepository>
+        <repository>
+            <id>sonatype-nexus-staging</id>
+            <url>https://oss.sonatype.org/service/local/staging/deploy/maven2</url>
+        </repository>
+    </distributionManagement>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
