@@ -29,6 +29,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.net.URI;
 
 /**
  * @author James Moger
@@ -96,10 +97,21 @@ public class PippoServlet extends HttpServlet {
         HttpServletRequest httpServletRequest = (HttpServletRequest) servletRequest;
         HttpServletResponse httpServletResponse = (HttpServletResponse) servletResponse;
 
+        String requestMethod = httpServletRequest.getMethod();
+
+        // create a URI to automatically decode the path
+        URI uri = URI.create(httpServletRequest.getRequestURL().toString());
+        String requestUri = uri.getPath();
+        String relativePath = getRelativePath(httpServletRequest.getContextPath(), requestUri);
+        log.trace("The relative path for '{}' is '{}'", requestUri, relativePath);
+
+        log.debug("Request {} '{}'", requestMethod, relativePath);
+
         // create Request, Response objects
         RequestResponseFactory requestResponseFactory = application.getRequestResponseFactory();
         Response response = requestResponseFactory.createResponse(httpServletResponse);
         Request request = requestResponseFactory.createRequest(httpServletRequest, response);
+        request.setRelativePath(relativePath);
 
         // dispatch route(s)
         routeDispatcher.dispatch(request, response);
@@ -132,6 +144,16 @@ public class PippoServlet extends HttpServlet {
             log.error("Cannot create application with className '{}'", applicationClassName, e);
             throw new PippoRuntimeException(e);
         }
+    }
+
+    /**
+     * Returns a relative path to the context root.
+     */
+    private String getRelativePath(String contextPath, String path) {
+        String relativePath = contextPath.equals("") ? path : path.substring(contextPath.length());
+        relativePath = StringUtils.isNullOrEmpty(relativePath) ? "/" : relativePath;
+
+        return relativePath;
     }
 
 }

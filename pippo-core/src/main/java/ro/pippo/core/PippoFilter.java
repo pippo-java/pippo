@@ -102,7 +102,7 @@ public class PippoFilter implements Filter {
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain chain)
         throws IOException, ServletException {
         HttpServletRequest httpServletRequest = (HttpServletRequest) servletRequest;
-        final HttpServletResponse httpServletResponse = (HttpServletResponse) servletResponse;
+        HttpServletResponse httpServletResponse = (HttpServletResponse) servletResponse;
 
         // TODO test for redirect
         // no redirect; process the request
