@@ -1,3 +1,6 @@
+Micro Java Web Framework
+=====================
+
 Current build status: [![Build Status](https://travis-ci.org/decebals/pippo.png?branch=master)](https://travis-ci.org/decebals/pippo)   
 
 It's an open source (Apache License) micro web framework in Java, with minimal dependencies and a quick learning curve.     
