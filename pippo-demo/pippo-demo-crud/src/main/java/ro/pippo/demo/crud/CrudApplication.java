@@ -27,6 +27,9 @@ import ro.pippo.demo.common.ContactService;
 import ro.pippo.demo.common.InMemoryContactService;
 import ro.pippo.metrics.Metered;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * @author Decebal Suiu
  */
@@ -147,13 +150,12 @@ public class CrudApplication extends Application {
 
                 Contact contact = (id > 0) ? contactService.getContact(id) : new Contact();
                 routeContext.setLocal("contact", contact);
-                StringBuilder editAction = new StringBuilder();
-                editAction.append("/contact?action=save");
+                Map<String, Object> parameters = new HashMap<>();
+                parameters.put("action", "save");
                 if (id > 0) {
-                    editAction.append("&id=");
-                    editAction.append(id);
+                    parameters.put("id", id);
                 }
-                routeContext.setLocal("editAction", getRouter().uriFor(editAction.toString()));
+                routeContext.setLocal("editAction", getRouter().uriFor("/contact", parameters));
                 routeContext.setLocal("backAction", getRouter().uriFor("/contacts"));
                 routeContext.render("contact");
             }
