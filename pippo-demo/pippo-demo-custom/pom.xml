@@ -4,13 +4,13 @@
     <parent>
         <groupId>ro.pippo</groupId>
         <artifactId>pippo-demo-parent</artifactId>
-        <version>0.5.0-SNAPSHOT</version>
+        <version>0.4.1</version>
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
     <packaging>${packaging.type}</packaging>
     <artifactId>pippo-demo-custom</artifactId>
-    <version>0.5.0-SNAPSHOT</version>
+    <version>0.4.1</version>
     <name>Pippo Demo Custom</name>
     <description>Custom demo application</description>
 
