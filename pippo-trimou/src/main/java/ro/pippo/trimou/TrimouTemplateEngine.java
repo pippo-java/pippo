@@ -90,6 +90,7 @@ public class TrimouTemplateEngine implements TemplateEngine {
 
         // set global template variables
         builder.addGlobalData("contextPath", router.getContextPath());
+        builder.addGlobalData("appPath", router.getApplicationPath());
 
         engine = builder.build();
     }

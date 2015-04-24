@@ -24,6 +24,7 @@ public class CrudDemo {
 
     public static void main(String[] args) {
         Pippo pippo = new Pippo(new CrudApplication());
+//        pippo.getServer().setPippoFilterPath("/web/*");
         pippo.start();
     }
 

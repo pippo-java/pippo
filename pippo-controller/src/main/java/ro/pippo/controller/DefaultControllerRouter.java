@@ -44,7 +44,7 @@ public class DefaultControllerRouter extends DefaultRouter implements Controller
     public String uriFor(Class<? extends Controller> controllerClass, String methodName, Map<String, Object> parameters) {
         Route route = getRoute(controllerClass, methodName);
 
-        return (route != null) ? prefixContextPath(uriFor(route.getUriPattern(), parameters)) : null;
+        return (route != null) ? prefixApplicationPath(uriFor(route.getUriPattern(), parameters)) : null;
     }
 
     private Route getRoute(Class<? extends Controller> controllerClass, String methodName) {

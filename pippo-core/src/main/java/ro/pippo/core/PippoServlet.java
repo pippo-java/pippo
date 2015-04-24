@@ -80,7 +80,7 @@ public class PippoServlet extends HttpServlet {
         }
 
         String contextPath = StringUtils.addStart(servletConfig.getServletContext().getContextPath(), "/");
-        application.setContextPath(contextPath);
+        application.getRouter().setContextPath(contextPath);
         log.debug("Serving application on context path '{}'", contextPath);
 
         log.debug("Initializing Route Dispatcher");
@@ -97,21 +97,23 @@ public class PippoServlet extends HttpServlet {
         HttpServletRequest httpServletRequest = (HttpServletRequest) servletRequest;
         HttpServletResponse httpServletResponse = (HttpServletResponse) servletResponse;
 
-        String requestMethod = httpServletRequest.getMethod();
-
-        // create a URI to automatically decode the path
-        URI uri = URI.create(httpServletRequest.getRequestURL().toString());
-        String requestUri = uri.getPath();
-        String relativePath = getRelativePath(httpServletRequest.getContextPath(), requestUri);
-        log.trace("The relative path for '{}' is '{}'", requestUri, relativePath);
-
-        log.debug("Request {} '{}'", requestMethod, relativePath);
+        // set the application path from the servlet request since we don't know it at initialization
+        String applicationPath = application.getRouter().getContextPath() + httpServletRequest.getServletPath();
+        application.getRouter().setApplicationPath(applicationPath);
 
         // create Request, Response objects
         RequestResponseFactory requestResponseFactory = application.getRequestResponseFactory();
         Response response = requestResponseFactory.createResponse(httpServletResponse);
         Request request = requestResponseFactory.createRequest(httpServletRequest, response);
-        request.setRelativePath(relativePath);
+
+        // create a URI to automatically decode the path
+        URI uri = URI.create(httpServletRequest.getRequestURL().toString());
+        String requestUri = uri.getPath();
+        String relativePath = request.getApplicationRequestPath();
+
+        log.trace("The relative path for '{}' is '{}'", requestUri, relativePath);
+
+        log.debug("Request {} '{}'", httpServletRequest.getMethod(), relativePath);
 
         // dispatch route(s)
         routeDispatcher.dispatch(request, response);
@@ -145,15 +147,4 @@ public class PippoServlet extends HttpServlet {
             throw new PippoRuntimeException(e);
         }
     }
-
-    /**
-     * Returns a relative path to the context root.
-     */
-    private String getRelativePath(String contextPath, String path) {
-        String relativePath = contextPath.equals("") ? path : path.substring(contextPath.length());
-        relativePath = StringUtils.isNullOrEmpty(relativePath) ? "/" : relativePath;
-
-        return relativePath;
-    }
-
 }

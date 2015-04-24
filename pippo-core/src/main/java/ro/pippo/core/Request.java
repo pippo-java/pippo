@@ -27,6 +27,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.servlet.http.Part;
 import java.lang.reflect.Field;
+import java.net.URI;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Enumeration;
@@ -53,7 +54,7 @@ public final class Request {
     private Map<String, FileItem> files;
     private Session session;
     private String contextPath;
-    private String filterPath;
+    private String applicationPath;
     private String relativePath;
 
     private String body; // cache
@@ -72,7 +73,7 @@ public final class Request {
         }
         parameters = Collections.unmodifiableMap(tmp);
         contextPath = application.getRouter().getContextPath();
-        filterPath = application.getRouter().getFilterPath();
+        applicationPath = application.getRouter().getApplicationPath();
     }
 
     public Map<String, ParameterValue> getParameters() {
@@ -277,6 +278,19 @@ public final class Request {
     }
 
     /**
+     * Returns the uri relative to the application base uri.
+     *
+     * @return the uri relative to the application base url
+     */
+    public String getApplicationUri() {
+        if ("".equals(applicationPath)) {
+            return getUri();
+        } else {
+            return getUri().substring(applicationPath.length());
+        }
+    }
+
+    /**
      * Returns the query string component of the request.
      *
      * @return the query string
@@ -307,6 +321,20 @@ public final class Request {
     public String getContextUriWithQuery() {
         StringBuilder sb = new StringBuilder();
         sb.append(getContextUri());
+        if (getQuery() != null) {
+            sb.append('?').append(getQuery());
+        }
+        return sb.toString();
+    }
+
+    /**
+     * Returns the uri with the query string relative to the application root path.
+     *
+     * @return the application-relative uri with the query
+     */
+    public String getApplicationUriWithQuery() {
+        StringBuilder sb = new StringBuilder();
+        sb.append(getApplicationUri());
         if (getQuery() != null) {
             sb.append('?').append(getQuery());
         }
@@ -436,19 +464,21 @@ public final class Request {
         return contextPath;
     }
 
-    public String getFilterPath() {
-        return filterPath;
+    public String getApplicationPath() {
+        return applicationPath;
     }
 
     /**
-     * Returns a relative path to the filter path and context root.
+     * Returns a request path relative to the Pippo application path.
      */
-    public String getRelativePath() {
+    public String getApplicationRequestPath() {
+        if (relativePath == null) {
+            final String requestUri = URI.create(getHttpServletRequest().getRequestURL().toString()).getPath();
+            final String applicationRequestPath = applicationPath.equals("") ? requestUri : requestUri.substring(applicationPath.length());
+            final String requestPath = StringUtils.isNullOrEmpty(applicationRequestPath) ? "/" : applicationRequestPath;
+            relativePath = requestPath;
+        }
         return relativePath;
-    }
-
-    void setRelativePath(String relativePath) {
-        this.relativePath = relativePath;
     }
 
     @Override

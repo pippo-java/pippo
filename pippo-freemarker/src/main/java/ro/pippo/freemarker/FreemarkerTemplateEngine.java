@@ -94,6 +94,7 @@ public class FreemarkerTemplateEngine implements TemplateEngine {
 
         // set global template variables
         configuration.setSharedVariable("contextPath", new SimpleScalar(router.getContextPath()));
+        configuration.setSharedVariable("appPath", new SimpleScalar(router.getApplicationPath()));
 
         webjarResourcesMethod = new WebjarsAtMethod(router);
         publicResourcesMethod = new PublicAtMethod(router);

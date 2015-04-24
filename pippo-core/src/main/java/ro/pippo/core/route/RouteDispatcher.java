@@ -117,7 +117,7 @@ public class RouteDispatcher {
      * @param response
      */
     protected void onRouteDispatch(Request request, Response response) {
-        final String requestPath = request.getRelativePath();
+        final String requestPath = request.getApplicationRequestPath();
         final String requestMethod = request.getMethod();
 
         if (shouldIgnorePath(requestPath)) {

@@ -95,6 +95,7 @@ public class PebbleTemplateEngine implements TemplateEngine {
 
         // set global template variables
         engine.getGlobalVariables().put("contextPath", router.getContextPath());
+        engine.getGlobalVariables().put("appPath", router.getApplicationPath());
     }
 
     @Override

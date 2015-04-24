@@ -37,8 +37,8 @@
         </div>
         <div class="panel-body">
           <ul>
-            <li><a href="${contextPath}/satisfaction">${i18n("pippo.unmatchedRoute")}</a></li>
-            <li><a href="${contextPath}/exception">${i18n("pippo.exceptionHandling")}</a></li>
+            <li><a href="${appPath}/satisfaction">${i18n("pippo.unmatchedRoute")}</a></li>
+            <li><a href="${appPath}/exception">${i18n("pippo.exceptionHandling")}</a></li>
           </ul>
         </div>
       </div>

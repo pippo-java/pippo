@@ -185,7 +185,7 @@ public class DefaultRouteContext implements RouteContext {
 
     @Override
     public String getRequestUri() {
-        return request.getContextUri();
+        return request.getApplicationUri();
     }
 
     @Override
@@ -225,7 +225,7 @@ public class DefaultRouteContext implements RouteContext {
 
     @Override
     public void redirect(String path) {
-        response.redirectToContextPath(path);
+        response.redirectToApplicationPath(path);
     }
 
     @Override

@@ -70,6 +70,7 @@ public class JadeTemplateEngine implements TemplateEngine {
 
         // set global template variables
         configuration.getSharedVariables().put("contextPath", router.getContextPath());
+        configuration.getSharedVariables().put("appPath", router.getApplicationPath());
     }
 
     public JadeConfiguration getConfiguration() {

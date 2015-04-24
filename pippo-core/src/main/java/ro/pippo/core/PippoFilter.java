@@ -78,13 +78,17 @@ public class PippoFilter implements Filter {
         try {
             String contextPath = StringUtils.addStart(filterConfig.getServletContext().getContextPath(), "/");
             application.getRouter().setContextPath(contextPath);
-            log.debug("Serving application on context path '{}'", contextPath);
 
             if (filterPath == null) {
                 initFilterPath(filterConfig);
             }
-            application.getRouter().setFilterPath(filterPath);
-            log.debug("The filter path is '{}'", filterPath);
+            String applicationPath = contextPath + filterPath;
+            application.getRouter().setApplicationPath(applicationPath);
+
+            if (!contextPath.equals(applicationPath)) {
+                log.debug("Context path is '{}'", contextPath);
+            }
+            log.debug("Serving application on path '{}'", applicationPath);
 
             log.debug("Initializing Route Dispatcher");
             routeDispatcher = new RouteDispatcher(application);
@@ -107,12 +111,16 @@ public class PippoFilter implements Filter {
         // TODO test for redirect
         // no redirect; process the request
 
-        String requestMethod = httpServletRequest.getMethod();
+        // create Request, Response objects
+        RequestResponseFactory requestResponseFactory = application.getRequestResponseFactory();
+        Response response = requestResponseFactory.createResponse(httpServletResponse);
+        Request request = requestResponseFactory.createRequest(httpServletRequest, response);
 
         // create a URI to automatically decode the path
         URI uri = URI.create(httpServletRequest.getRequestURL().toString());
         String requestUri = uri.getPath();
-        String relativePath = getRelativePath(httpServletRequest.getContextPath(), requestUri);
+        String relativePath = request.getApplicationRequestPath();
+
         log.trace("The relative path for '{}' is '{}'", requestUri, relativePath);
 
         // check for ignore path
@@ -125,13 +133,7 @@ public class PippoFilter implements Filter {
             return;
         }
 
-        log.debug("Request {} '{}'", requestMethod, relativePath);
-
-        // create Request, Response objects
-        RequestResponseFactory requestResponseFactory = application.getRequestResponseFactory();
-        Response response = requestResponseFactory.createResponse(httpServletResponse);
-        Request request = requestResponseFactory.createRequest(httpServletRequest, response);
-        request.setRelativePath(relativePath);
+        log.debug("Request {} '{}'", httpServletRequest.getMethod(), relativePath);
 
         // dispatch route(s)
         routeDispatcher.dispatch(request, response);

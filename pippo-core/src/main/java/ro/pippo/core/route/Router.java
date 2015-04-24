@@ -67,10 +67,10 @@ public interface Router {
     public String uriPatternFor(Class<? extends StaticResourceHandler> resourceHandlerClass);
 
     /**
-     * Returns the path to which PippoFilter is mapped.
+     * Returns the base path for the Pippo application.
      */
-    public String getFilterPath();
+    public String getApplicationPath();
 
-    public void setFilterPath(String filterPath);
+    public void setApplicationPath(String pippoPath);
 
 }

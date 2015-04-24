@@ -64,7 +64,7 @@ public class CrudApplication extends Application {
             @Override
             public void handle(RouteContext routeContext) {
                 if (routeContext.getSession("username") == null) {
-                    routeContext.setSession("originalDestination", routeContext.getRequest().getContextUriWithQuery());
+                    routeContext.setSession("originalDestination", routeContext.getRequest().getApplicationUriWithQuery());
                     routeContext.redirect("/login");
                 } else {
                     routeContext.next();

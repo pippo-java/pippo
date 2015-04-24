@@ -50,6 +50,7 @@ public final class Response {
     private Map<String, String> headers;
     private Map<String, Cookie> cookies;
     private String contextPath;
+    private String applicationPath;
     private ResponseFinalizeListenerList finalizeListeners;
 
     private int status;
@@ -60,6 +61,7 @@ public final class Response {
         this.templateEngine = application.getTemplateEngine();
         this.httpServletResponse.setCharacterEncoding(StandardCharsets.UTF_8.toString());
         this.contextPath = application.getRouter().getContextPath();
+        this.applicationPath = StringUtils.removeEnd(application.getRouter().getApplicationPath(), "/");
 
         this.status = 0;
     }
@@ -329,6 +331,7 @@ public final class Response {
      * <li>an absolute url
      * </ul>
      * If you want a context-relative redirect, use the {@link redirectToContextPath}
+     * If you want an application-relative redirect, use the {@link redirectToApplicationPath}
      * method.
      * <p>This method commits the response.</p>
      *
@@ -360,6 +363,23 @@ public final class Response {
             redirect(path);
         } else {
             redirect(contextPath + StringUtils.addStart(path, "/"));
+        }
+    }
+
+    /**
+     * Redirects the browser to a path relative to the Pippo application root. For
+     * example, redirectToApplicationPath("/contacts") might redirect the browser to
+     * http://localhost/myContext/myApp/contacts
+     * <p>This method commits the response.</p>
+     *
+     * @param path
+     */
+    public void redirectToApplicationPath(String path) {
+        if ("".equals(applicationPath)) {
+            // application path is the root
+            redirect(path);
+        } else {
+            redirect(applicationPath + StringUtils.addStart(path, "/"));
         }
     }
 

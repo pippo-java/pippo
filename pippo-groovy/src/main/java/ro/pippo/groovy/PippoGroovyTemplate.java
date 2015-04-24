@@ -91,6 +91,7 @@ public abstract class PippoGroovyTemplate extends BaseTemplate {
 
         // set global template variables
         getModel().put("contextPath",  router.getContextPath());
+        getModel().put("appPath",  router.getApplicationPath());
 
         String language = (String) getModel().get(PippoConstants.REQUEST_PARAMETER_LANG);
         if (StringUtils.isNullOrEmpty(language)) {
