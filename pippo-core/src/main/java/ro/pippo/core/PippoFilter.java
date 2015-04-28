@@ -233,30 +233,4 @@ public class PippoFilter implements Filter {
         }
     }
 
-    /**
-     * Returns a relative path to the filter path and context root.
-     */
-    private String getRelativePath(String contextPath, String path) {
-        String relativePath = path.substring(contextPath.length());
-
-        if (relativePath.length() > 0) {
-            relativePath = relativePath.substring(1);
-        }
-
-        if (!relativePath.startsWith(filterPath))  {
-            if (filterPath.equals(relativePath + "/"))  {
-                relativePath += "/";
-            }
-        }
-        if (relativePath.startsWith(filterPath)) {
-            relativePath = relativePath.substring(filterPath.length());
-        }
-
-        if (!relativePath.startsWith("/")) {
-            relativePath = "/" + relativePath;
-        }
-
-        return relativePath;
-    }
-
 }
