@@ -109,11 +109,11 @@ public class PippoServlet extends HttpServlet {
         // create a URI to automatically decode the path
         URI uri = URI.create(httpServletRequest.getRequestURL().toString());
         String requestUri = uri.getPath();
-        String relativePath = request.getApplicationRequestPath();
+        String requestPath = request.getPath();
 
-        log.trace("The relative path for '{}' is '{}'", requestUri, relativePath);
+        log.trace("The relative path for '{}' is '{}'", requestUri, requestPath);
 
-        log.debug("Request {} '{}'", httpServletRequest.getMethod(), relativePath);
+        log.debug("Request {} '{}'", httpServletRequest.getMethod(), requestPath);
 
         // dispatch route(s)
         routeDispatcher.dispatch(request, response);

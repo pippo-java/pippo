@@ -82,7 +82,7 @@ public class PippoFilter implements Filter {
             if (filterPath == null) {
                 initFilterPath(filterConfig);
             }
-            String applicationPath = contextPath + filterPath;
+            String applicationPath = contextPath + "/" + filterPath;
             application.getRouter().setApplicationPath(applicationPath);
 
             if (!contextPath.equals(applicationPath)) {
@@ -119,13 +119,13 @@ public class PippoFilter implements Filter {
         // create a URI to automatically decode the path
         URI uri = URI.create(httpServletRequest.getRequestURL().toString());
         String requestUri = uri.getPath();
-        String relativePath = request.getApplicationRequestPath();
+        String requestPath = request.getPath();
 
-        log.trace("The relative path for '{}' is '{}'", requestUri, relativePath);
+        log.trace("The relative path for '{}' is '{}'", requestUri, requestPath);
 
         // check for ignore path
-        if (shouldIgnorePath(relativePath)) {
-            log.debug("Ignoring request '{}'", relativePath);
+        if (shouldIgnorePath(requestPath)) {
+            log.debug("Ignoring request '{}'", requestPath);
             if (chain != null) {
                 chain.doFilter(servletRequest, servletResponse);
             }
@@ -133,7 +133,7 @@ public class PippoFilter implements Filter {
             return;
         }
 
-        log.debug("Request {} '{}'", httpServletRequest.getMethod(), relativePath);
+        log.debug("Request {} '{}'", httpServletRequest.getMethod(), requestPath);
 
         // dispatch route(s)
         routeDispatcher.dispatch(request, response);

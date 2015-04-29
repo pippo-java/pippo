@@ -53,9 +53,8 @@ public final class Request {
     private Map<String, ParameterValue> allParameters; // parameters + pathParameters
     private Map<String, FileItem> files;
     private Session session;
-    private String contextPath;
     private String applicationPath;
-    private String relativePath;
+    private String path;
 
     private String body; // cache
 
@@ -72,7 +71,6 @@ public final class Request {
             tmp.put(name, new ParameterValue(values));
         }
         parameters = Collections.unmodifiableMap(tmp);
-        contextPath = application.getRouter().getContextPath();
         applicationPath = application.getRouter().getApplicationPath();
     }
 
@@ -136,7 +134,6 @@ public final class Request {
     }
 
     public <T> T createEntityFromBody(Class<T> entityClass) {
-        T entity = null;
         try {
             String body = getBody();
             if (StringUtils.isNullOrEmpty(body)) {
@@ -164,8 +161,7 @@ public final class Request {
                     entityClass.getName(), contentType);
             }
 
-            entity = engine.fromString(body, entityClass);
-
+            return engine.fromString(body, entityClass);
         } catch (PippoRuntimeException e) {
             // pass-through PippoRuntimeExceptions
             throw e;
@@ -173,8 +169,6 @@ public final class Request {
             // capture and re-throw all other exceptions
             throw new PippoRuntimeException("Failed to create entity '{}' from request body!", e, entityClass.getName());
         }
-
-        return entity;
     }
 
     public String getHost() {
@@ -230,7 +224,7 @@ public final class Request {
     }
 
     /**
-     * Returns the url with the protocol, context path, & resource path. The
+     * Returns the url with the protocol, application path, & resource path. The
      * query string is omitted.
      *
      * @return the url
@@ -240,54 +234,13 @@ public final class Request {
     }
 
     /**
-     * Returns the complete url with the protocol, context path, resource path, and
-     * query string.
-     *
-     * @return the complete url
-     */
-    public String getUrlWithQuery() {
-        StringBuilder sb = new StringBuilder(getUrl());
-        if (getQuery() != null) {
-            sb.append('?').append(getQuery());
-        }
-
-        return sb.toString();
-    }
-
-    /**
-     * Returns the container uri with the context path & resource path. The
+     * Returns the container uri with the application path & resource path. The
      * protocol and query string are omitted.
      *
      * @return the container uri
      */
     public String getUri() {
         return httpServletRequest.getRequestURI();
-    }
-
-    /**
-     * Returns the uri relative to the context.
-     *
-     * @return the uri relative to the context
-     */
-    public String getContextUri() {
-        if ("".equals(contextPath)) {
-            return getUri();
-        } else {
-            return getUri().substring(contextPath.length());
-        }
-    }
-
-    /**
-     * Returns the uri relative to the application base uri.
-     *
-     * @return the uri relative to the application base url
-     */
-    public String getApplicationUri() {
-        if ("".equals(applicationPath)) {
-            return getUri();
-        } else {
-            return getUri().substring(applicationPath.length());
-        }
     }
 
     /**
@@ -300,31 +253,16 @@ public final class Request {
     }
 
     /**
-     * Returns the uri relative to the servlet container with the context path,
-     * resource path, and query string. The protocol is omitted.
+     * Returns the uri relative to the application path.
      *
-     * @return the container uri with the query
+     * @return the uri relative to the application path
      */
-    public String getUriWithQuery() {
-        StringBuilder sb = new StringBuilder(getUri());
-        if (getQuery() != null) {
-            sb.append('?').append(getQuery());
+    public String getApplicationUri() {
+        if ("".equals(applicationPath)) {
+            return getUri();
+        } else {
+            return getUri().substring(applicationPath.length());
         }
-        return sb.toString();
-    }
-
-    /**
-     * Returns the uri with the query string relative to the context.
-     *
-     * @return the context-relative uri with the query
-     */
-    public String getContextUriWithQuery() {
-        StringBuilder sb = new StringBuilder();
-        sb.append(getContextUri());
-        if (getQuery() != null) {
-            sb.append('?').append(getQuery());
-        }
-        return sb.toString();
     }
 
     /**
@@ -338,7 +276,34 @@ public final class Request {
         if (getQuery() != null) {
             sb.append('?').append(getQuery());
         }
+
         return sb.toString();
+    }
+
+    public String getContextPath() {
+        return httpServletRequest.getContextPath();
+    }
+
+    public String getApplicationPath() {
+        return applicationPath;
+    }
+
+    /**
+     * Returns a request path relative to the application path. The returned value always start with "/".
+     */
+    public String getPath() {
+        if (path == null) {
+            // create a URI to automatically decode the path
+            URI uri = URI.create(httpServletRequest.getRequestURL().toString());
+            String requestUri = uri.getPath();
+
+            path = applicationPath.isEmpty() ? requestUri : requestUri.substring(applicationPath.length());
+            if (StringUtils.isNullOrEmpty(path)) {
+                path = "/";
+            }
+        }
+
+        return path;
     }
 
     public String getMethod() {
@@ -460,32 +425,11 @@ public final class Request {
         return RouteDispatcher.getRouteContext().getRequest();
     }
 
-    public String getContextPath() {
-        return contextPath;
-    }
-
-    public String getApplicationPath() {
-        return applicationPath;
-    }
-
-    /**
-     * Returns a request path relative to the Pippo application path.
-     */
-    public String getApplicationRequestPath() {
-        if (relativePath == null) {
-            final String requestUri = URI.create(getHttpServletRequest().getRequestURL().toString()).getPath();
-            final String applicationRequestPath = applicationPath.equals("") ? requestUri : requestUri.substring(applicationPath.length());
-            final String requestPath = StringUtils.isNullOrEmpty(applicationRequestPath) ? "/" : applicationRequestPath;
-            relativePath = requestPath;
-        }
-        return relativePath;
-    }
-
     @Override
     public String toString() {
         return "Request{" +
             "requestMethod='" + getMethod() + '\'' +
-            ", uriPattern='" + getContextUri() + '\'' +
+            ", uriPattern='" + getApplicationUri() + '\'' +
             '}';
     }
 
