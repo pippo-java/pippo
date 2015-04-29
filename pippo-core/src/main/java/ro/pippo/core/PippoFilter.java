@@ -82,7 +82,7 @@ public class PippoFilter implements Filter {
             if (filterPath == null) {
                 initFilterPath(filterConfig);
             }
-            String applicationPath = contextPath + "/" + filterPath;
+            String applicationPath = getApplicationPath(contextPath, filterPath);
             application.getRouter().setApplicationPath(applicationPath);
 
             if (!contextPath.equals(applicationPath)) {
@@ -231,6 +231,20 @@ public class PippoFilter implements Filter {
             log.error("Cannot create application with className '{}'", applicationClassName, e);
             throw new ServletException(e);
         }
+    }
+
+    private String getApplicationPath(String contextPath, String filterPath) {
+        String applicationPath = contextPath;
+
+        System.out.println("filterPath = " + filterPath);
+        if (!filterPath.isEmpty()) {
+            if (!contextPath.equals("/")) {
+                applicationPath += "/";;
+            }
+            applicationPath += filterPath;
+        }
+
+        return applicationPath;
     }
 
 }
