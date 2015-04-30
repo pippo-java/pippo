@@ -20,9 +20,12 @@ import org.slf4j.LoggerFactory;
 import ro.pippo.core.Application;
 import ro.pippo.core.ExceptionHandler;
 import ro.pippo.core.HttpConstants;
+import ro.pippo.core.Request;
+import ro.pippo.core.Response;
 import ro.pippo.core.route.FileResourceHandler;
 import ro.pippo.core.route.RouteContext;
 import ro.pippo.core.route.RouteHandler;
+import ro.pippo.core.route.RoutePreDispatchListener;
 import ro.pippo.demo.common.Contact;
 
 import java.io.File;
@@ -181,6 +184,17 @@ public class BasicApplication extends Application {
 
         });
 
+        // use a finally filter (invoked even when exceptions were raised in previous routes)
+        // test with route "/" and "/exception"
+        ALL("/.*", new RouteHandler() {
+
+            @Override
+            public void handle(RouteContext routeContext) {
+                log.info(">>> Cleanup here");
+            }
+
+        }).named("cleanup filter").runAsFinally();
+
         // register a custom ExceptionHandler
         getErrorHandler().setExceptionHandler(ForbiddenException.class, new ExceptionHandler() {
 
@@ -193,16 +207,23 @@ public class BasicApplication extends Application {
 
         });
 
-        // use a finally filter (invoked even when exceptions were raised in previous routes)
-        // test with route "/" and "/exception"
-        ALL("/.*", new RouteHandler() {
+        // register a request logger
+        getRoutePreDispatchListeners().add(new RoutePreDispatchListener() {
 
             @Override
-            public void handle(RouteContext routeContext) {
-                log.info(">>> Cleanup here");
+            public void onPreDispatch(Request request, Response response) {
+                System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
+                System.out.println("requestPath = " + request.getPath());
+                System.out.println("requestUri = " + request.getUri());
+                System.out.println("requestUrl = " + request.getUrl());
+                System.out.println("contextPath = " + request.getContextPath());
+                System.out.println("applicationPath = " + request.getApplicationPath());
+                System.out.println("applicationUri = " + request.getApplicationUri());
+                System.out.println("applicationUriWithQuery = " + request.getApplicationUriWithQuery());
+                System.out.println("<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<");
             }
 
-        }).named("cleanup filter").runAsFinally();
+        });
     }
 
     public static class ForbiddenException extends RuntimeException {

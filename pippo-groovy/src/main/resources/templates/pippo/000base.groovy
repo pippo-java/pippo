@@ -96,7 +96,7 @@ html {
         div(class:'application') {
             yield "$applicationName $applicationVersion"
             div {
-                a(class:'link', href:"$contextPath/") { yieldUnescaped '&larr;' }
+                a(class:'link', href:"$appPath/") { yieldUnescaped '&larr;' }
             }
         }
     }

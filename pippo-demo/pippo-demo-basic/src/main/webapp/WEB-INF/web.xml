@@ -20,6 +20,9 @@
 
     <filter-mapping>
         <filter-name>pippo</filter-name>
+        <!--
+        <url-pattern>/web/*</url-pattern>
+        -->
         <url-pattern>/*</url-pattern>
     </filter-mapping>
 

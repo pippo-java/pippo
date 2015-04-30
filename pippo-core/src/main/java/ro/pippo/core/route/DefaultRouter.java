@@ -62,7 +62,7 @@ public class DefaultRouter implements Router {
     private Set<String> ignorePaths;
     private Map<String, List<Route>> cache; // key = request method
     private String contextPath;
-    private String filterPath;
+    private String applicationPath;
 
     public DefaultRouter() {
         routes = new ArrayList<>();
@@ -70,6 +70,7 @@ public class DefaultRouter implements Router {
         cache = new HashMap<>();
         bindingsCache = new HashMap<>();
         contextPath = "";
+        applicationPath = "";
     }
 
     @Override
@@ -87,13 +88,13 @@ public class DefaultRouter implements Router {
     }
 
     /**
-     * Prefix the given path with the context path.
+     * Prefix the given path with the application path.
      *
      * @param path
      * @return an absolute path
      */
-    protected String prefixContextPath(String path) {
-        return contextPath + StringUtils.addStart(path, "/");
+    protected String prefixApplicationPath(String path) {
+        return applicationPath + StringUtils.addStart(path, "/");
     }
 
     @Override
@@ -190,14 +191,14 @@ public class DefaultRouter implements Router {
 
     @Override
     public String uriFor(String relativeUri) {
-        return prefixContextPath(relativeUri);
+        return prefixApplicationPath(relativeUri);
     }
 
     @Override
     public String uriFor(String uriPattern, Map<String, Object> parameters) {
         PatternBinding binding = getBinding(uriPattern);
 
-        return (binding != null) ? prefixContextPath(uriFor(binding, parameters)) : null;
+        return (binding != null) ? prefixApplicationPath(uriFor(binding, parameters)) : null;
     }
 
     @Override
@@ -208,13 +209,17 @@ public class DefaultRouter implements Router {
     }
 
     @Override
-    public String getFilterPath() {
-        return filterPath;
+    public String getApplicationPath() {
+        return applicationPath;
     }
 
     @Override
-    public void setFilterPath(String filterPath) {
-        this.filterPath = filterPath;
+    public void setApplicationPath(String applicationPath) {
+        if (StringUtils.isNullOrEmpty(applicationPath) || "/".equals(applicationPath.trim())) {
+            this.applicationPath = "";
+        } else {
+            this.applicationPath = StringUtils.removeEnd(StringUtils.addStart(applicationPath, "/"), "/");
+        }
     }
 
     private Route getRoute(Class<? extends StaticResourceHandler> resourceHandlerClass) {

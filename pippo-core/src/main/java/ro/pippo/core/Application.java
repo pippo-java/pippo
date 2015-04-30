@@ -216,10 +216,6 @@ public class Application {
         this.router = router;
     }
 
-    void setContextPath(String contextPath) {
-        getRouter().setContextPath(contextPath);
-    }
-
     public Route GET(StaticResourceHandler resourceHandler) {
         if (getRouter().uriPatternFor(resourceHandler.getClass()) != null) {
             throw new PippoRuntimeException("You may only register one route for {}",

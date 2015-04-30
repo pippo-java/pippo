@@ -94,7 +94,7 @@
       <div class="application">
         ${applicationName} ${applicationVersion}
         <div>
-          <a class="link" href="${contextPath}/">&larr;</a>
+          <a class="link" href="${appPath}/">&larr;</a>
         </div>
       </div>
     </body>

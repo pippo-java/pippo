@@ -78,13 +78,17 @@ public class PippoFilter implements Filter {
         try {
             String contextPath = StringUtils.addStart(filterConfig.getServletContext().getContextPath(), "/");
             application.getRouter().setContextPath(contextPath);
-            log.debug("Serving application on context path '{}'", contextPath);
 
             if (filterPath == null) {
                 initFilterPath(filterConfig);
             }
-            application.getRouter().setFilterPath(filterPath);
-            log.debug("The filter path is '{}'", filterPath);
+            String applicationPath = StringUtils.addEnd(contextPath, "/") + StringUtils.removeStart(filterPath, "/");
+            application.getRouter().setApplicationPath(applicationPath);
+
+            if (!contextPath.equals(applicationPath)) {
+                log.debug("Context path is '{}'", contextPath);
+            }
+            log.debug("Serving application on path '{}'", applicationPath);
 
             log.debug("Initializing Route Dispatcher");
             routeDispatcher = new RouteDispatcher(application);
@@ -107,17 +111,21 @@ public class PippoFilter implements Filter {
         // TODO test for redirect
         // no redirect; process the request
 
-        String requestMethod = httpServletRequest.getMethod();
+        // create Request, Response objects
+        RequestResponseFactory requestResponseFactory = application.getRequestResponseFactory();
+        Response response = requestResponseFactory.createResponse(httpServletResponse);
+        Request request = requestResponseFactory.createRequest(httpServletRequest, response);
 
         // create a URI to automatically decode the path
         URI uri = URI.create(httpServletRequest.getRequestURL().toString());
         String requestUri = uri.getPath();
-        String relativePath = getRelativePath(httpServletRequest.getContextPath(), requestUri);
-        log.trace("The relative path for '{}' is '{}'", requestUri, relativePath);
+        String requestPath = request.getPath();
+
+        log.trace("The relative path for '{}' is '{}'", requestUri, requestPath);
 
         // check for ignore path
-        if (shouldIgnorePath(relativePath)) {
-            log.debug("Ignoring request '{}'", relativePath);
+        if (shouldIgnorePath(requestPath)) {
+            log.debug("Ignoring request '{}'", requestPath);
             if (chain != null) {
                 chain.doFilter(servletRequest, servletResponse);
             }
@@ -125,13 +133,7 @@ public class PippoFilter implements Filter {
             return;
         }
 
-        log.debug("Request {} '{}'", requestMethod, relativePath);
-
-        // create Request, Response objects
-        RequestResponseFactory requestResponseFactory = application.getRequestResponseFactory();
-        Response response = requestResponseFactory.createResponse(httpServletResponse);
-        Request request = requestResponseFactory.createRequest(httpServletRequest, response);
-        request.setRelativePath(relativePath);
+        log.debug("Request {} '{}'", httpServletRequest.getMethod(), requestPath);
 
         // dispatch route(s)
         routeDispatcher.dispatch(request, response);
@@ -229,32 +231,6 @@ public class PippoFilter implements Filter {
             log.error("Cannot create application with className '{}'", applicationClassName, e);
             throw new ServletException(e);
         }
-    }
-
-    /**
-     * Returns a relative path to the filter path and context root.
-     */
-    private String getRelativePath(String contextPath, String path) {
-        String relativePath = path.substring(contextPath.length());
-
-        if (relativePath.length() > 0) {
-            relativePath = relativePath.substring(1);
-        }
-
-        if (!relativePath.startsWith(filterPath))  {
-            if (filterPath.equals(relativePath + "/"))  {
-                relativePath += "/";
-            }
-        }
-        if (relativePath.startsWith(filterPath)) {
-            relativePath = relativePath.substring(filterPath.length());
-        }
-
-        if (!relativePath.startsWith("/")) {
-            relativePath = "/" + relativePath;
-        }
-
-        return relativePath;
     }
 
 }
