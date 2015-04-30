@@ -1,33 +1,33 @@
-# Change Log
+## Change Log
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
-## [Unreleased][unreleased]
+### [Unreleased][unreleased]
 
-### Fixed
-### Changed
-### Added
-### Removed
+#### Fixed
+#### Changed
+#### Added
+#### Removed
 
-## [0.4.2] - 2015-04-30
+### [0.4.2] - 2015-04-30
 
-### Fixed
+#### Fixed
 - Fixed unset RouteContext ThreadLocal when processing ignore paths 
 
-### Added
+#### Added
 - [#115], [#116]: Allow specifying a non-root Pippo filter or servlet path 
 
-### Changed
+#### Changed
 - Throw the target exception rather than the InvocationTargetException in DefaultControllerHandler
 - Updated [pippo-undertow] to Undertow 1.2.3
 
-## [0.4.1] - 2015-04-23
+### [0.4.1] - 2015-04-23
 
-### Fixed
+#### Fixed
 - [#113]: Fixed ControllerRouter ClassCastException
 - [#111]: Request.getBody now uses UTF-8 encoding rather than the default character set of the JVM
 
-### Changed
+#### Changed
 - Make the session available to the template engines
 - Updated [pippo-fastjson] to FastJSON 1.2.5
 - Updated [pippo-groovy] to Groovy 2.4.3
@@ -36,14 +36,14 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 - Updated [pippo-trimou] to Trimou 1.7.3
 - Updated [pippo-undertow] to Undertow 1.2.0
 
-## [0.4.0] - 2015-03-27
+### [0.4.0] - 2015-03-27
 *Massive change, needs more documenting :)*
 
-### Fixed
-### Changed
+#### Fixed
+#### Changed
 - Moved Controller implementation to [pippo-controller]
  
-### Added
+#### Added
 - Added [pippo-fastjson]
 - Added [pippo-groovy]
 - Added [pippo-guice]
@@ -59,30 +59,30 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 - Added [pippo-undertow]
 - Added [pippo-xstream]
 
-## [0.3.0] - 2014-11-14
+### [0.3.0] - 2014-11-14
 
-### Changed
+#### Changed
 - Improved `noCache` implementation
 
-### Added
+#### Added
 - Implemented Controller concept
 
-## [0.2.0] - 2014-11-07
+### [0.2.0] - 2014-11-07
 
-### Changed
+#### Changed
 - Updated to Bootstrap 3.3.0
 
-### Added
+#### Added
 - Added a Jade template engine module
 - Added file upload support 
 - Implemented RouteHandlerChain concept
 - Added Request.getSession()
 - Added Response.getLocals()
 
-## 0.1.0 - 2014-10-30
+### 0.1.0 - 2014-10-30
 Initial release.
 
-### Added
+#### Added
 - Added [pippo-core]
 - Added [pippo-freemarker]
 - Added [pippo-jetty]
