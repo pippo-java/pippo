@@ -122,8 +122,10 @@ public class RouteDispatcher {
 
         if (shouldIgnorePath(requestPath)) {
             // NOT FOUND (404)
-            RouteContext context = routeContextFactory.createRouteContext(application, request, response, noMatches);
-            errorHandler.handle(HttpServletResponse.SC_NOT_FOUND, context);
+            RouteContext routeContext = routeContextFactory.createRouteContext(application, request, response, noMatches);
+            ROUTE_CONTEXT_THREAD_LOCAL.set(routeContext);
+            errorHandler.handle(HttpServletResponse.SC_NOT_FOUND, routeContext);
+            ROUTE_CONTEXT_THREAD_LOCAL.remove();
             log.debug("Returned status code {} for {} '{}' (IGNORED)", response.getStatus(), requestMethod, requestPath);
 
             return;
