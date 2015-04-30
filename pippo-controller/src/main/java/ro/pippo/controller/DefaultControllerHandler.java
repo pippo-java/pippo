@@ -25,6 +25,7 @@ import ro.pippo.core.util.LangUtils;
 import ro.pippo.core.util.StringUtils;
 
 import java.lang.annotation.Annotation;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 /**
@@ -85,6 +86,9 @@ public class DefaultControllerHandler implements ControllerHandler {
 
             Object[] args = prepareMethodArgs(routeContext);
             method.invoke(controller, args);
+        } catch (InvocationTargetException e) {
+            Throwable x = e.getTargetException();
+            throw new PippoRuntimeException(x);
         } catch (Exception e) {
             throw new PippoRuntimeException(e);
         }
