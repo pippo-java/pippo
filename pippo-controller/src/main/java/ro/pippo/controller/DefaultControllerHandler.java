@@ -88,6 +88,9 @@ public class DefaultControllerHandler implements ControllerHandler {
             method.invoke(controller, args);
         } catch (InvocationTargetException e) {
             Throwable x = e.getTargetException();
+            if (x instanceof PippoRuntimeException) {
+                throw (PippoRuntimeException) x;
+            }
             throw new PippoRuntimeException(x);
         } catch (Exception e) {
             throw new PippoRuntimeException(e);
