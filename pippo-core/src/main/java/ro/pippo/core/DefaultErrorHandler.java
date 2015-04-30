@@ -70,7 +70,7 @@ public class DefaultErrorHandler implements ErrorHandler {
             Class<?> superClass = exceptionClass.getSuperclass();
             while (superClass != null) {
                 if (exceptionHandlers.containsKey(superClass)) {
-                    ExceptionHandler exceptionHandler = exceptionHandlers.get(exceptionClass);
+                    ExceptionHandler exceptionHandler = exceptionHandlers.get(superClass);
                     exceptionHandlers.put(exceptionClass, exceptionHandler);
                     return exceptionHandler;
                 }
