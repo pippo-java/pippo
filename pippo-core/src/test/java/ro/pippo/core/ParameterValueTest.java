@@ -26,6 +26,9 @@ import java.math.BigDecimal;
 import java.sql.Date;
 import java.sql.Time;
 import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.UUID;
 
 /**
@@ -155,6 +158,11 @@ public class ParameterValueTest extends Assert {
 
 
     @Test
+    public void testList() throws Exception {
+        assertEquals(Arrays.asList("A", "B", "C"), new ParameterValue("A", "B", "C").toList());
+    }
+
+    @Test
     public void testEnums() throws Exception {
         assertEquals(Alphabet.B, new ParameterValue("B").toEnum(Alphabet.class));
         assertEquals(Alphabet.B, new ParameterValue("B", "A", "D").toEnum(Alphabet.class));
@@ -173,4 +181,5 @@ public class ParameterValueTest extends Assert {
     public static enum Alphabet {
         A, B, C, D, E, F, G
     }
+
 }
