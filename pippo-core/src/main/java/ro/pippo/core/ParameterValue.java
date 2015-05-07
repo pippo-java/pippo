@@ -244,7 +244,11 @@ public class ParameterValue implements Serializable {
         }
 
         if (values.length == 1) {
-            return Arrays.asList(values[0].split(","));
+            String tmp = values[0];
+            tmp = StringUtils.removeStart(tmp, "[");
+            tmp = StringUtils.removeEnd(tmp, "]");
+
+            return Arrays.asList(tmp.split(", "));
         }
 
         return Arrays.asList(values);
