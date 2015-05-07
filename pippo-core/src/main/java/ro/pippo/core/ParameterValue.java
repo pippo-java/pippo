@@ -246,6 +246,7 @@ public class ParameterValue implements Serializable {
         if (values.length == 1) {
             return Arrays.asList(values[0].split(","));
         }
+
         return Arrays.asList(values);
     }
 

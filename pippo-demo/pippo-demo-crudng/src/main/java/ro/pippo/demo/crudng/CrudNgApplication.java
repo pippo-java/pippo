@@ -42,11 +42,10 @@ public class CrudNgApplication extends ControllerApplication {
 
     @Override
     protected void onInit() {
+        contactService = new InMemoryContactService();
 
         GET(new WebjarsResourceHandler());
         GET(new PublicResourceHandler());
-
-        contactService = new InMemoryContactService();
 
         /*
          *  audit filter
