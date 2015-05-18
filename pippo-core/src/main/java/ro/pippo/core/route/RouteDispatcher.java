@@ -208,7 +208,7 @@ public class RouteDispatcher {
         if (routeContext.hasSession()) {
             // get flash from session
             flash = routeContext.removeSession("flash");
-            // put an empty flash (outcoming flash) in session; defense against session.get("flash")
+            // put an empty flash (outgoing flash) in session; defense against session.get("flash")
             routeContext.setSession("flash", new Flash());
         }
 
