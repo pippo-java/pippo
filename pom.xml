@@ -166,6 +166,7 @@
         <module>pippo-guice</module>
         <module>pippo-gson</module>
         <module>pippo-fastjson</module>
+        <module>pippo-jackson</module>
         <module>pippo-xstream</module>
         <module>pippo-snakeyaml</module>
         <module>pippo-metrics</module>

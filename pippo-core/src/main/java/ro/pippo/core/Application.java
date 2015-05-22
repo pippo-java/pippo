@@ -191,17 +191,14 @@ public class Application {
     }
 
     public void registerContentTypeEngine(Class<? extends ContentTypeEngine> engineClass) {
-        engines.registerContentTypeEngine(engineClass);
+        ContentTypeEngine engine = engines.registerContentTypeEngine(engineClass);
+        if (engine != null) {
+            engine.init(this);
+        }
     }
 
     public ContentTypeEngine getContentTypeEngine(String contentType) {
         return engines.getContentTypeEngine(contentType);
-    }
-
-    public void setContentTypeEngine(ContentTypeEngine engine) {
-        engine.init(this);
-
-        engines.setContentTypeEngine(engine);
     }
 
     public Router getRouter() {

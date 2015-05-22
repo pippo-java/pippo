@@ -5,8 +5,12 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 ### [Unreleased][unreleased]
 
 #### Fixed
+- ContentTypeEngines were not properly initialized during the discovery/registration process 
+
 #### Changed
 #### Added
+- Added [pippo-jackson]
+
 #### Removed
 
 ### [0.4.2] - 2015-04-30
@@ -106,6 +110,7 @@ Initial release.
 [pippo-groovy]: https://github.com/decebals/pippo/tree/master/pippo-groovy
 [pippo-gson]: https://github.com/decebals/pippo/tree/master/pippo-gson
 [pippo-guice]: https://github.com/decebals/pippo/tree/master/pippo-guice
+[pippo-jackson]: https://github.com/decebals/pippo/tree/master/pippo-jackson
 [pippo-jade]: https://github.com/decebals/pippo/tree/master/pippo-jade
 [pippo-jetty]: https://github.com/decebals/pippo/tree/master/pippo-jetty
 [pippo-metrics]: https://github.com/decebals/pippo/tree/master/pippo-metrics
