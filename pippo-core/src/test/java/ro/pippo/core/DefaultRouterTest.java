@@ -428,6 +428,39 @@ public class DefaultRouterTest extends Assert {
     }
 
     @Test
+    public void testUriForWithMultipleRegex() throws Exception {
+        Route route = new Route("/user/{email: .*}/test/{id: .*}", HttpConstants.Method.GET, new EmptyRouteHandler());
+        router.addRoute(route);
+
+        Map<String, Object> parameters = new HashMap<String, Object>();
+        parameters.put("email", "test@test.com");
+        parameters.put("id", 5);
+        String path = router.uriFor(route.getUriPattern(), parameters);
+
+        assertThat(path, equalTo("/user/test@test.com/test/5"));
+
+    }
+
+    @Test
+    public void testUriForWithSplat() throws Exception {
+        Route route = new Route("/repository/{repo: .*}/ticket/{id: .*}", HttpConstants.Method.GET, new EmptyRouteHandler());
+        router.addRoute(route);
+
+        Map<String, Object> parameters = new HashMap<String, Object>();
+        parameters.put("repo", "test/myrepo");
+        parameters.put("id", 5);
+        String path = router.uriFor(route.getUriPattern(), parameters);
+
+        assertThat(path, equalTo("/repository/test/myrepo/ticket/5"));
+
+        List<RouteMatch> matches = router.findRoutes("/repository/test/myrepo/ticket/5", HttpConstants.Method.GET);
+
+        assertFalse(matches.isEmpty());
+        assertEquals("test/myrepo", matches.get(0).getPathParameters().get("repo"));
+        assertEquals("5", matches.get(0).getPathParameters().get("id"));
+    }
+
+    @Test
     public void testUriForWithRegexAndQueryParameters() throws Exception {
         Route route = new Route("/user/{email}/{id: .*}", HttpConstants.Method.GET, new EmptyRouteHandler());
         router.addRoute(route);

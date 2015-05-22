@@ -53,7 +53,7 @@ public class DefaultRouter implements Router {
     private static final String VARIABLE_ROUTES_DEFAULT_REGEX = "([^/]*)";
 
     // This regex works for both {myParam} AND {myParam: .*}
-    private static final String VARIABLE_PART_PATTERN_WITH_PLACEHOLDER = "\\{(%s)(:\\s(.*))?\\}";
+    private static final String VARIABLE_PART_PATTERN_WITH_PLACEHOLDER = "\\{(%s)(:\\s([^}]*))?\\}";
 
     // key = request method
     private Map<String, List<PatternBinding>> bindingsCache;
