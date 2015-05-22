@@ -5,11 +5,12 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 ### [Unreleased][unreleased]
 
 #### Fixed
-- ContentTypeEngines were not properly initialized during the discovery/registration process 
+- [#121]: ContentTypeEngines were not properly initialized during the discovery/registration process 
+- Fixed multiple regex parameter tokenization
 
 #### Changed
 #### Added
-- Added [pippo-jackson]
+- [#121]: Added [pippo-jackson]
 
 #### Removed
 
@@ -98,6 +99,7 @@ Initial release.
 [0.3.0]: https://github.com/decebals/pippo/compare/pippo-parent-0.2.0...pippo-parent-0.3.0
 [0.2.0]: https://github.com/decebals/pippo/compare/pippo-parent-0.1.0...pippo-parent-0.2.0
 
+[#121]: https://github.com/decebals/pippo/issues/121
 [#116]: https://github.com/decebals/pippo/issues/116
 [#115]: https://github.com/decebals/pippo/issues/115
 [#113]: https://github.com/decebals/pippo/issues/113
