@@ -73,8 +73,9 @@ public class ContentTypeEngines {
      * for the content type.
      *
      * @param engineClass
+     * @return the engine instance, if it is registered
      */
-    public void registerContentTypeEngine(Class<? extends ContentTypeEngine> engineClass) {
+    public ContentTypeEngine registerContentTypeEngine(Class<? extends ContentTypeEngine> engineClass) {
         ContentTypeEngine engine = null;
         try {
             engine = engineClass.newInstance();
@@ -83,9 +84,11 @@ public class ContentTypeEngines {
         }
         if (!engines.containsKey(engine.getContentType())) {
             setContentTypeEngine(engine);
+            return engine;
         } else {
             log.debug("'{}' content engine already registered, ignoring '{}'", engine.getContentType(),
                 engineClass.getName());
+            return null;
         }
     }
 

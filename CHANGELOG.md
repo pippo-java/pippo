@@ -5,6 +5,8 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 ### [Unreleased][unreleased]
 
 #### Fixed
+- ContentTypeEngines were not properly initialized during the discovery/registration process 
+
 #### Changed
 #### Added
 #### Removed
