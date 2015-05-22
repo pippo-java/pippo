@@ -10,6 +10,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 #### Changed
 #### Added
+- [#122]: Added a CSRF handler & StatusCodeException class
 - [#121]: Added [pippo-jackson]
 
 #### Removed
@@ -99,6 +100,7 @@ Initial release.
 [0.3.0]: https://github.com/decebals/pippo/compare/pippo-parent-0.2.0...pippo-parent-0.3.0
 [0.2.0]: https://github.com/decebals/pippo/compare/pippo-parent-0.1.0...pippo-parent-0.2.0
 
+[#122]: https://github.com/decebals/pippo/issues/122
 [#121]: https://github.com/decebals/pippo/issues/121
 [#116]: https://github.com/decebals/pippo/issues/116
 [#115]: https://github.com/decebals/pippo/issues/115

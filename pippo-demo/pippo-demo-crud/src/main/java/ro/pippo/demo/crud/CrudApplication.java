@@ -18,6 +18,7 @@ package ro.pippo.demo.crud;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ro.pippo.core.Application;
+import ro.pippo.core.route.CSRFHandler;
 import ro.pippo.core.route.PublicResourceHandler;
 import ro.pippo.core.route.RouteContext;
 import ro.pippo.core.route.RouteHandler;
@@ -57,6 +58,12 @@ public class CrudApplication extends Application {
             }
 
         });
+
+        /*
+         * Register a CSRF token generator and validator.
+         * This creates a session for all matching requests.
+         */
+        ALL("/contact.*", new CSRFHandler()).named("CSRF handler");
 
         // authentication filter
         GET("/contact.*", new RouteHandler() {

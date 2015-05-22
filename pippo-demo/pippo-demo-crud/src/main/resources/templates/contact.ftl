@@ -25,6 +25,7 @@
         </div>
         <div class="form-group">
             <div class="col-sm-offset-2 col-sm-9">
+                <input type="hidden" value="${csrfToken}" name="csrfToken"/>
                 <button type="submit" class="btn btn-default btn-primary">Submit</button>
                 <a type="submit" class="btn" href="${backAction}">Cancel</a>
             </div>
