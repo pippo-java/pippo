@@ -32,11 +32,8 @@ public class SpringApplication extends ControllerApplication {
         // create spring application context
         ApplicationContext applicationContext = new AnnotationConfigApplicationContext(SpringConfiguration.class);
 
-        // registering SpringControllerInjector
-//        getControllerInstantiationListeners().add(new SpringControllerInjector(applicationContext));
-
-        // registering SpringInstanceProvider
-//        setInstanceProvider(new SpringInstanceProvider(applicationContext, false));
+        // registering SpringControllerFactory
+//        setControllerFactory(new SpringControllerFactory(applicationContext, false));
         setControllerFactory(new SpringControllerFactory(applicationContext));
 
         GET(new WebjarsResourceHandler());

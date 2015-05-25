@@ -26,7 +26,7 @@ import ro.pippo.controller.Controller;
 import ro.pippo.controller.ControllerFactory;
 
 /**
- * An InstanceProvider implementation that delegates to the Spring container to instantiate a given class type.
+ * A ControllerFactory implementation that delegates to the Spring container to instantiate a given class type.
  * This allows for the instance to be configured via dependency injection.
  *
  * @author Decebal Suiu
