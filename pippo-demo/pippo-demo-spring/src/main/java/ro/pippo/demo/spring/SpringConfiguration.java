@@ -17,6 +17,8 @@ package ro.pippo.demo.spring;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.PropertySource;
+import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 import ro.pippo.demo.common.ContactService;
 import ro.pippo.demo.common.InMemoryContactService;
 
@@ -24,11 +26,25 @@ import ro.pippo.demo.common.InMemoryContactService;
  * @author Decebal Suiu
  */
 @Configuration
+@PropertySource("classpath:spring.properties")
 public class SpringConfiguration {
 
     @Bean
     public ContactService contactService() {
         return new InMemoryContactService();
+    }
+
+/*
+    @Bean
+    public ContactsController contactsController() {
+        return new ContactsController();
+    }
+*/
+
+    // To resolve ${} in @Value
+    @Bean
+    public static PropertySourcesPlaceholderConfigurer propertyConfigInDev() {
+        return new PropertySourcesPlaceholderConfigurer();
     }
 
 }

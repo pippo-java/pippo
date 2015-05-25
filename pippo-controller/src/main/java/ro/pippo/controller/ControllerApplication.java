@@ -15,6 +15,8 @@
  */
 package ro.pippo.controller;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import ro.pippo.core.Application;
 import ro.pippo.core.HttpConstants;
 import ro.pippo.core.PippoRuntimeException;
@@ -29,10 +31,14 @@ import ro.pippo.core.util.ServiceLocator;
  */
 public class ControllerApplication extends Application {
 
+    private static final Logger log = LoggerFactory.getLogger(ControllerApplication.class);
+
     private ControllerHandlerFactory controllerHandlerFactory;
     private ControllerInstantiationListenerList controllerInstantiationListeners;
     private ControllerInitializationListenerList controllerInitializationListeners;
     private ControllerInvokeListenerList controllerInvokeListeners;
+
+    private ControllerFactory controllerFactory;
 
     public ControllerApplication() {
         super();
@@ -130,6 +136,19 @@ public class ControllerApplication extends Application {
         }
 
         super.setRouter(router);
+    }
+
+    public ControllerFactory getControllerFactory() {
+        if (controllerFactory == null) {
+            controllerFactory = new DefaultControllerFactory();
+        }
+
+        return controllerFactory;
+    }
+
+    public void setControllerFactory(ControllerFactory controllerFactory) {
+        this.controllerFactory = controllerFactory;
+        log.debug("Controller provider is now '{}'", controllerFactory.getClass().getName());
     }
 
 }

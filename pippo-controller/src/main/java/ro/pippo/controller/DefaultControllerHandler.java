@@ -71,9 +71,10 @@ public class DefaultControllerHandler implements ControllerHandler {
     public void handle(RouteContext routeContext) {
         log.debug("Invoke method '{}'", LangUtils.toString(method));
         try {
-            // create the controller instance
-            Controller controller = controllerClass.newInstance();
             ControllerApplication application = (ControllerApplication) routeContext.getApplication();
+
+            // create the controller instance
+            Controller controller = application.getControllerFactory().createController(controllerClass);
 
             application.getControllerInstantiationListeners().onInstantiation(controller);
 

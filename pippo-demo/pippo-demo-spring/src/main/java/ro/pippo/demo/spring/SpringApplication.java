@@ -20,7 +20,7 @@ import org.springframework.context.annotation.AnnotationConfigApplicationContext
 import ro.pippo.controller.ControllerApplication;
 import ro.pippo.core.route.PublicResourceHandler;
 import ro.pippo.core.route.WebjarsResourceHandler;
-import ro.pippo.spring.SpringControllerInjector;
+import ro.pippo.spring.SpringControllerFactory;
 
 /**
  * @author Decebal Suiu
@@ -29,15 +29,18 @@ public class SpringApplication extends ControllerApplication {
 
     @Override
     protected void onInit() {
-
-        GET(new WebjarsResourceHandler());
-        GET(new PublicResourceHandler());
-
         // create spring application context
         ApplicationContext applicationContext = new AnnotationConfigApplicationContext(SpringConfiguration.class);
 
         // registering SpringControllerInjector
-        getControllerInstantiationListeners().add(new SpringControllerInjector(applicationContext));
+//        getControllerInstantiationListeners().add(new SpringControllerInjector(applicationContext));
+
+        // registering SpringInstanceProvider
+//        setInstanceProvider(new SpringInstanceProvider(applicationContext, false));
+        setControllerFactory(new SpringControllerFactory(applicationContext));
+
+        GET(new WebjarsResourceHandler());
+        GET(new PublicResourceHandler());
 
         // add controller
         GET("/", ContactsController.class, "index");
