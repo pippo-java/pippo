@@ -148,7 +148,7 @@ public class ControllerApplication extends Application {
 
     public void setControllerFactory(ControllerFactory controllerFactory) {
         this.controllerFactory = controllerFactory;
-        log.debug("Controller provider is now '{}'", controllerFactory.getClass().getName());
+        log.debug("Controller factory is '{}'", controllerFactory.getClass().getName());
     }
 
 }

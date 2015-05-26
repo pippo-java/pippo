@@ -16,11 +16,10 @@
 package ro.pippo.demo.spring;
 
 import ro.pippo.core.Pippo;
-import ro.pippo.spring.SpringControllerInjector;
 
 /**
  * This demo shows how to use Spring Framework to declare a bean and how to use
- * <code>{@link SpringControllerInjector}</code> to inject that bean in a Controller.
+ * <code>{@link ro.pippo.spring.SpringControllerFactory}</code> to inject that bean in a Controller.
  *
  * @author Decebal Suiu
  */

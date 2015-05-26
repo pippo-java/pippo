@@ -16,7 +16,6 @@
 package ro.pippo.demo.spring;
 
 import ro.pippo.controller.ControllerApplication;
-import ro.pippo.core.Application;
 import ro.pippo.core.route.PublicResourceHandler;
 import ro.pippo.core.route.WebjarsResourceHandler;
 import ro.pippo.demo.common.ContactService;
@@ -33,7 +32,6 @@ public class SpringApplication2 extends ControllerApplication {
 
     @Override
     protected void onInit() {
-
         GET(new WebjarsResourceHandler());
         GET(new PublicResourceHandler());
 
