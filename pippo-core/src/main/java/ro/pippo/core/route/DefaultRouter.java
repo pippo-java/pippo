@@ -22,6 +22,8 @@ import ro.pippo.core.PippoConstants;
 import ro.pippo.core.PippoRuntimeException;
 import ro.pippo.core.util.StringUtils;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -405,7 +407,12 @@ public class DefaultRouter implements Router {
                 Entry<String, Object> parameterEntry = iterator.next();
                 String parameterName = parameterEntry.getKey();
                 Object parameterValue = parameterEntry.getValue();
-                String encodedParameterValue = encodeParameterValue(parameterValue.toString());
+                String encodedParameterValue = null;
+                try {
+                    encodedParameterValue = URLEncoder.encode(parameterValue.toString(), PippoConstants.UTF8);
+                } catch (UnsupportedEncodingException e) {
+                    throw new PippoRuntimeException("Cannot encode the parameter value '" + parameterValue.toString() + "'", e);
+                }
                 query.append(parameterName).append("=").append(encodedParameterValue);
 
                 if (iterator.hasNext()) {
@@ -417,40 +424,6 @@ public class DefaultRouter implements Router {
         }
 
         return uri;
-    }
-
-    private String encodeParameterValue(String value) {
-        if (value == null) {
-            return "";
-        }
-
-        StringBuilder builder = new StringBuilder();
-
-        try {
-            for (int i = 0; i < value.length(); i++) {
-                char c = value.charAt(i);
-                if (((c >= 'A') && (c <= 'Z')) || ((c >= 'a') && (c <= 'z')) ||
-                    ((c >= '0') && (c <= '9')) ||
-                    (c == '-') ||  (c == '.')  || (c == '_') || (c == '~')) {
-                    builder.append(c);
-                } else {
-                    byte[] bytes = ("" + c).getBytes(PippoConstants.UTF8);
-                    for (byte b : bytes) {
-                        builder.append('%');
-
-                        int upper = (((int) b) >> 4) & 0xf;
-                        builder.append(Integer.toHexString(upper).toUpperCase());
-
-                        int lower = ((int) b) & 0xf;
-                        builder.append(Integer.toHexString(lower).toUpperCase());
-                    }
-                }
-            }
-        } catch (Exception e) {
-            throw new PippoRuntimeException("Cannot encode the parameter value", e);
-        }
-
-        return builder.toString();
     }
 
     private class PatternBinding {

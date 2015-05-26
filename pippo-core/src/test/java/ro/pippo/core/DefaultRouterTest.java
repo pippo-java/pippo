@@ -473,7 +473,7 @@ public class DefaultRouterTest extends Assert {
         parameters.put("name", "Decebal Suiu");
         String path = router.uriFor(route.getUriPattern(), parameters);
 
-        assertThat(path, equalTo("/user/test@test.com?name=Decebal%20Suiu"));
+        assertThat(path, equalTo("/user/test@test.com?name=Decebal+Suiu"));
     }
 
     @Test
