@@ -171,7 +171,6 @@ public class DefaultRouterTest extends Assert {
 
         routeMatches = router.findRoutes("/contact/a", HttpConstants.Method.PATCH);
         assertEquals(0, routeMatches.size());
-
     }
 
     @Test
@@ -189,7 +188,6 @@ public class DefaultRouterTest extends Assert {
         assertTrue(pathParameters.containsKey("id"));
         assertEquals(String.valueOf(3), pathParameters.get("id"));
         assertEquals("borrowed", pathParameters.get("else"));
-
     }
 
     @Test
@@ -201,12 +199,10 @@ public class DefaultRouterTest extends Assert {
         List<RouteMatch> routeMatches = router.findRoutes("/webjars/bootstrap/3.0.2/css/bootstrap.min.css",
             HttpConstants.Method.GET);
         assertEquals(1, routeMatches.size());
-
     }
 
     @Test
     public void testParameters() throws Exception {
-
         // /////////////////////////////////////////////////////////////////////
         // One parameter:
         // /////////////////////////////////////////////////////////////////////
@@ -233,7 +229,6 @@ public class DefaultRouterTest extends Assert {
 
     @Test
     public void testParametersAndRegex() throws Exception {
-
         router.addRoute(new Route("/John/{id}/.*", HttpConstants.Method.GET, new EmptyRouteHandler()));
 
         List<RouteMatch> matches = router.findRoutes("/John/20/dashboard", HttpConstants.Method.GET);
@@ -253,12 +248,10 @@ public class DefaultRouterTest extends Assert {
         match = matches.get(0);
         assertEquals(1, match.getPathParameters().size());
         assertEquals("20", match.getPathParameters().get("id"));
-
     }
 
     @Test
     public void testParametersAndRegexInsideVariableParts() throws Exception {
-
         router.addRoute(new Route("/public/{path: .*}", HttpConstants.Method.GET, new EmptyRouteHandler()));
 
         String pathUnderTest = "/public/css/app.css";
@@ -395,7 +388,6 @@ public class DefaultRouterTest extends Assert {
 
     @Test
     public void testRouteWithUrlEncodedSlashGetsChoppedCorrectly() throws Exception {
-
         Route route = new Route("/blah/{id}/.*", HttpConstants.Method.GET, new EmptyRouteHandler());
         router.addRoute(route);
 
@@ -410,7 +402,6 @@ public class DefaultRouterTest extends Assert {
 
         assertEquals(1, routeMatch.getPathParameters().size());
         assertEquals("my%2fid", routeMatch.getPathParameters().get("id"));
-
     }
 
     @Test
@@ -424,7 +415,6 @@ public class DefaultRouterTest extends Assert {
         String path = router.uriFor(route.getUriPattern(), parameters);
 
         assertThat(path, equalTo("/user/test@test.com/5"));
-
     }
 
     @Test
@@ -438,7 +428,6 @@ public class DefaultRouterTest extends Assert {
         String path = router.uriFor(route.getUriPattern(), parameters);
 
         assertThat(path, equalTo("/user/test@test.com/test/5"));
-
     }
 
     @Test
@@ -465,13 +454,26 @@ public class DefaultRouterTest extends Assert {
         Route route = new Route("/user/{email}/{id: .*}", HttpConstants.Method.GET, new EmptyRouteHandler());
         router.addRoute(route);
 
-        Map<String, Object> parameters = new HashMap<String, Object>();
+        Map<String, Object> parameters = new HashMap<>();
         parameters.put("email", "test@test.com");
         parameters.put("id", 5);
         parameters.put("query", "recent_changes");
         String path = router.uriFor(route.getUriPattern(), parameters);
 
         assertThat(path, equalTo("/user/test@test.com/5?query=recent_changes"));
+    }
+
+    @Test
+    public void testUriForWithEncodedParameters() throws Exception {
+        Route route = new Route("/user/{email}", HttpConstants.Method.GET, new EmptyRouteHandler());
+        router.addRoute(route);
+
+        Map<String, Object> parameters = new HashMap<>();
+        parameters.put("email", "test@test.com");
+        parameters.put("name", "Decebal Suiu");
+        String path = router.uriFor(route.getUriPattern(), parameters);
+
+        assertThat(path, equalTo("/user/test@test.com?name=Decebal%20Suiu"));
     }
 
     @Test
@@ -488,4 +490,5 @@ public class DefaultRouterTest extends Assert {
         matches = router.findRoutes("/public/route", HttpConstants.Method.GET);
         assertEquals(0, matches.size());
     }
+
 }
