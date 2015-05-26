@@ -42,11 +42,11 @@ public class CrudApplication extends Application {
 
     @Override
     protected void onInit() {
+        contactService = new InMemoryContactService();
 
+        // add handlers for static content
         GET(new WebjarsResourceHandler());
         GET(new PublicResourceHandler());
-
-        contactService = new InMemoryContactService();
 
         // audit filter
         ALL("/.*", new RouteHandler() {
