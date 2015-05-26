@@ -179,7 +179,6 @@ public class BasicApplication extends Application {
             @Override
             public void handle(RouteContext routeContext) {
                 throw new ForbiddenException("You didn't say the magic word!");
-
             }
 
         });
