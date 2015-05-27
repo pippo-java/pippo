@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2014 the original author or authors.
+ * Copyright (C) 2015 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,27 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package ro.pippo.guice;
-
-import ro.pippo.controller.Controller;
-import ro.pippo.controller.ControllerInstantiationListener;
-
-import com.google.inject.Injector;
+package ro.pippo.controller;
 
 /**
- * @author James Moger
+ * Abstraction for supporting controller instantiated by a dependency injector.
+ *
+ * @author Decebal Suiu
  */
-public class GuiceControllerInjector implements ControllerInstantiationListener {
+public interface ControllerFactory {
 
-    private final Injector guice;
-
-    public GuiceControllerInjector(Injector guice) {
-        this.guice = guice;
-    }
-
-    @Override
-    public void onInstantiation(Controller controller) {
-        guice.injectMembers(controller);
-    }
+    /**
+     * Provides an instance of a controller class.
+     *
+     * @param controllerClass
+     */
+    public <T extends Controller> T createController(Class<T> controllerClass);
 
 }

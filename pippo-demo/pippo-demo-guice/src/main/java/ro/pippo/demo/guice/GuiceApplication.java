@@ -20,7 +20,7 @@ import com.google.inject.Injector;
 import ro.pippo.controller.ControllerApplication;
 import ro.pippo.core.route.PublicResourceHandler;
 import ro.pippo.core.route.WebjarsResourceHandler;
-import ro.pippo.guice.GuiceControllerInjector;
+import ro.pippo.guice.GuiceControllerFactory;
 
 /**
  * @author James Moger
@@ -29,15 +29,15 @@ public class GuiceApplication extends ControllerApplication {
 
     @Override
     protected void onInit() {
-
-        GET(new WebjarsResourceHandler());
-        GET(new PublicResourceHandler());
-
         // create guice injector
         Injector injector = Guice.createInjector(new GuiceModule());
 
-        // registering GuiceControllerInjector
-        getControllerInstantiationListeners().add(new GuiceControllerInjector(injector));
+        // registering GuiceControllerFactory
+//        setControllerFactory(new GuiceControllerFactory(injector, false));
+        setControllerFactory(new GuiceControllerFactory(injector));
+
+        GET(new WebjarsResourceHandler());
+        GET(new PublicResourceHandler());
 
         // add controller
         GET("/", ContactsController.class, "index");

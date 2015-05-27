@@ -160,9 +160,7 @@
         <module>pippo-jade</module>
         <module>pippo-pebble</module>
         <module>pippo-trimou</module>
-        <module>pippo-ioc</module>
         <module>pippo-spring</module>
-        <module>pippo-demo</module>
         <module>pippo-guice</module>
         <module>pippo-gson</module>
         <module>pippo-fastjson</module>
@@ -177,6 +175,7 @@
         <module>pippo-controller</module>
         <module>pippo-session</module>
         <module>pippo-session-cookie</module>
+        <module>pippo-demo</module>
     </modules>
 
 </project>

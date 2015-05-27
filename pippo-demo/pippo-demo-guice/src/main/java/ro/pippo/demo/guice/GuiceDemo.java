@@ -16,11 +16,10 @@
 package ro.pippo.demo.guice;
 
 import ro.pippo.core.Pippo;
-import ro.pippo.guice.GuiceControllerInjector;
 
 /**
  * This demo shows how to use Guice to declare a singleton and how to use
- * <code>{@link GuiceControllerInjector}</code> to inject that singleton in a Controller.
+ * <code>{@link ro.pippo.guice.GuiceControllerFactory}</code> to inject that singleton in a Controller.
  *
  * @author James Moger
  */

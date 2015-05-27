@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2014 the original author or authors.
+ * Copyright (C) 2015 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,23 +13,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package ro.pippo.ioc;
+package ro.pippo.guice;
 
-import java.lang.reflect.Field;
+import com.google.inject.Injector;
+import ro.pippo.controller.Controller;
+import ro.pippo.controller.ControllerFactory;
 
 /**
- * Provider used by injector to generate values for fields of the object being injected.
- *
  * @author Decebal Suiu
  */
-public interface FieldValueProvider {
+public class GuiceControllerFactory implements ControllerFactory {
 
-    public Object getFieldValue(Field field, Object fieldOwner);
+    private Injector injector;
 
-    /**
-     * Returns true if the provider can generate a value for the field, false otherwise.
-     * If this method returns false, getFieldValue() will not be called on this provider.
-     */
-    public boolean supportsField(Field field);
+    public GuiceControllerFactory(Injector injector) {
+        this.injector = injector;
+    }
+
+    @Override
+    public <T extends Controller> T createController(Class<T> controllerClass) {
+        return injector.getInstance(controllerClass);
+    }
 
 }

@@ -15,6 +15,8 @@
  */
 package ro.pippo.demo.spring;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import ro.pippo.controller.Controller;
 import ro.pippo.demo.common.ContactService;
 
@@ -25,10 +27,16 @@ import javax.inject.Inject;
  */
 public class ContactsController extends Controller {
 
-    @Inject
+//    @Inject
+    @Autowired
     private ContactService contactService;
 
+    @Value("${message}")
+    private String message;
+
     public void index() {
+        System.out.println("contactService = " + contactService);
+        System.out.println("message = " + message);
         getResponse().bind("contacts", contactService.getContacts());
         getResponse().render("contacts");
     }

@@ -21,7 +21,7 @@
     <dependencies>
         <dependency>
             <groupId>ro.pippo</groupId>
-            <artifactId>pippo-ioc</artifactId>
+            <artifactId>pippo-controller</artifactId>
             <version>${project.version}</version>
         </dependency>
 
