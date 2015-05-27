@@ -197,6 +197,27 @@ public class DefaultRouter implements Router {
         return prefixApplicationPath(relativeUri);
     }
 
+    /**
+     * Generate an URI string for a route (referenced by an uriPattern) with some parameters.
+     * For example:
+     * <p/>
+     * <pre>
+     * // add a route
+     * GET("/user", (routeContext)-> {...});
+     *
+     * // get an uri string for the above route
+     * Map<String, Object> parameters = new HashMap<>();
+     * parameters.put("admin", true);
+     * parameters.put("company", "Home Office")
+     * String uri = uriFor("/user", parameters);
+     * // the result is "/user?admin=true&company=Home+Office"
+     * <pre/>
+     * The parameters values are automatically encoded by this method.
+     *
+     * @param uriPattern
+     * @param parameters
+     * @return
+     */
     @Override
     public String uriFor(String uriPattern, Map<String, Object> parameters) {
         PatternBinding binding = getBinding(uriPattern);
