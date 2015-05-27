@@ -33,7 +33,6 @@ public class GuiceApplication extends ControllerApplication {
         Injector injector = Guice.createInjector(new GuiceModule());
 
         // registering GuiceControllerFactory
-//        setControllerFactory(new GuiceControllerFactory(injector, false));
         setControllerFactory(new GuiceControllerFactory(injector));
 
         GET(new WebjarsResourceHandler());
