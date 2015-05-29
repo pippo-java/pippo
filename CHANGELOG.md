@@ -9,13 +9,13 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 - Fixed multiple regex parameter tokenization
 
 #### Changed
-- [#117]: Rework [pippo-spring] (Spring integration), [pippo-guice] (Guice integration) 
+- [#117]: Rework [pippo-spring], [pippo-guice]
 
 #### Added
 - [#122]: Added a CSRF handler & StatusCodeException class
 - [#121]: Added [pippo-jackson]
 - [#124]: Automatically encode the parameters values in DefaultRouter.uriFor()
-- [#126]: Maven quickstart archetype to build a small Pippo web application. 
+- [#126]: Maven quickstart archetype to build a small Pippo web application
 
 #### Removed
 - Removed pippo-ioc module because it is no longer used anywhere
