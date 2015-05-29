@@ -28,6 +28,7 @@ import javax.servlet.http.HttpSession;
 import javax.servlet.http.Part;
 import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 import java.net.URI;
 import java.util.Collection;
 import java.util.Collections;
@@ -162,18 +163,30 @@ public final class Request {
                     Class<?> fieldClass = field.getType();
                     Object value;
                     if (Collection.class.isAssignableFrom(fieldClass)) {
-                        ParameterizedType parameterizedType = (ParameterizedType) field.getGenericType();
-                        Class<X> genericType = (Class<X>) parameterizedType.getActualTypeArguments()[0];
+                        Type parameterType = field.getGenericType();
+                        if (!ParameterizedType.class.isAssignableFrom(parameterType.getClass())) {
+                            String msg = "Please specify a generic parameter type for field '{}' {}";
+                            throw new PippoRuntimeException(msg, field.getName(), fieldClass.getName());
+                        }
+                        ParameterizedType parameterizedType = (ParameterizedType) parameterType;
+                        Class<X> genericClass = null;
+                        try {
+                            genericClass = (Class<X>) parameterizedType.getActualTypeArguments()[0];
+                        } catch (ClassCastException e) {
+                            String msg = "Please specify a generic parameter type for field '{}' {}";
+                            throw new PippoRuntimeException(msg, field.getName(), fieldClass.getName());
+                        }
+
                         if (Set.class == fieldClass) {
-                            value = getAllParameters().get(parameterName).toSet(genericType, pattern);
+                            value = getAllParameters().get(parameterName).toSet(genericClass, pattern);
                         } else if (List.class == fieldClass) {
-                            value = getAllParameters().get(parameterName).toList(genericType, pattern);
+                            value = getAllParameters().get(parameterName).toList(genericClass, pattern);
                         } else if (fieldClass.isInterface()) {
                             String msg = "Field '{}' collection '{}' is not a supported type!";
                             throw new PippoRuntimeException(msg, field.getName(), fieldClass.getName());
                         } else {
                             Class<? extends Collection> collectionClass = (Class<? extends Collection>) fieldClass;
-                            value = getAllParameters().get(parameterName).toCollection(collectionClass, genericType, pattern);
+                            value = getAllParameters().get(parameterName).toCollection(collectionClass, genericClass, pattern);
                         }
                     } else {
                         value = getAllParameters().get(parameterName).to(fieldClass, pattern);

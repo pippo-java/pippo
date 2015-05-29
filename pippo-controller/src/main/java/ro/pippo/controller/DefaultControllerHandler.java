@@ -28,6 +28,7 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
@@ -214,9 +215,20 @@ public class DefaultControllerHandler implements ControllerHandler {
     }
 
     protected Class<?> getParameterGenericType(Method method, int i) {
-        ParameterizedType parameterizedType = (ParameterizedType) method.getGenericParameterTypes()[i];
-        Class<?> genericType = (Class<?>) parameterizedType.getActualTypeArguments()[0];
-        return genericType;
+        Type genericType = method.getGenericParameterTypes()[i];
+        if (!ParameterizedType.class.isAssignableFrom(genericType.getClass())) {
+            throw new PippoRuntimeException("Please specify a generic parameter type for '{}', parameter {} of '{}'",
+                method.getParameterTypes()[i].getName(), i, LangUtils.toString(method));
+        }
+
+        ParameterizedType parameterizedType = (ParameterizedType) genericType;
+        try {
+            Class<?> genericClass = (Class<?>) parameterizedType.getActualTypeArguments()[0];
+            return genericClass;
+        } catch (ClassCastException e) {
+            throw new PippoRuntimeException("Please specify a generic parameter type for '{}', parameter {} of '{}'",
+                method.getParameterTypes()[i].getName(), i, LangUtils.toString(method));
+        }
     }
 
     protected boolean isBodyParameter(Method method, int i) {
