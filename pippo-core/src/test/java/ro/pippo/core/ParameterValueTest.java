@@ -28,7 +28,10 @@ import java.sql.Time;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
 import java.util.UUID;
 
 /**
@@ -158,8 +161,50 @@ public class ParameterValueTest extends Assert {
 
 
     @Test
-    public void testList() throws Exception {
+    public void testStringList() throws Exception {
         assertEquals(Arrays.asList("A", "B", "C"), new ParameterValue("A", "B", "C").toList());
+    }
+
+    @Test
+    public void testIntegerList() throws Exception {
+        assertEquals(Arrays.asList(200, 400, 600), new ParameterValue("200", "400", "600").toList(Integer.class));
+    }
+
+    @Test
+    public void testStringHashSet() throws Exception {
+        Set<String> mySet = new HashSet<>(Arrays.asList("A", "B", "C"));
+        Set<String> targetSet = new ParameterValue("C", "B", "A").toSet(String.class);
+        assertEquals(mySet, targetSet);
+    }
+
+    @Test
+    public void testIntegerHashSet() throws Exception {
+        Set<Integer> mySet = new HashSet<>(Arrays.asList(200, 400, 600));
+        assertEquals(mySet, new ParameterValue("600", "200", "400", "200").toSet(Integer.class));
+    }
+
+    @Test
+    public void testStringTreeSet() throws Exception {
+        TreeSet<String> mySet = new TreeSet<>(Arrays.asList("C", "B", "A"));
+        assertEquals(mySet, new ParameterValue("C", "A", "B", "A").toCollection(TreeSet.class, String.class, null));
+    }
+
+    @Test
+    public void testIntegerTreeSet() throws Exception {
+        TreeSet<Integer> mySet = new TreeSet<>(Arrays.asList(600, 200, 400, 200));
+        assertEquals(mySet, new ParameterValue("600", "200", "400", "200").toCollection(TreeSet.class, Integer.class, null));
+    }
+
+    @Test
+    public void testStringArrayList() throws Exception {
+        List<String> myList = new ArrayList<>(Arrays.asList("C", "B", "A"));
+        assertEquals(myList, new ParameterValue("C", "B", "A").toList(String.class));
+    }
+
+    @Test
+    public void testIntegerArrayList() throws Exception {
+        List<Integer> myList = new ArrayList<>(Arrays.asList(600, 400, 200));
+        assertEquals(myList, new ParameterValue("600", "400", "200").toList(Integer.class));
     }
 
     @Test

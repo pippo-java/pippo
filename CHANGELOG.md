@@ -16,6 +16,8 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 - [#121]: Added [pippo-jackson]
 - [#124]: Automatically encode the parameters values in DefaultRouter.uriFor()
 - [#126]: Maven quickstart archetype to build a small Pippo web application
+- [#128]: Added support for `Set`, `List`, and any other concrete Collection type
+- [#128]: Added support for array query/form parameters like `yada[0]`, `yada[1]`, & `yada[2]`
 
 #### Removed
 - Removed pippo-ioc module because it is no longer used anywhere

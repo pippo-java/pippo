@@ -27,6 +27,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.servlet.http.Part;
 import java.lang.reflect.Field;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 import java.net.URI;
 import java.util.Collection;
 import java.util.Collections;
@@ -35,6 +37,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeMap;
 
 /**
  * Represents a server-side HTTP request. An instance of this class is created
@@ -63,13 +66,50 @@ public final class Request {
         this.contentTypeEngines = application.getContentTypeEngines();
 
         // fill (query) parameters if any
+        Map<String, Map<Integer, String>> arrays = new HashMap<>();
         Map<String, ParameterValue> tmp = new HashMap<>();
         Enumeration<String> names = httpServletRequest.getParameterNames();
         while (names.hasMoreElements()) {
             String name = names.nextElement();
-            String[] values = httpServletRequest.getParameterValues(name);
-            tmp.put(name, new ParameterValue(values));
+
+            if (name.matches("(.+)\\[(\\d+)\\]")) {
+                // support indexed parameter arrays e.g. setting[0], setting[1], setting[2]
+                int brk = name.indexOf('[');
+                String base = name.substring(0, brk);
+                int idx = Integer.parseInt(name.substring(brk + 1, name.length() - 1));
+                if (!arrays.containsKey(base)) {
+                    // use an ordered map because we can not rely on parameter
+                    // order from the servlet container nor from the request
+                    arrays.put(base, new TreeMap<Integer, String>());
+                }
+
+                Map<Integer, String> map = arrays.get(base);
+                String value = httpServletRequest.getParameterValues(name)[0];
+                map.put(idx, value);
+            } else {
+                String[] values = httpServletRequest.getParameterValues(name);
+                tmp.put(name, new ParameterValue(values));
+            }
         }
+
+        for (Map.Entry<String, Map<Integer, String>> entry : arrays.entrySet()) {
+            // identify maximum specified index
+            int maxIndex = 0;
+            for (int index : entry.getValue().keySet()) {
+                if (index > maxIndex) {
+                    maxIndex = index;
+                }
+            }
+
+            // populate array & respect specified indexes
+            // Note: this may not be linear but we must respect that design choice
+            String[] values = new String[maxIndex + 1];
+            for (Map.Entry<Integer, String> indexedValue : entry.getValue().entrySet()) {
+                values[indexedValue.getKey()] = indexedValue.getValue();
+            }
+            tmp.put(entry.getKey(), new ParameterValue(values));
+        }
+
         parameters = Collections.unmodifiableMap(tmp);
         applicationPath = application.getRouter().getApplicationPath();
     }
@@ -100,7 +140,7 @@ public final class Request {
         return entity;
     }
 
-    public <T> T updateEntityFromParameters(T entity) {
+    public <T, X> T updateEntityFromParameters(T entity) {
         for (Field field : entity.getClass().getDeclaredFields()) {
             String parameterName = field.getName();
             Param parameter = field.getAnnotation(Param.class);
@@ -120,7 +160,37 @@ public final class Request {
                 }
 
                 try {
-                    Object value = getAllParameters().get(parameterName).to(field.getType(), pattern);
+                    Class<?> fieldClass = field.getType();
+                    Object value;
+                    if (Collection.class.isAssignableFrom(fieldClass)) {
+                        Type parameterType = field.getGenericType();
+                        if (!ParameterizedType.class.isAssignableFrom(parameterType.getClass())) {
+                            String msg = "Please specify a generic parameter type for field '{}' {}";
+                            throw new PippoRuntimeException(msg, field.getName(), fieldClass.getName());
+                        }
+                        ParameterizedType parameterizedType = (ParameterizedType) parameterType;
+                        Class<X> genericClass = null;
+                        try {
+                            genericClass = (Class<X>) parameterizedType.getActualTypeArguments()[0];
+                        } catch (ClassCastException e) {
+                            String msg = "Please specify a generic parameter type for field '{}' {}";
+                            throw new PippoRuntimeException(msg, field.getName(), fieldClass.getName());
+                        }
+
+                        if (Set.class == fieldClass) {
+                            value = getAllParameters().get(parameterName).toSet(genericClass, pattern);
+                        } else if (List.class == fieldClass) {
+                            value = getAllParameters().get(parameterName).toList(genericClass, pattern);
+                        } else if (fieldClass.isInterface()) {
+                            String msg = "Field '{}' collection '{}' is not a supported type!";
+                            throw new PippoRuntimeException(msg, field.getName(), fieldClass.getName());
+                        } else {
+                            Class<? extends Collection> collectionClass = (Class<? extends Collection>) fieldClass;
+                            value = getAllParameters().get(parameterName).toCollection(collectionClass, genericClass, pattern);
+                        }
+                    } else {
+                        value = getAllParameters().get(parameterName).to(fieldClass, pattern);
+                    }
                     field.set(entity, value);
                 } catch (IllegalAccessException e) {
                     log.error("Cannot set value for field '{}' from parameter '{}'", field.getName(), parameterName, e);
