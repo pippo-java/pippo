@@ -27,6 +27,10 @@ import ro.pippo.core.util.StringUtils;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.lang.reflect.ParameterizedType;
+import java.util.Collection;
+import java.util.List;
+import java.util.Set;
 
 /**
  * @author Decebal Suiu
@@ -125,15 +129,27 @@ public class DefaultControllerHandler implements ControllerHandler {
                         } else {
                             // confirm parameter type is supported
                             Class<?> type = types[i];
-                            ParameterValue testValue = new ParameterValue();
-                            testValue.to(type);
+                            if (Collection.class.isAssignableFrom(type)) {
+                                if (type.isInterface() && !(Set.class == type || List.class == type)) {
+                                    throw new PippoRuntimeException(
+                                        "Controller method '{}' parameter {} of type '{}' is not a supported Collection type!",
+                                        LangUtils.toString(method), i, type.getSimpleName());
+                                }
+
+                                Class<?> genericType = getParameterGenericType(method, i);
+                                ParameterValue testValue = new ParameterValue();
+                                testValue.to(genericType);
+                            } else {
+                                ParameterValue testValue = new ParameterValue();
+                                testValue.to(type);
+                            }
 
                             // confirm parameter is named
                             String parameterName = getParameterName(controllerMethod, i);
                             if (StringUtils.isNullOrEmpty(parameterName)) {
                                 throw new PippoRuntimeException(
-                                    "Controller method '{}.{}' parameter {} of type '{}' does not specify a name!",
-                                    controllerClass.getSimpleName(), methodName, i, type.getSimpleName());
+                                    "Controller method '{}' parameter {} of type '{}' does not specify a name!",
+                                    LangUtils.toString(method), i, type.getSimpleName());
                             }
 
                             parameterNames[i] = parameterName;
@@ -141,8 +157,8 @@ public class DefaultControllerHandler implements ControllerHandler {
                     }
                 } else {
                     throw new PippoRuntimeException(
-                        "Found overloaded controller method '{}.{}'. Method names must be unique!",
-                        controllerClass.getSimpleName(), methodName);
+                        "Found overloaded controller method '{}'. Method names must be unique!",
+                        LangUtils.toString(method));
                 }
             }
         }
@@ -169,7 +185,18 @@ public class DefaultControllerHandler implements ControllerHandler {
                 args[i] = value;
             } else {
                 ParameterValue value = routeContext.getParameter(name);
-                args[i] = value.to(type);
+                if (Collection.class.isAssignableFrom(type)) {
+                    Class<?> genericType = getParameterGenericType(method, i);
+                    if (Set.class == type) {
+                        args[i] = value.toSet(genericType);
+                    } else if (List.class == type) {
+                        args[i] = value.toList(genericType);
+                    } else {
+                        args[i] = value.toCollection((Class<? extends Collection>) type, genericType, null);
+                    }
+                } else {
+                    args[i] = value.to(type);
+                }
             }
         }
 
@@ -184,6 +211,12 @@ public class DefaultControllerHandler implements ControllerHandler {
         }
 
         return null;
+    }
+
+    protected Class<?> getParameterGenericType(Method method, int i) {
+        ParameterizedType parameterizedType = (ParameterizedType) method.getGenericParameterTypes()[i];
+        Class<?> genericType = (Class<?>) parameterizedType.getActualTypeArguments()[0];
+        return genericType;
     }
 
     protected boolean isBodyParameter(Method method, int i) {

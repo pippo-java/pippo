@@ -27,6 +27,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.servlet.http.Part;
 import java.lang.reflect.Field;
+import java.lang.reflect.ParameterizedType;
 import java.net.URI;
 import java.util.Collection;
 import java.util.Collections;
@@ -35,6 +36,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeMap;
 
 /**
  * Represents a server-side HTTP request. An instance of this class is created
@@ -100,7 +102,7 @@ public final class Request {
         return entity;
     }
 
-    public <T> T updateEntityFromParameters(T entity) {
+    public <T, X> T updateEntityFromParameters(T entity) {
         for (Field field : entity.getClass().getDeclaredFields()) {
             String parameterName = field.getName();
             Param parameter = field.getAnnotation(Param.class);
@@ -120,7 +122,25 @@ public final class Request {
                 }
 
                 try {
-                    Object value = getAllParameters().get(parameterName).to(field.getType(), pattern);
+                    Class<?> fieldClass = field.getType();
+                    Object value;
+                    if (Collection.class.isAssignableFrom(fieldClass)) {
+                        ParameterizedType parameterizedType = (ParameterizedType) field.getGenericType();
+                        Class<X> genericType = (Class<X>) parameterizedType.getActualTypeArguments()[0];
+                        if (Set.class == fieldClass) {
+                            value = getAllParameters().get(parameterName).toSet(genericType, pattern);
+                        } else if (List.class == fieldClass) {
+                            value = getAllParameters().get(parameterName).toList(genericType, pattern);
+                        } else if (fieldClass.isInterface()) {
+                            String msg = "Field '{}' collection '{}' is not a supported type!";
+                            throw new PippoRuntimeException(msg, field.getName(), fieldClass.getName());
+                        } else {
+                            Class<? extends Collection> collectionClass = (Class<? extends Collection>) fieldClass;
+                            value = getAllParameters().get(parameterName).toCollection(collectionClass, genericType, pattern);
+                        }
+                    } else {
+                        value = getAllParameters().get(parameterName).to(fieldClass, pattern);
+                    }
                     field.set(entity, value);
                 } catch (IllegalAccessException e) {
                     log.error("Cannot set value for field '{}' from parameter '{}'", field.getName(), parameterName, e);

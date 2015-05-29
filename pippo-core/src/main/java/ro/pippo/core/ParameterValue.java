@@ -19,6 +19,8 @@ import ro.pippo.core.util.StringUtils;
 
 import java.io.Serializable;
 import java.lang.reflect.Array;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.math.BigDecimal;
 import java.sql.Time;
 import java.sql.Timestamp;
@@ -26,6 +28,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
@@ -234,6 +237,29 @@ public class ParameterValue implements Serializable {
         return new HashSet<String>(Arrays.asList(values));
     }
 
+    /**
+     * Converts a string value(s) to a Set of the target type.
+     *
+     * @param classOfT
+     * @return a set of the values
+     */
+    public <T> Set<T> toSet(Class<T> classOfT) {
+        return (Set<T>) toCollection(HashSet.class, classOfT, null);
+    }
+
+    /**
+     * Converts a string value(s) to a Set of the target type. You may optionally specify
+     * a string pattern to assist in the type conversion.
+     *
+     * @param classOfT
+     * @param pattern  optional pattern for interpreting the underlying request
+     *                 string value. (used for date & time conversions)
+     * @return a set of the values
+     */
+    public <T> Set<T> toSet(Class<T> classOfT, String pattern) {
+        return (Set<T>) toCollection(HashSet.class, classOfT, pattern);
+    }
+
     public List<String> toList() {
         return toList(new ArrayList<String>());
     }
@@ -252,6 +278,14 @@ public class ParameterValue implements Serializable {
         }
 
         return Arrays.asList(values);
+    }
+
+    public <T> List<T> toList(Class<T> classOfT) {
+        return toCollection(ArrayList.class, classOfT, null);
+    }
+
+    public <T> List<T> toList(Class<T> classOfT, String pattern) {
+        return toCollection(ArrayList.class, classOfT, pattern);
     }
 
     public Date toDate(String pattern) {
@@ -344,6 +378,41 @@ public class ParameterValue implements Serializable {
             return (T) array;
         } else {
             return (T) toObject(classOfT, pattern);
+        }
+    }
+
+    /**
+     * Converts a string value(s) to the target collection type. You may optionally specify
+     * a string pattern to assist in the type conversion.
+     *
+     * @param collectionClass
+     * @param classOfT
+     * @param pattern  optional pattern for interpreting the underlying request
+     *                 string value. (used for date & time conversions)
+     * @return a collection of the values
+     */
+    @SuppressWarnings("unchecked")
+    public <X extends Collection<T>, T> X toCollection(Class<? extends Collection> collectionClass, Class<T> classOfT, String pattern) {
+        if (collectionClass == null || classOfT == null) {
+            return null;
+        }
+
+        try {
+            // reflectively instantiate the target collection type using the default constructor
+            Constructor<?> constructor = collectionClass.getConstructor();
+            X collection = (X) constructor.newInstance();
+
+            // cheat by not instantiating a ParameterValue for every value
+            ParameterValue parameterValue = new ParameterValue(new String[]{"PLACEHOLDER"});
+            for (int i = 0; i < values.length; i++) {
+                String value = values[i];
+                parameterValue.values[0] = value;
+                T t = (T) parameterValue.toObject(classOfT, pattern);
+                collection.add(t);
+            }
+            return collection;
+        } catch (NoSuchMethodException | InstantiationException | IllegalAccessException | InvocationTargetException e) {
+            throw new PippoRuntimeException("Failed to create collection", e);
         }
     }
 
