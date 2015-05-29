@@ -65,13 +65,50 @@ public final class Request {
         this.contentTypeEngines = application.getContentTypeEngines();
 
         // fill (query) parameters if any
+        Map<String, Map<Integer, String>> arrays = new HashMap<>();
         Map<String, ParameterValue> tmp = new HashMap<>();
         Enumeration<String> names = httpServletRequest.getParameterNames();
         while (names.hasMoreElements()) {
             String name = names.nextElement();
-            String[] values = httpServletRequest.getParameterValues(name);
-            tmp.put(name, new ParameterValue(values));
+
+            if (name.matches("(.+)\\[(\\d+)\\]")) {
+                // support indexed parameter arrays e.g. setting[0], setting[1], setting[2]
+                int brk = name.indexOf('[');
+                String base = name.substring(0, brk);
+                int idx = Integer.parseInt(name.substring(brk + 1, name.length() - 1));
+                if (!arrays.containsKey(base)) {
+                    // use an ordered map because we can not rely on parameter
+                    // order from the servlet container nor from the request
+                    arrays.put(base, new TreeMap<Integer, String>());
+                }
+
+                Map<Integer, String> map = arrays.get(base);
+                String value = httpServletRequest.getParameterValues(name)[0];
+                map.put(idx, value);
+            } else {
+                String[] values = httpServletRequest.getParameterValues(name);
+                tmp.put(name, new ParameterValue(values));
+            }
         }
+
+        for (Map.Entry<String, Map<Integer, String>> entry : arrays.entrySet()) {
+            // identify maximum specified index
+            int maxIndex = 0;
+            for (int index : entry.getValue().keySet()) {
+                if (index > maxIndex) {
+                    maxIndex = index;
+                }
+            }
+
+            // populate array & respect specified indexes
+            // Note: this may not be linear but we must respect that design choice
+            String[] values = new String[maxIndex + 1];
+            for (Map.Entry<Integer, String> indexedValue : entry.getValue().entrySet()) {
+                values[indexedValue.getKey()] = indexedValue.getValue();
+            }
+            tmp.put(entry.getKey(), new ParameterValue(values));
+        }
+
         parameters = Collections.unmodifiableMap(tmp);
         applicationPath = application.getRouter().getApplicationPath();
     }
