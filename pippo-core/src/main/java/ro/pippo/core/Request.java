@@ -57,6 +57,7 @@ public final class Request {
     private Map<String, FileItem> files;
     private Session session;
     private String applicationPath;
+    private String method;
     private String path;
 
     private String body; // cache
@@ -377,7 +378,16 @@ public final class Request {
     }
 
     public String getMethod() {
-        return httpServletRequest.getMethod();
+        if (method == null) {
+            method = httpServletRequest.getMethod();
+            if (HttpConstants.Method.POST.equals(method)
+                && (HttpConstants.ContentType.APPLICATION_FORM_URLENCODED.equals(getContentType())
+                || HttpConstants.ContentType.MULTIPART_FORM_DATA.equals(getContentType()))) {
+                // allow forms to submit with spoofed http methods, similar to Rails & Django
+                method = getParameter("_method").toString(method).toUpperCase();
+            }
+        }
+        return method;
     }
 
     public HttpServletRequest getHttpServletRequest() {

@@ -33,7 +33,7 @@ public class ControllerApplication extends ro.pippo.controller.ControllerApplica
         GET("/contact/{id}", ContactsController.class, "uriFor");
 
         GET("/collections", CollectionsController.class, "index");
-        POST("/collections", CollectionsController.class, "update");
+        PUT("/collections", CollectionsController.class, "update");
     }
 
 }

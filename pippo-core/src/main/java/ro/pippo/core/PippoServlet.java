@@ -113,7 +113,7 @@ public class PippoServlet extends HttpServlet {
 
         log.trace("The relative path for '{}' is '{}'", requestUri, requestPath);
 
-        log.debug("Request {} '{}'", httpServletRequest.getMethod(), requestPath);
+        log.debug("Request {} '{}'", request.getMethod(), requestPath);
 
         // dispatch route(s)
         routeDispatcher.dispatch(request, response);

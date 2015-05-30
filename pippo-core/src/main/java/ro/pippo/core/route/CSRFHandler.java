@@ -102,8 +102,9 @@ public class CSRFHandler implements RouteHandler<RouteContext> {
 
     @Override
     public void handle(RouteContext context) {
-
-        if (HttpConstants.Method.POST.equals(context.getRequestMethod())) {
+        // obtain the servlet http method because Pippo allows method spoofing
+        String rawMethod = context.getRequest().getHttpServletRequest().getMethod();
+        if (HttpConstants.Method.POST.equals(rawMethod)) {
 
             // Verify the content-type is guarded
             String contentType = new ParameterValue(context.getHeader("Content-Type")).toString("").toLowerCase();
@@ -136,7 +137,7 @@ public class CSRFHandler implements RouteHandler<RouteContext> {
 
             log.debug("Validated '{}' for {} '{}'", TOKEN, context.getRequestMethod(), context.getRequestUri());
 
-        } else if (HttpConstants.Method.GET.equals(context.getRequestMethod())) {
+        } else if (HttpConstants.Method.GET.equals(rawMethod)) {
 
             // Generate a CSRF session token on reads
             if (getSessionCsrfToken(context) == null) {
