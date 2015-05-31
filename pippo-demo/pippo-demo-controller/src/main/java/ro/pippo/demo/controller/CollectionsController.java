@@ -31,8 +31,8 @@ public class CollectionsController extends Controller {
     public void index() {
         getResponse()
             .bind("mySet", Arrays.asList(2, 2, 4, 4, 6, 6, 8, 8))
-            .bind("myList", Arrays.asList(1, 2, 3, 4, 5, 6, 7, 8))
-            .bind("myTreeSet", Arrays.asList(7, 5, 7, 5, 3, 1, 3, 1))
+            .bind("myList", Arrays.asList(1945, 1955, 1965, 1975, 1985, 1995, 2005, 2015))
+            .bind("myTreeSet", Arrays.asList("Blue", "Orange", "Blue", "Orange", "Red", "Green", "Red", "Green"))
             .render("collections");
     }
 
