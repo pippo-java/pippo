@@ -10,6 +10,9 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 #### Changed
 - [#117]: Rework [pippo-spring], [pippo-guice]
+- Updated [pippo-fastjson] to FastJSON 1.2.6
+- Updated [pippo-undertow] to Undertow 1.2.6
+- Updated [pippo-jetty] to Jetty 9.2.11
 
 #### Added
 - [#122]: Added a CSRF handler & StatusCodeException class
