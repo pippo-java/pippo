@@ -16,8 +16,8 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 - Updated [pippo-guice] to Guice 4.0
 
 #### Added
-- [#122]: Added a CSRF handler & StatusCodeException class
 - [#121]: Added [pippo-jackson]
+- [#122]: Added a CSRF handler & StatusCodeException class
 - [#124]: Automatically encode the parameters values in DefaultRouter.uriFor()
 - [#126]: Maven quickstart archetype to build a small Pippo web application
 - [#128]: Added support for `Set`, `List`, and any other concrete Collection type
@@ -112,8 +112,13 @@ Initial release.
 [0.3.0]: https://github.com/decebals/pippo/compare/pippo-parent-0.2.0...pippo-parent-0.3.0
 [0.2.0]: https://github.com/decebals/pippo/compare/pippo-parent-0.1.0...pippo-parent-0.2.0
 
+[#129]: https://github.com/decebals/pippo/issues/129
+[#128]: https://github.com/decebals/pippo/issues/128
+[#126]: https://github.com/decebals/pippo/issues/126
+[#124]: https://github.com/decebals/pippo/issues/124
 [#122]: https://github.com/decebals/pippo/issues/122
 [#121]: https://github.com/decebals/pippo/issues/121
+[#117]: https://github.com/decebals/pippo/issues/117
 [#116]: https://github.com/decebals/pippo/issues/116
 [#115]: https://github.com/decebals/pippo/issues/115
 [#113]: https://github.com/decebals/pippo/issues/113
