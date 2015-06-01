@@ -14,6 +14,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 - Updated [pippo-undertow] to Undertow 1.2.6
 - Updated [pippo-jetty] to Jetty 9.2.11
 - Updated [pippo-guice] to Guice 4.0
+- Updated Metrics-Librato to 4.0.1.8
 
 #### Added
 - [#121]: Added [pippo-jackson]
