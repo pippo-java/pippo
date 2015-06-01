@@ -15,6 +15,7 @@
  */
 package ro.pippo.demo.controller;
 
+import ro.pippo.controller.Body;
 import ro.pippo.controller.Controller;
 import ro.pippo.core.Param;
 
@@ -44,6 +45,12 @@ public class CollectionsController extends Controller {
         sb.append("mySet=").append(mySet.toString()).append('\n');
         sb.append("myList=").append(myList.toString()).append('\n');
         sb.append("myTreeSet=").append(treeSet.toString()).append('\n');
+        getResponse().text().send(sb.toString());
+    }
+
+    public void post(@Body List<String> desserts) {
+        StringBuilder sb = new StringBuilder();
+        sb.append("desserts=").append(desserts.toString()).append('\n');
         getResponse().text().send(sb.toString());
     }
 

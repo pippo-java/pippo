@@ -34,4 +34,17 @@
             </div>
         </div>
     </form>
+
+    <div class="page-header">
+        <h2>Collections <small>POST application/json content through form submission</small></h2>
+    </div>
+    <p>POST a fixed array list of desserts serialized as JSON.  Pippo will deserialize JSON array list body.</p>
+    <form class="form-horizontal" role="form" method="post">
+        <!-- Specify the POST method. Pippo will receive the POST and will route to the POST handler. -->
+        <!-- We are also specifying fixed JSON content to send in the request. -->
+        <input type="hidden" name="_method" value="POST">
+        <input type="hidden" name="_content_type" value="application/json">
+        <input type="hidden" name="_content" value="['Ice Cream','Cake','Cookies']">
+        <button type="submit" class="btn btn-default btn-danger">POST</button>
+    </form>
 </@base.page>

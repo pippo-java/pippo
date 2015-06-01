@@ -19,6 +19,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 - [#128]: Added support for `Set`, `List`, and any other concrete Collection type
 - [#128]: Added support for array query/form parameters like `yada[0]`, `yada[1]`, & `yada[2]`
 - [#129]: Added support for `_method` assignment for HTML form POST processing
+- [#130]: Added support for `_content_type` and `_content` assignment for HTML form POST processing
 
 #### Removed
 - Removed pippo-ioc module because it is no longer used anywhere
