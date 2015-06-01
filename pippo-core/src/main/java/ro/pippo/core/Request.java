@@ -60,6 +60,7 @@ public final class Request {
     private String method;
     private String path;
 
+    private String contentType;
     private String body; // cache
 
     public Request(HttpServletRequest servletRequest, Application application) {
@@ -271,18 +272,38 @@ public final class Request {
     }
 
     public String getContentType() {
-        return httpServletRequest.getHeader(HttpConstants.Header.CONTENT_TYPE);
+        if (contentType == null) {
+            String httpServletRequestContentType = httpServletRequest.getHeader(HttpConstants.Header.CONTENT_TYPE);
+            if (HttpConstants.Method.POST.equals(httpServletRequest.getMethod())
+                && (HttpConstants.ContentType.APPLICATION_FORM_URLENCODED.equals(httpServletRequestContentType)
+                || HttpConstants.ContentType.MULTIPART_FORM_DATA.equals(httpServletRequestContentType))) {
+                // Allow forms to exercise RESTful API endpoints by POSTing content like 'application/json'.
+                // This parameter is usually paired with '_method' and '_content' parameters.
+                contentType = getParameter("_content_type").toString(httpServletRequestContentType);
+            } else {
+                contentType = httpServletRequestContentType;
+            }
+        }
+        return contentType;
     }
 
     public String getBody() {
         if (body == null) {
-            try {
-                body = IoUtils.toString(httpServletRequest.getInputStream());
-            } catch (Exception e) {
-                throw new PippoRuntimeException("Exception when reading the request body", e);
+            String httpServletRequestContentType = httpServletRequest.getHeader(HttpConstants.Header.CONTENT_TYPE);
+            if (HttpConstants.Method.POST.equals(httpServletRequest.getMethod())
+                && (HttpConstants.ContentType.APPLICATION_FORM_URLENCODED.equals(httpServletRequestContentType)
+                || HttpConstants.ContentType.MULTIPART_FORM_DATA.equals(httpServletRequestContentType))) {
+                // Allow forms to exercise RESTful API endpoints by POSTing content like 'application/json'.
+                // This parameter is usually paired with '_method' and '_content_type' parameters.
+                body = getParameter("_content").toString(null);
+            } else {
+                try {
+                    body = IoUtils.toString(httpServletRequest.getInputStream());
+                } catch (Exception e) {
+                    throw new PippoRuntimeException("Exception when reading the request body", e);
+                }
             }
         }
-
         return body;
     }
 
@@ -379,12 +400,16 @@ public final class Request {
 
     public String getMethod() {
         if (method == null) {
-            method = httpServletRequest.getMethod();
-            if (HttpConstants.Method.POST.equals(method)
-                && (HttpConstants.ContentType.APPLICATION_FORM_URLENCODED.equals(getContentType())
-                || HttpConstants.ContentType.MULTIPART_FORM_DATA.equals(getContentType()))) {
-                // allow forms to submit with spoofed http methods, similar to Rails & Django
-                method = getParameter("_method").toString(method).toUpperCase();
+            String httpServletRequestMethod = httpServletRequest.getMethod();
+            String httpServletRequestContentType = httpServletRequest.getHeader(HttpConstants.Header.CONTENT_TYPE);
+            if (HttpConstants.Method.POST.equals(httpServletRequestMethod)
+                && (HttpConstants.ContentType.APPLICATION_FORM_URLENCODED.equals(httpServletRequestContentType)
+                || HttpConstants.ContentType.MULTIPART_FORM_DATA.equals(httpServletRequestContentType))) {
+                // Allow forms to more discretely control the Pippo form handler and encourages RESTful design.
+                // This parameter may be paired with the '_content_type' and '_content' parameters.
+                method = getParameter("_method").toString(httpServletRequestMethod).toUpperCase();
+            } else {
+                method = httpServletRequestMethod;
             }
         }
         return method;

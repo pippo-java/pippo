@@ -34,6 +34,7 @@ public class ControllerApplication extends ro.pippo.controller.ControllerApplica
 
         GET("/collections", CollectionsController.class, "index");
         PUT("/collections", CollectionsController.class, "update");
+        POST("/collections", CollectionsController.class, "post");
     }
 
 }
