@@ -404,8 +404,18 @@ public class ParameterValue implements Serializable {
 
             // cheat by not instantiating a ParameterValue for every value
             ParameterValue parameterValue = new ParameterValue(new String[]{"PLACEHOLDER"});
-            for (int i = 0; i < values.length; i++) {
-                String value = values[i];
+
+            List<String> list;
+            if (values.length == 1) {
+                String tmp = values[0];
+                tmp = StringUtils.removeStart(tmp, "[");
+                tmp = StringUtils.removeEnd(tmp, "]");
+                list = StringUtils.getList(tmp, ",");
+            } else {
+                list = Arrays.asList(values);
+            }
+
+            for (String value : list) {
                 parameterValue.values[0] = value;
                 T t = (T) parameterValue.toObject(classOfT, pattern);
                 collection.add(t);
