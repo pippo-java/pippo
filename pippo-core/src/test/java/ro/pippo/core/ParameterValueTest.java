@@ -184,6 +184,12 @@ public class ParameterValueTest extends Assert {
     }
 
     @Test
+    public void testEncodedHashSet() throws Exception {
+        Set<Integer> mySet = new HashSet<>(Arrays.asList(200, 400, 600));
+        assertEquals(mySet, new ParameterValue("[600,200, 400,200]").toSet(Integer.class));
+    }
+
+    @Test
     public void testStringTreeSet() throws Exception {
         TreeSet<String> mySet = new TreeSet<>(Arrays.asList("C", "B", "A"));
         assertEquals(mySet, new ParameterValue("C", "A", "B", "A").toCollection(TreeSet.class, String.class, null));
@@ -196,6 +202,12 @@ public class ParameterValueTest extends Assert {
     }
 
     @Test
+    public void testEncodedTreeSet() throws Exception {
+        TreeSet<Integer> mySet = new TreeSet<>(Arrays.asList(600, 200, 400, 200));
+        assertEquals(mySet, new ParameterValue("[600, 400, 200]").toCollection(TreeSet.class, Integer.class, null));
+    }
+
+    @Test
     public void testStringArrayList() throws Exception {
         List<String> myList = new ArrayList<>(Arrays.asList("C", "B", "A"));
         assertEquals(myList, new ParameterValue("C", "B", "A").toList(String.class));
@@ -205,6 +217,12 @@ public class ParameterValueTest extends Assert {
     public void testIntegerArrayList() throws Exception {
         List<Integer> myList = new ArrayList<>(Arrays.asList(600, 400, 200));
         assertEquals(myList, new ParameterValue("600", "400", "200").toList(Integer.class));
+    }
+
+    @Test
+    public void testEncodedArrayList() throws Exception {
+        List<Integer> myList = new ArrayList<>(Arrays.asList(600, 400, 200));
+        assertEquals(myList, new ParameterValue("[600, 400, 200]").toList(Integer.class));
     }
 
     @Test

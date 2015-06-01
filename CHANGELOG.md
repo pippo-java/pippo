@@ -21,7 +21,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 - [#122]: Added a CSRF handler & StatusCodeException class
 - [#124]: Automatically encode the parameters values in DefaultRouter.uriFor()
 - [#126]: Maven quickstart archetype to build a small Pippo web application
-- [#128]: Added support for `Set`, `List`, and any other concrete Collection type
+- [#128], [#131]: Added support for `Set`, `List`, and any other concrete Collection type
 - [#128]: Added support for array query/form parameters like `yada[0]`, `yada[1]`, & `yada[2]`
 - [#129]: Added support for `_method` assignment for HTML form POST processing
 - [#130]: Added support for `_content_type` and `_content` assignment for HTML form POST processing
@@ -114,6 +114,8 @@ Initial release.
 [0.3.0]: https://github.com/decebals/pippo/compare/pippo-parent-0.2.0...pippo-parent-0.3.0
 [0.2.0]: https://github.com/decebals/pippo/compare/pippo-parent-0.1.0...pippo-parent-0.2.0
 
+[#131]: https://github.com/decebals/pippo/issues/131
+[#130]: https://github.com/decebals/pippo/issues/130
 [#129]: https://github.com/decebals/pippo/issues/129
 [#128]: https://github.com/decebals/pippo/issues/128
 [#126]: https://github.com/decebals/pippo/issues/126
