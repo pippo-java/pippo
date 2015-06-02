@@ -49,13 +49,15 @@ import java.util.List;
  * <p>
  * Permit POST if the "Content-Type" is not a guarded type (see above).
  * Permit POST if the "Csrf-Token" header is "nocheck".
- * Permit POST if the "csrfToken" query parameter or form parameter matches the session csrf token.
+ * Permit POST if the "_csrf_token" query parameter or form field matches the session csrf token.
  *
  * @author James Moger
  */
 public class CSRFHandler implements RouteHandler<RouteContext> {
 
-    public static final String TOKEN = "csrfToken";
+    public static final String TOKEN = "_csrf_token";
+
+    public static final String BINDING = "csrfToken";
 
     private static final Logger log = LoggerFactory.getLogger(CSRFHandler.class);
 
@@ -148,7 +150,7 @@ public class CSRFHandler implements RouteHandler<RouteContext> {
             }
 
             String token = getSessionCsrfToken(context);
-            context.setLocal(TOKEN, token);
+            context.setLocal(BINDING, token);
         }
 
         context.next();
