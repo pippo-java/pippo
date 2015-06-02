@@ -755,6 +755,20 @@ public final class Response {
     }
 
     /**
+     * Replaces '{}' in the format string with the supplied arguments and
+     * writes the string content directly to the response.
+     * <p>This method commits the response.</p>
+     *
+     * @param format
+     * @param args
+     */
+    public void send(String format, Object... args) {
+        checkCommitted();
+
+        commit(StringUtils.format(format, args));
+    }
+
+    /**
      * Serializes the object as JSON using the registered <code>application/json</code>
      * ContentTypeEngine and writes it to the response.
      * <p>This method commits the response.</p>

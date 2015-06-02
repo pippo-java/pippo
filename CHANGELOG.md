@@ -25,6 +25,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 - [#128]: Added support for array query/form parameters like `yada[0]`, `yada[1]`, & `yada[2]`
 - [#129]: Added support for `_method` assignment for HTML form POST processing
 - [#130]: Added support for `_content_type` and `_content` assignment for HTML form POST processing
+- [#134]: Added `Response.send(String format, Object... args)`
 
 #### Removed
 - Removed pippo-ioc module because it is no longer used anywhere
@@ -114,6 +115,7 @@ Initial release.
 [0.3.0]: https://github.com/decebals/pippo/compare/pippo-parent-0.2.0...pippo-parent-0.3.0
 [0.2.0]: https://github.com/decebals/pippo/compare/pippo-parent-0.1.0...pippo-parent-0.2.0
 
+[#134]: https://github.com/decebals/pippo/issues/134
 [#131]: https://github.com/decebals/pippo/issues/131
 [#130]: https://github.com/decebals/pippo/issues/130
 [#129]: https://github.com/decebals/pippo/issues/129
