@@ -69,12 +69,6 @@ public class Pippo {
         return server;
     }
 
-    public Pippo setServer(WebServer server) {
-        this.server = server;
-
-        return this;
-    }
-
     public void start() {
         if (getServer() != null) {
             log.debug("Server '{}'", server);
