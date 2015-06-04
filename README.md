@@ -1,7 +1,7 @@
 Micro Java Web Framework
 =====================
 
-t[![Travis CI Build Status](https://travis-ci.org/decebals/pippo.png)](https://travis-ci.org/decebals/pippo)
+[![Travis CI Build Status](https://travis-ci.org/decebals/pippo.png)](https://travis-ci.org/decebals/pippo)
 [![Maven Central](http://img.shields.io/maven-central/v/ro.pippo/pippo-core.svg)](http://search.maven.org/#search|ga|1|pippo-core)
 
 It's an open source (Apache License) micro web framework in Java, with minimal dependencies and a quick learning curve.     
