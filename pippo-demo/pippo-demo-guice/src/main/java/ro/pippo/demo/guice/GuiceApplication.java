@@ -18,8 +18,6 @@ package ro.pippo.demo.guice;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 import ro.pippo.controller.ControllerApplication;
-import ro.pippo.core.route.PublicResourceHandler;
-import ro.pippo.core.route.WebjarsResourceHandler;
 import ro.pippo.guice.GuiceControllerFactory;
 
 /**
@@ -35,8 +33,9 @@ public class GuiceApplication extends ControllerApplication {
         // registering GuiceControllerFactory
         setControllerFactory(new GuiceControllerFactory(injector));
 
-        GET(new WebjarsResourceHandler());
-        GET(new PublicResourceHandler());
+        // add routes for static content
+        addPublicResourceRoute();
+        addWebjarsResourceRoute();
 
         // add controller
         GET("/", ContactsController.class, "index");

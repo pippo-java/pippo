@@ -17,10 +17,8 @@ package ro.pippo.demo.validation;
 
 import ro.pippo.core.Application;
 import ro.pippo.core.Flash;
-import ro.pippo.core.route.PublicResourceHandler;
 import ro.pippo.core.route.RouteContext;
 import ro.pippo.core.route.RouteHandler;
-import ro.pippo.core.route.WebjarsResourceHandler;
 
 import javax.validation.ConstraintViolation;
 import javax.validation.Validation;
@@ -35,11 +33,12 @@ public class ValidationApplication extends Application {
 
     @Override
     protected void onInit() {
-        GET(new WebjarsResourceHandler());
-        GET(new PublicResourceHandler());
-
         ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
         final Validator validator = factory.getValidator();
+
+        // add routes for static content
+        addPublicResourceRoute();
+        addWebjarsResourceRoute();
 
         GET("/", new RouteHandler() {
 

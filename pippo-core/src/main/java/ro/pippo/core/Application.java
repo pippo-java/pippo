@@ -17,7 +17,10 @@ package ro.pippo.core;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import ro.pippo.core.route.ClasspathResourceHandler;
 import ro.pippo.core.route.DefaultRouter;
+import ro.pippo.core.route.FileResourceHandler;
+import ro.pippo.core.route.PublicResourceHandler;
 import ro.pippo.core.route.Route;
 import ro.pippo.core.route.RouteDispatcher;
 import ro.pippo.core.route.RouteHandler;
@@ -25,10 +28,12 @@ import ro.pippo.core.route.RoutePostDispatchListenerList;
 import ro.pippo.core.route.RoutePreDispatchListenerList;
 import ro.pippo.core.route.Router;
 import ro.pippo.core.route.StaticResourceHandler;
+import ro.pippo.core.route.WebjarsResourceHandler;
 import ro.pippo.core.util.HttpCacheToolkit;
 import ro.pippo.core.util.MimeTypes;
 import ro.pippo.core.util.StringUtils;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
@@ -213,17 +218,11 @@ public class Application {
         this.router = router;
     }
 
-    public Route GET(StaticResourceHandler resourceHandler) {
-        if (getRouter().uriPatternFor(resourceHandler.getClass()) != null) {
-            throw new PippoRuntimeException("You may only register one route for {}",
-                resourceHandler.getClass().getSimpleName());
-        }
-        resourceHandler.setMimeTypes(mimeTypes);
-        resourceHandler.setHttpCacheToolkit(httpCacheToolkit);
-        return addRoute(resourceHandler.getUriPattern(), HttpConstants.Method.GET, resourceHandler);
-    }
-
     public Route GET(String uriPattern, RouteHandler routeHandler) {
+        if (routeHandler instanceof StaticResourceHandler) {
+            throw new PippoRuntimeException("Please use 'addXXXRoute()'");
+        }
+
         return addRoute(uriPattern, HttpConstants.Method.GET, routeHandler);
     }
 
@@ -256,6 +255,56 @@ public class Application {
         getRouter().addRoute(route);
 
         return route;
+    }
+
+    /**
+     * It's a shortcut for {@link #addPublicResourceRoute(String)} with parameter <code>"/public"</code>.
+     */
+    public Route addPublicResourceRoute() {
+        return addPublicResourceRoute("/public");
+    }
+
+    /**
+     * Add a route that serves resources from the "public" directory within your classpath.
+     */
+    public Route addPublicResourceRoute(String urlPath) {
+        return addStaticResourceRoute(new PublicResourceHandler(urlPath));
+    }
+
+    /**
+     * Add a route that serves resources from a directory(file system).
+     */
+    public Route addFileResourceRoute(String urlPath, File directory) {
+        return addStaticResourceRoute(new FileResourceHandler(urlPath, directory));
+    }
+
+    public Route addFileResourceRoute(String urlPath, String directory) {
+        return addStaticResourceRoute(new FileResourceHandler(urlPath, directory));
+    }
+
+    public Route addClasspathResourceRoute(String urlPath, Class<?> resourceClass) {
+        return addStaticResourceRoute(new ClasspathResourceHandler(urlPath, resourceClass.getName().replace(".", "/")));
+    }
+
+    /**
+     * Add a route that serves resources from classpath.
+     */
+    public Route addClasspathResourceRoute(String urlPath, String resourceBasePath) {
+        return addStaticResourceRoute(new ClasspathResourceHandler(urlPath, resourceBasePath));
+    }
+
+    /**
+     * It's a shortcut for {@link #addWebjarsResourceRoute(String)} with parameter <code>"/webjars"</code>.
+     */
+    public Route addWebjarsResourceRoute() {
+        return addWebjarsResourceRoute("/webjars");
+    }
+
+    /**
+     * Add a route that serves webjars (http://www.webjars.org/) resources.
+     */
+    public Route addWebjarsResourceRoute(String urlPath) {
+        return addStaticResourceRoute(new WebjarsResourceHandler(urlPath));
     }
 
     public ErrorHandler getErrorHandler() {
@@ -374,6 +423,13 @@ public class Application {
         } catch (IOException | InstantiationException | IllegalAccessException | ClassNotFoundException e) {
             throw new PippoRuntimeException("Failed to locate Initializers", e);
         }
+    }
+
+    private Route addStaticResourceRoute(StaticResourceHandler resourceHandler) {
+        resourceHandler.setMimeTypes(mimeTypes);
+        resourceHandler.setHttpCacheToolkit(httpCacheToolkit);
+
+        return addRoute(resourceHandler.getUriPattern(), HttpConstants.Method.GET, resourceHandler);
     }
 
     @Override

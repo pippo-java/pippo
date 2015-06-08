@@ -19,11 +19,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ro.pippo.controller.ControllerApplication;
 import ro.pippo.core.RedirectHandler;
-import ro.pippo.core.route.RouteContext;
 import ro.pippo.core.TemplateHandler;
-import ro.pippo.core.route.PublicResourceHandler;
+import ro.pippo.core.route.RouteContext;
 import ro.pippo.core.route.RouteHandler;
-import ro.pippo.core.route.WebjarsResourceHandler;
 import ro.pippo.demo.common.ContactService;
 import ro.pippo.demo.common.InMemoryContactService;
 
@@ -44,8 +42,9 @@ public class CrudNgApplication extends ControllerApplication {
     protected void onInit() {
         contactService = new InMemoryContactService();
 
-        GET(new WebjarsResourceHandler());
-        GET(new PublicResourceHandler());
+        // add routes for static content
+        addPublicResourceRoute();
+        addWebjarsResourceRoute();
 
         /*
          *  audit filter

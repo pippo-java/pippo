@@ -17,9 +17,6 @@ package ro.pippo.demo.guice;
 
 import com.google.inject.Inject;
 import ro.pippo.controller.ControllerApplication;
-import ro.pippo.core.Application;
-import ro.pippo.core.route.PublicResourceHandler;
-import ro.pippo.core.route.WebjarsResourceHandler;
 import ro.pippo.demo.common.ContactService;
 
 /**
@@ -32,9 +29,9 @@ public class GuiceApplication2 extends ControllerApplication {
 
     @Override
     protected void onInit() {
-
-        GET(new WebjarsResourceHandler());
-        GET(new PublicResourceHandler());
+        // add routes for static content
+        addPublicResourceRoute();
+        addWebjarsResourceRoute();
 
         GET("/", ContactsController2.class, "index");
     }

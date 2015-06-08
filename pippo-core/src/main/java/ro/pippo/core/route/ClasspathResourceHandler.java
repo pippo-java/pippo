@@ -28,6 +28,7 @@ public class ClasspathResourceHandler extends StaticResourceHandler {
 
     public ClasspathResourceHandler(String urlPath, String resourceBasePath) {
         super(urlPath);
+
         this.resourceBasePath = getNormalizedPath(resourceBasePath);
     }
 
