@@ -37,8 +37,8 @@ public class ValidationApplication extends Application {
         final Validator validator = factory.getValidator();
 
         // add routes for static content
-        addPublicRoute();
-        addWebjarsRoute();
+        addPublicResourceRoute();
+        addWebjarsResourceRoute();
 
         GET("/", new RouteHandler() {
 

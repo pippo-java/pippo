@@ -43,8 +43,8 @@ public class TemplateApplication extends Application {
     @Override
     protected void onInit() {
         // add routes for static content
-        addPublicRoute();
-        addWebjarsRoute();
+        addPublicResourceRoute();
+        addWebjarsResourceRoute();
 
         // filter all requests and setup the language and locale
         GET("/.*", new LanguageFilter(getLanguages(), true, true));

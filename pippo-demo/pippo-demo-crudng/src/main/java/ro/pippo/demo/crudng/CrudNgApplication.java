@@ -43,8 +43,8 @@ public class CrudNgApplication extends ControllerApplication {
         contactService = new InMemoryContactService();
 
         // add routes for static content
-        addPublicRoute();
-        addWebjarsRoute();
+        addPublicResourceRoute();
+        addWebjarsResourceRoute();
 
         /*
          *  audit filter

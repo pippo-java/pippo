@@ -258,53 +258,53 @@ public class Application {
     }
 
     /**
-     * It's a shortcut for {@link #addPublicRoute(String)} with parameter <code>"/public"</code>.
+     * It's a shortcut for {@link #addPublicResourceRoute(String)} with parameter <code>"/public"</code>.
      */
-    public Route addPublicRoute() {
-        return addPublicRoute("/public");
+    public Route addPublicResourceRoute() {
+        return addPublicResourceRoute("/public");
     }
 
     /**
      * Add a route that serves resources from the "public" directory within your classpath.
      */
-    public Route addPublicRoute(String urlPath) {
-        return GET(new PublicResourceHandler(urlPath));
+    public Route addPublicResourceRoute(String urlPath) {
+        return addStaticResourceRoute(new PublicResourceHandler(urlPath));
     }
 
     /**
      * Add a route that serves resources from a directory(file system).
      */
-    public Route addFileRoute(String urlPath, File directory) {
-        return GET(new FileResourceHandler(urlPath, directory));
+    public Route addFileResourceRoute(String urlPath, File directory) {
+        return addStaticResourceRoute(new FileResourceHandler(urlPath, directory));
     }
 
-    public Route addFileRoute(String urlPath, String directory) {
-        return GET(new FileResourceHandler(urlPath, directory));
+    public Route addFileResourceRoute(String urlPath, String directory) {
+        return addStaticResourceRoute(new FileResourceHandler(urlPath, directory));
     }
 
-    public Route addClasspathRoute(String urlPath, Class<?> resourceClass) {
-        return GET(new ClasspathResourceHandler(urlPath, resourceClass.getName().replace(".", "/")));
+    public Route addClasspathResourceRoute(String urlPath, Class<?> resourceClass) {
+        return addStaticResourceRoute(new ClasspathResourceHandler(urlPath, resourceClass.getName().replace(".", "/")));
     }
 
     /**
      * Add a route that serves resources from classpath.
      */
-    public Route addClasspathRoute(String urlPath, String resourceBasePath) {
-        return GET(new ClasspathResourceHandler(urlPath, resourceBasePath));
+    public Route addClasspathResourceRoute(String urlPath, String resourceBasePath) {
+        return addStaticResourceRoute(new ClasspathResourceHandler(urlPath, resourceBasePath));
     }
 
     /**
-     * It's a shortcut for {@link #addWebjarsRoute(String)} with parameter <code>"/webjars"</code>.
+     * It's a shortcut for {@link #addWebjarsResourceRoute(String)} with parameter <code>"/webjars"</code>.
      */
-    public Route addWebjarsRoute() {
-        return addWebjarsRoute("/webjars");
+    public Route addWebjarsResourceRoute() {
+        return addWebjarsResourceRoute("/webjars");
     }
 
     /**
      * Add a route that serves webjars (http://www.webjars.org/) resources.
      */
-    public Route addWebjarsRoute(String urlPath) {
-        return GET(new WebjarsResourceHandler(urlPath));
+    public Route addWebjarsResourceRoute(String urlPath) {
+        return addStaticResourceRoute(new WebjarsResourceHandler(urlPath));
     }
 
     public ErrorHandler getErrorHandler() {
@@ -425,11 +425,7 @@ public class Application {
         }
     }
 
-    private Route GET(StaticResourceHandler resourceHandler) {
-        if (getRouter().uriPatternFor(resourceHandler.getClass()) != null) {
-            throw new PippoRuntimeException("You may only register one route for {}",
-                resourceHandler.getClass().getSimpleName());
-        }
+    private Route addStaticResourceRoute(StaticResourceHandler resourceHandler) {
         resourceHandler.setMimeTypes(mimeTypes);
         resourceHandler.setHttpCacheToolkit(httpCacheToolkit);
 

@@ -41,7 +41,7 @@ public class BasicApplication extends Application {
         getRouter().ignorePaths("/favicon.ico");
 
         // send files from a local folder (try a request like 'src/main/java/ro/pippo/demo/basic/BasicApplication.java')
-        addFileRoute("/src", "src");
+        addFileResourceRoute("/src", "src");
 
         // send 'Hello World' as response
         GET("/", new RouteHandler() {

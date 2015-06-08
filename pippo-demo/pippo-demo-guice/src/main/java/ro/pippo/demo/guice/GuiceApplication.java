@@ -34,8 +34,8 @@ public class GuiceApplication extends ControllerApplication {
         setControllerFactory(new GuiceControllerFactory(injector));
 
         // add routes for static content
-        addPublicRoute();
-        addWebjarsRoute();
+        addPublicResourceRoute();
+        addWebjarsResourceRoute();
 
         // add controller
         GET("/", ContactsController.class, "index");

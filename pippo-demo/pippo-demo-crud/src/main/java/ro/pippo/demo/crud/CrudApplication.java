@@ -43,8 +43,8 @@ public class CrudApplication extends Application {
         contactService = new InMemoryContactService();
 
         // add routes for static content
-        addPublicRoute();
-        addWebjarsRoute();
+        addPublicResourceRoute();
+        addWebjarsResourceRoute();
 
         // audit filter
         ALL("/.*", new RouteHandler() {

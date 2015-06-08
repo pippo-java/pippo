@@ -35,8 +35,8 @@ public class SpringApplication extends ControllerApplication {
         setControllerFactory(new SpringControllerFactory(applicationContext));
 
         // add routes for static content
-        addPublicRoute();
-        addWebjarsRoute();
+        addPublicResourceRoute();
+        addWebjarsResourceRoute();
 
         // add controller
         GET("/", ContactsController.class, "index");

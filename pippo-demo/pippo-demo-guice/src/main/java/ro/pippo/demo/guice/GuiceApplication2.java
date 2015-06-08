@@ -30,8 +30,8 @@ public class GuiceApplication2 extends ControllerApplication {
     @Override
     protected void onInit() {
         // add routes for static content
-        addPublicRoute();
-        addWebjarsRoute();
+        addPublicResourceRoute();
+        addWebjarsResourceRoute();
 
         GET("/", ContactsController2.class, "index");
     }

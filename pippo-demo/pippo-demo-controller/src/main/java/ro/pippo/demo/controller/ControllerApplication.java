@@ -23,8 +23,8 @@ public class ControllerApplication extends ro.pippo.controller.ControllerApplica
     @Override
     protected void onInit() {
         // add routes for static content
-        addPublicRoute();
-        addWebjarsRoute();
+        addPublicResourceRoute();
+        addWebjarsResourceRoute();
 
         GET("/", ContactsController.class, "index");
         GET("/contact/{id}", ContactsController.class, "uriFor");
