@@ -15,9 +15,6 @@
  */
 package ro.pippo.demo.controller;
 
-import ro.pippo.core.route.PublicResourceHandler;
-import ro.pippo.core.route.WebjarsResourceHandler;
-
 /**
  * @author Decebal Suiu
  */
@@ -25,9 +22,9 @@ public class ControllerApplication extends ro.pippo.controller.ControllerApplica
 
     @Override
     protected void onInit() {
-
-        GET(new WebjarsResourceHandler());
-        GET(new PublicResourceHandler());
+        // add routes for static content
+        addPublicRoute();
+        addWebjarsRoute();
 
         GET("/", ContactsController.class, "index");
         GET("/contact/{id}", ContactsController.class, "uriFor");

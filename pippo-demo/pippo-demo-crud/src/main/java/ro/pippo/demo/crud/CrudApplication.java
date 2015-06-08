@@ -19,10 +19,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ro.pippo.core.Application;
 import ro.pippo.core.route.CSRFHandler;
-import ro.pippo.core.route.PublicResourceHandler;
 import ro.pippo.core.route.RouteContext;
 import ro.pippo.core.route.RouteHandler;
-import ro.pippo.core.route.WebjarsResourceHandler;
 import ro.pippo.demo.common.Contact;
 import ro.pippo.demo.common.ContactService;
 import ro.pippo.demo.common.InMemoryContactService;
@@ -44,9 +42,9 @@ public class CrudApplication extends Application {
     protected void onInit() {
         contactService = new InMemoryContactService();
 
-        // add handlers for static content
-        GET(new WebjarsResourceHandler());
-        GET(new PublicResourceHandler());
+        // add routes for static content
+        addPublicRoute();
+        addWebjarsRoute();
 
         // audit filter
         ALL("/.*", new RouteHandler() {

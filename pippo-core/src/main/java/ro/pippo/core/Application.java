@@ -17,7 +17,10 @@ package ro.pippo.core;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import ro.pippo.core.route.ClasspathResourceHandler;
 import ro.pippo.core.route.DefaultRouter;
+import ro.pippo.core.route.FileResourceHandler;
+import ro.pippo.core.route.PublicResourceHandler;
 import ro.pippo.core.route.Route;
 import ro.pippo.core.route.RouteDispatcher;
 import ro.pippo.core.route.RouteHandler;
@@ -25,10 +28,12 @@ import ro.pippo.core.route.RoutePostDispatchListenerList;
 import ro.pippo.core.route.RoutePreDispatchListenerList;
 import ro.pippo.core.route.Router;
 import ro.pippo.core.route.StaticResourceHandler;
+import ro.pippo.core.route.WebjarsResourceHandler;
 import ro.pippo.core.util.HttpCacheToolkit;
 import ro.pippo.core.util.MimeTypes;
 import ro.pippo.core.util.StringUtils;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
@@ -213,17 +218,11 @@ public class Application {
         this.router = router;
     }
 
-    public Route GET(StaticResourceHandler resourceHandler) {
-        if (getRouter().uriPatternFor(resourceHandler.getClass()) != null) {
-            throw new PippoRuntimeException("You may only register one route for {}",
-                resourceHandler.getClass().getSimpleName());
-        }
-        resourceHandler.setMimeTypes(mimeTypes);
-        resourceHandler.setHttpCacheToolkit(httpCacheToolkit);
-        return addRoute(resourceHandler.getUriPattern(), HttpConstants.Method.GET, resourceHandler);
-    }
-
     public Route GET(String uriPattern, RouteHandler routeHandler) {
+        if (routeHandler instanceof StaticResourceHandler) {
+            throw new PippoRuntimeException("Please use 'addXXXRoute()'");
+        }
+
         return addRoute(uriPattern, HttpConstants.Method.GET, routeHandler);
     }
 
@@ -256,6 +255,56 @@ public class Application {
         getRouter().addRoute(route);
 
         return route;
+    }
+
+    /**
+     * It's a shortcut for {@link #addPublicRoute(String)} with parameter <code>"/public"</code>.
+     */
+    public Route addPublicRoute() {
+        return addPublicRoute("/public");
+    }
+
+    /**
+     * Add a route that serves resources from the "public" directory within your classpath.
+     */
+    public Route addPublicRoute(String urlPath) {
+        return GET(new PublicResourceHandler(urlPath));
+    }
+
+    /**
+     * Add a route that serves resources from a directory(file system).
+     */
+    public Route addFileRoute(String urlPath, File directory) {
+        return GET(new FileResourceHandler(urlPath, directory));
+    }
+
+    public Route addFileRoute(String urlPath, String directory) {
+        return GET(new FileResourceHandler(urlPath, directory));
+    }
+
+    public Route addClasspathRoute(String urlPath, Class<?> resourceClass) {
+        return GET(new ClasspathResourceHandler(urlPath, resourceClass.getName().replace(".", "/")));
+    }
+
+    /**
+     * Add a route that serves resources from classpath.
+     */
+    public Route addClasspathRoute(String urlPath, String resourceBasePath) {
+        return GET(new ClasspathResourceHandler(urlPath, resourceBasePath));
+    }
+
+    /**
+     * It's a shortcut for {@link #addWebjarsRoute(String)} with parameter <code>"/webjars"</code>.
+     */
+    public Route addWebjarsRoute() {
+        return addWebjarsRoute("/webjars");
+    }
+
+    /**
+     * Add a route that serves webjars (http://www.webjars.org/) resources.
+     */
+    public Route addWebjarsRoute(String urlPath) {
+        return GET(new WebjarsResourceHandler(urlPath));
     }
 
     public ErrorHandler getErrorHandler() {
@@ -374,6 +423,17 @@ public class Application {
         } catch (IOException | InstantiationException | IllegalAccessException | ClassNotFoundException e) {
             throw new PippoRuntimeException("Failed to locate Initializers", e);
         }
+    }
+
+    private Route GET(StaticResourceHandler resourceHandler) {
+        if (getRouter().uriPatternFor(resourceHandler.getClass()) != null) {
+            throw new PippoRuntimeException("You may only register one route for {}",
+                resourceHandler.getClass().getSimpleName());
+        }
+        resourceHandler.setMimeTypes(mimeTypes);
+        resourceHandler.setHttpCacheToolkit(httpCacheToolkit);
+
+        return addRoute(resourceHandler.getUriPattern(), HttpConstants.Method.GET, resourceHandler);
     }
 
     @Override

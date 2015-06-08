@@ -18,8 +18,6 @@ package ro.pippo.demo.spring;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import ro.pippo.controller.ControllerApplication;
-import ro.pippo.core.route.PublicResourceHandler;
-import ro.pippo.core.route.WebjarsResourceHandler;
 import ro.pippo.spring.SpringControllerFactory;
 
 /**
@@ -36,8 +34,9 @@ public class SpringApplication extends ControllerApplication {
 //        setControllerFactory(new SpringControllerFactory(applicationContext, false));
         setControllerFactory(new SpringControllerFactory(applicationContext));
 
-        GET(new WebjarsResourceHandler());
-        GET(new PublicResourceHandler());
+        // add routes for static content
+        addPublicRoute();
+        addWebjarsRoute();
 
         // add controller
         GET("/", ContactsController.class, "index");

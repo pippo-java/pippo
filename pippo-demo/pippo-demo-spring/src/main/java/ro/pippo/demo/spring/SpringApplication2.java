@@ -16,8 +16,6 @@
 package ro.pippo.demo.spring;
 
 import ro.pippo.controller.ControllerApplication;
-import ro.pippo.core.route.PublicResourceHandler;
-import ro.pippo.core.route.WebjarsResourceHandler;
 import ro.pippo.demo.common.ContactService;
 
 import javax.inject.Inject;
@@ -32,8 +30,9 @@ public class SpringApplication2 extends ControllerApplication {
 
     @Override
     protected void onInit() {
-        GET(new WebjarsResourceHandler());
-        GET(new PublicResourceHandler());
+        // add routes for static content
+        addPublicRoute();
+        addWebjarsRoute();
 
         GET("/", ContactsController2.class, "index");
     }

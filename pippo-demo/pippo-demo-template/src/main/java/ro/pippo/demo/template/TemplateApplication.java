@@ -18,10 +18,8 @@ package ro.pippo.demo.template;
 import ro.pippo.core.Application;
 import ro.pippo.core.PippoRuntimeException;
 import ro.pippo.core.TemplateEngine;
-import ro.pippo.core.route.PublicResourceHandler;
 import ro.pippo.core.route.RouteContext;
 import ro.pippo.core.route.RouteHandler;
-import ro.pippo.core.route.WebjarsResourceHandler;
 import ro.pippo.metrics.Metered;
 import ro.pippo.metrics.Timed;
 
@@ -44,10 +42,9 @@ public class TemplateApplication extends Application {
 
     @Override
     protected void onInit() {
-
-        // add classpath resource handlers
-        GET(new WebjarsResourceHandler());
-        GET(new PublicResourceHandler());
+        // add routes for static content
+        addPublicRoute();
+        addWebjarsRoute();
 
         // filter all requests and setup the language and locale
         GET("/.*", new LanguageFilter(getLanguages(), true, true));

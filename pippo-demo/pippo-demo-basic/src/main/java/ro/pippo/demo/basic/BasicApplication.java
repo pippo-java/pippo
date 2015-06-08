@@ -22,7 +22,6 @@ import ro.pippo.core.ExceptionHandler;
 import ro.pippo.core.HttpConstants;
 import ro.pippo.core.Request;
 import ro.pippo.core.Response;
-import ro.pippo.core.route.FileResourceHandler;
 import ro.pippo.core.route.RouteContext;
 import ro.pippo.core.route.RouteHandler;
 import ro.pippo.core.route.RoutePreDispatchListener;
@@ -40,6 +39,9 @@ public class BasicApplication extends Application {
     @Override
     protected void onInit() {
         getRouter().ignorePaths("/favicon.ico");
+
+        // send files from a local folder (try a request like 'src/main/java/ro/pippo/demo/basic/BasicApplication.java')
+        addFileRoute("/src", "src");
 
         // send 'Hello World' as response
         GET("/", new RouteHandler() {
@@ -159,9 +161,6 @@ public class BasicApplication extends Application {
             }
 
         });
-
-        // send files from a local folder (try a request like 'src/main/java/ro/pippo/demo/basic/BasicApplication.java')
-        GET(new FileResourceHandler("/src", "src"));
 
         // throw a programatically exception
         GET("/exception", new RouteHandler() {
