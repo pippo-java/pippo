@@ -5,6 +5,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 ### [Unreleased][unreleased]
 #### Fixed
 #### Changed
+- Updated [pippo-pebble] to Pebble 1.5.0
 #### Added
 #### Removed
 
