@@ -4,9 +4,6 @@
 
         <link href="${webjarsAt('bootstrap/3.3.1/css/bootstrap.min.css')}" rel="stylesheet">
         <link href="${webjarsAt('font-awesome/4.2.0/css/font-awesome.min.css')}" rel="stylesheet">
-
-        <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
-        <script src="https://intercoolerreleases-leaddynocom.netdna-ssl.com/intercooler-0.4.10.min.js"></script>
     </head>
     <body>
         <div class="container">
@@ -20,5 +17,8 @@
             <!-- Demo2 -->
             <a ic-post-to="/increment" class="btn btn-primary">Click Me!</a>
         </div>
+
+        <script src="${webjarsAt('jquery/1.11.1/jquery.min.js')}"></script>
+        <script src="${webjarsAt('intercooler-js/0.4.10/src/intercooler.js')}"></script>
     </body>
 </html>

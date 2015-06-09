@@ -51,6 +51,12 @@
             <artifactId>font-awesome</artifactId>
             <version>4.2.0</version>
         </dependency>
+
+        <dependency>
+            <groupId>org.webjars.bower</groupId>
+            <artifactId>intercooler-js</artifactId>
+            <version>0.4.10</version>
+        </dependency>
     </dependencies>
 
 </project>
