@@ -3,13 +3,18 @@ All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
 ### [Unreleased][unreleased]
+
 #### Fixed
+
 #### Changed
 - Updated [pippo-pebble] to Pebble 1.5.0
 - Updated [pippo-jade] to Jade4j 0.4.3
 - Updated [pippo-trimou] to Trimou 1.8.0
 - Updated [pippo-undertow] to Undertow 1.2.7
+
 #### Added
+- [#35]: Added [pippo-demo-ajax]
+
 #### Removed
 
 ### [0.5.0] - 2015-06-03
@@ -142,6 +147,7 @@ Initial release.
 [#115]: https://github.com/decebals/pippo/issues/115
 [#113]: https://github.com/decebals/pippo/issues/113
 [#111]: https://github.com/decebals/pippo/issues/111
+[#35]: https://github.com/decebals/pippo/issues/35
 
 [pippo-controller]: https://github.com/decebals/pippo/tree/master/pippo-controller
 [pippo-core]: https://github.com/decebals/pippo/tree/master/pippo-core
@@ -163,3 +169,4 @@ Initial release.
 [pippo-trimou]: https://github.com/decebals/pippo/tree/master/pippo-trimou 
 [pippo-undertow]: https://github.com/decebals/pippo/tree/master/pippo-undertow
 [pippo-xstream]: https://github.com/decebals/pippo/tree/master/pippo-xstream
+[pippo-demo-ajax]: https://github.com/decebals/pippo/tree/master/pippo-demo/pippo-demo-ajax
