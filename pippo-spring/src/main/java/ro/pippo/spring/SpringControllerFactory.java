@@ -68,11 +68,12 @@ public class SpringControllerFactory implements ControllerFactory {
     /**
      * Created a bean definition for a class.
      * Optionally configure all bean properties, like scope, prototype/singleton, etc using:
+     * <p/>
      * <pre>
-     *     BeanDefinition definition = super.createBeanDefinition(beanClass);
-     *     definition.setScope(BeanDefinition.SCOPE_SINGLETON);
-     *     return definition;
-     * <pre/>
+     * BeanDefinition definition = super.createBeanDefinition(beanClass);
+     * definition.setScope(BeanDefinition.SCOPE_SINGLETON);
+     * return definition;
+     * </pre>
      *
      * @param controllerClass
      * @return

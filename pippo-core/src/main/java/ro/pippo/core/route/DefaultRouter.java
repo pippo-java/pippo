@@ -211,7 +211,7 @@ public class DefaultRouter implements Router {
      * parameters.put("company", "Home Office")
      * String uri = uriFor("/user", parameters);
      * // the result is "/user?admin=true&company=Home+Office"
-     * <pre/>
+     * </pre>
      * The parameters values are automatically encoded by this method.
      *
      * @param uriPattern

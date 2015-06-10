@@ -84,14 +84,15 @@ public class Pippo {
 
     /**
      * Override this method if you want to customize the PippoFilter.
+     * <p/>
      * <pre>
-     *     protected PippoFilter createPippoFilter(Application application) {
-     *         PippoFilter pippoFilter = super.createPippoFilter(application);
-     *         pippoFilter.setIgnorePaths(Collections.singleton("/favicon.ico"));
+     * protected PippoFilter createPippoFilter(Application application) {
+     *     PippoFilter pippoFilter = super.createPippoFilter(application);
+     *     pippoFilter.setIgnorePaths(Collections.singleton("/favicon.ico"));
      *
-     *         return pippoFilter;
-     *     }
-     * <pre/>
+     *     return pippoFilter;
+     * }
+     * </pre>
      *
      * @param application
      * @return
