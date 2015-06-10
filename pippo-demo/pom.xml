@@ -48,6 +48,7 @@
         <module>pippo-demo-guice</module>
         <module>pippo-demo-template</module>
         <module>pippo-demo-session</module>
+        <module>pippo-demo-ajax</module>
     </modules>
 
     <profiles>
