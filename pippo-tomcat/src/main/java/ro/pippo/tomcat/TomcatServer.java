@@ -15,19 +15,19 @@
  */
 package ro.pippo.tomcat;
 
+import java.io.File;
+
 import org.apache.catalina.Context;
-import org.apache.catalina.connector.Connector;
-import org.apache.catalina.core.StandardHost;
-import org.apache.catalina.deploy.FilterDef;
-import org.apache.catalina.deploy.FilterMap;
+import org.apache.catalina.LifecycleException;
 import org.apache.catalina.startup.Tomcat;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import ro.pippo.core.AbstractWebServer;
+import ro.pippo.core.Application;
 import ro.pippo.core.PippoFilter;
 import ro.pippo.core.PippoRuntimeException;
-import ro.pippo.core.util.StringUtils;
+import ro.pippo.core.PippoServlet;
 
 /**
  * @author Daniel Jipa
@@ -37,58 +37,44 @@ public class TomcatServer extends AbstractWebServer {
 	private static final Logger log = LoggerFactory
 			.getLogger(TomcatServer.class);
 
-	private Tomcat server;
+	private Application application;
+
+	private Tomcat tomcat;
+
+	private PippoServlet pippoServlet;
 
 	@Override
-	public PippoFilter getPippoFilter() {
-		return null;
+	public void setPippoFilter(PippoFilter pippoFilter) {
+		this.application = pippoFilter.getApplication();
 	}
 
 	@Override
 	public void start() {
-		server = new Tomcat();
-
-		Connector connector = new Connector();
-		connector.setPort(settings.getPort());
-		server.setConnector(connector);
-		StandardHost host = new StandardHost();
-		host.setName(settings.getHost());
-		server.setHost(host);
-
+		pippoServlet = new PippoServlet();
+		pippoServlet.setApplication(application);
+		tomcat = new Tomcat();
+		tomcat.setPort(settings.getPort());
+		File base = new File(System.getProperty("java.io.tmpdir"));
+		Context rootCtx = tomcat.addContext("/", base.getAbsolutePath());
+		Tomcat.addServlet(rootCtx, "pippoServlet", pippoServlet);
+		rootCtx.addServletMapping("/*", "pippoServlet");
 		try {
-			Context context = server.addWebapp(settings.getContextPath(), ".");
-			FilterDef filterDef = new FilterDef();
-		    filterDef.setFilterName("pippo");
-		    filterDef.setFilterClass(pippoFilter.getClass().getName());
-			context.addFilterDef(filterDef);
-			
-			FilterMap filterMap = new FilterMap();
-		    filterMap.setFilterName("pippo");
-		    
-		    if (StringUtils.isNullOrEmpty(pippoFilterPath)) {
-	            pippoFilterPath = "/*"; // default value
-	        }
-		    
-		    filterMap.addURLPattern(pippoFilterPath);
-			context.addFilterMap(filterMap);
-					
-			String version = server.getClass().getPackage()
+			String version = tomcat.getClass().getPackage()
 					.getImplementationVersion();
 			log.info("Starting Tomcat Server {} on port {}", version,
 					settings.getPort());
-			server.start();
-			server.getServer().await();
-		} catch (Exception e) {
+			tomcat.start();
+		} catch (LifecycleException e) {
 			throw new PippoRuntimeException(e);
 		}
-
+		tomcat.getServer().await();
 	}
-
+	
 	@Override
 	public void stop() {
-		if (server != null) {
+		if (tomcat != null) {
 			try {
-				server.stop();
+				tomcat.stop();
 			} catch (Exception e) {
 				throw new PippoRuntimeException("Cannot stop Tomcat Server", e);
 			}
