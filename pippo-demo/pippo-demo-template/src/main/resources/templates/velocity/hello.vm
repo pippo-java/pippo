@@ -1,0 +1,10 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Velocity Demo</title>
+    </head>
+
+    <body>
+        <span>$welcome</span>
+    </body>
+</html>

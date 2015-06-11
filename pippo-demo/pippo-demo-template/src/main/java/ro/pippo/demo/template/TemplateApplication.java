@@ -22,6 +22,7 @@ import ro.pippo.core.route.RouteContext;
 import ro.pippo.core.route.RouteHandler;
 import ro.pippo.metrics.Metered;
 import ro.pippo.metrics.Timed;
+import ro.pippo.velocity.VelocityTemplateEngine;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -32,16 +33,21 @@ import java.util.Date;
 public class TemplateApplication extends Application {
 
     private final String template;
+    private final boolean velocity;
 
     public TemplateApplication(TemplateEngine engine, String template) {
         this.template = template;
 
         // set the template engine
         setTemplateEngine(engine);
+
+        velocity = (engine instanceof VelocityTemplateEngine);
     }
 
     @Override
     protected void onInit() {
+        getRouter().ignorePaths("/favicon.ico");
+
         // add routes for static content
         addPublicResourceRoute();
         addWebjarsResourceRoute();
@@ -60,6 +66,12 @@ public class TemplateApplication extends Application {
 
                 routeContext.setLocal("testDate", testDate);
                 routeContext.setLocal("mode", getRuntimeMode());
+
+                // ugly hack
+                // TODO remove
+                if (velocity) {
+                    routeContext.setLocal("welcome", "Welcome");
+                }
 
                 routeContext.render(template);
             }
