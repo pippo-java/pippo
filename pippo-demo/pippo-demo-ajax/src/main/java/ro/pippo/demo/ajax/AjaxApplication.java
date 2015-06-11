@@ -16,41 +16,45 @@
 package ro.pippo.demo.ajax;
 
 import ro.pippo.core.Application;
+import ro.pippo.core.RedirectHandler;
 import ro.pippo.core.route.RouteContext;
 import ro.pippo.core.route.RouteHandler;
+import ro.pippo.demo.common.Contact;
+import ro.pippo.demo.common.ContactService;
+import ro.pippo.demo.common.InMemoryContactService;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @author Decebal Suiu
  */
 public class AjaxApplication extends Application {
 
+    private ContactService contactService;
+
     private long pageAccessTime;
     private long increment;
 
     @Override
     protected void onInit() {
+        contactService = new InMemoryContactService();
+
         getRouter().ignorePaths("/favicon.ico");
 
         // add routes for static content
         addPublicResourceRoute();
         addWebjarsResourceRoute();
 
-        GET("/", new RouteHandler() {
+//        GET("/", new RedirectHandler("/simple"));
+        GET("/", new RedirectHandler("/crud"));
 
-            @Override
-            public void handle(RouteContext routeContext) {
-                routeContext.redirect("/ajax");
-            }
-
-        });
-
-        GET("/ajax", new RouteHandler() {
+        GET("/simple", new RouteHandler() {
 
             @Override
             public void handle(RouteContext routeContext) {
                 pageAccessTime = System.currentTimeMillis();
-
-                routeContext.render("index");
+                routeContext.render("simple");
             }
 
         });
@@ -75,6 +79,67 @@ public class AjaxApplication extends Application {
 
         });
 
+        GET("/crud", new RouteHandler() {
+
+            @Override
+            public void handle(RouteContext routeContext) {
+                routeContext.setLocal("contacts", contactService.getContacts());
+                routeContext.render("crud");
+            }
+
+        });
+
+        GET("/contacts", new RouteHandler() {
+
+            @Override
+            public void handle(RouteContext routeContext) {
+                routeContext.setLocal("contacts", contactService.getContacts());
+                routeContext.render("view/contacts");
+            }
+
+        });
+
+        GET("/contact/{id}", new RouteHandler() {
+
+            @Override
+            public void handle(RouteContext routeContext) {
+                int id = routeContext.getParameter("id").toInt(0);
+                Contact contact = (id > 0) ? contactService.getContact(id) : new Contact();
+                routeContext.setLocal("contact", contact);
+
+                Map<String, Object> parameters = new HashMap<>();
+                if (id > 0) {
+                    parameters.put("id", id);
+                }
+                routeContext.setLocal("saveUrl", getRouter().uriFor("/contact", parameters));
+
+                routeContext.render("view/contact");
+            }
+
+        });
+
+        POST("/contact", new RouteHandler() {
+
+            @Override
+            public void handle(RouteContext routeContext) {
+                Contact contact = routeContext.createEntityFromParameters(Contact.class);
+                contactService.save(contact);
+                routeContext.setLocal("contacts", contactService.getContacts());
+                routeContext.render("view/contacts");
+            }
+
+        });
+
+        DELETE("/contact/{id}", new RouteHandler() {
+
+            @Override
+            public void handle(RouteContext routeContext) {
+                int id = routeContext.getParameter("id").toInt(0);
+                contactService.delete(id);
+                routeContext.getResponse().header("X-IC-Remove", "true").commit();
+            }
+
+        });
     }
 
 }
