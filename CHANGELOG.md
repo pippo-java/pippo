@@ -11,6 +11,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 - Updated [pippo-jade] to Jade4j 0.4.3
 - Updated [pippo-trimou] to Trimou 1.8.0
 - Updated [pippo-undertow] to Undertow 1.2.7
+- Updated [pippo-jackson] to Jackson 2.5.4
 
 #### Added
 - [#35]: Added [pippo-demo-ajax]
@@ -20,7 +21,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 ### [0.5.0] - 2015-06-03
 
 #### Fixed
-- [#121]: ContentTypeEngines were not properly initialized during the discovery/registration process 
+- [#121]: ContentTypeEngines were not properly initialized during the discovery/registration process
 - Fixed multiple regex parameter tokenization
 - [#132]: Prevent web server instantiation
 
@@ -49,7 +50,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 ### [0.4.2] - 2015-04-30
 
 #### Fixed
-- Fixed unset RouteContext ThreadLocal when processing ignore paths 
+- Fixed unset RouteContext ThreadLocal when processing ignore paths
 
 #### Added
 - [#115], [#116]: Allow specifying a non-root Pippo filter or servlet path
@@ -79,7 +80,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 #### Fixed
 #### Changed
 - Moved Controller implementation to [pippo-controller]
- 
+
 #### Added
 - Added [pippo-fastjson]
 - Added [pippo-groovy]
@@ -111,7 +112,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 #### Added
 - Added a Jade template engine module
-- Added file upload support 
+- Added file upload support
 - Implemented RouteHandlerChain concept
 - Added Request.getSession()
 - Added Response.getLocals()
@@ -166,7 +167,7 @@ Initial release.
 [pippo-session-cookie]: https://github.com/decebals/pippo/tree/master/pippo-session-cookie
 [pippo-spring]: https://github.com/decebals/pippo/tree/master/pippo-spring
 [pippo-tjws]: https://github.com/decebals/pippo/tree/master/pippo-tjws
-[pippo-trimou]: https://github.com/decebals/pippo/tree/master/pippo-trimou 
+[pippo-trimou]: https://github.com/decebals/pippo/tree/master/pippo-trimou
 [pippo-undertow]: https://github.com/decebals/pippo/tree/master/pippo-undertow
 [pippo-xstream]: https://github.com/decebals/pippo/tree/master/pippo-xstream
 [pippo-demo-ajax]: https://github.com/decebals/pippo/tree/master/pippo-demo/pippo-demo-ajax
