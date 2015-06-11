@@ -16,8 +16,6 @@
 package ro.pippo.tomcat;
 
 import java.io.File;
-import java.util.HashMap;
-import java.util.Map;
 
 import javax.servlet.Filter;
 
@@ -30,8 +28,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import ro.pippo.core.AbstractWebServer;
-import ro.pippo.core.Application;
-import ro.pippo.core.PippoFilter;
 import ro.pippo.core.PippoRuntimeException;
 import ro.pippo.core.util.StringUtils;
 
@@ -43,34 +39,24 @@ public class TomcatServer extends AbstractWebServer {
 	private static final Logger log = LoggerFactory
 			.getLogger(TomcatServer.class);
 
-	private Application application;
 
 	private Tomcat tomcat;
 
-//	private PippoServlet pippoServlet;
-
-
-	@Override
-	public void setPippoFilter(PippoFilter pippoFilter) {
-		super.setPippoFilter(pippoFilter);
-		application = pippoFilter.getApplication();
-	}
-	
 	@Override
 	public void start() {
 		if (StringUtils.isNullOrEmpty(pippoFilterPath)){
 			pippoFilterPath = "/*";
 		}
-//		pippoServlet = new PippoServlet();
-//		pippoServlet.setApplication(application);
 		tomcat = new Tomcat();
 		tomcat.setPort(settings.getPort());
 		File base = new File(System.getProperty("java.io.tmpdir"));
 		Context rootCtx = tomcat.addContext(settings.getContextPath(), base.getAbsolutePath());
+		
 		rootCtx.addFilterDef(createFilterDef("pippoFilter", pippoFilter));
 		rootCtx.addFilterMap(createFilterMap("pippoFilter", pippoFilterPath));
-//		Tomcat.addServlet(rootCtx, "pippoServlet", pippoServlet);
-//		rootCtx.addServletMapping("/*", "pippoServlet");
+		
+		Tomcat.addServlet(rootCtx, "pippoServlet", new EmptyServlet());
+		rootCtx.addServletMapping(pippoFilterPath, "pippoServlet");
 		try {
 			String version = tomcat.getClass().getPackage()
 					.getImplementationVersion();
