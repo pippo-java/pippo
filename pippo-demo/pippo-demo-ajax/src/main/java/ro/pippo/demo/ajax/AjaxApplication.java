@@ -89,16 +89,6 @@ public class AjaxApplication extends Application {
 
         });
 
-        GET("/contacts", new RouteHandler() {
-
-            @Override
-            public void handle(RouteContext routeContext) {
-                routeContext.setLocal("contacts", contactService.getContacts());
-                routeContext.render("view/contacts");
-            }
-
-        });
-
         GET("/contact/{id}", new RouteHandler() {
 
             @Override
@@ -124,6 +114,8 @@ public class AjaxApplication extends Application {
             public void handle(RouteContext routeContext) {
                 Contact contact = routeContext.createEntityFromParameters(Contact.class);
                 contactService.save(contact);
+
+                routeContext.getResponse().header("X-IC-Transition", "none");
                 routeContext.setLocal("contacts", contactService.getContacts());
                 routeContext.render("view/contacts");
             }
@@ -136,6 +128,7 @@ public class AjaxApplication extends Application {
             public void handle(RouteContext routeContext) {
                 int id = routeContext.getParameter("id").toInt(0);
                 contactService.delete(id);
+
                 routeContext.getResponse().header("X-IC-Remove", "true").commit();
             }
 
