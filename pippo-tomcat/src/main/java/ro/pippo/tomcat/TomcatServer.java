@@ -26,6 +26,7 @@ import ro.pippo.core.Application;
 import ro.pippo.core.PippoFilter;
 import ro.pippo.core.PippoRuntimeException;
 import ro.pippo.core.PippoServlet;
+import ro.pippo.core.WebServerSettings;
 import ro.pippo.core.util.StringUtils;
 
 import java.io.File;
@@ -33,15 +34,13 @@ import java.io.File;
 /**
  * @author Daniel Jipa
  */
-public class TomcatServer extends AbstractWebServer {
+public class TomcatServer extends AbstractWebServer<WebServerSettings> {
 
     private static final Logger log = LoggerFactory.getLogger(TomcatServer.class);
 
     private Application application;
 
     private Tomcat tomcat;
-
-    private PippoServlet pippoServlet;
 
     @Override
     public void setPippoFilter(PippoFilter pippoFilter) {
@@ -54,12 +53,12 @@ public class TomcatServer extends AbstractWebServer {
         if (StringUtils.isNullOrEmpty(pippoFilterPath)) {
             pippoFilterPath = "/*";
         }
-        pippoServlet = new PippoServlet();
+        PippoServlet pippoServlet = new PippoServlet();
         pippoServlet.setApplication(application);
         tomcat = new Tomcat();
-        tomcat.setPort(settings.getPort());
+        tomcat.setPort(getSettings().getPort());
         File docBase = new File(System.getProperty("java.io.tmpdir"));
-        Context context = tomcat.addContext(settings.getContextPath(), docBase.getAbsolutePath());
+        Context context = tomcat.addContext(getSettings().getContextPath(), docBase.getAbsolutePath());
 
         Wrapper wrapper = context.createWrapper();
         String name = "dispatcher";
@@ -72,7 +71,7 @@ public class TomcatServer extends AbstractWebServer {
 
         try {
             String version = tomcat.getClass().getPackage().getImplementationVersion();
-            log.info("Starting Tomcat Server {} on port {}", version, settings.getPort());
+            log.info("Starting Tomcat Server {} on port {}", version, getSettings().getPort());
             tomcat.start();
         } catch (LifecycleException e) {
             throw new PippoRuntimeException(e);
@@ -89,6 +88,11 @@ public class TomcatServer extends AbstractWebServer {
                 throw new PippoRuntimeException("Cannot stop Tomcat Server", e);
             }
         }
+    }
+
+    @Override
+    protected WebServerSettings createDefaultSettings() {
+        return new WebServerSettings(pippoSettings);
     }
 
 }

@@ -23,6 +23,7 @@ import ro.pippo.core.Application;
 import ro.pippo.core.PippoFilter;
 import ro.pippo.core.PippoRuntimeException;
 import ro.pippo.core.PippoServlet;
+import ro.pippo.core.WebServerSettings;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -41,7 +42,7 @@ import java.util.Properties;
  *
  * @author James Moger
  */
-public class TjwsServer extends AbstractWebServer {
+public class TjwsServer extends AbstractWebServer<WebServerSettings> {
 
     private static final Logger log = LoggerFactory.getLogger(TjwsServer.class);
 
@@ -66,8 +67,8 @@ public class TjwsServer extends AbstractWebServer {
         pippoServlet.setApplication(application);
 
         Map<String, Object> arguments = new HashMap<>();
-        arguments.put(Serve.ARG_BINDADDRESS, settings.getHost());
-        arguments.put(Serve.ARG_PORT, settings.getPort());
+        arguments.put(Serve.ARG_BINDADDRESS, getSettings().getHost());
+        arguments.put(Serve.ARG_PORT, getSettings().getPort());
 
         String version = "";
         URL pomUrl = Serve.class.getResource("/META-INF/maven/org.jboss.resteasy/tjws/pom.properties");
@@ -79,7 +80,7 @@ public class TjwsServer extends AbstractWebServer {
             log.error("Failed to read RESTEasy TJWS pom.properties!", e);
         }
 
-        log.info("Starting RESTEasy TJWS Server {} on port {}", version, settings.getPort());
+        log.info("Starting RESTEasy TJWS Server {} on port {}", version, getSettings().getPort());
         server = new Serve(arguments, System.err);
         server.addServlet("/", pippoServlet);
         server.runInBackground();
@@ -97,6 +98,11 @@ public class TjwsServer extends AbstractWebServer {
                 throw new PippoRuntimeException("Cannot stop RESTEasy TJWS Server", e);
             }
         }
+    }
+
+    @Override
+    protected WebServerSettings createDefaultSettings() {
+        return new WebServerSettings(pippoSettings);
     }
 
 }

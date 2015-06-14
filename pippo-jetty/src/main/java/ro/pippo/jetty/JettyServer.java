@@ -27,6 +27,7 @@ import org.slf4j.LoggerFactory;
 import ro.pippo.core.AbstractWebServer;
 import ro.pippo.core.HttpConstants;
 import ro.pippo.core.PippoRuntimeException;
+import ro.pippo.core.WebServerSettings;
 
 import javax.servlet.DispatcherType;
 import javax.servlet.MultipartConfigElement;
@@ -40,7 +41,7 @@ import java.util.concurrent.TimeUnit;
 /**
  * @author Decebal Suiu
  */
-public class JettyServer extends AbstractWebServer {
+public class JettyServer extends AbstractWebServer<WebServerSettings> {
 
     private static final Logger log = LoggerFactory.getLogger(JettyServer.class);
 
@@ -51,8 +52,8 @@ public class JettyServer extends AbstractWebServer {
         ServerConnector serverConnector = createServerConnector();
         serverConnector.setIdleTimeout(TimeUnit.HOURS.toMillis(1));
         serverConnector.setSoLingerTime(-1);
-        serverConnector.setHost(settings.getHost());
-        serverConnector.setPort(settings.getPort());
+        serverConnector.setHost(getSettings().getHost());
+        serverConnector.setPort(getSettings().getPort());
 
         server = serverConnector.getServer();
 
@@ -65,7 +66,7 @@ public class JettyServer extends AbstractWebServer {
 
         try {
             String version = server.getClass().getPackage().getImplementationVersion();
-            log.info("Starting Jetty Server {} on port {}", version, settings.getPort());
+            log.info("Starting Jetty Server {} on port {}", version, getSettings().getPort());
             server.start();
             server.join();
         } catch (Exception e) {
@@ -84,21 +85,26 @@ public class JettyServer extends AbstractWebServer {
         }
     }
 
+    @Override
+    protected WebServerSettings createDefaultSettings() {
+        return new WebServerSettings(pippoSettings);
+    }
+
     protected ServerConnector createServerConnector() {
-        if (settings.getKeystoreFile() == null) {
+        if (getSettings().getKeystoreFile() == null) {
             return new ServerConnector(new Server());
         }
 
-        SslContextFactory sslContextFactory = new SslContextFactory(settings.getKeystoreFile());
+        SslContextFactory sslContextFactory = new SslContextFactory(getSettings().getKeystoreFile());
 
-        if (settings.getKeystorePassword() != null) {
-            sslContextFactory.setKeyStorePassword(settings.getKeystorePassword());
+        if (getSettings().getKeystorePassword() != null) {
+            sslContextFactory.setKeyStorePassword(getSettings().getKeystorePassword());
         }
-        if (settings.getTruststoreFile() != null) {
-            sslContextFactory.setTrustStorePath(settings.getKeystorePassword());
+        if (getSettings().getTruststoreFile() != null) {
+            sslContextFactory.setTrustStorePath(getSettings().getKeystorePassword());
         }
-        if (settings.getTruststorePassword() != null) {
-            sslContextFactory.setTrustStorePassword(settings.getTruststorePassword());
+        if (getSettings().getTruststorePassword() != null) {
+            sslContextFactory.setTrustStorePassword(getSettings().getTruststorePassword());
         }
 
         return new ServerConnector(new Server(), sslContextFactory);
@@ -109,7 +115,7 @@ public class JettyServer extends AbstractWebServer {
         long maxFileSize = pippoFilter.getApplication().getMaximumUploadSize();
         MultipartConfigElement multipartConfig = new MultipartConfigElement(location, maxFileSize, -1L, 0);
         ServletContextHandler handler = new PippoHandler(ServletContextHandler.SESSIONS, multipartConfig);
-        handler.setContextPath(settings.getContextPath());
+        handler.setContextPath(getSettings().getContextPath());
 
         if (pippoFilterPath == null) {
             pippoFilterPath = "/*"; // default value
