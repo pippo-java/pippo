@@ -54,6 +54,8 @@ public final class Request {
     private Map<String, ParameterValue> parameters;
     private Map<String, String> pathParameters;
     private Map<String, ParameterValue> allParameters; // parameters + pathParameters
+    private Map<String, ParameterValue> allPathParameters; // path parameters
+    private Map<String, ParameterValue> allQueryParameters; // query parameters
     private Map<String, FileItem> files;
     private Session session;
     private String applicationPath;
@@ -126,6 +128,40 @@ public final class Request {
         }
 
         return getAllParameters().get(name);
+    }
+
+    /**
+     * Return all query parameters
+     */
+    public Map<String, ParameterValue> getQueryParameters() {
+        return getAllQueryParameters();
+    }
+
+    /**
+     * Return one query parameter
+     */
+    public ParameterValue getQueryParameter(String name) {
+        if (!getAllQueryParameters().containsKey(name)) {
+            return new ParameterValue();
+        }
+        return getAllQueryParameters().get(name);
+    }
+
+    /**
+     * Return all path parameters
+     */
+    public Map<String, ParameterValue> getPathParameters() {
+        return getAllPathParameters();
+    }
+
+    /**
+     * Return one path parameter
+     */
+    public ParameterValue getPathParameter(String name) {
+        if (!getAllPathParameters().containsKey(name)) {
+            return new ParameterValue();
+        }
+        return getAllPathParameters().get(name);
     }
 
     public <T> T createEntityFromParameters(Class<T> entityClass) {
@@ -516,6 +552,39 @@ public final class Request {
         }
 
         return allParameters;
+    }
+
+    /**
+     * Get all query parameters
+     */
+    private Map<String, ParameterValue> getAllQueryParameters() {
+        if (allQueryParameters == null) {
+            Map<String, ParameterValue> tmp = new HashMap<>();
+            tmp.putAll(parameters);
+            allQueryParameters = Collections.unmodifiableMap(tmp);
+            tmp = null;
+        }
+
+        return allQueryParameters;
+    }
+
+    /**
+     * Get all path parameters
+     */
+    private Map<String, ParameterValue> getAllPathParameters() {
+        if (allPathParameters == null) {
+            Map<String, ParameterValue> tmp = new HashMap<>();
+            if (pathParameters != null) {
+                Set<String> names = pathParameters.keySet();
+                for (String name : names) {
+                    tmp.put(name, new ParameterValue(pathParameters.get(name)));
+                }
+            }
+            allPathParameters = Collections.unmodifiableMap(tmp);
+            tmp = null;
+        }
+
+        return allPathParameters;
     }
 
     public List<Cookie> getCookies() {
