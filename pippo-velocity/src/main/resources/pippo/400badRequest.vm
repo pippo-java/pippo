@@ -1,0 +1,5 @@
+<#import "000base.vm" as base/>
+<@base.page>
+</@base.page>
+
+
