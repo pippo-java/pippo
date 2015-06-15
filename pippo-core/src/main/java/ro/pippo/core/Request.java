@@ -51,11 +51,9 @@ public final class Request {
 
     private HttpServletRequest httpServletRequest;
     private ContentTypeEngines contentTypeEngines;
-    private Map<String, ParameterValue> parameters;
-    private Map<String, String> pathParameters;
+    private Map<String, ParameterValue> parameters; // query&post parameters
+    private Map<String, ParameterValue> pathParameters; // path parameters
     private Map<String, ParameterValue> allParameters; // parameters + pathParameters
-    private Map<String, ParameterValue> allPathParameters; // path parameters
-    private Map<String, ParameterValue> allQueryParameters; // query parameters
     private Map<String, FileItem> files;
     private Session session;
     private String applicationPath;
@@ -69,7 +67,73 @@ public final class Request {
         this.httpServletRequest = servletRequest;
         this.contentTypeEngines = application.getContentTypeEngines();
 
-        // fill (query) parameters if any
+        applicationPath = application.getRouter().getApplicationPath();
+
+        // fill (query&post) parameters if any
+        initParameters();
+
+        // empty path parameters for now (see setPathParameters method)
+        pathParameters = Collections.unmodifiableMap(new HashMap<String, ParameterValue>());
+
+        // init all parameters
+        initAllParameters();
+    }
+
+    /**
+     * Returns all parameters (query, post, path).
+     */
+    public Map<String, ParameterValue> getParameters() {
+        return allParameters;
+    }
+
+    /**
+     * Returns one parameter value.
+     */
+    public ParameterValue getParameter(String name) {
+        if (!getParameters().containsKey(name)) {
+            return new ParameterValue();
+        }
+
+        return getParameters().get(name);
+    }
+
+    /**
+     * Returns all query&post parameters.
+     */
+    public Map<String, ParameterValue> getQueryParameters() {
+        return parameters;
+    }
+
+    /**
+     * Returns one query parameter value.
+     */
+    public ParameterValue getQueryParameter(String name) {
+        if (!getQueryParameters().containsKey(name)) {
+            return new ParameterValue();
+        }
+
+        return getQueryParameters().get(name);
+    }
+
+    /**
+     * Returns all path parameters.
+     */
+    public Map<String, ParameterValue> getPathParameters() {
+        return pathParameters;
+    }
+
+    /**
+     * Returns one path parameter.
+     */
+    public ParameterValue getPathParameter(String name) {
+        if (!getPathParameters().containsKey(name)) {
+            return new ParameterValue();
+        }
+
+        return getPathParameters().get(name);
+    }
+
+    private void initParameters() {
         Map<String, Map<Integer, String>> arrays = new HashMap<>();
         Map<String, ParameterValue> tmp = new HashMap<>();
         Enumeration<String> names = httpServletRequest.getParameterNames();
@@ -115,53 +179,36 @@ public final class Request {
         }
 
         parameters = Collections.unmodifiableMap(tmp);
-        applicationPath = application.getRouter().getApplicationPath();
     }
 
-    public Map<String, ParameterValue> getParameters() {
-        return getAllParameters();
-    }
-
-    public ParameterValue getParameter(String name) {
-        if (!getAllParameters().containsKey(name)) {
-            return new ParameterValue();
+    private void initPathParameters(Map<String, String> map) {
+        Map<String, ParameterValue> tmp = new HashMap<>();
+        if (map != null) {
+            Set<String> names = map.keySet();
+            for (String name : names) {
+                tmp.put(name, new ParameterValue(map.get(name)));
+            }
         }
 
-        return getAllParameters().get(name);
+        pathParameters = Collections.unmodifiableMap(tmp);
     }
 
-    /**
-     * Return all query parameters
-     */
-    public Map<String, ParameterValue> getQueryParameters() {
-        return getAllQueryParameters();
+    private void initAllParameters() {
+        Map<String, ParameterValue> tmp = new HashMap<>();
+
+        // add query parameters
+        tmp.putAll(parameters);
+
+        // add path parameters
+        tmp.putAll(pathParameters);
+
+        allParameters = Collections.unmodifiableMap(tmp);
     }
 
-    /**
-     * Return one query parameter
-     */
-    public ParameterValue getQueryParameter(String name) {
-        if (!getAllQueryParameters().containsKey(name)) {
-            return new ParameterValue();
-        }
-        return getAllQueryParameters().get(name);
-    }
-
-    /**
-     * Return all path parameters
-     */
-    public Map<String, ParameterValue> getPathParameters() {
-        return getAllPathParameters();
-    }
-
-    /**
-     * Return one path parameter
-     */
-    public ParameterValue getPathParameter(String name) {
-        if (!getAllPathParameters().containsKey(name)) {
-            return new ParameterValue();
-        }
-        return getAllPathParameters().get(name);
+    // INTERNAL, called in (Default)RouteContext.next()
+    public void setPathParameters(Map<String, String> pathParameters) {
+        initPathParameters(pathParameters);
+        initAllParameters();
     }
 
     public <T> T createEntityFromParameters(Class<T> entityClass) {
@@ -178,6 +225,7 @@ public final class Request {
         return entity;
     }
 
+    @SuppressWarnings("unchecked")
     public <T, X> T updateEntityFromParameters(T entity) {
         for (Field field : entity.getClass().getDeclaredFields()) {
             String parameterName = field.getName();
@@ -186,7 +234,7 @@ public final class Request {
                 parameterName = parameter.value();
             }
 
-            if (getAllParameters().containsKey(parameterName)) {
+            if (getParameters().containsKey(parameterName)) {
                 if (!field.isAccessible()) {
                     field.setAccessible(true);
                 }
@@ -207,7 +255,7 @@ public final class Request {
                             throw new PippoRuntimeException(msg, field.getName(), fieldClass.getName());
                         }
                         ParameterizedType parameterizedType = (ParameterizedType) parameterType;
-                        Class<X> genericClass = null;
+                        Class<X> genericClass;
                         try {
                             genericClass = (Class<X>) parameterizedType.getActualTypeArguments()[0];
                         } catch (ClassCastException e) {
@@ -216,18 +264,18 @@ public final class Request {
                         }
 
                         if (Set.class == fieldClass) {
-                            value = getAllParameters().get(parameterName).toSet(genericClass, pattern);
+                            value = getParameters().get(parameterName).toSet(genericClass, pattern);
                         } else if (List.class == fieldClass) {
-                            value = getAllParameters().get(parameterName).toList(genericClass, pattern);
+                            value = getParameters().get(parameterName).toList(genericClass, pattern);
                         } else if (fieldClass.isInterface()) {
                             String msg = "Field '{}' collection '{}' is not a supported type!";
                             throw new PippoRuntimeException(msg, field.getName(), fieldClass.getName());
                         } else {
                             Class<? extends Collection> collectionClass = (Class<? extends Collection>) fieldClass;
-                            value = getAllParameters().get(parameterName).toCollection(collectionClass, genericClass, pattern);
+                            value = getParameters().get(parameterName).toCollection(collectionClass, genericClass, pattern);
                         }
                     } else {
-                        value = getAllParameters().get(parameterName).to(fieldClass, pattern);
+                        value = getParameters().get(parameterName).to(fieldClass, pattern);
                     }
                     field.set(entity, value);
                 } catch (IllegalAccessException e) {
@@ -527,64 +575,6 @@ public final class Request {
 
     public FileItem getFile(String name) {
         return getFiles().get(name);
-    }
-
-    // called in (Default)RouteHandlerChain.next()
-    public void setPathParameters(Map<String, String> pathParameters) {
-        this.pathParameters = pathParameters;
-        allParameters = null; // invalidate and force recreate
-    }
-
-    private Map<String, ParameterValue> getAllParameters() {
-        if (allParameters == null) {
-            Map<String, ParameterValue> tmp = new HashMap<>();
-            // add query parameters
-            tmp.putAll(parameters);
-
-            // add path parameters
-            if (pathParameters != null) {
-                Set<String> names = pathParameters.keySet();
-                for (String name : names) {
-                    tmp.put(name, new ParameterValue(pathParameters.get(name)));
-                }
-            }
-            allParameters = Collections.unmodifiableMap(tmp);
-        }
-
-        return allParameters;
-    }
-
-    /**
-     * Get all query parameters
-     */
-    private Map<String, ParameterValue> getAllQueryParameters() {
-        if (allQueryParameters == null) {
-            Map<String, ParameterValue> tmp = new HashMap<>();
-            tmp.putAll(parameters);
-            allQueryParameters = Collections.unmodifiableMap(tmp);
-            tmp = null;
-        }
-
-        return allQueryParameters;
-    }
-
-    /**
-     * Get all path parameters
-     */
-    private Map<String, ParameterValue> getAllPathParameters() {
-        if (allPathParameters == null) {
-            Map<String, ParameterValue> tmp = new HashMap<>();
-            if (pathParameters != null) {
-                Set<String> names = pathParameters.keySet();
-                for (String name : names) {
-                    tmp.put(name, new ParameterValue(pathParameters.get(name)));
-                }
-            }
-            allPathParameters = Collections.unmodifiableMap(tmp);
-            tmp = null;
-        }
-
-        return allPathParameters;
     }
 
     public List<Cookie> getCookies() {
