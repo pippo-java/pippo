@@ -23,10 +23,14 @@ import ro.pippo.core.WebServerSettings;
  */
 public class UndertowSettings extends WebServerSettings {
 
+    public static final String BUFFER_SIZE = "undertow.bufferSize";
+
     private int bufferSize;
 
     public UndertowSettings(PippoSettings pippoSettings) {
         super(pippoSettings);
+
+        bufferSize = pippoSettings.getInteger(UndertowSettings.BUFFER_SIZE, 0);
     }
 
     public int getBufferSize() {
