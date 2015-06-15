@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2014 the original author or authors.
+ * Copyright (C) 2015 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,27 +13,30 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package ro.pippo.core;
+package ro.pippo.undertow;
+
+import ro.pippo.core.PippoSettings;
+import ro.pippo.core.WebServerSettings;
 
 /**
  * @author Decebal Suiu
  */
-public interface WebServer<T extends WebServerSettings> {
+public class UndertowSettings extends WebServerSettings {
 
-    public T getSettings();
+    private int bufferSize;
 
-    public PippoFilter getPippoFilter();
+    public UndertowSettings(PippoSettings pippoSettings) {
+        super(pippoSettings);
+    }
 
-    public void setPippoFilter(PippoFilter pippoFilter);
+    public int getBufferSize() {
+        return bufferSize;
+    }
 
-    public String getPippoFilterPath();
+    public UndertowSettings setBufferSize(int bufferSize) {
+        this.bufferSize = bufferSize;
 
-    public void setPippoFilterPath(String pippoFilterPath);
-
-    public void init(PippoSettings pippoSettings);
-
-    public void start();
-
-    public void stop();
+        return this;
+    }
 
 }

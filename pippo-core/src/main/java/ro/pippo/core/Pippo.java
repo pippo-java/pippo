@@ -62,8 +62,8 @@ public class Pippo {
             PippoFilter pippoFilter = createPippoFilter(application);
             server.setPippoFilter(pippoFilter);
 
-            WebServerSettings serverSettings = new WebServerSettings(application.getPippoSettings());
-            server.setSettings(serverSettings);
+            log.debug("Init server");
+            server.init(application.getPippoSettings());
         }
 
         return server;

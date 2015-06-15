@@ -18,20 +18,23 @@ package ro.pippo.core;
 /**
  * @author Decebal Suiu
  */
-public abstract class AbstractWebServer implements WebServer {
+public abstract class AbstractWebServer<T extends WebServerSettings> implements WebServer {
 
-    protected WebServerSettings settings;
     protected PippoFilter pippoFilter;
     protected String pippoFilterPath;
 
-    @Override
-    public WebServerSettings getSettings() {
-        return settings;
-    }
+    protected PippoSettings pippoSettings;
+    private T settings;
+
+    protected abstract T createDefaultSettings();
 
     @Override
-    public void setSettings(WebServerSettings settings) {
-        this.settings = settings;
+    public T getSettings() {
+        if (settings == null) {
+            settings = createDefaultSettings();
+        }
+
+        return settings;
     }
 
     @Override
@@ -52,6 +55,11 @@ public abstract class AbstractWebServer implements WebServer {
     @Override
     public void setPippoFilterPath(String pippoFilterPath) {
         this.pippoFilterPath = pippoFilterPath;
+    }
+
+    @Override
+    public void init(PippoSettings pippoSettings) {
+        this.pippoSettings = pippoSettings;
     }
 
 }

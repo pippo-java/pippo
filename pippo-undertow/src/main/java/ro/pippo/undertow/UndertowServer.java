@@ -56,12 +56,12 @@ import java.security.KeyStore;
  * @author James Moger
  * @see http://undertow.io
  */
-public class UndertowServer extends AbstractWebServer {
+public class UndertowServer extends AbstractWebServer<UndertowSettings> {
 
     private static final Logger log = LoggerFactory.getLogger(UndertowServer.class);
 
-    Undertow server;
-    DeploymentManager pippoDeploymentManager;
+    private Undertow server;
+    private DeploymentManager pippoDeploymentManager;
 
     @Override
     public void start() {
@@ -74,7 +74,7 @@ public class UndertowServer extends AbstractWebServer {
             server = createServer(rootHandler);
 
             String version = server.getClass().getPackage().getImplementationVersion();
-            log.info("Starting Undertow Server {} on port {}", version, settings.getPort());
+            log.info("Starting Undertow Server {} on port {}", version, getSettings().getPort());
 
             server.start();
         } catch (Exception e) {
@@ -87,7 +87,7 @@ public class UndertowServer extends AbstractWebServer {
         if (server != null) {
             try {
                 String version = server.getClass().getPackage().getImplementationVersion();
-                log.info("Stopping Undertow {} on port {}", version, settings.getPort());
+                log.info("Stopping Undertow {} on port {}", version, getSettings().getPort());
 
                 server.stop();
 
@@ -98,19 +98,28 @@ public class UndertowServer extends AbstractWebServer {
         }
     }
 
+    @Override
+    protected UndertowSettings createDefaultSettings() {
+        return new UndertowSettings(pippoSettings);
+    }
+
     protected Undertow createServer(HttpHandler contextHandler) {
         Builder builder = Undertow.builder();
-        if (settings.getKeystoreFile() == null) {
+        // TODO is it a better option?
+        if (getSettings().getBufferSize() > 0) {
+            builder.setBufferSize(getSettings().getBufferSize());
+        }
+        if (getSettings().getKeystoreFile() == null) {
             // HTTP
-            builder.addHttpListener(settings.getPort(), settings.getHost());
+            builder.addHttpListener(getSettings().getPort(), getSettings().getHost());
         } else {
             // HTTPS
             builder.setServerOption(UndertowOptions.ENABLE_SPDY, true);
             try {
-                KeyStore keyStore = loadKeyStore(settings.getKeystoreFile(), settings.getKeystorePassword());
-                KeyStore trustStore = loadKeyStore(settings.getTruststoreFile(), settings.getTruststorePassword());
+                KeyStore keyStore = loadKeyStore(getSettings().getKeystoreFile(), getSettings().getKeystorePassword());
+                KeyStore trustStore = loadKeyStore(getSettings().getTruststoreFile(), getSettings().getTruststorePassword());
                 SSLContext sslContext = createSSLContext(keyStore, trustStore);
-                builder.addHttpsListener(settings.getPort(), settings.getHost(), sslContext);
+                builder.addHttpsListener(getSettings().getPort(), getSettings().getHost(), sslContext);
             } catch (Exception e) {
                 throw new PippoRuntimeException("Failed to setup an Undertow SSL listener!", e);
             }
@@ -122,7 +131,7 @@ public class UndertowServer extends AbstractWebServer {
     }
 
     protected HttpHandler createContextHandler(HttpHandler pippoHandler) throws ServletException {
-        String contextPath = settings.getContextPath();
+        String contextPath = getSettings().getContextPath();
 
         // create a handler than redirects non-contact requests to the context
         PathHandler contextHandler = Handlers.path(Handlers.redirect(contextPath));
@@ -137,7 +146,7 @@ public class UndertowServer extends AbstractWebServer {
         DeploymentInfo info = Servlets.deployment();
         info.setDeploymentName("Pippo");
         info.setClassLoader(this.getClass().getClassLoader());
-        info.setContextPath(settings.getContextPath());
+        info.setContextPath(getSettings().getContextPath());
         info.setIgnoreFlush(true);
 
         if (StringUtils.isNullOrEmpty(pippoFilterPath)) {
@@ -167,12 +176,11 @@ public class UndertowServer extends AbstractWebServer {
     private SSLContext createSSLContext(final KeyStore keyStore, final KeyStore trustStore) throws Exception {
         KeyManager[] keyManagers;
         KeyManagerFactory keyManagerFactory = KeyManagerFactory.getInstance(KeyManagerFactory.getDefaultAlgorithm());
-        keyManagerFactory.init(keyStore, settings.getKeystorePassword().toCharArray());
+        keyManagerFactory.init(keyStore, getSettings().getKeystorePassword().toCharArray());
         keyManagers = keyManagerFactory.getKeyManagers();
 
-        TrustManager[] trustManagers = null;
-        TrustManagerFactory trustManagerFactory = TrustManagerFactory.getInstance(KeyManagerFactory
-            .getDefaultAlgorithm());
+        TrustManager[] trustManagers;
+        TrustManagerFactory trustManagerFactory = TrustManagerFactory.getInstance(KeyManagerFactory.getDefaultAlgorithm());
         trustManagerFactory.init(trustStore);
         trustManagers = trustManagerFactory.getTrustManagers();
 
