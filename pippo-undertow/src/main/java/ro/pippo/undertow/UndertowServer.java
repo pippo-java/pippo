@@ -53,8 +53,9 @@ import java.security.KeyStore;
 /**
  * An implementation of WebServer based on Undertow.
  *
+ * @see <a href="http://undertow.io>Undertow</a>
+ *
  * @author James Moger
- * @see http://undertow.io
  */
 public class UndertowServer extends AbstractWebServer<UndertowSettings> {
 
@@ -179,10 +180,9 @@ public class UndertowServer extends AbstractWebServer<UndertowSettings> {
         keyManagerFactory.init(keyStore, getSettings().getKeystorePassword().toCharArray());
         keyManagers = keyManagerFactory.getKeyManagers();
 
-        TrustManager[] trustManagers;
         TrustManagerFactory trustManagerFactory = TrustManagerFactory.getInstance(KeyManagerFactory.getDefaultAlgorithm());
         trustManagerFactory.init(trustStore);
-        trustManagers = trustManagerFactory.getTrustManagers();
+        TrustManager[] trustManagers = trustManagerFactory.getTrustManagers();
 
         SSLContext sslContext;
         sslContext = SSLContext.getInstance("TLS");
