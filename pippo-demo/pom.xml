@@ -46,7 +46,8 @@
         <module>pippo-demo-crudng</module>
         <module>pippo-demo-spring</module>
         <module>pippo-demo-guice</module>
-        <module>pippo-demo-template</module>
+        <module>pippo-demo-weld</module>
+	<module>pippo-demo-template</module>
         <module>pippo-demo-session</module>
         <module>pippo-demo-ajax</module>
     </modules>

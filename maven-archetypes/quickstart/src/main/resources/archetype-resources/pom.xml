@@ -136,7 +136,7 @@
     #literal()
     <profiles>
         <profile>
-            <id>main</id>
+            <id>standalone</id>
             <activation>
                 <activeByDefault>true</activeByDefault>
             </activation>

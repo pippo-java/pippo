@@ -163,6 +163,7 @@
         <module>pippo-trimou</module>
         <module>pippo-spring</module>
         <module>pippo-guice</module>
+		<module>pippo-weld</module>
         <module>pippo-gson</module>
         <module>pippo-fastjson</module>
         <module>pippo-jackson</module>
