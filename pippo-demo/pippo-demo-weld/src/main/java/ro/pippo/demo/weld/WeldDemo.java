@@ -18,7 +18,6 @@ package ro.pippo.demo.weld;
 import ro.pippo.core.Pippo;
 
 /**
- *
  * @author Daniel Jipa
  */
 public class WeldDemo {

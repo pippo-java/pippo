@@ -28,7 +28,6 @@ public class WeldApplication extends ControllerApplication {
 
     @Override
     protected void onInit() {
-    	
     	Weld weld = new Weld();
     	WeldContainer container = weld.initialize();
         setControllerFactory(new WeldControllerFactory(container));
