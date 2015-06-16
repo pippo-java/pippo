@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+
+        <title>
+            $statusCode: $statusMessage
+        </title>
+
+        <style type="text/css">
+            body {
+                font-family: "Arial", "Sans serif";
+                color: darkGray;
+                margin-left: auto;
+                margin-right: auto;
+                max-width: 900px;
+                padding: 0px 20px;
+            }
+
+            .status-code {
+                font-size: 20pt;
+                color: darkGray;
+                font-weight: bold;
+                border-bottom: 1px solid lightGray;
+                padding-bottom: 10px;
+            }
+
+            .status-code .mode {
+                float: right;
+                color: lightGray;
+                text-transform:uppercase;
+                font-weight: normal;
+            }
+
+            .frowny {
+                font-size: 100pt;
+                padding-bottom: 30px;
+                text-align: center;
+            }
+
+            .text {
+                padding-top: 20px;
+                text-align:center;
+                font-size: 16pt;
+                font-weight: bold;
+            }
+
+            .message {
+                margin-top: 30px;
+                text-align: left;
+                overflow: auto;
+                border: 1px solid #fac7c7;
+                border-radius: 2px;
+                background-color: rgba(255, 182, 193, 0.15);
+                padding: 10px;
+                color: #dd0000;
+            }
+
+            .application {
+                border-top: 1px solid lightGray;
+                padding-top: 20px;
+                text-align:center;
+                font-size: 14pt;
+                font-weight: bold;
+                padding-bottom: 30px;
+            }
+
+            .link {
+                color: blue;
+                text-decoration: none;
+                font-size: 50pt;
+            }
+
+            pre, .description, .text, .frowny {
+                color: #3B3131;
+            }
+        </style>
+    </head>
+    <body>
+      <div class="status-code">
+        <div class="mode">$runtimeMode</div>
+        <span class="description">$statusMessage</span> $statusCode
+      </div>
+      #if ($message)
+        <pre class="message">$message</pre>
+      #end
+      <div class="text">$requestMethod $requestUri</div>
+      #if ($stacktrace)
+        <pre>$stacktrace</pre>
+      #else
+        <div class="frowny">:(</div>
+      #end
+      <div class="application">
+        $applicationName $applicationVersion
+        <div>
+          <a class="link" href="$appPath/">&larr;</a>
+        </div>
+      </div>
+    </body>
+</html>
+

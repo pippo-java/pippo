@@ -1,0 +1,67 @@
+#*
+    hello.vm
+
+    This demonstrates:
+    1. variable binding & inheritance
+    2. localized messages
+    3. localized relative date formatting
+    4. localized date formatting
+*#
+<!DOCTYPE html>
+<html lang="$lang">
+    <head>
+        <meta charset="utf-8">
+        <meta content="IE=edge" http-equiv="X-UA-Compatible">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+        <title>${pippo.i18n("pippo.welcome")}</title>
+
+        <link href="${pippo.webjarsAt('bootstrap/3.3.1/css/bootstrap.min.css')}" rel="stylesheet">
+        <link href="${pippo.webjarsAt('font-awesome/4.2.0/css/font-awesome.min.css')}" rel="stylesheet">
+        <link href="${pippo.publicAt('css/style.css')}" rel="stylesheet">
+    </head>
+    <body>
+        <div class="container">
+            <h1>${pippo.i18n("pippo.greeting")} <i class='fa fa-smile-o'></i></h1>
+            <div class="row">
+                <div class="col-sm-8">
+                    <p> ${pippo.i18n("pippo.yourLanguageAndLocale", $lang, $locale)}</p>
+                    <p> ${pippo.i18n("pippo.theContextPath", $contextPath)}</p>
+                    <p>${pippo.formatTime($testDate, "full")} (${pippo.prettyTime($testDate)})</p>
+
+                    <div class="dropdown">
+                        <button class="btn btn-default dropdown-toggle" type="button" id="languageMenu" data-toggle="dropdown" aria-expanded="true">
+                            ${pippo.i18n("pippo.languageChoices")}
+                            <span class="caret"></span>
+                        </button>
+                        <ul class="dropdown-menu" role="menu" aria-labelledby="languageMenu">
+                            #foreach($choice in $languageChoices)
+                                <li role="presentation"><a role="menuitem" tabindex="-1" href="?lang=$choice">$choice</a></li>
+                            #end
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="col-sm-4">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <h3 class="panel-title">${pippo.i18n("pippo.demonstrations")}</h3>
+                        </div>
+                        <div class="panel-body">
+                            <ul>
+                                <li><a href="${appPath}/satisfaction">${pippo.i18n("pippo.unmatchedRoute")}</a></li>
+                                <li><a href="${appPath}/exception">${pippo.i18n("pippo.exceptionHandling")}</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <hr/>
+            <p><i>Velocity Template Engine (${mode})</i></p>
+        </div>
+
+        <script src="$pippo.{webjarsAt('jquery/1.11.1/jquery.min.js')}"></script>
+        <script src="${pippo.webjarsAt('bootstrap/3.3.1/js/bootstrap.min.js')}"></script>
+    </body>
+</html>
