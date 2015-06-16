@@ -1,11 +1,10 @@
-<#macro page>
 <!DOCTYPE html>
 <html>
     <head>
         <meta charset="utf-8">
 
         <title>
-            ${statusCode}: ${statusMessage}
+            $statusCode: $statusMessage
         </title>
 
         <style type="text/css">
@@ -79,24 +78,24 @@
     </head>
     <body>
       <div class="status-code">
-        <div class="mode">${runtimeMode}</div>
-        <span class="description">${statusMessage}</span> ${statusCode}
+        <div class="mode">$runtimeMode</div>
+        <span class="description">$statusMessage</span> $statusCode
       </div>
-      <#if message??>
-        <pre class="message"><#escape x as x?html>${message}</#escape></pre>
-      </#if>
-      <div class="text">${requestMethod} ${requestUri}</div>
-      <#if stacktrace??>
-        <pre><#escape x as x?html>${stacktrace}</#escape></pre>
-      <#else>
+      #if ($message)
+        <pre class="message">$message</pre>
+      #end
+      <div class="text">$requestMethod $requestUri</div>
+      #if ($stacktrace)
+        <pre>$stacktrace</pre>
+      #else
         <div class="frowny">:(</div>
-      </#if>
+      #end
       <div class="application">
-        ${applicationName} ${applicationVersion}
+        $applicationName $applicationVersion
         <div>
-          <a class="link" href="${appPath}/">&larr;</a>
+          <a class="link" href="$appPath/">&larr;</a>
         </div>
       </div>
     </body>
 </html>
-</#macro>
+

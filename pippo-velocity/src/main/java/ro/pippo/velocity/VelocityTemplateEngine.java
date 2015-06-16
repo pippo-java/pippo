@@ -18,11 +18,9 @@ package ro.pippo.velocity;
 import org.apache.velocity.Template;
 import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.VelocityEngine;
-import org.apache.velocity.runtime.RuntimeConstants;
 import org.apache.velocity.runtime.RuntimeServices;
 import org.apache.velocity.runtime.RuntimeSingleton;
 import org.apache.velocity.runtime.parser.node.SimpleNode;
-import org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader;
 import ro.pippo.core.Application;
 import ro.pippo.core.Languages;
 import ro.pippo.core.Messages;
@@ -30,6 +28,7 @@ import ro.pippo.core.PippoConstants;
 import ro.pippo.core.PippoRuntimeException;
 import ro.pippo.core.PippoSettings;
 import ro.pippo.core.TemplateEngine;
+import ro.pippo.core.route.Router;
 import ro.pippo.core.util.StringUtils;
 
 import java.io.StringReader;
@@ -48,12 +47,14 @@ public class VelocityTemplateEngine implements TemplateEngine {
 
     private Languages languages;
     private Messages messages;
+    private Router router;
     private VelocityEngine velocityEngine;
 
     @Override
     public void init(Application application) {
         this.languages = application.getLanguages();
         this.messages = application.getMessages();
+        this.router = application.getRouter();
 
         PippoSettings pippoSettings = application.getPippoSettings();
 
@@ -95,23 +96,10 @@ public class VelocityTemplateEngine implements TemplateEngine {
 
     @Override
     public void renderString(String templateContent, Map<String, Object> model, Writer writer) {
-        // prepare the locale-aware i18n method
-        String language = (String) model.get(PippoConstants.REQUEST_PARAMETER_LANG);
-        if (StringUtils.isNullOrEmpty(language)) {
-            language = languages.getLanguageOrDefault(language);
-        }
-//        model.put("i18n", new I18nMethod(messages, language));
+        // create the velocity context
+        VelocityContext context = createVelocityContext(model);
 
-        // prepare the locale-aware prettyTime method
-        Locale locale = (Locale) model.get(PippoConstants.REQUEST_PARAMETER_LOCALE);
-        if (locale == null) {
-            locale = languages.getLocaleOrDefault(language);
-        }
-//        model.put("prettyTime", new PrettyTimeMethod(locale));
-//        model.put("formatTime", new FormatTimeMethod(locale));
-//        model.put("webjarsAt", webjarResourcesMethod);
-//        model.put("publicAt", publicResourcesMethod);
-
+        // merge the template
         try {
             RuntimeServices runtimeServices = RuntimeSingleton.getRuntimeServices();
             StringReader reader = new StringReader(templateContent);
@@ -120,7 +108,6 @@ public class VelocityTemplateEngine implements TemplateEngine {
             template.setRuntimeServices(runtimeServices);
             template.setData(node);
             template.initDocument();
-            VelocityContext context = new VelocityContext(model);
             template.merge(context, writer);
         } catch (Exception e) {
             throw new PippoRuntimeException(e);
@@ -129,34 +116,43 @@ public class VelocityTemplateEngine implements TemplateEngine {
 
     @Override
     public void renderResource(String templateName, Map<String, Object> model, Writer writer) {
+        // add the file suffix if it's missing
+        if (templateName.indexOf('.') == -1) {
+            templateName += FILE_SUFFIX;
+        }
+
+        // create the velocity context
+        VelocityContext context = createVelocityContext(model);
+
+        // merge the template
+        try {
+            Template template = velocityEngine.getTemplate(templateName);
+            template.merge(context, writer);
+        } catch (Exception e) {
+            throw new PippoRuntimeException(e);
+        }
+    }
+
+    private VelocityContext createVelocityContext(Map<String, Object> model) {
         // prepare the locale-aware i18n method
         String language = (String) model.get(PippoConstants.REQUEST_PARAMETER_LANG);
         if (StringUtils.isNullOrEmpty(language)) {
             language = languages.getLanguageOrDefault(language);
         }
-//        model.put("i18n", new I18nMethod(messages, language));
 
         // prepare the locale-aware prettyTime method
         Locale locale = (Locale) model.get(PippoConstants.REQUEST_PARAMETER_LOCALE);
         if (locale == null) {
             locale = languages.getLocaleOrDefault(language);
         }
-//        model.put("prettyTime", new PrettyTimeMethod(locale));
-//        model.put("formatTime", new FormatTimeMethod(locale));
-//        model.put("webjarsAt", webjarResourcesMethod);
-//        model.put("publicAt", publicResourcesMethod);
 
-        try {
-            if (templateName.indexOf('.') == -1) {
-                templateName += FILE_SUFFIX;
-            }
-            // TODO locale ?!
-            Template template = velocityEngine.getTemplate(templateName);
-            VelocityContext context = new VelocityContext(model);
-            template.merge(context, writer);
-        } catch (Exception e) {
-            throw new PippoRuntimeException(e);
-        }
+        VelocityContext context = new VelocityContext(model);
+
+        context.put("pippo", new PippoHelper(messages, language, locale, router));
+        context.put("contextPath", router.getContextPath());
+        context.put("appPath", router.getApplicationPath());
+
+        return context;
     }
 
 }

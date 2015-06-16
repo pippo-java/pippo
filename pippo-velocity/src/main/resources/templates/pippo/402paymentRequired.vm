@@ -1,5 +1,1 @@
-<#import "000base.vm" as base/>
-<@base.page>
-</@base.page>
-
-
+#parse("pippo/000base.vm")
