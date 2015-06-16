@@ -24,22 +24,69 @@ import ro.pippo.core.WebServerSettings;
 public class UndertowSettings extends WebServerSettings {
 
     public static final String BUFFER_SIZE = "undertow.bufferSize";
+    public static final String BUFFERS_PER_REGION = "undertow.buffersPerRegion";
+    public static final String DIRECT_BUFFERS = "undertow.directBuffers";
+    public static final String IO_THREADS = "undertow.ioThreads";
+    public static final String WORKER_THREADS = "undertow.workerThreads";
 
     private int bufferSize;
+    private int buffersPerRegion;
+    private int ioThreads;
+    private int workerThreads;
+    private Boolean directBuffers;
 
     public UndertowSettings(PippoSettings pippoSettings) {
         super(pippoSettings);
 
         bufferSize = pippoSettings.getInteger(UndertowSettings.BUFFER_SIZE, 0);
+        buffersPerRegion = pippoSettings.getInteger(UndertowSettings.BUFFERS_PER_REGION, 0);
+        directBuffers = pippoSettings.getBoolean(UndertowSettings.DIRECT_BUFFERS, false);
+        ioThreads = pippoSettings.getInteger(UndertowSettings.IO_THREADS, 0);
+        workerThreads = pippoSettings.getInteger(UndertowSettings.WORKER_THREADS, 0);
     }
 
     public int getBufferSize() {
         return bufferSize;
     }
 
+    public int getBuffersPerRegion() {
+        return buffersPerRegion;
+    }
+
+    public boolean getDirectBuffers() {
+        return directBuffers;
+    }
+
+    public int getIoThreads() {
+        return ioThreads;
+    }
+
+    public int getWorkerThreads() {
+        return workerThreads;
+    }
+
     public UndertowSettings setBufferSize(int bufferSize) {
         this.bufferSize = bufferSize;
+        return this;
+    }
 
+    public UndertowSettings setBuffersPerRegion(int buffersPerRegion) {
+        this.buffersPerRegion = buffersPerRegion;
+        return this;
+    }
+
+    public UndertowSettings setDirectBuffers(boolean directBuffers) {
+        this.directBuffers = directBuffers;
+        return this;
+    }
+
+    public UndertowSettings setIoThreads(int ioThreads) {
+        this.ioThreads = ioThreads;
+        return this;
+    }
+
+    public UndertowSettings setWorkerThreads(int workerThreads) {
+        this.workerThreads = workerThreads;
         return this;
     }
 

@@ -53,7 +53,7 @@ import java.security.KeyStore;
 /**
  * An implementation of WebServer based on Undertow.
  *
- * @see <a href="http://undertow.io>Undertow</a>
+ * @see <a href="http://undertow.io">Undertow</a>
  *
  * @author James Moger
  */
@@ -110,6 +110,19 @@ public class UndertowServer extends AbstractWebServer<UndertowSettings> {
         if (getSettings().getBufferSize() > 0) {
             builder.setBufferSize(getSettings().getBufferSize());
         }
+        if (getSettings().getBuffersPerRegion() > 0) {
+            builder.setBuffersPerRegion(getSettings().getBuffersPerRegion());
+        }
+        if (getSettings().getDirectBuffers() == true) {
+            builder.setDirectBuffers(getSettings().getDirectBuffers());
+        }
+        if (getSettings().getIoThreads() > 0) {
+            builder.setIoThreads(getSettings().getIoThreads());
+        }
+        if (getSettings().getWorkerThreads() > 0) {
+            builder.setWorkerThreads(getSettings().getWorkerThreads());
+        }
+
         if (getSettings().getKeystoreFile() == null) {
             // HTTP
             builder.addHttpListener(getSettings().getPort(), getSettings().getHost());
