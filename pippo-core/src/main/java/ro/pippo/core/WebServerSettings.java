@@ -34,6 +34,10 @@ public class WebServerSettings implements Serializable {
     private String truststoreFile;
     private String truststorePassword;
 
+    private int maxThreads = 100;
+    private int minThreads = 10;
+    private int threadTimeout = 30000;
+
     public WebServerSettings(PippoSettings pippoSettings) {
         this.port = pippoSettings.getInteger(PippoConstants.SETTING_SERVER_PORT, defaultPort);
         this.host = pippoSettings.getString(PippoConstants.SETTING_SERVER_HOST, host);
@@ -42,6 +46,10 @@ public class WebServerSettings implements Serializable {
         this.keystorePassword = pippoSettings.getString(PippoConstants.SETTING_SERVER_KEYSTORE_PASSWORD, keystorePassword);
         this.truststoreFile = pippoSettings.getString(PippoConstants.SETTING_SERVER_TRUSTSTORE_FILE, truststoreFile);
         this.truststorePassword = pippoSettings.getString(PippoConstants.SETTING_SERVER_TRUSTSTORE_PASSWORD, truststorePassword);
+
+        this.maxThreads = pippoSettings.getInteger(PippoConstants.SETTING_SERVER_MAX_THREADS, maxThreads);
+        this.minThreads = pippoSettings.getInteger(PippoConstants.SETTING_SERVER_MIN_THREADS, minThreads);
+        this.threadTimeout = pippoSettings.getInteger(PippoConstants.SETTING_SERVER_THREAD_TIMEOUT, threadTimeout);
     }
 
     public String getHost() {
@@ -110,6 +118,36 @@ public class WebServerSettings implements Serializable {
 
     public WebServerSettings truststorePassword(String truststorePassword) {
         this.truststorePassword = truststorePassword;
+
+        return this;
+    }
+
+    public int getMaxThreads() {
+        return maxThreads;
+    }
+
+    public WebServerSettings maxThreads(int maxThreads) {
+        this.maxThreads = maxThreads;
+
+        return this;
+    }
+
+    public int getMinThreads() {
+        return minThreads;
+    }
+
+    public WebServerSettings minThreads(int minThreads) {
+        this.minThreads = minThreads;
+
+        return this;
+    }
+
+    public int getThreadTimeout() {
+        return threadTimeout;
+    }
+
+    public WebServerSettings threadTimeout(int threadTimeout) {
+        this.threadTimeout = threadTimeout;
 
         return this;
     }

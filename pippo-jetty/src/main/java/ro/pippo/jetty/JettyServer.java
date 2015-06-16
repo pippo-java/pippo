@@ -22,6 +22,7 @@ import org.eclipse.jetty.server.ServerConnector;
 import org.eclipse.jetty.servlet.FilterHolder;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.util.ssl.SslContextFactory;
+import org.eclipse.jetty.util.thread.QueuedThreadPool;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ro.pippo.core.AbstractWebServer;
@@ -92,7 +93,7 @@ public class JettyServer extends AbstractWebServer<WebServerSettings> {
 
     protected ServerConnector createServerConnector() {
         if (getSettings().getKeystoreFile() == null) {
-            return new ServerConnector(new Server());
+            return new ServerConnector(new Server(new QueuedThreadPool(getSettings().getMaxThreads(), getSettings().getMinThreads(), getSettings().getThreadTimeout())));
         }
 
         SslContextFactory sslContextFactory = new SslContextFactory(getSettings().getKeystoreFile());
@@ -107,7 +108,7 @@ public class JettyServer extends AbstractWebServer<WebServerSettings> {
             sslContextFactory.setTrustStorePassword(getSettings().getTruststorePassword());
         }
 
-        return new ServerConnector(new Server(), sslContextFactory);
+        return new ServerConnector(new Server(new QueuedThreadPool(getSettings().getMaxThreads(), getSettings().getMinThreads(), getSettings().getThreadTimeout())), sslContextFactory);
     }
 
     protected ServletContextHandler createPippoHandler() {

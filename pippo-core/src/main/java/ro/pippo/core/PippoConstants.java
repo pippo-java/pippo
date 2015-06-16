@@ -61,6 +61,12 @@ public final class PippoConstants {
 
     public static final String SETTING_SERVER_TRUSTSTORE_PASSWORD = "server.truststorePassword";
 
+    public static final String SETTING_SERVER_MAX_THREADS = "server.maxThreads";
+
+    public static final String SETTING_SERVER_MIN_THREADS = "server.minThreads";
+
+    public static final String SETTING_SERVER_THREAD_TIMEOUT = "server.threadTimeout";
+
     public static final String REQUEST_PARAMETER_LANG = "lang";
 
     public static final String REQUEST_PARAMETER_LOCALE = "locale";
