@@ -25,18 +25,18 @@ public class JettySettings extends WebServerSettings {
 
     public static final String MAX_THREADS = "jetty.maxThreads";
     public static final String MIN_THREADS = "jetty.minThreads";
-    public static final String THREAD_TIMEOUT = "jetty.threadTimeout";
+    public static final String IDLE_TIMEOUT = "jetty.idleTimeout";
 
     private int maxThreads = 100;
     private int minThreads = 10;
-    private int threadTimeout = 30000;
+    private int idleTimeout = 30000; // in miliseconds
 
     public JettySettings(PippoSettings pippoSettings) {
         super(pippoSettings);
 
         maxThreads = pippoSettings.getInteger(JettySettings.MAX_THREADS, maxThreads);
         minThreads = pippoSettings.getInteger(JettySettings.MIN_THREADS, minThreads);
-        threadTimeout = pippoSettings.getInteger(JettySettings.THREAD_TIMEOUT, threadTimeout);
+        idleTimeout = pippoSettings.getInteger(JettySettings.IDLE_TIMEOUT, idleTimeout);
     }
 
     public int getMaxThreads() {
@@ -47,8 +47,8 @@ public class JettySettings extends WebServerSettings {
         return minThreads;
     }
 
-    public int getThreadTimeout() {
-        return threadTimeout;
+    public int getIdleTimeout() {
+        return idleTimeout;
     }
 
     public JettySettings maxThreads(int maxThreads) {
@@ -61,8 +61,8 @@ public class JettySettings extends WebServerSettings {
         return this;
     }
 
-    public JettySettings threadTimeout(int threadTimeout) {
-        this.threadTimeout = threadTimeout;
+    public JettySettings idleTimeout(int idleTimeout) {
+        this.idleTimeout = idleTimeout;
         return this;
     }
 
