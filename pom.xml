@@ -179,6 +179,7 @@
         <module>pippo-session-cookie</module>
         <module>maven-archetypes/quickstart</module>
         <module>pippo-demo</module>
+    <module>pippo-rythm</module>
   </modules>
 
 </project>

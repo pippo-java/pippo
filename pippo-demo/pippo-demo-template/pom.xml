@@ -57,6 +57,12 @@
             <artifactId>pippo-groovy</artifactId>
             <version>${project.version}</version>
         </dependency>
+        
+        <dependency>
+            <groupId>ro.pippo</groupId>
+            <artifactId>pippo-rythm</artifactId>
+            <version>${project.version}</version>
+        </dependency>
 
         <!-- Webjars -->
         <dependency>
