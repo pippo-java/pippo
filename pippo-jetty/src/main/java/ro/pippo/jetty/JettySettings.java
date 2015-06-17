@@ -27,8 +27,8 @@ public class JettySettings extends WebServerSettings {
     public static final String MIN_THREADS = "jetty.minThreads";
     public static final String IDLE_TIMEOUT = "jetty.idleTimeout";
 
-    private int maxThreads = 100;
-    private int minThreads = 10;
+    private int maxThreads = 200;
+    private int minThreads = 8;
     private int idleTimeout = 30000; // in miliseconds
 
     public JettySettings(PippoSettings pippoSettings) {
