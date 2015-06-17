@@ -22,12 +22,13 @@ import org.eclipse.jetty.server.ServerConnector;
 import org.eclipse.jetty.servlet.FilterHolder;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.util.ssl.SslContextFactory;
+import org.eclipse.jetty.util.thread.QueuedThreadPool;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ro.pippo.core.AbstractWebServer;
 import ro.pippo.core.HttpConstants;
 import ro.pippo.core.PippoRuntimeException;
-import ro.pippo.core.WebServerSettings;
+//import ro.pippo.core.WebServerSettings;
 
 import javax.servlet.DispatcherType;
 import javax.servlet.MultipartConfigElement;
@@ -41,7 +42,7 @@ import java.util.concurrent.TimeUnit;
 /**
  * @author Decebal Suiu
  */
-public class JettyServer extends AbstractWebServer<WebServerSettings> {
+public class JettyServer extends AbstractWebServer<JettySettings> {
 
     private static final Logger log = LoggerFactory.getLogger(JettyServer.class);
 
@@ -86,13 +87,13 @@ public class JettyServer extends AbstractWebServer<WebServerSettings> {
     }
 
     @Override
-    protected WebServerSettings createDefaultSettings() {
-        return new WebServerSettings(pippoSettings);
+    protected JettySettings createDefaultSettings() {
+        return new JettySettings(pippoSettings);
     }
 
     protected ServerConnector createServerConnector() {
         if (getSettings().getKeystoreFile() == null) {
-            return new ServerConnector(new Server());
+            return new ServerConnector(new Server(new QueuedThreadPool(getSettings().getMaxThreads(), getSettings().getMinThreads(), getSettings().getThreadTimeout())));
         }
 
         SslContextFactory sslContextFactory = new SslContextFactory(getSettings().getKeystoreFile());
@@ -107,7 +108,7 @@ public class JettyServer extends AbstractWebServer<WebServerSettings> {
             sslContextFactory.setTrustStorePassword(getSettings().getTruststorePassword());
         }
 
-        return new ServerConnector(new Server(), sslContextFactory);
+        return new ServerConnector(new Server(new QueuedThreadPool(getSettings().getMaxThreads(), getSettings().getMinThreads(), getSettings().getThreadTimeout())), sslContextFactory);
     }
 
     protected ServletContextHandler createPippoHandler() {
