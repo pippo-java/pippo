@@ -10,7 +10,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 - Updated [pippo-pebble] to Pebble 1.5.0
 - Updated [pippo-jade] to Jade4j 0.4.3
 - Updated [pippo-trimou] to Trimou 1.8.0
-- Updated [pippo-undertow] to Undertow 1.2.7
+- Updated [pippo-undertow] to Undertow 1.2.8
 - Updated [pippo-jackson] to Jackson 2.5.4
 
 #### Added
