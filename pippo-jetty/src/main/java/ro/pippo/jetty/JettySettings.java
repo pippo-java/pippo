@@ -18,6 +18,9 @@ package ro.pippo.jetty;
 import ro.pippo.core.PippoSettings;
 import ro.pippo.core.WebServerSettings;
 
+import java.util.HashSet;
+import java.util.Set;
+
 /**
  * @author Decebal Suiu, Gustavo Galvan
  */
@@ -31,8 +34,21 @@ public class JettySettings extends WebServerSettings {
     private int minThreads = 8;
     private int idleTimeout = 30000; // in miliseconds
 
+    private Set<String> modified;
+
     public JettySettings(PippoSettings pippoSettings) {
         super(pippoSettings);
+
+        modified = new HashSet<>();
+        if (pippoSettings.hasSetting(JettySettings.MAX_THREADS)) {
+            modified.add(JettySettings.MAX_THREADS);
+        }
+        if (pippoSettings.hasSetting(JettySettings.MIN_THREADS)) {
+            modified.add(JettySettings.MIN_THREADS);
+        }
+        if (pippoSettings.hasSetting(JettySettings.IDLE_TIMEOUT)) {
+            modified.add(JettySettings.IDLE_TIMEOUT);
+        }
 
         maxThreads = pippoSettings.getInteger(JettySettings.MAX_THREADS, maxThreads);
         minThreads = pippoSettings.getInteger(JettySettings.MIN_THREADS, minThreads);
@@ -53,17 +69,31 @@ public class JettySettings extends WebServerSettings {
 
     public JettySettings maxThreads(int maxThreads) {
         this.maxThreads = maxThreads;
+        modified.add(JettySettings.MAX_THREADS);
+
         return this;
     }
 
     public JettySettings minThreads(int minThreads) {
         this.minThreads = minThreads;
+        modified.add(JettySettings.MIN_THREADS);
+
         return this;
     }
 
     public JettySettings idleTimeout(int idleTimeout) {
         this.idleTimeout = idleTimeout;
+        modified.add(JettySettings.IDLE_TIMEOUT);
+
         return this;
+    }
+
+    public boolean isModified(String settingName) {
+        return modified.contains(settingName);
+    }
+
+    public boolean isModified() {
+        return !modified.isEmpty();
     }
 
 }
