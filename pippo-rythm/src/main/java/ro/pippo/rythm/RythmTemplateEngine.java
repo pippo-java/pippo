@@ -38,16 +38,19 @@ import ro.pippo.core.util.StringUtils;
  */
 public class RythmTemplateEngine implements TemplateEngine {
 
-	private Languages languages;
+ 	private Languages languages;
 	private Messages messages;
 	private Router router;
+
+    public static final String HTML = "html";
+    public static final String FILE_SUFFIX = "." + HTML;
 
 	@Override
 	public void init(Application application) {
 		this.languages = application.getLanguages();
 		this.messages = application.getMessages();
 		this.router = application.getRouter();
-		
+
 		PippoSettings pippoSettings = application.getPippoSettings();
 		String pathPrefix = pippoSettings.getString(
 				PippoConstants.SETTING_TEMPLATE_PATH_PREFIX, null);
@@ -93,6 +96,9 @@ public class RythmTemplateEngine implements TemplateEngine {
 	        if (locale == null) {
 	            locale = languages.getLocaleOrDefault(language);
 	        }
+            if (templateName.indexOf('.') == -1) {
+                templateName += FILE_SUFFIX;
+            }
 			model.put("pippo", new PippoHelper(messages, language, locale, router));
 			writer.write(Rythm.engine().render(templateName, model));
 			writer.flush();

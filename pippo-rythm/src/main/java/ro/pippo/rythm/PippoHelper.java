@@ -90,12 +90,12 @@ public class PippoHelper {
         return url;
     }
 
-    public String i18n(String messageKey) {
+    public String doi18n(String messageKey) {
         String messageValue = messages.get(messageKey, language);
         return messageValue;
     }
 
-    public String i18n(String messageKey, Object... args) {
+    public String doi18n(String messageKey, Object... args) {
         String messageValue = messages.get(messageKey, language, args);
         return messageValue;
     }
