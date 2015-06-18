@@ -23,7 +23,6 @@ import org.eclipse.jetty.servlet.FilterHolder;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.util.ssl.SslContextFactory;
 import org.eclipse.jetty.util.thread.QueuedThreadPool;
-import org.eclipse.jetty.util.thread.ThreadPool;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ro.pippo.core.AbstractWebServer;
@@ -92,12 +91,21 @@ public class JettyServer extends AbstractWebServer<JettySettings> {
     }
 
     protected Server createServer() {
-        int maxThreads = getSettings().getMaxThreads();
-        int minThreads = getSettings().getMinThreads();
-        int idleTimeout = getSettings().getIdleTimeout();
-        ThreadPool threadPool = new QueuedThreadPool(maxThreads, minThreads, idleTimeout);
+        if (getSettings().getMaxThreads() > 0) {
+            int maxThreads = getSettings().getMaxThreads();
+            int minThreads = getSettings().getMinThreads();
+            if (minThreads == 0) {
+                minThreads = JettySettings.DEFAULT_MIN_THREADS;
+            }
+            int idleTimeout = getSettings().getIdleTimeout();
+            if (idleTimeout == 0) {
+                idleTimeout = JettySettings.DEFAULT_IDLE_TIMEOUT;
+            }
 
-        return new Server(threadPool);
+            return new Server(new QueuedThreadPool(maxThreads, minThreads, idleTimeout));
+        }
+
+        return new Server();
     }
 
     protected ServerConnector createServerConnector(Server server) {
