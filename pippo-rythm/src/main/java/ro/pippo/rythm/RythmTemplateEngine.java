@@ -22,6 +22,8 @@ import java.util.Locale;
 import java.util.Map;
 
 import org.rythmengine.Rythm;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import ro.pippo.core.Application;
 import ro.pippo.core.Languages;
@@ -38,9 +40,12 @@ import ro.pippo.core.util.StringUtils;
  */
 public class RythmTemplateEngine implements TemplateEngine {
 
+	private static final Logger LOG = LoggerFactory.getLogger(RythmTemplateEngine.class);
+	
  	private Languages languages;
 	private Messages messages;
 	private Router router;
+	private String pathPrefix;
 
     public static final String HTML = "html";
     public static final String FILE_SUFFIX = "." + HTML;
@@ -52,7 +57,7 @@ public class RythmTemplateEngine implements TemplateEngine {
 		this.router = application.getRouter();
 
 		PippoSettings pippoSettings = application.getPippoSettings();
-		String pathPrefix = pippoSettings.getString(
+		pathPrefix = pippoSettings.getString(
 				PippoConstants.SETTING_TEMPLATE_PATH_PREFIX, null);
 		if (StringUtils.isNullOrEmpty(pathPrefix)) {
 			pathPrefix = TemplateEngine.DEFAULT_PATH_PREFIX;
@@ -100,7 +105,10 @@ public class RythmTemplateEngine implements TemplateEngine {
                 templateName += FILE_SUFFIX;
             }
 			model.put("pippo", new PippoHelper(messages, language, locale, router));
-			writer.write(Rythm.engine().render(templateName, model));
+			String path = pathPrefix + "/" + templateName;
+			String fullPath = Thread.currentThread().getContextClassLoader().getResource(path).getFile();
+			LOG.debug("Template location {}" , fullPath);
+			writer.write(Rythm.engine().render(fullPath, model));
 			writer.flush();
 		} catch (IOException e) {
 			throw new PippoRuntimeException(e);
