@@ -25,7 +25,7 @@
             <version>${project.version}</version>
         </dependency>
 
-        <!-- Freemarker -->
+        <!-- Rythm -->
         <dependency>
             <groupId>org.rythmengine</groupId>
             <artifactId>rythm-engine</artifactId>
