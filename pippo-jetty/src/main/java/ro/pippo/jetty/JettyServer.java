@@ -92,6 +92,10 @@ public class JettyServer extends AbstractWebServer<JettySettings> {
     }
 
     protected Server createServer() {
+        if (!getSettings().isModified()) {
+            return new Server();
+        }
+
         int maxThreads = getSettings().getMaxThreads();
         int minThreads = getSettings().getMinThreads();
         int idleTimeout = getSettings().getIdleTimeout();
