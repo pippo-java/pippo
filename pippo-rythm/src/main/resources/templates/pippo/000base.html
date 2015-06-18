@@ -78,22 +78,22 @@
     </head>
     <body>
       <div class="status-code">
-        <div class="mode">${runtimeMode}</div>
+        <div class="mode">@runtimeMode</div>
         <span class="description">@statusMessage</span> @statusCode
       </div>
-      <#if message??>
-        <pre class="message"><#escape x as x?html>${message}</#escape></pre>
-      </#if>
+      @if (message != null) {
+      	 <pre class="message">@message</pre>
+      }
       <div class="text">@requestMethod @requestUri</div>
-      <#if stacktrace??>
-        <pre><#escape x as x?html>${stacktrace}</#escape></pre>
-      <#else>
-        <div class="frowny">:(</div>
-      </#if>
+	  @if (stacktrace != null){
+	  	<pre>@stacktrace</pre>
+	  }else{
+	  	<div class="frowny">:(</div>
+	  }
       <div class="application">
         @applicationName @applicationVersion
         <div>
-          <a class="link" href="${appPath}/">&larr;</a>
+          <a class="link" href="@appPath">&larr;</a>
         </div>
       </div>
     </body>
