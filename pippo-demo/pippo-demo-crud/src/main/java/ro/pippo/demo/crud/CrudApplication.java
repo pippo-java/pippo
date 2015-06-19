@@ -160,8 +160,8 @@ public class CrudApplication extends Application {
                 if (id > 0) {
                     parameters.put("id", id);
                 }
-                routeContext.setLocal("editAction", getRouter().uriFor("/contact", parameters));
-                routeContext.setLocal("backAction", getRouter().uriFor("/contacts"));
+                routeContext.setLocal("saveUrl", getRouter().uriFor("/contact", parameters));
+                routeContext.setLocal("backUrl", getRouter().uriFor("/contacts"));
                 routeContext.render("contact");
             }
 

@@ -4,7 +4,7 @@
         <h2>Contact <small>POST with form url-encoding</small></h2>
     </div>
 
-    <form class="form-horizontal" role="form" method="post" action="${editAction}">
+    <form class="form-horizontal" role="form" method="post" action="${saveUrl}">
         <div class="form-group">
             <label for="name" class="col-sm-2 control-label">Name</label>
             <div class="col-sm-9">
@@ -27,7 +27,7 @@
             <div class="col-sm-offset-2 col-sm-9">
                 <input type="hidden" name="_csrf_token" value="${csrfToken}">
                 <button type="submit" class="btn btn-default btn-primary">Submit</button>
-                <a type="submit" class="btn" href="${backAction}">Cancel</a>
+                <a class="btn" href="${backUrl}">Cancel</a>
             </div>
         </div>
     </form>

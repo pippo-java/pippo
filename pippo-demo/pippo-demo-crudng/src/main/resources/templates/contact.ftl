@@ -30,7 +30,7 @@
           <div class="form-group">
               <div class="col-sm-offset-2 col-sm-9">
                   <button type="submit" class="btn btn-default btn-primary" ng-disabled="contactForm.$invalid">Submit</button>
-                  <a type="submit" class="btn" href="contacts">Cancel</a>
+                  <a class="btn" href="contacts">Cancel</a>
               </div>
           </div>
       </form>
