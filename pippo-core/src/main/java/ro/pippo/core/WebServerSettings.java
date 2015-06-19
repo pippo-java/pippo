@@ -16,7 +16,6 @@
 package ro.pippo.core;
 
 import java.io.Serializable;
-import java.util.Map;
 
 /**
  * @author Decebal Suiu
@@ -35,8 +34,6 @@ public class WebServerSettings implements Serializable {
     private String truststoreFile;
     private String truststorePassword;
     
-    //private Map<String,Object> settingsMap;
-
     public WebServerSettings(PippoSettings pippoSettings) {
         this.port = pippoSettings.getInteger(PippoConstants.SETTING_SERVER_PORT, defaultPort);
         this.host = pippoSettings.getString(PippoConstants.SETTING_SERVER_HOST, host);
