@@ -111,6 +111,7 @@ public class TomcatServer extends AbstractWebServer<TomcatSettings> {
 			Map.Entry setting = (Map.Entry)settings.next();
     		if(!setting.getKey().equals("") && setting.getValue() != null) {
     			tomcat.getConnector().setAttribute(setting.getKey().toString(), setting.getValue());
+    			log.info("Tomcat setting: {} --> {}", setting.getKey().toString(), setting.getValue());
     		}
     	}
     }
