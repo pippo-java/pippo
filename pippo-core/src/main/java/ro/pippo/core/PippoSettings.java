@@ -100,7 +100,7 @@ public class PippoSettings {
     private final boolean isFile;
 
     private volatile long lastModified;
-
+    
     public PippoSettings(RuntimeMode runtimeMode) {
         this.runtimeMode = runtimeMode;
         this.propertiesUrl = getPropertiesUrl();
