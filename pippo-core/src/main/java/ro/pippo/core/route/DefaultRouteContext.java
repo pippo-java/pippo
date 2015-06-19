@@ -325,8 +325,8 @@ public class DefaultRouteContext implements RouteContext {
     }
 
     @Override
-    public String uriFor(String uriPattern, Map<String, Object> parameters) {
-        return application.getRouter().uriFor(uriPattern, parameters);
+    public String uriFor(String nameOrUriPattern, Map<String, Object> parameters) {
+        return application.getRouter().uriFor(nameOrUriPattern, parameters);
     }
 
     @SuppressWarnings("unchecked")
