@@ -330,8 +330,8 @@ public final class Response {
      * <li>relative to the servlet container root (if location starts with '/')
      * <li>an absolute url
      * </ul>
-     * If you want a context-relative redirect, use the {@link redirectToContextPath}
-     * If you want an application-relative redirect, use the {@link redirectToApplicationPath}
+     * If you want a context-relative redirect, use the {@link #redirectToContextPath}
+     * If you want an application-relative redirect, use the {@link #redirectToApplicationPath}
      * method.
      * <p>This method commits the response.</p>
      *
