@@ -101,6 +101,7 @@ public class AjaxApplication extends Application {
                 if (id > 0) {
                     parameters.put("id", id);
                 }
+//                routeContext.setLocal("saveUrl", getRouter().uriFor("/contact", parameters));
                 routeContext.setLocal("saveUrl", getRouter().uriFor("postContact", parameters));
 
                 routeContext.render("view/contact");

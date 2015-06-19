@@ -15,8 +15,6 @@
  */
 package ro.pippo.core.route;
 
-import ro.pippo.core.util.StringUtils;
-
 /**
  * @author Decebal Suiu
  */
@@ -70,10 +68,6 @@ public class Route {
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public String getNameOrUriPattern() {
-        return StringUtils.isNullOrEmpty(name) ? uriPattern : name;
     }
 
     @Override

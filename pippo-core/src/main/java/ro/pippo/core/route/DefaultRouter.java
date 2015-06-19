@@ -276,15 +276,18 @@ public class DefaultRouter implements Router {
     }
 
     private void removeBinding(Route route) {
-        PatternBinding binding = getBinding(route.getNameOrUriPattern());
+        String nameOrUriPattern = StringUtils.isNullOrEmpty(route.getName()) ? route.getUriPattern() : route.getName();
+        PatternBinding binding = getBinding(nameOrUriPattern);
         bindingsCache.get(route.getRequestMethod()).remove(binding);
     }
 
     private PatternBinding getBinding(String nameOrUriPattern) {
         Collection<List<PatternBinding>> values = bindingsCache.values();
+        Route route;
         for (List<PatternBinding> bindings : values) {
             for (PatternBinding binding : bindings) {
-                if (nameOrUriPattern.equals(binding.getRoute().getNameOrUriPattern())) {
+                route = binding.getRoute();
+                if (nameOrUriPattern.equals(route.getName()) || nameOrUriPattern.equals(route.getUriPattern())) {
                     return binding;
                 }
             }
