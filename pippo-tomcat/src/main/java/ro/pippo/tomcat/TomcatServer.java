@@ -21,20 +21,22 @@ import org.apache.catalina.Wrapper;
 import org.apache.catalina.startup.Tomcat;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import ro.pippo.core.AbstractWebServer;
 import ro.pippo.core.Application;
 import ro.pippo.core.PippoFilter;
 import ro.pippo.core.PippoRuntimeException;
 import ro.pippo.core.PippoServlet;
-import ro.pippo.core.WebServerSettings;
 import ro.pippo.core.util.StringUtils;
 
 import java.io.File;
+import java.util.Iterator;
+import java.util.Map;
 
 /**
  * @author Daniel Jipa
  */
-public class TomcatServer extends AbstractWebServer<WebServerSettings> {
+public class TomcatServer extends AbstractWebServer<TomcatSettings> {
 
     private static final Logger log = LoggerFactory.getLogger(TomcatServer.class);
 
@@ -53,8 +55,7 @@ public class TomcatServer extends AbstractWebServer<WebServerSettings> {
         if (StringUtils.isNullOrEmpty(pippoFilterPath)) {
             pippoFilterPath = "/*";
         }
-        tomcat = new Tomcat();
-        tomcat.setPort(getSettings().getPort());
+        createServer();
         File docBase = new File(System.getProperty("java.io.tmpdir"));
         Context context = tomcat.addContext(getSettings().getContextPath(), docBase.getAbsolutePath());
 
@@ -92,8 +93,27 @@ public class TomcatServer extends AbstractWebServer<WebServerSettings> {
     }
 
     @Override
-    protected WebServerSettings createDefaultSettings() {
-        return new WebServerSettings(pippoSettings);
+    protected TomcatSettings createDefaultSettings() {
+        return new TomcatSettings(pippoSettings);
+    }
+
+    protected void createServer() {
+    	tomcat = new Tomcat();
+    	// basic (required) values
+    	tomcat.setPort(getSettings().getPort());
+    	tomcat.getConnector().setAttribute("address", getSettings().getHost());
+    	// optional config
+    	Map<String,Object> allSettings = getSettings().getSettingsMap();
+    	@SuppressWarnings("rawtypes")
+		Iterator settings = allSettings.entrySet().iterator();
+    	while(settings.hasNext()) {
+    		@SuppressWarnings("rawtypes")
+			Map.Entry setting = (Map.Entry)settings.next();
+    		if(!setting.getKey().equals("") && setting.getValue() != null) {
+    			tomcat.getConnector().setAttribute(setting.getKey().toString(), setting.getValue());
+    			log.info("Tomcat setting: {} --> {}", setting.getKey().toString(), setting.getValue());
+    		}
+    	}
     }
 
 }

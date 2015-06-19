@@ -33,7 +33,7 @@ public class WebServerSettings implements Serializable {
     private String keystorePassword;
     private String truststoreFile;
     private String truststorePassword;
-
+    
     public WebServerSettings(PippoSettings pippoSettings) {
         this.port = pippoSettings.getInteger(PippoConstants.SETTING_SERVER_PORT, defaultPort);
         this.host = pippoSettings.getString(PippoConstants.SETTING_SERVER_HOST, host);
