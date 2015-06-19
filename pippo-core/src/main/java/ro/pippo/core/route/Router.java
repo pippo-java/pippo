@@ -62,7 +62,7 @@ public interface Router {
      */
     public String uriFor(String relativeUri);
 
-    public String uriFor(String uriPattern, Map<String, Object> parameters);
+    public String uriFor(String nameOrUriPattern, Map<String, Object> parameters);
 
     public String uriPatternFor(Class<? extends StaticResourceHandler> resourceHandlerClass);
 

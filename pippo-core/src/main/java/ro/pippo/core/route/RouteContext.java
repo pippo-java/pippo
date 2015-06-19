@@ -115,6 +115,6 @@ public interface RouteContext {
 
     public RouteContext status(int code);
 
-    public String uriFor(String uriPattern, Map<String, Object> parameters);
+    public String uriFor(String nameOrUriPattern, Map<String, Object> parameters);
 
 }

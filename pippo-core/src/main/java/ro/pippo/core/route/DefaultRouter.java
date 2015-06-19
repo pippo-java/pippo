@@ -214,13 +214,13 @@ public class DefaultRouter implements Router {
      * </pre>
      * The parameters values are automatically encoded by this method.
      *
-     * @param uriPattern
+     * @param nameOrUriPattern
      * @param parameters
      * @return
      */
     @Override
-    public String uriFor(String uriPattern, Map<String, Object> parameters) {
-        PatternBinding binding = getBinding(uriPattern);
+    public String uriFor(String nameOrUriPattern, Map<String, Object> parameters) {
+        PatternBinding binding = getBinding(nameOrUriPattern);
 
         return (binding != null) ? prefixApplicationPath(uriFor(binding, parameters)) : null;
     }
@@ -276,15 +276,18 @@ public class DefaultRouter implements Router {
     }
 
     private void removeBinding(Route route) {
-        PatternBinding binding = getBinding(route.getUriPattern());
+        String nameOrUriPattern = StringUtils.isNullOrEmpty(route.getName()) ? route.getUriPattern() : route.getName();
+        PatternBinding binding = getBinding(nameOrUriPattern);
         bindingsCache.get(route.getRequestMethod()).remove(binding);
     }
 
-    private PatternBinding getBinding(String uriPattern) {
+    private PatternBinding getBinding(String nameOrUriPattern) {
         Collection<List<PatternBinding>> values = bindingsCache.values();
+        Route route;
         for (List<PatternBinding> bindings : values) {
             for (PatternBinding binding : bindings) {
-                if (uriPattern.equals(binding.getRoute().getUriPattern())) {
+                route = binding.getRoute();
+                if (nameOrUriPattern.equals(route.getName()) || nameOrUriPattern.equals(route.getUriPattern())) {
                     return binding;
                 }
             }
