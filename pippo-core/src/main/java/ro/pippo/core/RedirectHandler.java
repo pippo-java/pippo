@@ -18,23 +18,37 @@ package ro.pippo.core;
 import ro.pippo.core.route.RouteContext;
 import ro.pippo.core.route.RouteHandler;
 
+import java.util.Map;
+
 /**
- * A very simple route handler that redirects a context request to another
- * context path.
+ * A very simple route handler that redirects a request to a path via
+ * {@link ro.pippo.core.route.RouteContext#redirect(String)} or
+ * {@link ro.pippo.core.route.RouteContext#redirect(String, java.util.Map)}.
  *
  * @author James Moger
  */
 public class RedirectHandler implements RouteHandler {
 
-    protected final String path;
+    private String path;
+    private String nameOrUriPattern;
+    private Map<String, Object> parameters;
 
     public RedirectHandler(String path) {
         this.path = path;
     }
 
+    public RedirectHandler(String nameOrUriPattern, Map<String, Object> parameters) {
+        this.nameOrUriPattern = nameOrUriPattern;
+        this.parameters = parameters;
+    }
+
     @Override
     public void handle(RouteContext routeContext) {
-        routeContext.redirect(path);
+        if (path != null) {
+            routeContext.redirect(path);
+        } else {
+            routeContext.redirect(nameOrUriPattern, parameters);
+        }
     }
 
 }
