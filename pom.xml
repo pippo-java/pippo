@@ -180,6 +180,7 @@
         <module>maven-archetypes/quickstart</module>
 		<module>pippo-velocity</module>
         <module>pippo-demo</module>
+    <module>pippo-rythm</module>
   </modules>
 
 </project>
