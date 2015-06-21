@@ -3,7 +3,7 @@ package ro.pippo.demo.csscompilers;
 import ro.pippo.core.Pippo;
 
 /**
- * Created by cory on 20.06.2015.
+ * Created by Daniel Jipa on 20.06.2015.
  */
 public class CssCompilerDemo {
     public static void main(String[] args) {

@@ -10,7 +10,7 @@ import ro.pippo.sasscompiler.SassCompiler;
 import java.net.URL;
 
 /**
- * Created by cory on 20.06.2015.
+ * Created by Daniel Jipa on 20.06.2015.
  */
 public class CssCompilerApplication extends Application {
 

@@ -13,7 +13,7 @@ import java.util.concurrent.ConcurrentMap;
 
 
 /**
- * Created by cory on 21.06.2015.
+ * Created by Daniel Jipa on 21.06.2015.
  */
 public abstract class Less4jCompiler implements CssGenerator {
 
