@@ -1,4 +1,4 @@
-package ro.pippo.demo.less4j;
+package ro.pippo.demo.csscompilers;
 
 import ro.pippo.core.Application;
 import ro.pippo.core.CssGenerator;
@@ -6,6 +6,8 @@ import ro.pippo.core.route.RouteContext;
 import ro.pippo.core.route.RouteHandler;
 import ro.pippo.less4j.Less4jCompiler;
 import ro.pippo.sasscompiler.SassCompiler;
+
+import java.net.URL;
 
 /**
  * Created by cory on 20.06.2015.
@@ -18,19 +20,23 @@ public class CssCompilerApplication extends Application {
 
     @Override
     protected void onInit() {
-
+        addPublicResourceRoute();
         lessCss = new Less4jCompiler() {
 
             @Override
-            public String getResource() {
-                return null;
+            public URL getResource() {
+                URL url = CssCompilerApplication.this.getClass().getClassLoader().getResource("public/less/mixin.less");
+                System.out.println(url);
+                return url;
             }
         };
 
         sassCss = new SassCompiler() {
             @Override
-            public String getResource() {
-                return null;
+            public URL getResource() {
+                URL url = CssCompilerApplication.this.getClass().getClassLoader().getResource("public/sass/mixin.scss");
+                System.out.println(url);
+                return url;
             }
         };
 

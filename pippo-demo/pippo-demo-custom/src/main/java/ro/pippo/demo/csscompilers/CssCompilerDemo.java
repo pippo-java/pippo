@@ -1,4 +1,4 @@
-package ro.pippo.demo.less4j;
+package ro.pippo.demo.csscompilers;
 
 import ro.pippo.core.Pippo;
 
