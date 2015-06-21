@@ -229,6 +229,11 @@ public class DefaultRouteContext implements RouteContext {
     }
 
     @Override
+    public void redirect(String nameOrUriPattern, Map<String, Object> parameters) {
+        redirect(uriFor(nameOrUriPattern, parameters));
+    }
+
+    @Override
     public void next() {
         if (iterator.hasNext()) {
             // retrieves the next route
