@@ -330,9 +330,10 @@ public final class Response {
      * <li>relative to the servlet container root (if location starts with '/')
      * <li>an absolute url
      * </ul>
-     * If you want a context-relative redirect, use the {@link #redirectToContextPath}
-     * If you want an application-relative redirect, use the {@link #redirectToApplicationPath}
-     * method.
+     * If you want a context-relative redirect, use the
+     * {@link ro.pippo.core.Response#redirectToContextPath(String)} method.
+     * If you want an application-relative redirect, use the
+     * {@link ro.pippo.core.Response#redirectToApplicationPath(String)} method.
      * <p>This method commits the response.</p>
      *
      * @param location

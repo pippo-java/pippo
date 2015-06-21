@@ -97,6 +97,8 @@ public interface RouteContext {
 
     public void redirect(String path);
 
+    public void redirect(String nameOrUriPattern, Map<String, Object> parameters);
+
     public void next();
 
     public void runFinallyRoutes();
