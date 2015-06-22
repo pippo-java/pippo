@@ -140,7 +140,7 @@ Initial release.
 [0.3.0]: https://github.com/decebals/pippo/compare/pippo-parent-0.2.0...pippo-parent-0.3.0
 [0.2.0]: https://github.com/decebals/pippo/compare/pippo-parent-0.1.0...pippo-parent-0.2.0
 
-[#161]: https://github.com/decebals/pippo/issues/161
+[#162]: https://github.com/decebals/pippo/issues/162
 [#160]: https://github.com/decebals/pippo/issues/160
 [#150]: https://github.com/decebals/pippo/issues/150
 [#147]: https://github.com/decebals/pippo/issues/147
