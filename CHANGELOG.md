@@ -5,6 +5,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 ### [Unreleased][unreleased]
 
 #### Fixed
+- [#120]: FileResourceHandler usage is not self evident
 
 #### Changed
 - Updated [pippo-pebble] to Pebble 1.5.0
@@ -14,7 +15,13 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 - Updated [pippo-jackson] to Jackson 2.5.4
 
 #### Added
-- [#35]: Added [pippo-demo-ajax]
+- [#35]: Added demo ajax using intercooler.js [pippo-demo-ajax]
+- [#141]: Added Apache Tomcat as embedded web server [pippo-tomcat]
+- [#144]: Added Apache Velocity as template engine [pippo-velocity]
+- [#147]: Web server tuning (being able to tune from PippoSettings)
+- [#150]: Added Weld implementation of CDI [pippo-weld], [pippo-demo-weld]
+- [#161]: Added route name as first criterion in `RouteContext.uriFor`
+- [#162]: Added support for redirect to route via `RouteContext.redirect`
 
 #### Removed
 
@@ -133,6 +140,12 @@ Initial release.
 [0.3.0]: https://github.com/decebals/pippo/compare/pippo-parent-0.2.0...pippo-parent-0.3.0
 [0.2.0]: https://github.com/decebals/pippo/compare/pippo-parent-0.1.0...pippo-parent-0.2.0
 
+[#161]: https://github.com/decebals/pippo/issues/161
+[#160]: https://github.com/decebals/pippo/issues/160
+[#150]: https://github.com/decebals/pippo/issues/150
+[#147]: https://github.com/decebals/pippo/issues/147
+[#144]: https://github.com/decebals/pippo/issues/144
+[#141]: https://github.com/decebals/pippo/issues/141
 [#134]: https://github.com/decebals/pippo/issues/134
 [#132]: https://github.com/decebals/pippo/issues/132
 [#131]: https://github.com/decebals/pippo/issues/131
@@ -143,6 +156,7 @@ Initial release.
 [#124]: https://github.com/decebals/pippo/issues/124
 [#122]: https://github.com/decebals/pippo/issues/122
 [#121]: https://github.com/decebals/pippo/issues/121
+[#120]: https://github.com/decebals/pippo/issues/120
 [#117]: https://github.com/decebals/pippo/issues/117
 [#116]: https://github.com/decebals/pippo/issues/116
 [#115]: https://github.com/decebals/pippo/issues/115
@@ -171,3 +185,7 @@ Initial release.
 [pippo-undertow]: https://github.com/decebals/pippo/tree/master/pippo-undertow
 [pippo-xstream]: https://github.com/decebals/pippo/tree/master/pippo-xstream
 [pippo-demo-ajax]: https://github.com/decebals/pippo/tree/master/pippo-demo/pippo-demo-ajax
+[pippo-tomcat]: https://github.com/decebals/pippo/tree/master/pippo-tomcat
+[pippo-weld]: https://github.com/decebals/pippo/tree/master/pippo-weld
+[pippo-demo-weld]: https://github.com/decebals/pippo/tree/master/pippo-demo/pippo--demo-weld
+[pippo-velocity]: https://github.com/decebals/pippo/tree/master/pippo-velocity
