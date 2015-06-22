@@ -26,7 +26,6 @@ public class CssCompilerApplication extends Application {
             @Override
             public URL getResource() {
                 URL url = CssCompilerApplication.this.getClass().getClassLoader().getResource("public/less/mixin.less");
-                System.out.println(url);
                 return url;
             }
         };
@@ -35,7 +34,6 @@ public class CssCompilerApplication extends Application {
             @Override
             public URL getResource() {
                 URL url = CssCompilerApplication.this.getClass().getClassLoader().getResource("public/sass/mixin.scss");
-                System.out.println(url);
                 return url;
             }
         };
