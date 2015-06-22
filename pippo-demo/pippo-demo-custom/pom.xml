@@ -27,6 +27,24 @@
             <version>${project.version}</version>
         </dependency>
 
+        <dependency>
+            <groupId>ro.pippo</groupId>
+            <artifactId>pippo-less4j</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>ro.pippo</groupId>
+            <artifactId>pippo-sasscompiler</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>ro.pippo</groupId>
+            <artifactId>pippo-freemarker</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
     </dependencies>
 
 </project>
