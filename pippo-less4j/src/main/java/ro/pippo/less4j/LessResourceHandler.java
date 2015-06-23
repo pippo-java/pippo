@@ -62,7 +62,7 @@ public class LessResourceHandler extends StaticResourceHandler {
                 ThreadUnsafeLessCompiler compiler = new ThreadUnsafeLessCompiler();
                 LessCompiler.Configuration configuration = new LessCompiler.Configuration();
                 configuration.setCompressing(compressing);
-                LessCompiler.CompilationResult compilationResult = compiler.compile(url);
+                LessCompiler.CompilationResult compilationResult = compiler.compile(url, configuration);
                 for (LessCompiler.Problem warning : compilationResult.getWarnings()) {
                     LOG.warn("Line: {}, Character: {}, Message: {} ", warning.getLine(), warning.getCharacter(), warning.getMessage());
                 }
