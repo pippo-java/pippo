@@ -24,9 +24,9 @@ import ro.pippo.core.Application;
 import ro.pippo.core.RuntimeMode;
 import ro.pippo.core.route.StaticResourceHandler;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileWriter;
 import java.net.URL;
-import java.net.URLConnection;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
@@ -41,7 +41,7 @@ public class LessResourceHandler extends StaticResourceHandler {
 
     private ConcurrentMap<String, String> sourceMap = new ConcurrentHashMap<>();
 
-    ThreadUnsafeLessCompiler compiler = new ThreadUnsafeLessCompiler();
+    private boolean compressing;
 
     public LessResourceHandler(String urlPath, String resourceBasePath) {
         super(urlPath);
@@ -59,6 +59,9 @@ public class LessResourceHandler extends StaticResourceHandler {
             String content = source.getContent();
             String result = sourceMap.get(content);
             if (result == null) {
+                ThreadUnsafeLessCompiler compiler = new ThreadUnsafeLessCompiler();
+                LessCompiler.Configuration configuration = new LessCompiler.Configuration();
+                configuration.setCompressing(compressing);
                 LessCompiler.CompilationResult compilationResult = compiler.compile(url);
                 for (LessCompiler.Problem warning : compilationResult.getWarnings()) {
                     LOG.warn("Line: {}, Character: {}, Message: {} ", warning.getLine(), warning.getCharacter(), warning.getMessage());
@@ -80,6 +83,12 @@ public class LessResourceHandler extends StaticResourceHandler {
 
     public String getResourceBasePath() {
         return resourceBasePath;
+    }
+
+
+    public LessResourceHandler useCompressing(boolean compressing){
+        this.compressing = compressing;
+        return this;
     }
 
 }
