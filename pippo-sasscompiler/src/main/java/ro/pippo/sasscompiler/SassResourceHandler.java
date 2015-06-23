@@ -65,8 +65,7 @@ public class SassResourceHandler extends StaticResourceHandler {
                 result = scss.printState();
                 sourceMap.put(content, result);
             }
-            File file = new File("output.css");
-            file.createNewFile();
+            File file = File.createTempFile("tempfile", ".tmp");
             FileWriter writer = new FileWriter(file);
             writer.write(result);
             writer.flush();
