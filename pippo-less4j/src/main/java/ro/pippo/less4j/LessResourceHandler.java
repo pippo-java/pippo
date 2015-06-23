@@ -45,6 +45,7 @@ public class LessResourceHandler extends ClasspathResourceHandler {
 
     public LessResourceHandler(String urlPath, String resourceBasePath) {
         super(urlPath, resourceBasePath);
+        this.compress = Application.get().getPippoSettings().isProd();
     }
 
     @Override
