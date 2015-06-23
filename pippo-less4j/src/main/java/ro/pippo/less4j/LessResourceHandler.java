@@ -41,6 +41,8 @@ public class LessResourceHandler extends StaticResourceHandler {
 
     private ConcurrentMap<String, String> sourceMap = new ConcurrentHashMap<>();
 
+    ThreadUnsafeLessCompiler compiler = new ThreadUnsafeLessCompiler();
+
     public LessResourceHandler(String urlPath, String resourceBasePath) {
         super(urlPath);
         this.resourceBasePath = getNormalizedPath(resourceBasePath);
@@ -57,7 +59,6 @@ public class LessResourceHandler extends StaticResourceHandler {
             String content = source.getContent();
             String result = sourceMap.get(content);
             if (result == null) {
-                ThreadUnsafeLessCompiler compiler = new ThreadUnsafeLessCompiler();
                 LessCompiler.CompilationResult compilationResult = compiler.compile(url);
                 for (LessCompiler.Problem warning : compilationResult.getWarnings()) {
                     LOG.warn("Line: {}, Character: {}, Message: {} ", warning.getLine(), warning.getCharacter(), warning.getMessage());
