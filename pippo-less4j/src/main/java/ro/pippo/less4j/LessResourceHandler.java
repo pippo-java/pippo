@@ -39,18 +39,13 @@ public class LessResourceHandler extends ClasspathResourceHandler {
 
     private static final Logger log = LoggerFactory.getLogger(LessResourceHandler.class);
 
-    private final LessCompiler compiler;
-
     private Map<String, String> sourceMap = new ConcurrentHashMap<>(); // cache
 
+    private boolean compress;
+
     public LessResourceHandler(String urlPath, String resourceBasePath) {
-        this(urlPath, resourceBasePath, new ThreadUnsafeLessCompiler());
-    }
-
-    public LessResourceHandler(String urlPath, String resourceBasePath, LessCompiler lessCompiler) {
         super(urlPath, resourceBasePath);
-
-        this.compiler = lessCompiler;
+        this.compress = Application.get().getPippoSettings().isProd();
     }
 
     @Override
@@ -71,7 +66,10 @@ public class LessResourceHandler extends ClasspathResourceHandler {
             String content = source.getContent();
             String result = sourceMap.get(content);
             if (result == null) {
-                LessCompiler.CompilationResult compilationResult = compiler.compile(url);
+                ThreadUnsafeLessCompiler compiler = new ThreadUnsafeLessCompiler();
+                LessCompiler.Configuration configuration = new LessCompiler.Configuration();
+                configuration.setCompressing(compress);
+                LessCompiler.CompilationResult compilationResult = compiler.compile(url, configuration);
                 for (LessCompiler.Problem warning : compilationResult.getWarnings()) {
                     log.warn("Line: {}, Character: {}, Message: {} ", warning.getLine(), warning.getCharacter(), warning.getMessage());
                 }
@@ -91,5 +89,11 @@ public class LessResourceHandler extends ClasspathResourceHandler {
             throw new PippoRuntimeException(e);
         }
     }
+
+    public LessResourceHandler useMinimized(boolean minimized){
+        this.compress = minimized;
+        return this;
+    }
+
 
 }
