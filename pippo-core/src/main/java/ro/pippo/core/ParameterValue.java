@@ -274,7 +274,7 @@ public class ParameterValue implements Serializable {
             tmp = StringUtils.removeStart(tmp, "[");
             tmp = StringUtils.removeEnd(tmp, "]");
 
-            return Arrays.asList(tmp.split(", "));
+            return Arrays.asList(tmp.split("(,|\\|)"));
         }
 
         return Arrays.asList(values);
@@ -366,14 +366,30 @@ public class ParameterValue implements Serializable {
 
         if (classOfT.isArray()) {
             Class<?> componentType = classOfT.getComponentType();
-            Object array = Array.newInstance(componentType, values.length);
+            Object array;
             // cheat by not instantiating a ParameterValue for every value
             ParameterValue parameterValue = new ParameterValue(new String[]{"PLACEHOLDER"});
-            for (int i = 0; i < values.length; i++) {
-                String value = values[i];
-                parameterValue.values[0] = value;
-                Object object = parameterValue.toObject(componentType, pattern);
-                Array.set(array, i, object);
+            if (values.length == 1) {
+                // split a single-value list into an array
+                String tmp = values[0];
+                tmp = StringUtils.removeStart(tmp, "[");
+                tmp = StringUtils.removeEnd(tmp, "]");
+                List<String> list = StringUtils.getList(tmp, "(,|\\|)");
+                array = Array.newInstance(componentType, list.size());
+                for (int i = 0; i < list.size(); i++) {
+                    String value = list.get(i);
+                    parameterValue.values[0] = value;
+                    Object object = parameterValue.toObject(componentType, pattern);
+                    Array.set(array, i, object);
+                }
+            } else {
+                array = Array.newInstance(componentType, values.length);
+                for (int i = 0; i < values.length; i++) {
+                    String value = values[i];
+                    parameterValue.values[0] = value;
+                    Object object = parameterValue.toObject(componentType, pattern);
+                    Array.set(array, i, object);
+                }
             }
             return (T) array;
         } else {
@@ -410,7 +426,7 @@ public class ParameterValue implements Serializable {
                 String tmp = values[0];
                 tmp = StringUtils.removeStart(tmp, "[");
                 tmp = StringUtils.removeEnd(tmp, "]");
-                list = StringUtils.getList(tmp, ",");
+                list = StringUtils.getList(tmp, "(,|\\|)");
             } else {
                 list = Arrays.asList(values);
             }
