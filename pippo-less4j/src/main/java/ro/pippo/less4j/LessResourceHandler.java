@@ -65,7 +65,7 @@ public class LessResourceHandler extends StaticResourceHandler {
                 result =  compilationResult.getCss();
                 sourceMap.put(content, result);
             }
-            File file = File.createTempFile("tempfile", ".tmp");
+            File file = File.createTempFile("tempfile", ".css");
             FileWriter writer = new FileWriter(file);
             writer.write(result);
             writer.flush();

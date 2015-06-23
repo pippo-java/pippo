@@ -45,7 +45,7 @@ public class SassResourceHandler extends StaticResourceHandler {
         this.resourceBasePath = getNormalizedPath(resourceBasePath);
     }
 
-        @Override
+    @Override
     public URL getResourceUrl(String resourcePath) {
         if (Application.get().getRuntimeMode().equals(RuntimeMode.DEV)){
             sourceMap.clear();
@@ -65,7 +65,7 @@ public class SassResourceHandler extends StaticResourceHandler {
                 result = scss.printState();
                 sourceMap.put(content, result);
             }
-            File file = File.createTempFile("tempfile", ".tmp");
+            File file = File.createTempFile("tempfile", ".css");
             FileWriter writer = new FileWriter(file);
             writer.write(result);
             writer.flush();
