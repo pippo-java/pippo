@@ -22,14 +22,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ro.pippo.core.Application;
 import ro.pippo.core.PippoRuntimeException;
-import ro.pippo.core.RuntimeMode;
 import ro.pippo.core.route.ClasspathResourceHandler;
-import ro.pippo.core.util.IoUtils;
+import ro.pippo.core.route.RouteContext;
 
-import java.io.File;
+import java.io.IOException;
 import java.net.URL;
 import java.util.Map;
-import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -39,37 +37,30 @@ public class LessResourceHandler extends ClasspathResourceHandler {
 
     private static final Logger log = LoggerFactory.getLogger(LessResourceHandler.class);
 
-    private Map<String, String> sourceMap = new ConcurrentHashMap<>(); // cache
-
     private boolean compress;
+    private Map<String, String> sourceMap = new ConcurrentHashMap<>(); // cache
 
     public LessResourceHandler(String urlPath, String resourceBasePath) {
         super(urlPath, resourceBasePath);
-        this.compress = Application.get().getPippoSettings().isProd();
     }
 
     @Override
-    public URL getResourceUrl(String resourcePath) {
-        URL url = super.getResourceUrl(resourcePath);
-        if (url == null) {
-            return null;
-        }
-
+    protected void sendResource(URL resourceUrl, RouteContext routeContext) throws IOException {
         // clear cache for DEV mode
-        if (Application.get().getRuntimeMode().equals(RuntimeMode.DEV)) {
+        if (Application.get().getPippoSettings().isDev()) {
             sourceMap.clear();
         }
 
         try {
             // compile less to css
-            LessSource.URLSource source = new LessSource.URLSource(url);
+            LessSource.URLSource source = new LessSource.URLSource(resourceUrl);
             String content = source.getContent();
             String result = sourceMap.get(content);
             if (result == null) {
                 ThreadUnsafeLessCompiler compiler = new ThreadUnsafeLessCompiler();
                 LessCompiler.Configuration configuration = new LessCompiler.Configuration();
                 configuration.setCompressing(compress);
-                LessCompiler.CompilationResult compilationResult = compiler.compile(url, configuration);
+                LessCompiler.CompilationResult compilationResult = compiler.compile(resourceUrl, configuration);
                 for (LessCompiler.Problem warning : compilationResult.getWarnings()) {
                     log.warn("Line: {}, Character: {}, Message: {} ", warning.getLine(), warning.getCharacter(), warning.getMessage());
                 }
@@ -77,14 +68,9 @@ public class LessResourceHandler extends ClasspathResourceHandler {
                 sourceMap.put(content, result);
             }
 
-            // create a temporary file with a unique name
-            File file = File.createTempFile("pippo-less4j-" + UUID.randomUUID().toString(), ".css");
-            file.deleteOnExit();
-
-            // write the css to above file
-            IoUtils.copy(result, file);
-
-            return file.toURI().toURL();
+            // send css
+            routeContext.getResponse().contentType("text/css");
+            routeContext.getResponse().ok().send(result);
         } catch (Exception e) {
             throw new PippoRuntimeException(e);
         }
@@ -94,6 +80,5 @@ public class LessResourceHandler extends ClasspathResourceHandler {
         this.compress = minimized;
         return this;
     }
-
 
 }

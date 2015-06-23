@@ -25,7 +25,7 @@ import java.net.URL;
  *
  * @author James Moger
  */
-public class ClasspathResourceHandler extends StaticResourceHandler {
+public class ClasspathResourceHandler extends UrlResourceHandler {
 
     private static final Logger log = LoggerFactory.getLogger(ClasspathResourceHandler.class);
 
@@ -41,10 +41,8 @@ public class ClasspathResourceHandler extends StaticResourceHandler {
     public URL getResourceUrl(String resourcePath) {
         String resourceName = getResourceBasePath() + "/" + resourcePath;
         URL url = this.getClass().getClassLoader().getResource(resourceName);
-
-        // log the resource not found event
         if (url == null) {
-            log.warn("The resource '{}' could not be found", resourceName);
+            log.warn("Resource '{}' not found", resourceName);
         }
 
         return url;

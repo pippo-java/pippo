@@ -29,7 +29,7 @@ import java.nio.file.Paths;
  *
  * @author Decebal Suiu
  */
-public class FileResourceHandler extends StaticResourceHandler {
+public class FileResourceHandler extends UrlResourceHandler {
 
     private static final Logger log = LoggerFactory.getLogger(FileResourceHandler.class);
 

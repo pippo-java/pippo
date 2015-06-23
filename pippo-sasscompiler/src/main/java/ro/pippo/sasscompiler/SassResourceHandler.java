@@ -19,14 +19,12 @@ import com.vaadin.sass.internal.ScssContext;
 import com.vaadin.sass.internal.ScssStylesheet;
 import ro.pippo.core.Application;
 import ro.pippo.core.PippoRuntimeException;
-import ro.pippo.core.RuntimeMode;
 import ro.pippo.core.route.ClasspathResourceHandler;
-import ro.pippo.core.util.IoUtils;
+import ro.pippo.core.route.RouteContext;
 
-import java.io.File;
+import java.io.IOException;
 import java.net.URL;
 import java.util.Map;
-import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -41,21 +39,16 @@ public class SassResourceHandler extends ClasspathResourceHandler {
     }
 
     @Override
-    public URL getResourceUrl(String resourcePath) {
-        URL url = super.getResourceUrl(resourcePath);
-        if (url == null) {
-            return null;
-        }
-
+    protected void sendResource(URL resourceUrl, RouteContext routeContext) throws IOException {
         // clear cache for DEV mode
-        if (Application.get().getRuntimeMode().equals(RuntimeMode.DEV)) {
+        if (Application.get().getPippoSettings().isDev()) {
             sourceMap.clear();
         }
 
         try {
             // compile sass to css
             ScssContext.UrlMode urlMode = ScssContext.UrlMode.ABSOLUTE;
-            ScssStylesheet scssStylesheet = ScssStylesheet.get(url.getFile());
+            ScssStylesheet scssStylesheet = ScssStylesheet.get(resourceUrl.getFile());
             String content = scssStylesheet.toString();
             String result = sourceMap.get(content);
             if (result == null) {
@@ -64,14 +57,9 @@ public class SassResourceHandler extends ClasspathResourceHandler {
                 sourceMap.put(content, result);
             }
 
-            // create a temporary file with a unique name
-            File file = File.createTempFile("pippo-sasscompiler-" + UUID.randomUUID().toString(), ".css");
-            file.deleteOnExit();
-
-            // write the css to above file
-            IoUtils.copy(result, file);
-
-            return file.toURI().toURL();
+            // send css
+            routeContext.getResponse().contentType("text/css");
+            routeContext.getResponse().ok().send(result);
         }  catch (Exception e) {
             throw new PippoRuntimeException(e);
         }

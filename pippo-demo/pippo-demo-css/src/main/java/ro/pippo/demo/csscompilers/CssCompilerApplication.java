@@ -31,8 +31,8 @@ public class CssCompilerApplication extends Application {
 
         addPublicResourceRoute();
 
-        addStaticResourceRoute(new LessResourceHandler("/lesscss", "public/less"));
-        addStaticResourceRoute(new SassResourceHandler("/sasscss", "public/sass"));
+        addResourceRoute(new LessResourceHandler("/lesscss", "public/less"));
+        addResourceRoute(new SassResourceHandler("/sasscss", "public/sass"));
 
         GET("/", new TemplateHandler("index.html"));
     }
