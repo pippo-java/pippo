@@ -425,7 +425,7 @@ public class Application {
         }
     }
 
-    private Route addStaticResourceRoute(StaticResourceHandler resourceHandler) {
+    public Route addStaticResourceRoute(StaticResourceHandler resourceHandler) {
         resourceHandler.setMimeTypes(mimeTypes);
         resourceHandler.setHttpCacheToolkit(httpCacheToolkit);
 
