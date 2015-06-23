@@ -21,6 +21,7 @@ import ro.pippo.core.Pippo;
  * @author Daniel Jipa
  */
 public class CssCompilerDemo {
+
     public static void main(String[] args) {
         Pippo pippo = new Pippo(new CssCompilerApplication());
         pippo.start();

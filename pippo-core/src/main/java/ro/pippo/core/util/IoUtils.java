@@ -15,9 +15,11 @@
  */
 package ro.pippo.core.util;
 
+import java.io.BufferedWriter;
 import java.io.Closeable;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -82,6 +84,14 @@ public class IoUtils {
         }
     }
 
+    public static void copy(String string, File file) throws IOException {
+        Writer writer = new BufferedWriter(new FileWriter(file));
+        try {
+            writer.write(string);
+        } finally {
+            close(writer);
+        }
+    }
     /**
      * Silently closes a Closeable.
      *

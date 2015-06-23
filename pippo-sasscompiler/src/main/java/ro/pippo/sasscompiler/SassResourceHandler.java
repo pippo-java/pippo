@@ -17,69 +17,64 @@ package ro.pippo.sasscompiler;
 
 import com.vaadin.sass.internal.ScssContext;
 import com.vaadin.sass.internal.ScssStylesheet;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import ro.pippo.core.Application;
+import ro.pippo.core.PippoRuntimeException;
 import ro.pippo.core.RuntimeMode;
-import ro.pippo.core.route.StaticResourceHandler;
+import ro.pippo.core.route.ClasspathResourceHandler;
+import ro.pippo.core.util.IoUtils;
 
 import java.io.File;
-import java.io.FileWriter;
 import java.net.URL;
+import java.util.Map;
+import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
 
 /**
  * @author Daniel Jipa
  */
-public class SassResourceHandler extends StaticResourceHandler {
+public class SassResourceHandler extends ClasspathResourceHandler {
 
-    private static final Logger LOG = LoggerFactory.getLogger(SassResourceHandler.class);
-
-    private final String resourceBasePath;
-
-    private ConcurrentMap<String, String> sourceMap = new ConcurrentHashMap<>();
+    private Map<String, String> sourceMap = new ConcurrentHashMap<>(); // cache
 
     public SassResourceHandler(String urlPath, String resourceBasePath) {
-        super(urlPath);
-        this.resourceBasePath = getNormalizedPath(resourceBasePath);
+        super(urlPath, resourceBasePath);
     }
 
     @Override
     public URL getResourceUrl(String resourcePath) {
-        if (Application.get().getRuntimeMode().equals(RuntimeMode.DEV)){
+        URL url = super.getResourceUrl(resourcePath);
+        if (url == null) {
+            return null;
+        }
+
+        // clear cache for DEV mode
+        if (Application.get().getRuntimeMode().equals(RuntimeMode.DEV)) {
             sourceMap.clear();
         }
-        try{
-            URL url = this.getClass().getClassLoader().getResource(getResourceBasePath() + "/" + resourcePath);
+
+        try {
+            // compile sass to css
             ScssContext.UrlMode urlMode = ScssContext.UrlMode.ABSOLUTE;
-            ScssStylesheet scss = ScssStylesheet.get(url.getFile());
-            if (scss == null) {
-                LOG.error("The scss file {} could not be found", url.getFile());
-                return null;
-            }
-            String content = scss.toString();
+            ScssStylesheet scssStylesheet = ScssStylesheet.get(url.getFile());
+            String content = scssStylesheet.toString();
             String result = sourceMap.get(content);
             if (result == null) {
-                scss.compile(urlMode);
-                result = scss.printState();
+                scssStylesheet.compile(urlMode);
+                result = scssStylesheet.printState();
                 sourceMap.put(content, result);
             }
-            File file = File.createTempFile("tempfile", ".css");
-            FileWriter writer = new FileWriter(file);
-            writer.write(result);
-            writer.flush();
-            writer.close();
+
+            // create a temporary file with a unique name
+            File file = File.createTempFile("pippo-sasscompiler-" + UUID.randomUUID().toString(), ".css");
+            file.deleteOnExit();
+
+            // write the css to above file
+            IoUtils.copy(result, file);
+
             return file.toURI().toURL();
-        }catch (Exception e){
-            LOG.error("Error", e);
+        }  catch (Exception e) {
+            throw new PippoRuntimeException(e);
         }
-        return null;
-
-    }
-
-    public String getResourceBasePath() {
-        return resourceBasePath;
     }
 
 }

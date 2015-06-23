@@ -21,65 +21,75 @@ import com.github.sommeri.less4j.core.ThreadUnsafeLessCompiler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ro.pippo.core.Application;
+import ro.pippo.core.PippoRuntimeException;
 import ro.pippo.core.RuntimeMode;
-import ro.pippo.core.route.StaticResourceHandler;
+import ro.pippo.core.route.ClasspathResourceHandler;
+import ro.pippo.core.util.IoUtils;
 
-import java.io.*;
+import java.io.File;
 import java.net.URL;
-import java.net.URLConnection;
+import java.util.Map;
+import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
 
 /**
  * @author Daniel Jipa
  */
-public class LessResourceHandler extends StaticResourceHandler {
+public class LessResourceHandler extends ClasspathResourceHandler {
 
-    private static final Logger LOG = LoggerFactory.getLogger(LessResourceHandler.class);
+    private static final Logger log = LoggerFactory.getLogger(LessResourceHandler.class);
 
-    private final String resourceBasePath;
+    private final LessCompiler compiler;
 
-    private ConcurrentMap<String, String> sourceMap = new ConcurrentHashMap<>();
-
-    ThreadUnsafeLessCompiler compiler = new ThreadUnsafeLessCompiler();
+    private Map<String, String> sourceMap = new ConcurrentHashMap<>(); // cache
 
     public LessResourceHandler(String urlPath, String resourceBasePath) {
-        super(urlPath);
-        this.resourceBasePath = getNormalizedPath(resourceBasePath);
+        this(urlPath, resourceBasePath, new ThreadUnsafeLessCompiler());
+    }
+
+    public LessResourceHandler(String urlPath, String resourceBasePath, LessCompiler lessCompiler) {
+        super(urlPath, resourceBasePath);
+
+        this.compiler = lessCompiler;
     }
 
     @Override
     public URL getResourceUrl(String resourcePath) {
-        if (Application.get().getRuntimeMode().equals(RuntimeMode.DEV)){
+        URL url = super.getResourceUrl(resourcePath);
+        if (url == null) {
+            return null;
+        }
+
+        // clear cache for DEV mode
+        if (Application.get().getRuntimeMode().equals(RuntimeMode.DEV)) {
             sourceMap.clear();
         }
-        try{
-            URL url = this.getClass().getClassLoader().getResource(getResourceBasePath() + "/" + resourcePath);
+
+        try {
+            // compile less to css
             LessSource.URLSource source = new LessSource.URLSource(url);
             String content = source.getContent();
             String result = sourceMap.get(content);
             if (result == null) {
                 LessCompiler.CompilationResult compilationResult = compiler.compile(url);
                 for (LessCompiler.Problem warning : compilationResult.getWarnings()) {
-                    LOG.warn("Line: {}, Character: {}, Message: {} ", warning.getLine(), warning.getCharacter(), warning.getMessage());
+                    log.warn("Line: {}, Character: {}, Message: {} ", warning.getLine(), warning.getCharacter(), warning.getMessage());
                 }
-                result =  compilationResult.getCss();
+                result = compilationResult.getCss();
                 sourceMap.put(content, result);
             }
-            File file = File.createTempFile("tempfile", ".css");
-            FileWriter writer = new FileWriter(file);
-            writer.write(result);
-            writer.flush();
-            writer.close();
-            return file.toURI().toURL();
-        }catch (Exception e){
-            LOG.error("Error", e);
-        }
-        return null;
-    }
 
-    public String getResourceBasePath() {
-        return resourceBasePath;
+            // create a temporary file with a unique name
+            File file = File.createTempFile("pippo-less4j-" + UUID.randomUUID().toString(), ".css");
+            file.deleteOnExit();
+
+            // write the css to above file
+            IoUtils.copy(result, file);
+
+            return file.toURI().toURL();
+        } catch (Exception e) {
+            throw new PippoRuntimeException(e);
+        }
     }
 
 }
