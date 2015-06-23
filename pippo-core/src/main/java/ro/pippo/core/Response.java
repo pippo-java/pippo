@@ -268,6 +268,16 @@ public final class Response {
         return this;
     }
 
+    /**
+     * Returns a header value, if set in the Response.
+     *
+     * @param name
+     * @return the header value or null
+     */
+    public String getHeader(String name) {
+        return getHeaderMap().get(name);
+    }
+
     private Map<String, String> getHeaderMap() {
         if (headers == null) {
             headers = new HashMap<>();
