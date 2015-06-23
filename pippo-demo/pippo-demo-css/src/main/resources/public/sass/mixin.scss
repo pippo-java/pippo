@@ -1,0 +1,13 @@
+@import 'definitions';
+
+.class-sass1{
+    background-color: $primaryColor;
+}
+
+.class-sass2{
+    background-color: darken($primaryColor, 20%);
+}
+
+.class-sass3{
+    background-color: darken($primaryColor, 40%);
+}

@@ -50,6 +50,7 @@
 	    <module>pippo-demo-template</module>
         <module>pippo-demo-session</module>
         <module>pippo-demo-ajax</module>
+        <module>pippo-demo-css</module>
     </modules>
 
     <profiles>

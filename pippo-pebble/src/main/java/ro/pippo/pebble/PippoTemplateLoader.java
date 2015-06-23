@@ -16,7 +16,6 @@
 package ro.pippo.pebble;
 
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -42,8 +41,8 @@ class PippoTemplateLoader extends ClasspathLoader {
 
             path.append(getPrefix());
 
-            if (!getPrefix().endsWith(String.valueOf(File.separatorChar))) {
-                path.append(File.separatorChar);
+            if (!getPrefix().endsWith(String.valueOf('/'))) {
+                path.append('/');
             }
         }
 
