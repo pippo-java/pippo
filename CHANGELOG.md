@@ -6,6 +6,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 #### Fixed
 - [#120]: FileResourceHandler usage is not self evident
+- [#163]: Recursion in error handler when provoking a 404 with Pebble
 
 #### Changed
 - Updated [pippo-pebble] to Pebble 1.5.0
@@ -13,6 +14,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 - Updated [pippo-trimou] to Trimou 1.8.0
 - Updated [pippo-undertow] to Undertow 1.2.8
 - Updated [pippo-jackson] to Jackson 2.5.4
+- [#152]: Rename maven profile `main` with `standalone` for clearer usage
 
 #### Added
 - [#35]: Added demo ajax using intercooler.js [pippo-demo-ajax]
@@ -22,6 +24,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 - [#150]: Added Weld implementation of CDI [pippo-weld], [pippo-demo-weld]
 - [#161]: Added route name as first criterion in `RouteContext.uriFor`
 - [#162]: Added support for redirect to route via `RouteContext.redirect`
+- [#170]: Added less and sass compilers [pippo-less4j], [pippo-sasscompiler], [pippo-demo-css]
 
 #### Removed
 
@@ -140,8 +143,11 @@ Initial release.
 [0.3.0]: https://github.com/decebals/pippo/compare/pippo-parent-0.2.0...pippo-parent-0.3.0
 [0.2.0]: https://github.com/decebals/pippo/compare/pippo-parent-0.1.0...pippo-parent-0.2.0
 
+[#170]: https://github.com/decebals/pippo/issues/170
+[#163]: https://github.com/decebals/pippo/issues/163
 [#162]: https://github.com/decebals/pippo/issues/162
 [#161]: https://github.com/decebals/pippo/issues/161
+[#152]: https://github.com/decebals/pippo/issues/152
 [#150]: https://github.com/decebals/pippo/issues/150
 [#147]: https://github.com/decebals/pippo/issues/147
 [#144]: https://github.com/decebals/pippo/issues/144
@@ -187,5 +193,8 @@ Initial release.
 [pippo-demo-ajax]: https://github.com/decebals/pippo/tree/master/pippo-demo/pippo-demo-ajax
 [pippo-tomcat]: https://github.com/decebals/pippo/tree/master/pippo-tomcat
 [pippo-weld]: https://github.com/decebals/pippo/tree/master/pippo-weld
-[pippo-demo-weld]: https://github.com/decebals/pippo/tree/master/pippo-demo/pippo--demo-weld
+[pippo-demo-weld]: https://github.com/decebals/pippo/tree/master/pippo-demo/pippo-demo-weld
 [pippo-velocity]: https://github.com/decebals/pippo/tree/master/pippo-velocity
+[pippo-less4j]: https://github.com/decebals/pippo/tree/master/pippo-less4j
+[pippo-sasscompiler]: https://github.com/decebals/pippo/tree/master/pippo-sasscompiler
+[pippo-demo-css]: https://github.com/decebals/pippo/tree/master/pippo-demo/pippo-demo-css
