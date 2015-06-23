@@ -29,8 +29,11 @@ import io.undertow.servlet.api.FilterInfo;
 import io.undertow.servlet.api.ServletInfo;
 import io.undertow.servlet.handlers.DefaultServlet;
 import io.undertow.servlet.util.ImmediateInstanceFactory;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.xnio.Options;
+
 import ro.pippo.core.AbstractWebServer;
 import ro.pippo.core.Application;
 import ro.pippo.core.PippoFilter;
@@ -45,10 +48,14 @@ import javax.net.ssl.TrustManagerFactory;
 import javax.servlet.DispatcherType;
 import javax.servlet.MultipartConfigElement;
 import javax.servlet.ServletException;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
 import java.security.KeyStore;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Map.Entry;
 
 /**
  * An implementation of WebServer based on Undertow.
@@ -109,20 +116,102 @@ public class UndertowServer extends AbstractWebServer<UndertowSettings> {
         // TODO is it a better option?
         if (getSettings().getBufferSize() > 0) {
             builder.setBufferSize(getSettings().getBufferSize());
+            log.info("Undertow basic setting: {} --> {}", "bufferSize", getSettings().getBufferSize());
         }
         if (getSettings().getBuffersPerRegion() > 0) {
             builder.setBuffersPerRegion(getSettings().getBuffersPerRegion());
+            log.info("Undertow basic setting: {} --> {}", "buffersPerRegion", getSettings().getBuffersPerRegion());
         }
         if (getSettings().getDirectBuffers() == true) {
             builder.setDirectBuffers(getSettings().getDirectBuffers());
+            log.info("Undertow basic setting: {} --> {}", "directBuffers", getSettings().getDirectBuffers());
         }
         if (getSettings().getIoThreads() > 0) {
             builder.setIoThreads(getSettings().getIoThreads());
+            log.info("Undertow basic setting: {} --> {}", "ioThreads", getSettings().getIoThreads());
         }
         if (getSettings().getWorkerThreads() > 0) {
             builder.setWorkerThreads(getSettings().getWorkerThreads());
+            log.info("Undertow basic setting: {} --> {}", "workerThreads", getSettings().getWorkerThreads());
         }
-
+        
+        // ------ OPTIONS >
+        Map<String,Object> options;
+        Iterator<Entry<String, Object>> opts;
+        
+        // --- worker options
+        options = getSettings().getWorkerOptions();
+        opts = options.entrySet().iterator();
+        while(opts.hasNext()) {
+        	Entry<String, Object> option = opts.next();
+        	if(!option.getKey().equals("") && option.getValue() != null) {
+        		switch(option.getKey()) {
+        		case "tcpNoDelay":
+        			builder.setWorkerOption(Options.TCP_NODELAY, (Boolean)option.getValue()); break;
+        		}
+    			log.info("Undertow worker setting: {} --> {}", option.getKey().toString(), option.getValue());
+        	}
+        }
+        // --- sockets options
+        options = getSettings().getSocketOptions();
+        opts = options.entrySet().iterator();
+        while(opts.hasNext()) {
+        	Entry<String, Object> option = opts.next();
+        	if(!option.getKey().equals("") && option.getValue() != null) {
+        		switch(option.getKey()) {
+        		case "tcpNoDelay":
+        			builder.setSocketOption(Options.TCP_NODELAY, (Boolean)option.getValue()); break;
+        		case "reuseAddresses":
+        			builder.setSocketOption(Options.REUSE_ADDRESSES, (Boolean)option.getValue()); break;
+        		}
+    			log.info("Undertow socket setting: {} --> {}", option.getKey().toString(), option.getValue());
+        	}
+        }
+        // --- server options
+        options = getSettings().getServerOptions();
+        opts = options.entrySet().iterator();
+        while(opts.hasNext()) {
+        	Entry<String, Object> option = opts.next();
+        	if(!option.getKey().equals("") && option.getValue() != null) {
+        		switch(option.getKey()) {
+        		case "maxHeaderSize":
+        			builder.setServerOption(UndertowOptions.MAX_HEADER_SIZE, (Integer)option.getValue()); break;
+        		case "maxEntitySize":
+        			builder.setServerOption(UndertowOptions.MAX_ENTITY_SIZE, (Long)option.getValue()); break;
+        		case "maxParameters":
+        			builder.setServerOption(UndertowOptions.MAX_PARAMETERS, (Integer)option.getValue()); break;
+        		case "maxHeaders":
+        			builder.setServerOption(UndertowOptions.MAX_HEADERS, (Integer)option.getValue()); break;
+        		case "maxCookies":
+        			builder.setServerOption(UndertowOptions.MAX_COOKIES, (Integer)option.getValue()); break;
+        		case "urlCharset":
+        			builder.setServerOption(UndertowOptions.URL_CHARSET, (String)option.getValue()); break;
+        		case "decodeUrl":
+        			builder.setServerOption(UndertowOptions.DECODE_URL, (Boolean)option.getValue()); break;
+        		case "AllowEncodedSlash":
+        			builder.setServerOption(UndertowOptions.ALLOW_ENCODED_SLASH, (Boolean)option.getValue()); break;
+        		case "AllowEqualsInCookieValue":
+        			builder.setServerOption(UndertowOptions.ALLOW_EQUALS_IN_COOKIE_VALUE, (Boolean)option.getValue()); break;
+        		case "AlwaysSetDate":
+        			builder.setServerOption(UndertowOptions.ALWAYS_SET_DATE, (Boolean)option.getValue()); break;
+        		case "AlwaysSetKeepAlive":
+        			builder.setServerOption(UndertowOptions.ALWAYS_SET_KEEP_ALIVE, (Boolean)option.getValue()); break;
+        		case "MaxBufferedRequestSize":
+        			builder.setServerOption(UndertowOptions.MAX_BUFFERED_REQUEST_SIZE, (Integer)option.getValue()); break;
+        		case "RecordRequestStartTime":
+        			builder.setServerOption(UndertowOptions.RECORD_REQUEST_START_TIME, (Boolean)option.getValue()); break;
+        		case "IdleTimeout":
+        			builder.setServerOption(UndertowOptions.IDLE_TIMEOUT, (Integer)option.getValue()); break;
+        		case "RequestParseTimeout":
+        			builder.setServerOption(UndertowOptions.REQUEST_PARSE_TIMEOUT, (Integer)option.getValue()); break;
+        		case "EnableConnectorStatistics":
+        			builder.setServerOption(UndertowOptions.ENABLE_CONNECTOR_STATISTICS, (Boolean)option.getValue()); break;
+        		}
+    			log.info("Undertow server setting: {} --> {}", option.getKey().toString(), option.getValue());
+        	}
+        }
+        // ------ OPTIONS />
+        
         if (getSettings().getKeystoreFile() == null) {
             // HTTP
             builder.addHttpListener(getSettings().getPort(), getSettings().getHost());
