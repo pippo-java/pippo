@@ -17,7 +17,6 @@ package ro.pippo.sasscompiler;
 
 import com.vaadin.sass.internal.ScssContext;
 import com.vaadin.sass.internal.ScssStylesheet;
-import ro.pippo.core.Application;
 import ro.pippo.core.PippoRuntimeException;
 import ro.pippo.core.route.ClasspathResourceHandler;
 import ro.pippo.core.route.RouteContext;
@@ -41,7 +40,7 @@ public class SassResourceHandler extends ClasspathResourceHandler {
     @Override
     protected void sendResource(URL resourceUrl, RouteContext routeContext) throws IOException {
         // clear cache for DEV mode
-        if (Application.get().getPippoSettings().isDev()) {
+        if (routeContext.getApplication().getPippoSettings().isDev()) {
             sourceMap.clear();
         }
 
