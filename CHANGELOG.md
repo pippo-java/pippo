@@ -15,6 +15,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 - Updated [pippo-undertow] to Undertow 1.2.8
 - Updated [pippo-jackson] to Jackson 2.5.4
 - [#152]: Rename maven profile `main` with `standalone` for clearer usage
+- Improved support for array types in ParameterValue
 
 #### Added
 - [#35]: Added demo ajax using intercooler.js [pippo-demo-ajax]

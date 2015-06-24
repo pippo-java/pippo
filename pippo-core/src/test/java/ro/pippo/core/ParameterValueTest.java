@@ -226,6 +226,36 @@ public class ParameterValueTest extends Assert {
     }
 
     @Test
+    public void testEncodedArrayList2() throws Exception {
+        List<Integer> myList = new ArrayList<>(Arrays.asList(600, 400, 200));
+        assertEquals(myList, new ParameterValue("600, 400,200").toList(Integer.class));
+    }
+
+    @Test
+    public void testEncodedArrayList3() throws Exception {
+        List<Integer> myList = new ArrayList<>(Arrays.asList(600, 400, 200));
+        assertEquals(myList, new ParameterValue("600| 400|200").toList(Integer.class));
+    }
+
+    @Test
+    public void testEncodedArray() throws Exception {
+        int [] myArray = { 600, 400, 200 };
+        assertTrue(Arrays.equals(myArray, new ParameterValue("[600, 400, 200]").to(int[].class)));
+    }
+
+    @Test
+    public void testEncodedArray2() throws Exception {
+        int [] myArray = { 600, 400, 200 };
+        assertTrue(Arrays.equals(myArray, new ParameterValue("600, 400,200").to(int[].class)));
+    }
+
+    @Test
+    public void testEncodedArray3() throws Exception {
+        int [] myArray = { 600, 400, 200 };
+        assertTrue(Arrays.equals(myArray, new ParameterValue("600| 400|200").to(int[].class)));
+    }
+
+    @Test
     public void testEnums() throws Exception {
         assertEquals(Alphabet.B, new ParameterValue("B").toEnum(Alphabet.class));
         assertEquals(Alphabet.B, new ParameterValue("B", "A", "D").toEnum(Alphabet.class));
