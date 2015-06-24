@@ -37,6 +37,7 @@ public class FileResourceHandler extends UrlResourceHandler {
 
     public FileResourceHandler(String urlPath, File directory) {
         super(urlPath);
+
         this.directory = directory.getAbsolutePath();
     }
 
