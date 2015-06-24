@@ -226,7 +226,7 @@ public class DefaultRouter implements Router {
     }
 
     @Override
-    public String uriPatternFor(Class<? extends StaticResourceHandler> resourceHandlerClass) {
+    public String uriPatternFor(Class<? extends ResourceHandler> resourceHandlerClass) {
         Route route = getRoute(resourceHandlerClass);
 
         return (route != null) ? route.getUriPattern() : null;
@@ -246,7 +246,7 @@ public class DefaultRouter implements Router {
         }
     }
 
-    private Route getRoute(Class<? extends StaticResourceHandler> resourceHandlerClass) {
+    private Route getRoute(Class<? extends ResourceHandler> resourceHandlerClass) {
         List<Route> routes = getRoutes();
         for (Route route : routes) {
             RouteHandler routeHandler = route.getRouteHandler();

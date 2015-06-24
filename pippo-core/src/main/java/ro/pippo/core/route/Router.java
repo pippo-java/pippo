@@ -64,7 +64,7 @@ public interface Router {
 
     public String uriFor(String nameOrUriPattern, Map<String, Object> parameters);
 
-    public String uriPatternFor(Class<? extends StaticResourceHandler> resourceHandlerClass);
+    public String uriPatternFor(Class<? extends ResourceHandler> resourceHandlerClass);
 
     /**
      * Returns the base path for the Pippo application.
