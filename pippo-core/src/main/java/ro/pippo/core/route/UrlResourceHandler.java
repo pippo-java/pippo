@@ -45,8 +45,6 @@ public abstract class UrlResourceHandler extends ResourceHandler {
         } else {
             streamResource(url, routeContext);
         }
-
-        routeContext.next();
     }
 
     public abstract URL getResourceUrl(String resourcePath);
