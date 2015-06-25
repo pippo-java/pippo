@@ -39,11 +39,6 @@ public class SassResourceHandler extends ClasspathResourceHandler {
 
     @Override
     protected void sendResource(URL resourceUrl, RouteContext routeContext) throws IOException {
-        // clear cache for DEV mode
-        if (routeContext.getApplication().getPippoSettings().isDev()) {
-            sourceMap.clear();
-        }
-
         try {
             // compile sass to css
             ScssContext.UrlMode urlMode = ScssContext.UrlMode.ABSOLUTE;
@@ -53,7 +48,10 @@ public class SassResourceHandler extends ClasspathResourceHandler {
             if (result == null) {
                 scssStylesheet.compile(urlMode);
                 result = scssStylesheet.printState();
-                sourceMap.put(content, result);
+
+                if (routeContext.getApplication().getPippoSettings().isDev()) {
+                    sourceMap.put(content, result);
+                }
             }
 
             // send css

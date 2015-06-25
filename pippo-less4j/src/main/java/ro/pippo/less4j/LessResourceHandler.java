@@ -45,11 +45,6 @@ public class LessResourceHandler extends ClasspathResourceHandler {
 
     @Override
     protected void sendResource(URL resourceUrl, RouteContext routeContext) throws IOException {
-        // clear cache for DEV mode
-        if (routeContext.getApplication().getPippoSettings().isDev()) {
-            sourceMap.clear();
-        }
-
         try {
             // compile less to css
             LessSource.URLSource source = new LessSource.URLSource(resourceUrl);
@@ -64,7 +59,10 @@ public class LessResourceHandler extends ClasspathResourceHandler {
                     log.warn("Line: {}, Character: {}, Message: {} ", warning.getLine(), warning.getCharacter(), warning.getMessage());
                 }
                 result = compilationResult.getCss();
-                sourceMap.put(content, result);
+
+                if (routeContext.getApplication().getPippoSettings().isProd()) {
+                    sourceMap.put(content, result);
+                }
             }
 
             // send css
