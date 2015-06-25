@@ -7,6 +7,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 #### Fixed
 - [#120]: FileResourceHandler usage is not self evident
 - [#163]: Recursion in error handler when provoking a 404 with Pebble
+- CSRF token was not bound as a local property making templates with forms & CSRF tokens generated in a POST handler fail.
 
 #### Changed
 - Updated [pippo-pebble] to Pebble 1.5.0
