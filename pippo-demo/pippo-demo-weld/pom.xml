@@ -29,6 +29,13 @@
 
         <dependency>
             <groupId>ro.pippo</groupId>
+            <artifactId>pippo-tomcat</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+
+        <dependency>
+            <groupId>ro.pippo</groupId>
             <artifactId>pippo-freemarker</artifactId>
             <version>${project.version}</version>
         </dependency>
