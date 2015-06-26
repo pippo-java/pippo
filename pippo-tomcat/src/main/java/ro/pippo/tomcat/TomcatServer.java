@@ -105,6 +105,8 @@ public class TomcatServer extends AbstractWebServer<TomcatSettings> {
         connector.setAttribute("keystorePass", getSettings().getKeystorePassword());
         connector.setAttribute("keystoreType", getSettings().getKeyType());
         connector.setAttribute("keystoreFile", getSettings().getKeystoreFile());
+        connector.setAttribute("truststoreFile", getSettings().getTruststoreFile());
+        connector.setAttribute("truststorePass", getSettings().getTruststorePassword());
         connector.setAttribute("clientAuth", "false");
         connector.setAttribute("protocol", "HTTP/1.1");
         connector.setAttribute("sslProtocol", "TLS");
