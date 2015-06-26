@@ -18,15 +18,11 @@ package ro.pippo.tomcat;
 import org.apache.catalina.Context;
 import org.apache.catalina.LifecycleException;
 import org.apache.catalina.Wrapper;
+import org.apache.catalina.connector.Connector;
 import org.apache.catalina.startup.Tomcat;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import ro.pippo.core.AbstractWebServer;
-import ro.pippo.core.Application;
-import ro.pippo.core.PippoFilter;
-import ro.pippo.core.PippoRuntimeException;
-import ro.pippo.core.PippoServlet;
-import ro.pippo.core.WebServerSettings;
+import ro.pippo.core.*;
 import ro.pippo.core.util.StringUtils;
 
 import java.io.File;
@@ -34,7 +30,7 @@ import java.io.File;
 /**
  * @author Daniel Jipa
  */
-public class TomcatServer extends AbstractWebServer<WebServerSettings> {
+public class TomcatServer extends AbstractWebServer<TomcatSettings> {
 
     private static final Logger log = LoggerFactory.getLogger(TomcatServer.class);
 
@@ -54,7 +50,12 @@ public class TomcatServer extends AbstractWebServer<WebServerSettings> {
             pippoFilterPath = "/*";
         }
         tomcat = new Tomcat();
-        tomcat.setPort(getSettings().getPort());
+        tomcat.setBaseDir(getSettings().getBaseFolder());
+        if (getSettings().getKeystoreFile() == null) {
+            enablePlainConnector(tomcat);
+        }else{
+            enableSSLConnector(tomcat);
+        }
         File docBase = new File(System.getProperty("java.io.tmpdir"));
         Context context = tomcat.addContext(getSettings().getContextPath(), docBase.getAbsolutePath());
 
@@ -80,6 +81,31 @@ public class TomcatServer extends AbstractWebServer<WebServerSettings> {
         tomcat.getServer().await();
     }
 
+    private void enablePlainConnector(Tomcat tomcat){
+        log.info("Using http protocol");
+        tomcat.setPort(getSettings().getPort());
+    }
+
+
+    private void enableSSLConnector(Tomcat tomcat){
+        log.info("Using https protocol");
+        Connector connector = tomcat.getConnector();
+        connector.setPort(getSettings().getPort());
+        connector.setSecure(true);
+        connector.setScheme("https");
+        connector.setAttribute("keyAlias", getSettings().getKeyAlias());
+        connector.setAttribute("keystorePass", getSettings().getKeystorePassword());
+        connector.setAttribute("keystoreType", getSettings().getKeyType());
+        connector.setAttribute("keystoreFile",
+            getSettings().getKeystoreFile());
+        connector.setAttribute("clientAuth", "false");
+        connector.setAttribute("protocol", "HTTP/1.1");
+        connector.setAttribute("sslProtocol", "TLS");
+        connector.setAttribute("maxThreads", getSettings().getMaxConnections());
+        connector.setAttribute("protocol", "org.apache.coyote.http11.Http11AprProtocol");
+        connector.setAttribute("SSLEnabled", true);
+    }
+
     @Override
     public void stop() {
         if (tomcat != null) {
@@ -92,8 +118,8 @@ public class TomcatServer extends AbstractWebServer<WebServerSettings> {
     }
 
     @Override
-    protected WebServerSettings createDefaultSettings() {
-        return new WebServerSettings(pippoSettings);
+    protected TomcatSettings createDefaultSettings() {
+        return new TomcatSettings(pippoSettings);
     }
 
 }
