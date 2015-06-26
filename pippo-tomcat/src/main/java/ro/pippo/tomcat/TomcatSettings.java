@@ -19,7 +19,7 @@ import ro.pippo.core.PippoSettings;
 import ro.pippo.core.WebServerSettings;
 
 /**
- * @author Daniel Jipa on 6/25/15 10:22 AM.
+ * @author Daniel Jipa
  */
 public class TomcatSettings extends WebServerSettings {
 
@@ -33,9 +33,9 @@ public class TomcatSettings extends WebServerSettings {
     private String keyAlias;
     private String keyType;
 
-
     public TomcatSettings(PippoSettings pippoSettings) {
         super(pippoSettings);
+
         this.baseFolder = pippoSettings.getString(TomcatSettings.BASE_FOLDER, "tomcat_home");
         this.maxConnections = pippoSettings.getInteger(TomcatSettings.MAX_CONNECTIONS, 100);
         this.keyAlias = pippoSettings.getString(TomcatSettings.KEY_ALIAS, "tomcat");

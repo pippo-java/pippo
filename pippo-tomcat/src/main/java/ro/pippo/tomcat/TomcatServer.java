@@ -25,6 +25,7 @@ import org.slf4j.LoggerFactory;
 import ro.pippo.core.AbstractWebServer;
 import ro.pippo.core.Application;
 import ro.pippo.core.PippoFilter;
+
 import ro.pippo.core.PippoRuntimeException;
 import ro.pippo.core.PippoServlet;
 import ro.pippo.core.util.StringUtils;
@@ -45,6 +46,7 @@ public class TomcatServer extends AbstractWebServer<TomcatSettings> {
     @Override
     public void setPippoFilter(PippoFilter pippoFilter) {
         super.setPippoFilter(pippoFilter);
+
         application = pippoFilter.getApplication();
     }
 
@@ -53,13 +55,16 @@ public class TomcatServer extends AbstractWebServer<TomcatSettings> {
         if (StringUtils.isNullOrEmpty(pippoFilterPath)) {
             pippoFilterPath = "/*";
         }
+
         tomcat = new Tomcat();
         tomcat.setBaseDir(getSettings().getBaseFolder());
+
         if (getSettings().getKeystoreFile() == null) {
             enablePlainConnector(tomcat);
-        }else{
+        } else {
             enableSSLConnector(tomcat);
         }
+
         File docBase = new File(System.getProperty("java.io.tmpdir"));
         Context context = tomcat.addContext(getSettings().getContextPath(), docBase.getAbsolutePath());
 
@@ -90,7 +95,6 @@ public class TomcatServer extends AbstractWebServer<TomcatSettings> {
         tomcat.setPort(getSettings().getPort());
     }
 
-
     private void enableSSLConnector(Tomcat tomcat){
         log.info("Using https protocol");
         Connector connector = tomcat.getConnector();
@@ -100,8 +104,7 @@ public class TomcatServer extends AbstractWebServer<TomcatSettings> {
         connector.setAttribute("keyAlias", getSettings().getKeyAlias());
         connector.setAttribute("keystorePass", getSettings().getKeystorePassword());
         connector.setAttribute("keystoreType", getSettings().getKeyType());
-        connector.setAttribute("keystoreFile",
-            getSettings().getKeystoreFile());
+        connector.setAttribute("keystoreFile", getSettings().getKeystoreFile());
         connector.setAttribute("clientAuth", "false");
         connector.setAttribute("protocol", "HTTP/1.1");
         connector.setAttribute("sslProtocol", "TLS");
