@@ -50,6 +50,7 @@ public class TomcatServer extends AbstractWebServer<TomcatSettings> {
             pippoFilterPath = "/*";
         }
         tomcat = new Tomcat();
+        tomcat.setBaseDir(getSettings().getBaseFolder());
         if (getSettings().getKeystoreFile() == null) {
             enablePlainConnector(tomcat);
         }else{
