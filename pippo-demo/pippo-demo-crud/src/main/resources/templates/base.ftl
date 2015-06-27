@@ -8,16 +8,16 @@
 
         <title>${title}</title>
 
-        <link href="${webjarsAt('bootstrap/current/css/bootstrap.min.css')}" rel="stylesheet">
-        <link href="${webjarsAt('font-awesome/current/css/font-awesome.min.css')}" rel="stylesheet">
+        <link href="${webjarsAt('bootstrap/css/bootstrap.min.css')}" rel="stylesheet">
+        <link href="${webjarsAt('font-awesome/css/font-awesome.min.css')}" rel="stylesheet">
         <link href="${publicAt('css/style.css')}" rel="stylesheet">
     </head>
     <body>
         <div class="container">
             <#nested/>
 
-            <script src="${webjarsAt('jquery/current/jquery.min.js')}"></script>
-            <script src="${webjarsAt('bootstrap/current/js/bootstrap.min.js')}"></script>
+            <script src="${webjarsAt('jquery/jquery.min.js')}"></script>
+            <script src="${webjarsAt('bootstrap/js/bootstrap.min.js')}"></script>
         </div>
     </body>
 </html>
