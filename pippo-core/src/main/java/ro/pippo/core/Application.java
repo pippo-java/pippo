@@ -88,7 +88,6 @@ public class Application {
         this.initializers = new ArrayList<>();
 
         registerContentTypeEngine(TextPlainEngine.class);
-        registerContentTypeEngine(JaxbEngine.class);
     }
 
     public final void init() {

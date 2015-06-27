@@ -13,15 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package ro.pippo.core;
+package ro.pippo.jaxb;
 
-import java.io.StringReader;
-import java.io.StringWriter;
+import ro.pippo.core.Application;
+import ro.pippo.core.ContentTypeEngine;
+import ro.pippo.core.HttpConstants;
+import ro.pippo.core.PippoRuntimeException;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
+import java.io.StringReader;
+import java.io.StringWriter;
 
 /**
  * An XmlEngine based on JAXB.
