@@ -198,4 +198,18 @@ public class StringUtils {
         return String.format(str, args);
     }
 
+    /**
+     * Returns the file extension of the value without the dot or an empty string.
+     *
+     * @param value
+     * @return the extension without dot or an empry string
+     */
+    public static String getFileExtension(String value) {
+        int index = value.lastIndexOf('.');
+        if (index > -1) {
+            return value.substring(index + 1);
+        }
+        return "";
+    }
+
 }

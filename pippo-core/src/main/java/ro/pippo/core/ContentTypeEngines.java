@@ -27,8 +27,8 @@ import java.util.TreeMap;
 
 /**
  * Container for registered content type engines. The main purpose of this
- * object is to gracefully handle mapping a complex content-type or accept
- * header to an engine.
+ * object is to gracefully handle mapping a suffix, complex content-type,
+ * or an accept header to an engine.
  *
  * @author James Moger
  */
@@ -38,8 +38,11 @@ public class ContentTypeEngines {
 
     private final Map<String, ContentTypeEngine> engines;
 
+    private final Map<String, ContentTypeEngine> suffixes;
+
     public ContentTypeEngines() {
         this.engines = new TreeMap<>();
+        this.suffixes = new TreeMap<>();
     }
 
     /**
@@ -60,12 +63,31 @@ public class ContentTypeEngines {
     }
 
     /**
+     * Returns true if there is an engine registered for the content type suffix.
+     *
+     * @param suffix
+     * @return true if there is an engine for the content type suffix
+     */
+    public boolean hasContentTypeSuffix(String suffix) {
+        return suffixes.containsKey(StringUtils.removeStart(suffix.toLowerCase(), "."));
+    }
+
+    /**
      * Returns the list of registered content types.
      *
      * @return the list of registered content types
      */
     public List<String> getContentTypes() {
         return Collections.unmodifiableList(new ArrayList<>(engines.keySet()));
+    }
+
+    /**
+     * Returns the list of registered content type suffixes.
+     *
+     * @return the list of registered content type suffixes
+     */
+    public List<String> getContentTypeSuffixes() {
+        return Collections.unmodifiableList(new ArrayList<>(suffixes.keySet()));
     }
 
     /**
@@ -93,25 +115,30 @@ public class ContentTypeEngines {
     }
 
     /**
-     * Returns the first matching content type engine for a simple content type
-     * or a complex accept header like:
+     * Returns the first matching content type engine for a content type suffix (json, xml, yaml), a
+     * simple content type (application/json) or a complex accept header like:
      * <p/>
      * <pre>
      * text/html,application/xhtml+xml,application/xml;q=0.9,image/webp
      * </pre>
      *
-     * @param contentType
+     * @param contentTypeOrSuffix
      * @return null or the first matching content type engine
      */
-    public ContentTypeEngine getContentTypeEngine(String contentType) {
-        if (StringUtils.isNullOrEmpty(contentType)) {
+    public ContentTypeEngine getContentTypeEngine(String contentTypeOrSuffix) {
+        if (StringUtils.isNullOrEmpty(contentTypeOrSuffix)) {
             return null;
         }
 
-        String sanitizedTypes = sanitizeContentTypes(contentType);
+        ContentTypeEngine engine = suffixes.get(contentTypeOrSuffix.toLowerCase());
+        if (engine != null) {
+            return engine;
+        }
+
+        String sanitizedTypes = sanitizeContentTypes(contentTypeOrSuffix);
         String[] types = sanitizedTypes.split(",");
         for (String type : types) {
-            ContentTypeEngine engine = engines.get(type);
+            engine = engines.get(type);
             if (engine != null) {
                 return engine;
             }
@@ -121,12 +148,18 @@ public class ContentTypeEngines {
     }
 
     /**
-     * Sets the engine for it's specified content type.
+     * Sets the engine for it's specified content type. An suffix for the engine is also registered based on the
+     * specific type; extension types are supported and the leading "x-" is trimmed out.
      *
      * @param engine
      */
     public void setContentTypeEngine(ContentTypeEngine engine) {
+        String contentType = engine.getContentType();
+        String suffix = StringUtils.removeStart(contentType.substring(contentType.lastIndexOf('/') + 1), "x-");
+
         engines.put(engine.getContentType(), engine);
+        suffixes.put(suffix.toLowerCase(), engine);
+
         log.debug("'{}' content engine is '{}'", engine.getContentType(), engine.getClass().getName());
     }
 
