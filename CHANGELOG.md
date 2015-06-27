@@ -27,6 +27,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 - [#161]: Added route name as first criterion in `RouteContext.uriFor`
 - [#162]: Added support for redirect to route via `RouteContext.redirect`
 - [#170]: Added less and sass compilers [pippo-less4j], [pippo-sasscompiler], [pippo-demo-css]
+- [#180]: Add support for `current` version alias in WebjarsAt declarations (i.e. ${WebjarsAt('jquery/current/jquery.min.js')})
 
 #### Removed
 

@@ -17,8 +17,13 @@ package ro.pippo.core.util;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import ro.pippo.core.PippoRuntimeException;
 
+import java.io.IOException;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.Enumeration;
+import java.util.List;
 
 /**
  * Classpath utility functions.
@@ -56,6 +61,27 @@ public class ClasspathUtils {
         }
 
         return url;
+    }
+
+    /**
+     * Return a list of resource URLs that match the given name.
+     *
+     * @param name
+     * @return a list of resource URLs that match the name
+     */
+    public static List<URL> getResources(String name) {
+        List<URL> list = new ArrayList<>();
+        try {
+            ClassLoader loader = Thread.currentThread().getContextClassLoader();
+            Enumeration<URL> resources = loader.getResources(name);
+            while (resources.hasMoreElements()) {
+                URL url = resources.nextElement();
+                list.add(url);
+            }
+        } catch (IOException e) {
+            throw new PippoRuntimeException(e);
+        }
+        return list;
     }
 
 }
