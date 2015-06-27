@@ -35,7 +35,6 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
-import java.util.TimeZone;
 
 /**
  * A JsonEngine based on Gson.
@@ -65,18 +64,17 @@ public class GsonEngine implements ContentTypeEngine {
 
     private Gson gson() {
         return new GsonBuilder()
-            .registerTypeAdapter(Date.class, new ISO8601UTCDateTimeTypeAdapter())
-            .registerTypeAdapter(Time.class, new ISO8601UTCTimeTypeAdapter())
-            .registerTypeAdapter(java.sql.Date.class, new ISO8601UTCDateTypeAdapter())
+            .registerTypeAdapter(Date.class, new ISO8601DateTimeTypeAdapter())
+            .registerTypeAdapter(Time.class, new ISO8601TimeTypeAdapter())
+            .registerTypeAdapter(java.sql.Date.class, new ISO8601DateTypeAdapter())
             .create();
     }
 
-    public static class ISO8601UTCDateTypeAdapter implements JsonSerializer<java.sql.Date>, JsonDeserializer<java.sql.Date> {
+    public static class ISO8601DateTypeAdapter implements JsonSerializer<java.sql.Date>, JsonDeserializer<java.sql.Date> {
         private final DateFormat dateFormat;
 
-        public ISO8601UTCDateTypeAdapter() {
+        public ISO8601DateTypeAdapter() {
             dateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
-            dateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
         }
 
         @Override
@@ -102,12 +100,11 @@ public class GsonEngine implements ContentTypeEngine {
         }
     }
 
-    public static class ISO8601UTCTimeTypeAdapter implements JsonSerializer<Time>, JsonDeserializer<Time> {
+    public static class ISO8601TimeTypeAdapter implements JsonSerializer<Time>, JsonDeserializer<Time> {
         private final DateFormat timeFormat;
 
-        public ISO8601UTCTimeTypeAdapter() {
-            timeFormat = new SimpleDateFormat("HH:mm:ss'Z'", Locale.US);
-            timeFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
+        public ISO8601TimeTypeAdapter() {
+            timeFormat = new SimpleDateFormat("HH:mm:ssZ", Locale.US);
         }
 
         @Override
@@ -121,7 +118,7 @@ public class GsonEngine implements ContentTypeEngine {
 
         @Override
         public synchronized Time deserialize(JsonElement jsonElement, Type type,
-                                                      JsonDeserializationContext jsonDeserializationContext) {
+                                             JsonDeserializationContext jsonDeserializationContext) {
             try {
                 synchronized (timeFormat) {
                     Date date = timeFormat.parse(jsonElement.getAsString());
@@ -133,12 +130,11 @@ public class GsonEngine implements ContentTypeEngine {
         }
     }
 
-    public static class ISO8601UTCDateTimeTypeAdapter implements JsonSerializer<Date>, JsonDeserializer<Date> {
+    public static class ISO8601DateTimeTypeAdapter implements JsonSerializer<Date>, JsonDeserializer<Date> {
         private final DateFormat dateTimeFormat;
 
-        public ISO8601UTCDateTimeTypeAdapter() {
-            dateTimeFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.US);
-            dateTimeFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
+        public ISO8601DateTimeTypeAdapter() {
+            dateTimeFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ", Locale.US);
         }
 
         @Override
