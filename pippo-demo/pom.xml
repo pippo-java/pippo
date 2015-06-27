@@ -68,6 +68,11 @@
                     <artifactId>pippo-jetty</artifactId>
                     <version>${project.version}</version>
                 </dependency>
+                <dependency>
+                    <groupId>ro.pippo</groupId>
+                    <artifactId>pippo-jaxb</artifactId>
+                    <version>${project.version}</version>
+                </dependency>
             </dependencies>
         </profile>
         <profile>
