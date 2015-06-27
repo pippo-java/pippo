@@ -19,6 +19,7 @@ import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.module.afterburner.AfterburnerModule;
 import ro.pippo.core.Application;
 import ro.pippo.core.ContentTypeEngine;
@@ -26,6 +27,7 @@ import ro.pippo.core.HttpConstants;
 import ro.pippo.core.PippoRuntimeException;
 
 import java.io.IOException;
+import java.util.TimeZone;
 
 /**
  * A JsonEngine based on Jackson.
@@ -39,6 +41,8 @@ public class JacksonEngine implements ContentTypeEngine {
     @Override
     public void init(Application application) {
         objectMapper = new ObjectMapper();
+        objectMapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
+        objectMapper.setTimeZone(TimeZone.getDefault());
         objectMapper.registerModule(new AfterburnerModule());
     }
 
