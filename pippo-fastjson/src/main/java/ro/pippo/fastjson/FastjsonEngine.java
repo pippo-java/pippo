@@ -15,6 +15,7 @@
  */
 package ro.pippo.fastjson;
 
+import com.alibaba.fastjson.serializer.SerializerFeature;
 import ro.pippo.core.Application;
 import ro.pippo.core.ContentTypeEngine;
 import ro.pippo.core.HttpConstants;
@@ -39,7 +40,7 @@ public class FastjsonEngine implements ContentTypeEngine {
 
 	@Override
 	public String toString(Object object) {
-		return JSON.toJSONString(object);
+		return JSON.toJSONString(object, SerializerFeature.UseISO8601DateFormat);
 	}
 
 	@Override
