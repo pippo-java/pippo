@@ -57,15 +57,19 @@ public class WebjarsResourceHandler extends ClasspathResourceHandler {
 
     @Override
     public URL getResourceUrl(String resourcePath) {
-        String resourceName;
-        String artifactPath = resourcePath.substring(0, resourcePath.indexOf('/', resourcePath.indexOf('/') + 1) + 1);
+        String resourceName = getResourceBasePath() + "/" + resourcePath;
+        String artifactPath = resourcePath.substring(0, resourcePath.indexOf('/') + 1);
         if (pathAliases.containsKey(artifactPath)) {
             String artifactVersion = pathAliases.get(artifactPath);
-            String aliasedPath = resourcePath.replace(artifactPath, artifactVersion);
-            log.trace("Replaced Webjar path {} with {}", resourcePath, aliasedPath);
-            resourceName = getResourceBasePath() + "/" + aliasedPath;
-        } else {
-            resourceName = getResourceBasePath() + "/" + resourcePath;
+
+            // Do not replace already fixed-version paths.
+            // i.e. skip replacing first path segment of "/jquery/1.11.1/jquery.min.js"
+            // BUT do replace first path segment of "jquery/jquery.min.js".
+            if (!resourcePath.startsWith(artifactVersion)) {
+                String aliasedPath = resourcePath.replace(artifactPath, artifactVersion);
+                log.trace("Replaced Webjar path {} with {}", resourcePath, aliasedPath);
+                resourceName = getResourceBasePath() + "/" + aliasedPath;
+            }
         }
 
         URL url = this.getClass().getClassLoader().getResource(resourceName);
@@ -77,9 +81,10 @@ public class WebjarsResourceHandler extends ClasspathResourceHandler {
     }
 
     /**
-     * Scans the classpath for Webjars metadata and creates an alias registry of "current" path to "fixed" path.
+     * Scans the classpath for Webjars metadata and creates an alias registry of path aliases to fixed version paths
+     * for all Webjars on the classpath.
      * <p>
-     * This allows specifications of a path like "jquery/current/jquery.min.js" which will be substituted
+     * This allows specifications of a path like "jquery/jquery.min.js" which will be substituted
      * at runtime as "jquery/1.11.1/jquery.min.js".</p>
      *
      * @return a map of path pathAliases
@@ -100,8 +105,8 @@ public class WebjarsResourceHandler extends ClasspathResourceHandler {
             String artifactId = pom.getProperty("artifactId");
             String version = pom.getProperty("version");
             String fixedPath = artifactId + '/' + version + '/';
-            String currentPath = artifactId + "/current/";
-            pathAliases.put(currentPath, fixedPath);
+            String aliasPath = artifactId + '/';
+            pathAliases.put(aliasPath, fixedPath);
         }
 
         for (Map.Entry<String, String> alias : pathAliases.entrySet()) {
