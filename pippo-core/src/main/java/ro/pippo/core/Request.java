@@ -60,6 +60,7 @@ public final class Request {
     private String method;
     private String path;
 
+    private String acceptType;
     private String contentType;
     private String body; // cache
 
@@ -352,7 +353,18 @@ public final class Request {
     }
 
     public String getAcceptType() {
-        return httpServletRequest.getHeader(HttpConstants.Header.ACCEPT);
+        if (acceptType == null) {
+            acceptType = httpServletRequest.getHeader(HttpConstants.Header.ACCEPT);
+            // try to specify an AcceptType from an registered ContentType suffix
+            String suffix = StringUtils.getFileExtension(getPath());
+            if (!StringUtils.isNullOrEmpty(suffix)) {
+                ContentTypeEngine engine = contentTypeEngines.getContentTypeEngine(suffix);
+                if (engine != null) {
+                    acceptType = engine.getContentType();
+                }
+            }
+        }
+        return acceptType;
     }
 
     public String getContentType() {

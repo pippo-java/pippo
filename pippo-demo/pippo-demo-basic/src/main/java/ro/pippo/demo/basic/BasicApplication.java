@@ -115,7 +115,7 @@ public class BasicApplication extends Application {
         });
 
         // send an object and negotiate the Response content-type, default to XML
-        GET("/negotiate", new RouteHandler() {
+        GET("/negotiate(\\.(json|xml|yaml))?", new RouteHandler() {
 
             @Override
             public void handle(RouteContext routeContext) {
@@ -150,7 +150,7 @@ public class BasicApplication extends Application {
         });
 
         // send an error as response
-        GET("/error", new RouteHandler() {
+        GET("/error(\\.(json|xml|yaml))?", new RouteHandler() {
 
             @Override
             public void handle(RouteContext routeContext) {
