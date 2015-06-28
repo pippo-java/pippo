@@ -46,30 +46,20 @@ public class ContentTypeEngines {
     }
 
     /**
-     * Returns true if there is an engine registered for the content type.
+     * Returns true if there is an engine registered for the content type or content type suffix.
      *
-     * @param contentType
+     * @param contentTypeOrSuffix
      * @return true if there is an engine for the content type
      */
-    public boolean hasContentTypeEngine(String contentType) {
-        String sanitizedTypes = sanitizeContentTypes(contentType);
+    public boolean hasContentTypeEngine(String contentTypeOrSuffix) {
+        String sanitizedTypes = sanitizeContentTypes(contentTypeOrSuffix);
         String[] types = sanitizedTypes.split(",");
         for (String type : types) {
             if (engines.containsKey(type)) {
                 return true;
             }
         }
-        return false;
-    }
-
-    /**
-     * Returns true if there is an engine registered for the content type suffix.
-     *
-     * @param suffix
-     * @return true if there is an engine for the content type suffix
-     */
-    public boolean hasContentTypeSuffix(String suffix) {
-        return suffixes.containsKey(StringUtils.removeStart(suffix.toLowerCase(), "."));
+        return suffixes.containsKey(contentTypeOrSuffix.toLowerCase());
     }
 
     /**
@@ -130,18 +120,18 @@ public class ContentTypeEngines {
             return null;
         }
 
-        ContentTypeEngine engine = suffixes.get(contentTypeOrSuffix.toLowerCase());
-        if (engine != null) {
-            return engine;
-        }
-
         String sanitizedTypes = sanitizeContentTypes(contentTypeOrSuffix);
         String[] types = sanitizedTypes.split(",");
         for (String type : types) {
-            engine = engines.get(type);
+            ContentTypeEngine engine = engines.get(type);
             if (engine != null) {
                 return engine;
             }
+        }
+
+        ContentTypeEngine engine = suffixes.get(contentTypeOrSuffix.toLowerCase());
+        if (engine != null) {
+            return engine;
         }
 
         return null;
