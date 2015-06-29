@@ -115,7 +115,7 @@ public class BasicApplication extends Application {
         });
 
         // send an object and negotiate the Response content-type, default to XML
-        GET("/negotiate(\\.(json|xml|yaml))?", new RouteHandler() {
+        GET("/negotiate", new RouteHandler() {
 
             @Override
             public void handle(RouteContext routeContext) {
@@ -124,6 +124,21 @@ public class BasicApplication extends Application {
                     .setName("John")
                     .setPhone("0733434435")
                     .setAddress("Sunflower Street, No. 6");
+                routeContext.xml().negotiateContentType().send(contact);
+            }
+
+        });
+
+        // send an object, negotiate the Response content-type (default to XML), but allow override by suffix
+        GET("/contact/{id: [0-9]+}(\\.(json|xml|yaml))?", new RouteHandler() {
+
+            @Override
+            public void handle(RouteContext routeContext) {
+                Contact contact = new Contact()
+                    .setId(routeContext.getParameter("id").toInt())
+                    .setName("Test Contact")
+                    .setPhone("0123456789")
+                    .setAddress("3rd Rock from the Sun");
                 routeContext.xml().negotiateContentType().send(contact);
             }
 

@@ -491,4 +491,46 @@ public class DefaultRouterTest extends Assert {
         assertEquals(0, matches.size());
     }
 
+    @Test
+    public void testOptionalSuffixGroup() throws Exception {
+        Route route = new Route("/api/contact/{id: [0-9]+}(\\.(json|xml|yaml))?", HttpConstants.Method.ALL, new EmptyRouteHandler());
+        router.addRoute(route);
+
+        List<RouteMatch> matches = router.findRoutes("/api/contact/5", HttpConstants.Method.GET);
+        assertEquals(1, matches.size());
+
+        matches = router.findRoutes("/api/contact/5.json", HttpConstants.Method.GET);
+        assertEquals(1, matches.size());
+
+        matches = router.findRoutes("/api/contact/5.xml", HttpConstants.Method.GET);
+        assertEquals(1, matches.size());
+
+        matches = router.findRoutes("/api/contact/5.yaml", HttpConstants.Method.GET);
+        assertEquals(1, matches.size());
+
+        matches = router.findRoutes("/api/contact/5.unknown", HttpConstants.Method.GET);
+        assertEquals(0, matches.size());
+    }
+
+    @Test
+    public void testRequiredSuffixGroup() throws Exception {
+        Route route = new Route("/api/contact/{id: [0-9]+}(\\.(json|xml|yaml))", HttpConstants.Method.ALL, new EmptyRouteHandler());
+        router.addRoute(route);
+
+        List<RouteMatch> matches = router.findRoutes("/api/contact/5", HttpConstants.Method.GET);
+        assertEquals(0, matches.size());
+
+        matches = router.findRoutes("/api/contact/5.json", HttpConstants.Method.GET);
+        assertEquals(1, matches.size());
+
+        matches = router.findRoutes("/api/contact/5.xml", HttpConstants.Method.GET);
+        assertEquals(1, matches.size());
+
+        matches = router.findRoutes("/api/contact/5.yaml", HttpConstants.Method.GET);
+        assertEquals(1, matches.size());
+
+        matches = router.findRoutes("/api/contact/5.unknown", HttpConstants.Method.GET);
+        assertEquals(0, matches.size());
+    }
+
 }

@@ -382,8 +382,8 @@ public class DefaultRouter implements Router {
         matcher.matches();
         int groupCount = matcher.groupCount();
         if (groupCount > 0) {
-            for (int i = 1; i <= groupCount; i++) {
-                parameters.put(parameterNames.get(i - 1), matcher.group(i));
+            for (int i = 0; i < parameterNames.size(); i++) {
+                parameters.put(parameterNames.get(i), matcher.group(i + 1));
             }
         }
 
