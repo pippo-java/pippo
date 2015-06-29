@@ -17,6 +17,10 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 - Updated [pippo-jackson] to Jackson 2.5.4
 - [#152]: Rename maven profile `main` with `standalone` for clearer usage
 - Improved support for array types in ParameterValue
+- [#181]: [pippo-gson] Serialize and deserialize dates using ISO8601
+- [#182]: [pippo-fastjson] Serialize and deserialize dates using ISO8601
+- [#183]: [pippo-jackson] Serialize and deserialize dates using ISO8601
+- [#184]: Moved JAXB engine into a separate module [pippo-jaxb]
 
 #### Added
 - [#35]: Added demo ajax using intercooler.js [pippo-demo-ajax]
@@ -27,7 +31,8 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 - [#161]: Added route name as first criterion in `RouteContext.uriFor`
 - [#162]: Added support for redirect to route via `RouteContext.redirect`
 - [#170]: Added less and sass compilers [pippo-less4j], [pippo-sasscompiler], [pippo-demo-css]
-- [#180]: Add support for `current` version alias in WebjarsAt declarations (i.e. ${WebjarsAt('jquery/current/jquery.min.js')})
+- [#180]: Add support for `artifactId` version alias in WebjarsAt declarations (i.e. ${WebjarsAt('jquery/jquery.min.js')})
+- [#185]: Allow specifying `Accept-Type` with a URI suffix expression (i.e. GET("/contact/{id: [0-9]+}(\.(json|xml|yaml))?", () -> {}));
 
 #### Removed
 
@@ -146,6 +151,12 @@ Initial release.
 [0.3.0]: https://github.com/decebals/pippo/compare/pippo-parent-0.2.0...pippo-parent-0.3.0
 [0.2.0]: https://github.com/decebals/pippo/compare/pippo-parent-0.1.0...pippo-parent-0.2.0
 
+[#185]: https://github.com/decebals/pippo/issues/185
+[#184]: https://github.com/decebals/pippo/issues/184
+[#183]: https://github.com/decebals/pippo/issues/183
+[#182]: https://github.com/decebals/pippo/issues/182
+[#181]: https://github.com/decebals/pippo/issues/181
+[#180]: https://github.com/decebals/pippo/issues/180
 [#170]: https://github.com/decebals/pippo/issues/170
 [#163]: https://github.com/decebals/pippo/issues/163
 [#162]: https://github.com/decebals/pippo/issues/162
@@ -201,3 +212,4 @@ Initial release.
 [pippo-less4j]: https://github.com/decebals/pippo/tree/master/pippo-less4j
 [pippo-sasscompiler]: https://github.com/decebals/pippo/tree/master/pippo-sasscompiler
 [pippo-demo-css]: https://github.com/decebals/pippo/tree/master/pippo-demo/pippo-demo-css
+[pippo-jaxb]: https://github.com/decebals/pippo/tree/master/pippo-jaxb/pippo-jaxb
