@@ -10,7 +10,7 @@
     #literal()
     <packaging>${packaging.type}</packaging>
     <name>quickstart</name>
-    <description>A Pippo appplication</description>
+    <description>A Pippo application</description>
 
     <licenses>
         <license>
