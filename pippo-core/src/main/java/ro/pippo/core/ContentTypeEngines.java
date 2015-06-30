@@ -59,6 +59,7 @@ public class ContentTypeEngines {
                 return true;
             }
         }
+
         return suffixes.containsKey(contentTypeOrSuffix.toLowerCase());
     }
 
@@ -88,7 +89,7 @@ public class ContentTypeEngines {
      * @return the engine instance, if it is registered
      */
     public ContentTypeEngine registerContentTypeEngine(Class<? extends ContentTypeEngine> engineClass) {
-        ContentTypeEngine engine = null;
+        ContentTypeEngine engine;
         try {
             engine = engineClass.newInstance();
         } catch (Exception e) {
@@ -129,12 +130,7 @@ public class ContentTypeEngines {
             }
         }
 
-        ContentTypeEngine engine = suffixes.get(contentTypeOrSuffix.toLowerCase());
-        if (engine != null) {
-            return engine;
-        }
-
-        return null;
+        return suffixes.get(contentTypeOrSuffix.toLowerCase());
     }
 
     /**
@@ -185,4 +181,5 @@ public class ContentTypeEngines {
 
         return sb.toString();
     }
+
 }
