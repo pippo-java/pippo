@@ -15,7 +15,7 @@
     <description>Integrating CDI with Weld implementation</description>
 
 	<properties>
-        <weld.version>2.2.13.Final</weld.version>
+        <weld.version>2.2.14.Final</weld.version>
     </properties>
 
     <dependencies>
