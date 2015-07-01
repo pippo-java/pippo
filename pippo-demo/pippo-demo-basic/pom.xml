@@ -35,15 +35,10 @@
 
         <dependency>
             <groupId>ro.pippo</groupId>
-            <artifactId>pippo-fastjson</artifactId>
+            <artifactId>pippo-jackson</artifactId>
             <version>${project.version}</version>
         </dependency>
 
-        <dependency>
-            <groupId>ro.pippo</groupId>
-            <artifactId>pippo-snakeyaml</artifactId>
-            <version>${project.version}</version>
-        </dependency>
     </dependencies>
 
 </project>

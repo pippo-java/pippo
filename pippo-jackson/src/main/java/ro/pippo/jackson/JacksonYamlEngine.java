@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2014 the original author or authors.
+ * Copyright (C) 2015 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,27 +15,26 @@
  */
 package ro.pippo.jackson;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import ro.pippo.core.Application;
-import ro.pippo.core.Initializer;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.dataformat.yaml.YAMLMapper;
+import ro.pippo.core.HttpConstants;
 
 /**
+ * An YAML ContentTypeEngine based on Jackson.
+ *
  * @author James Moger
  */
-public class JacksonInitializer implements Initializer {
-
-    private static final Logger log = LoggerFactory.getLogger(JacksonInitializer.class);
+public class JacksonYamlEngine extends JacksonBaseEngine {
 
     @Override
-    public void init(Application application) {
-        application.registerContentTypeEngine(JacksonJsonEngine.class);
-        application.registerContentTypeEngine(JacksonXmlEngine.class);
-        application.registerContentTypeEngine(JacksonYamlEngine.class);
+    protected ObjectMapper getObjectMapper() {
+        return new YAMLMapper();
     }
 
     @Override
-    public void destroy(Application application) {
+    public String getContentType() {
+        return HttpConstants.ContentType.APPLICATION_X_YAML;
     }
 
 }
+

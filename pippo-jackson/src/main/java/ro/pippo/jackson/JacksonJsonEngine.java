@@ -15,27 +15,24 @@
  */
 package ro.pippo.jackson;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import ro.pippo.core.Application;
-import ro.pippo.core.Initializer;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import ro.pippo.core.HttpConstants;
 
 /**
+ * A JSON ContentTypeEngine based on Jackson.
+ *
  * @author James Moger
  */
-public class JacksonInitializer implements Initializer {
-
-    private static final Logger log = LoggerFactory.getLogger(JacksonInitializer.class);
+public class JacksonJsonEngine extends JacksonBaseEngine {
 
     @Override
-    public void init(Application application) {
-        application.registerContentTypeEngine(JacksonJsonEngine.class);
-        application.registerContentTypeEngine(JacksonXmlEngine.class);
-        application.registerContentTypeEngine(JacksonYamlEngine.class);
+    protected ObjectMapper getObjectMapper() {
+        return new ObjectMapper();
     }
 
     @Override
-    public void destroy(Application application) {
+    public String getContentType() {
+        return HttpConstants.ContentType.APPLICATION_JSON;
     }
 
 }
