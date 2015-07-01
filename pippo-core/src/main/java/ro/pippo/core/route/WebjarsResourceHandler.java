@@ -66,7 +66,7 @@ public class WebjarsResourceHandler extends ClasspathResourceHandler {
             // i.e. skip replacing first path segment of "/jquery/1.11.1/jquery.min.js"
             // BUT do replace first path segment of "jquery/jquery.min.js".
             if (!resourcePath.startsWith(artifactVersion)) {
-                String aliasedPath = resourcePath.replace(artifactPath, artifactVersion);
+                String aliasedPath = artifactVersion + resourcePath.substring(artifactPath.length());
                 log.trace("Replaced Webjar path {} with {}", resourcePath, aliasedPath);
                 resourceName = getResourceBasePath() + "/" + aliasedPath;
             }
