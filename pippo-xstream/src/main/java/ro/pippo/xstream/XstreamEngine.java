@@ -37,14 +37,23 @@ public class XstreamEngine implements ContentTypeEngine {
         return HttpConstants.ContentType.APPLICATION_XML;
     }
 
+    private XStream xstream() {
+        XStream xstream = new XStream();
+        // allow annotations on models for maximum flexibility
+        xstream.autodetectAnnotations(true);
+        // prevent xstream from creating complex XML graphs
+        xstream.setMode(XStream.NO_REFERENCES);
+        return xstream;
+    }
+
 	@Override
 	public String toString(Object object) {
-		return new XStream().toXML(object);
+        return xstream().toXML(object);
 	}
 
 	@Override
 	public <T> T fromString(String content, Class<T> classOfT) {
-		return (T) new XStream().fromXML(content);
+		return (T) xstream().fromXML(content);
 	}
 
 }
