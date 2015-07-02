@@ -84,4 +84,19 @@ public class ClasspathUtils {
         return list;
     }
 
+    /**
+     * Returns true if the specified class can be found on the classpath.
+     *
+     * @param className
+     * @return true if the class is on the classpath
+     */
+    public static boolean hasClass(String className) {
+        try {
+            Class.forName(className);
+            return true;
+        } catch (Exception e) {
+        }
+        return false;
+    }
+
 }

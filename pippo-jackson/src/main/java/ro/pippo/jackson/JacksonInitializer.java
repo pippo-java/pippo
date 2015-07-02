@@ -19,6 +19,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ro.pippo.core.Application;
 import ro.pippo.core.Initializer;
+import ro.pippo.core.util.ClasspathUtils;
 
 /**
  * @author James Moger
@@ -30,8 +31,12 @@ public class JacksonInitializer implements Initializer {
     @Override
     public void init(Application application) {
         application.registerContentTypeEngine(JacksonJsonEngine.class);
-        application.registerContentTypeEngine(JacksonXmlEngine.class);
-        application.registerContentTypeEngine(JacksonYamlEngine.class);
+        if (ClasspathUtils.hasClass("com.fasterxml.jackson.dataformat.xml.XmlMapper")) {
+            application.registerContentTypeEngine(JacksonXmlEngine.class);
+        }
+        if (ClasspathUtils.hasClass("com.fasterxml.jackson.dataformat.yaml.YAMLMapper")) {
+            application.registerContentTypeEngine(JacksonYamlEngine.class);
+        }
     }
 
     @Override
