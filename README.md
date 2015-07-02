@@ -74,8 +74,9 @@ public class Contact  {
 
 The second step is to choose your favorite [server](http://www.pippo.ro/doc/server.html), 
 [template engine](http://www.pippo.ro/doc/templates.html) 
-and [content type engine](http://www.pippo.ro/doc/content-types.html). For example I will choose `Jetty` as server,
-`Freemarker` as template engine, `Jackson` as JSON engine and `JAXB` as XML engine. 
+and [content type engine](http://www.pippo.ro/doc/content-types.html).  
+For example, I will choose `Jetty` as server, `Freemarker` as template engine, `Jackson` as JSON engine and `JAXB` as XML engine.  
+My Maven `pom.xml` looks like: 
 
 ```xml
 <dependency>
