@@ -72,6 +72,31 @@ public class Contact  {
 }
 ```
 
+The second step is to choose your favorite [server](http://www.pippo.ro/doc/server.html), 
+[template engine](http://www.pippo.ro/doc/templates.html) 
+and [content type engine](http://www.pippo.ro/doc/content-types.html). For example I will choose `Jetty` as server,
+`Freemarker` as template engine, `Jackson` as JSON engine and `JAXB` as XML engine. 
+
+```xml
+<dependency>
+    <groupId>ro.pippo</groupId>
+    <artifactId>pippo-core</artifactId>
+    <version>${pippo.version}</version>
+</dependency>
+
+<dependency>
+    <groupId>ro.pippo</groupId>
+    <artifactId>pippo-freemarker</artifactId>
+    <version>${pippo.version}</version>
+</dependency>
+
+<dependency>
+    <groupId>ro.pippo</groupId>
+    <artifactId>pippo-jackson</artifactId>
+    <version>${pippo.version}</version>
+</dependency>
+```
+
 The last step it's to start __Pippo__ with your application as parameter:
 
 ```java
