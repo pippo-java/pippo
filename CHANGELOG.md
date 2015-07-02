@@ -6,6 +6,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 #### Fixed
 #### Changed
 - Updated [pippo-pebble] to Pebble 1.5.1
+- Updated [pippo-metrics-librato] to Librato 4.0.1.9
 #### Added
 #### Removed
 
@@ -56,7 +57,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 - Updated [pippo-undertow] to Undertow 1.2.6
 - Updated [pippo-jetty] to Jetty 9.2.11
 - Updated [pippo-guice] to Guice 4.0
-- Updated Metrics-Librato to 4.0.1.8
+- Updated [pippo-metrics-librato] to 4.0.1.8
 
 #### Added
 - [#121]: Added [pippo-jackson]
@@ -112,6 +113,10 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 - Added [pippo-guice]
 - Added [pippo-gson]
 - Added [pippo-metrics]
+- Added [pippo-metrics-ganglia]
+- Added [pippo-metrics-graphite]
+- Added [pippo-metrics-influxdb]
+- Added [pippo-metrics-librato]
 - Added [pippo-pebble]
 - Added [pippo-session]
 - Added [pippo-session-cookie]
@@ -203,6 +208,10 @@ Initial release.
 [pippo-jade]: https://github.com/decebals/pippo/tree/master/pippo-jade
 [pippo-jetty]: https://github.com/decebals/pippo/tree/master/pippo-jetty
 [pippo-metrics]: https://github.com/decebals/pippo/tree/master/pippo-metrics
+[pippo-metrics-ganglia]: https://github.com/decebals/pippo/tree/master/pippo-metrics-ganglia
+[pippo-metrics-graphite]: https://github.com/decebals/pippo/tree/master/pippo-metrics-graphite
+[pippo-metrics-influxdb]: https://github.com/decebals/pippo/tree/master/pippo-metrics-influxdb
+[pippo-metrics-librato]: https://github.com/decebals/pippo/tree/master/pippo-metrics-librato
 [pippo-pebble]: https://github.com/decebals/pippo/tree/master/pippo-pebble
 [pippo-snakeyaml]: https://github.com/decebals/pippo/tree/master/pippo-snakeyaml
 [pippo-session]: https://github.com/decebals/pippo/tree/master/pippo-session
