@@ -15,6 +15,8 @@
  */
 package ro.pippo.core;
 
+import ro.pippo.core.route.RouteContext;
+import ro.pippo.core.route.RouteHandler;
 import ro.pippo.core.util.ServiceLocator;
 
 import org.slf4j.Logger;
@@ -79,6 +81,27 @@ public class Pippo {
         if (server != null) {
             server.stop();
         }
+    }
+
+    /**
+     * Create a pippo instance, add a route on "/" that responds with a message.
+     *
+     * @param text
+     * @return
+     */
+    public static Pippo send(final String text) {
+        Pippo pippo = new Pippo();
+        pippo.getApplication().GET("/", new RouteHandler() {
+
+            @Override
+            public void handle(RouteContext routeContext) {
+                routeContext.send(text);
+            }
+
+        });
+        pippo.start();
+
+        return pippo;
     }
 
     /**
