@@ -3,6 +3,12 @@ All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
 ### [Unreleased][unreleased]
+#### Fixed
+#### Changed
+#### Added
+#### Removed
+
+### [0.6.0] - 2015-06-03
 
 #### Fixed
 - [#120]: FileResourceHandler usage is not self evident
@@ -143,7 +149,8 @@ Initial release.
 - Added [pippo-freemarker]
 - Added [pippo-jetty]
 
-[unreleased]: https://github.com/decebals/pippo/compare/release-0.5.0...HEAD
+[unreleased]: https://github.com/decebals/pippo/compare/release-0.6.0...HEAD
+[0.6.0]: https://github.com/decebals/pippo/compare/release-0.5.0...release-0.6.0
 [0.5.0]: https://github.com/decebals/pippo/compare/release-0.4.2...release-0.5.0
 [0.4.2]: https://github.com/decebals/pippo/compare/release-0.4.1...release-0.4.2
 [0.4.1]: https://github.com/decebals/pippo/compare/pippo-parent-0.4.0...release-0.4.1
