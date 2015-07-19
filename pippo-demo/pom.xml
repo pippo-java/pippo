@@ -77,9 +77,12 @@
         </profile>
         <profile>
             <id>war</id>
-            <properties>
-                <packaging.type>war</packaging.type>
-            </properties>
+            <activation>
+                <property>
+                    <name>packaging.type</name>
+                    <value>war</value>
+                </property>
+            </activation>
         </profile>
     </profiles>
 </project>
