@@ -51,6 +51,7 @@
         <module>pippo-demo-session</module>
         <module>pippo-demo-ajax</module>
         <module>pippo-demo-css</module>
+        <module>pippo-demo-crudko</module>
     </modules>
 
     <profiles>
