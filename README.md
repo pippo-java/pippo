@@ -2,6 +2,7 @@ Micro Java Web Framework
 =====================
 
 [![Travis CI Build Status](https://travis-ci.org/decebals/pippo.png)](https://travis-ci.org/decebals/pippo)
+[![Coverage Status](https://coveralls.io/repos/decebals/pippo/badge.svg?branch=master&service=github)](https://coveralls.io/github/decebals/pippo?branch=master)
 [![Maven Central](http://img.shields.io/maven-central/v/ro.pippo/pippo.svg)](http://search.maven.org/#search|ga|1|ro.pippo)
 
 [![Issue Stats](http://www.issuestats.com/github/decebals/pippo/badge/issue?style=flat)](http://www.issuestats.com/github/decebals/pippo)
