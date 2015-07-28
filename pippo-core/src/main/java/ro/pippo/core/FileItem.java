@@ -134,7 +134,7 @@ public class FileItem {
     public String toString() {
         return "FileItem{" +
                 "name='" + getName() + '\'' +
-                ", submittedFileName='" + getSize() + '\'' +
+                ", submittedFileName='" + getSubmittedFileName() + '\'' +
                 ", size=" + getSize() +
                 ", contentType='" + getContentType() + '\'' +
                 '}';
