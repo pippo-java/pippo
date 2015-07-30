@@ -17,6 +17,7 @@ package ro.pippo.core;
 
 import ro.pippo.core.route.RouteDispatcher;
 import ro.pippo.core.util.IoUtils;
+import ro.pippo.core.util.MimeTypes;
 import ro.pippo.core.util.StringUtils;
 
 import java.io.File;
@@ -52,6 +53,7 @@ public final class Response {
     private String contextPath;
     private String applicationPath;
     private ResponseFinalizeListenerList finalizeListeners;
+    private MimeTypes mimeTypes;
 
     private int status;
 
@@ -62,6 +64,7 @@ public final class Response {
         this.httpServletResponse.setCharacterEncoding(StandardCharsets.UTF_8.toString());
         this.contextPath = application.getRouter().getContextPath();
         this.applicationPath = StringUtils.removeEnd(application.getRouter().getApplicationPath(), "/");
+        this.mimeTypes = application.getMimeTypes();
 
         this.status = 0;
     }
@@ -902,7 +905,7 @@ public final class Response {
 
         // content type to OCTET_STREAM if it's not set
         if (getContentType() == null) {
-            contentType(HttpConstants.ContentType.APPLICATION_OCTET_STREAM);
+            contentType(mimeTypes.getContentType(filename, HttpConstants.ContentType.APPLICATION_OCTET_STREAM));
         }
 
         if (isHeaderEmpty(HttpConstants.Header.CONTENT_DISPOSITION)) {
