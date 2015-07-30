@@ -67,7 +67,7 @@ public abstract class UrlResourceHandler extends ResourceHandler {
 
     protected void sendResource(URL resourceUrl, RouteContext routeContext) throws IOException {
         String filename = resourceUrl.getFile();
-        String mimeType = routeContext.getApplication().getMimeTypes().getContentType(routeContext, filename);
+        String mimeType = routeContext.getApplication().getMimeTypes().getContentType(filename);
         if (!StringUtils.isNullOrEmpty(mimeType)) {
             // stream the resource
             log.debug("Streaming as resource '{}'", resourceUrl);

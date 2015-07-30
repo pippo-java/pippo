@@ -19,7 +19,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ro.pippo.core.PippoConstants;
 import ro.pippo.core.PippoSettings;
-import ro.pippo.core.route.RouteContext;
 
 import java.io.InputStream;
 import java.net.URL;
@@ -90,12 +89,11 @@ public class MimeTypes {
      * For a text-based content-type, also return the encoding suffix eg.
      * <em>"text/plain; charset=utf-8"</em>
      *
-     * @param routeContext
      * @param filename     the file name
      * @return the content-type deduced from the file extension.
      */
-    public String getContentType(RouteContext routeContext, String filename) {
-        return getContentType(routeContext, filename, "application/octet-stream");
+    public String getContentType(String filename) {
+        return getContentType(filename, "application/octet-stream");
     }
 
     /**
@@ -103,13 +101,12 @@ public class MimeTypes {
      * For a text-based content-type, also return the encoding suffix eg.
      * <em>"text/plain; charset=utf-8"</em>
      *
-     * @param routeContext
      * @param filename           the file name
      * @param defaultContentType the default content-type to return when no matching
      *                           content-type is found
      * @return the content-type deduced from the file extension.
      */
-    public String getContentType(RouteContext routeContext, String filename, String defaultContentType) {
+    public String getContentType(String filename, String defaultContentType) {
         String contentType = getMimeType(filename, null);
         if (contentType == null) {
             contentType = defaultContentType;
