@@ -67,7 +67,7 @@ public class TomcatServer extends AbstractWebServer<TomcatSettings> {
 
         File docBase = new File(System.getProperty("java.io.tmpdir"));
         Context context = tomcat.addContext(getSettings().getContextPath(), docBase.getAbsolutePath());
-
+        context.setAllowCasualMultipartParsing(true);
         PippoServlet pippoServlet = new PippoServlet();
         pippoServlet.setApplication(application);
 
