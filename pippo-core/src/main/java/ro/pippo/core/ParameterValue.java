@@ -58,8 +58,13 @@ public class ParameterValue implements Serializable {
         if (isNull()) {
             return defaultValue;
         }
-
-        return Boolean.parseBoolean(values[0]);
+        switch (values[0]) {
+            case "yes":
+            case "on":
+                return true;
+            default:
+                return Boolean.parseBoolean(values[0]);
+        }
     }
 
     public byte toByte() {

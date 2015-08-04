@@ -54,7 +54,10 @@ public class ParameterValueTest extends Assert {
     public void testBooleans() throws Exception {
         assertEquals(true, new ParameterValue("true").toBoolean());
         assertEquals(true, new ParameterValue("true", "true", "true").toBoolean());
+        assertEquals(true, new ParameterValue("yes").toBoolean());
+        assertEquals(true, new ParameterValue("on").toBoolean());
         assertArrayEquals(new Boolean[]{true, false, true}, new ParameterValue("true", "false", "true").to(Boolean[].class));
+        assertArrayEquals(new Boolean[]{true, true, true}, new ParameterValue("true", "yes", "on").to(Boolean[].class));
     }
 
     @Test
