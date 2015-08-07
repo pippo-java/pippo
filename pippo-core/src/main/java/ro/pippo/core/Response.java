@@ -841,6 +841,7 @@ public final class Response {
         if (StringUtils.isNullOrEmpty(contentType)) {
             throw new PippoRuntimeException("You must specify a content type!");
         }
+
         ContentTypeEngine contentTypeEngine = contentTypeEngines.getContentTypeEngine(contentType);
         if (contentTypeEngine == null) {
             throw new PippoRuntimeException("You must set a content type engine for '{}'", contentType);
@@ -901,7 +902,6 @@ public final class Response {
      */
     public void file(String filename, InputStream input) {
         checkCommitted();
-        finalizeResponse();
 
         // content type to OCTET_STREAM if it's not set
         if (getContentType() == null) {
@@ -915,6 +915,8 @@ public final class Response {
                 header(HttpConstants.Header.CONTENT_DISPOSITION, "attachment; filename=\"\"");
             }
         }
+
+        finalizeResponse();
 
         try {
             // by calling httpServletResponse.getOutputStream() we are committing the response
