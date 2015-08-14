@@ -50,106 +50,106 @@ public class ParameterValue implements Serializable {
         this.values = values;
     }
 
-    public boolean toBoolean() {
-        return toBoolean(false);
+    public Boolean toBoolean() {
+        return toBoolean(null);
     }
 
-    public boolean toBoolean(boolean defaultValue) {
-        if (isNull()) {
+    public Boolean toBoolean(Boolean defaultValue) {
+        if (isNullOrEmpty()) {
             return defaultValue;
         }
+
         switch (values[0]) {
             case "yes":
             case "on":
                 return true;
             default:
-                return Boolean.parseBoolean(values[0]);
+                return Boolean.valueOf(values[0]);
         }
     }
 
-    public byte toByte() {
-        return toByte((byte) 0);
+    public Byte toByte() {
+        return toByte(null);
     }
 
-    public byte toByte(byte defaultValue) {
-        if (isNull()) {
+    public Byte toByte(Byte defaultValue) {
+        if (isNullOrEmpty()) {
             return defaultValue;
         }
 
-        return Byte.parseByte(values[0]);
+        return Byte.valueOf(values[0]);
     }
 
-    public short toShort() {
-        return toShort((short) 0);
+    public Short toShort() {
+        return toShort(null);
     }
 
-    public short toShort(short defaultValue) {
-        if (isNull()) {
+    public Short toShort(Short defaultValue) {
+        if (isNullOrEmpty()) {
             return defaultValue;
         }
 
-        return Short.parseShort(values[0]);
+        return Short.valueOf(values[0]);
     }
 
-    public int toInt() {
-        return toInt(0);
+    public Integer toInt() {
+        return toInt(null);
     }
 
-    public int toInt(int defaultValue) {
-        if (isNull()) {
+    public Integer toInt(Integer defaultValue) {
+        if (isNullOrEmpty()) {
             return defaultValue;
         }
 
-        return Integer.parseInt(values[0]);
+        return Integer.valueOf(values[0]);
     }
 
-    public long toLong() {
-        return toLong(0);
+    public Long toLong() {
+        return toLong(null);
     }
 
-    public long toLong(long defaultValue) {
-        if (isNull()) {
+    public Long toLong(Long defaultValue) {
+        if (isNullOrEmpty()) {
             return defaultValue;
         }
 
-        return Long.parseLong(values[0]);
+        return Long.valueOf(values[0]);
     }
 
-    public float toFloat() {
-        return toFloat(0);
+    public Float toFloat() {
+        return toFloat(null);
     }
 
-    public float toFloat(float defaultValue) {
-        if (isNull()) {
+    public Float toFloat(Float defaultValue) {
+        if (isNullOrEmpty()) {
             return defaultValue;
         }
 
-        return Float.parseFloat(values[0]);
+        return Float.valueOf(values[0]);
     }
 
-    public double toDouble() {
-        return toDouble(0);
+    public Double toDouble() {
+        return toDouble(null);
     }
 
-    public double toDouble(double defaultValue) {
-        if (isNull()) {
+    public Double toDouble(Double defaultValue) {
+        if (isNullOrEmpty()) {
             return defaultValue;
         }
 
-        return Double.parseDouble(values[0]);
+        return Double.valueOf(values[0]);
     }
 
     public BigDecimal toBigDecimal() {
-        return toBigDecimal(BigDecimal.ZERO);
+        return toBigDecimal(null);
     }
 
     public BigDecimal toBigDecimal(BigDecimal defaultValue) {
-        if (isNull()) {
+        if (isNullOrEmpty()) {
             return defaultValue;
         }
 
-        double d = Double.parseDouble(values[0]);
-        return new BigDecimal(d);
+        return new BigDecimal(Double.parseDouble(values[0]));
     }
 
     public UUID toUUID() {
@@ -157,7 +157,7 @@ public class ParameterValue implements Serializable {
     }
 
     public UUID toUUID(UUID defaultValue) {
-        if (isNull()) {
+        if (isNullOrEmpty()) {
             return defaultValue;
         }
 
@@ -165,11 +165,11 @@ public class ParameterValue implements Serializable {
     }
 
     public Character toCharacter() {
-        return toCharacter((char) 0);
+        return toCharacter(null);
     }
 
     public Character toCharacter(Character defaultValue) {
-        if (isNull()) {
+        if (isNullOrEmpty()) {
             return defaultValue;
         }
 
@@ -182,7 +182,7 @@ public class ParameterValue implements Serializable {
     }
 
     public String toString(String defaultValue) {
-        if (isNull()) {
+        if (isNullOrEmpty()) {
             return defaultValue;
         }
 
@@ -198,7 +198,7 @@ public class ParameterValue implements Serializable {
     }
 
     public <T extends Enum<?>> T toEnum(Class<T> classOfT, T defaultValue, boolean caseSensitive) {
-        if (isNull()) {
+        if (isNullOrEmpty()) {
             return defaultValue;
         }
 
@@ -207,6 +207,7 @@ public class ParameterValue implements Serializable {
             // attempt to interpret value as an ordinal
             ordinal = Integer.parseInt(values[0]);
         } catch (Exception e) {
+            // ignore
         }
 
         T[] constants = classOfT.getEnumConstants();
@@ -214,6 +215,7 @@ public class ParameterValue implements Serializable {
             if (constant.ordinal() == ordinal) {
                 return constant;
             }
+
             if (caseSensitive) {
                 if (constant.name().equals(values[0])) {
                     return constant;
@@ -224,6 +226,7 @@ public class ParameterValue implements Serializable {
                 }
             }
         }
+
         return defaultValue;
     }
 
@@ -232,14 +235,15 @@ public class ParameterValue implements Serializable {
     }
 
     public Set<String> toSet(Set<String> defaultValue) {
-        if (isNull()) {
+        if (isNullOrEmpty()) {
             return defaultValue;
         }
 
         if (values.length == 1) {
-            return new HashSet<String>(Arrays.asList(values[0].split(",")));
+            return new HashSet<>(Arrays.asList(values[0].split(",")));
         }
-        return new HashSet<String>(Arrays.asList(values));
+
+        return new HashSet<>(Arrays.asList(values));
     }
 
     /**
@@ -270,7 +274,7 @@ public class ParameterValue implements Serializable {
     }
 
     public List<String> toList(List<String> defaultValue) {
-        if (isNull()) {
+        if (isNullOrEmpty()) {
             return defaultValue;
         }
 
@@ -298,14 +302,12 @@ public class ParameterValue implements Serializable {
     }
 
     public Date toDate(Date defaultValue, String pattern) {
-        if (isNull()) {
+        if (isNullOrEmpty()) {
             return defaultValue;
         }
 
-        SimpleDateFormat dateFormat = new SimpleDateFormat(pattern);
         try {
-            Date date = dateFormat.parse(values[0]);
-            return date;
+            return new SimpleDateFormat(pattern).parse(values[0]);
         } catch (ParseException e) {
             throw new PippoRuntimeException(e);
         }
@@ -316,12 +318,11 @@ public class ParameterValue implements Serializable {
     }
 
     public java.sql.Date toSqlDate(java.sql.Date defaultValue) {
-        if (isNull()) {
+        if (isNullOrEmpty()) {
             return defaultValue;
         }
 
-        java.sql.Date date = java.sql.Date.valueOf(values[0]);
-        return date;
+        return java.sql.Date.valueOf(values[0]);
     }
 
     public Time toSqlTime() {
@@ -329,12 +330,11 @@ public class ParameterValue implements Serializable {
     }
 
     public Time toSqlTime(Time defaultValue) {
-        if (isNull()) {
+        if (isNullOrEmpty()) {
             return defaultValue;
         }
 
-        Time time = Time.valueOf(values[0]);
-        return time;
+        return Time.valueOf(values[0]);
     }
 
     public Timestamp toSqlTimestamp() {
@@ -342,12 +342,11 @@ public class ParameterValue implements Serializable {
     }
 
     public Timestamp toSqlTimestamp(Timestamp defaultValue) {
-        if (isNull()) {
+        if (isNullOrEmpty()) {
             return defaultValue;
         }
 
-        Timestamp timestamp = Timestamp.valueOf(values[0]);
-        return timestamp;
+        return Timestamp.valueOf(values[0]);
     }
 
     public <T> T to(Class<T> classOfT) {
@@ -373,7 +372,7 @@ public class ParameterValue implements Serializable {
             Class<?> componentType = classOfT.getComponentType();
             Object array;
             // cheat by not instantiating a ParameterValue for every value
-            ParameterValue parameterValue = new ParameterValue(new String[]{"PLACEHOLDER"});
+            ParameterValue parameterValue = new ParameterValue("PLACEHOLDER");
             if (values.length == 1) {
                 // split a single-value list into an array
                 String tmp = values[0];
@@ -424,7 +423,7 @@ public class ParameterValue implements Serializable {
             X collection = (X) constructor.newInstance();
 
             // cheat by not instantiating a ParameterValue for every value
-            ParameterValue parameterValue = new ParameterValue(new String[]{"PLACEHOLDER"});
+            ParameterValue parameterValue = new ParameterValue("PLACEHOLDER");
 
             List<String> list;
             if (values.length == 1) {
@@ -447,6 +446,7 @@ public class ParameterValue implements Serializable {
         }
     }
 
+    @SuppressWarnings("unchecked")
     private Object toObject(Class<?> type, String pattern) {
         if (type == String.class) {
             return toString();
@@ -493,8 +493,7 @@ public class ParameterValue implements Serializable {
         }
 
         if (type.isEnum()) {
-            Class<? extends Enum> enumClass = (Class<? extends Enum>) type;
-            return toEnum(enumClass);
+            return toEnum((Class<? extends Enum>) type);
         }
 
         if (pattern == null) {
@@ -534,6 +533,10 @@ public class ParameterValue implements Serializable {
 
     public boolean isEmpty() {
         return values == null || values.length == 0 || StringUtils.isNullOrEmpty(values[0]);
+    }
+
+    public boolean isNullOrEmpty() {
+        return isNull() || isEmpty();
     }
 
     public boolean isMultiValued() {
