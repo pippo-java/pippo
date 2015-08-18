@@ -121,12 +121,12 @@ public class ControllerApplication extends Application {
     }
 
     @Override
-    public Router getRouter() {
+    public ControllerRouter getRouter() {
         if (router == null) {
             router = new DefaultControllerRouter();
         }
 
-        return router;
+        return (ControllerRouter) router;
     }
 
     @Override
