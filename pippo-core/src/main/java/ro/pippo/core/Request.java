@@ -17,6 +17,7 @@ package ro.pippo.core;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import ro.pippo.core.route.RouteContext;
 import ro.pippo.core.route.RouteDispatcher;
 import ro.pippo.core.util.ClassUtils;
 import ro.pippo.core.util.CookieUtils;
@@ -599,7 +600,9 @@ public final class Request {
     }
 
     public static Request get() {
-        return RouteDispatcher.getRouteContext().getRequest();
+        RouteContext routeContext = RouteDispatcher.getRouteContext();
+
+        return (routeContext != null) ? routeContext.getRequest() : null;
     }
 
     @Override

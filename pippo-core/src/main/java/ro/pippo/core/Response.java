@@ -15,11 +15,16 @@
  */
 package ro.pippo.core;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import ro.pippo.core.route.RouteContext;
 import ro.pippo.core.route.RouteDispatcher;
 import ro.pippo.core.util.IoUtils;
 import ro.pippo.core.util.MimeTypes;
 import ro.pippo.core.util.StringUtils;
 
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -30,12 +35,6 @@ import java.nio.charset.StandardCharsets;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
-
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletResponse;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * @author Decebal Suiu
@@ -1043,7 +1042,10 @@ public final class Response {
     }
 
     public static Response get() {
-        return RouteDispatcher.getRouteContext().getResponse();
+        RouteContext routeContext = RouteDispatcher.getRouteContext();
+
+        return (routeContext != null) ? routeContext.getResponse() : null;
+
     }
 
 }

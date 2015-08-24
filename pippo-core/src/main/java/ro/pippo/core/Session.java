@@ -15,6 +15,7 @@
  */
 package ro.pippo.core;
 
+import ro.pippo.core.route.RouteContext;
 import ro.pippo.core.route.RouteDispatcher;
 
 import javax.servlet.http.HttpSession;
@@ -85,7 +86,9 @@ public class Session {
     }
 
     public static Session get() {
-        return RouteDispatcher.getRouteContext().getRequest().getSession(false);
+        RouteContext routeContext = RouteDispatcher.getRouteContext();
+
+        return (routeContext != null) ? routeContext.getRequest().getSession(false) : null;
     }
 
     public Map<String, Object> getAll() {

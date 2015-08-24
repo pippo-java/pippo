@@ -23,6 +23,7 @@ import ro.pippo.core.route.FileResourceHandler;
 import ro.pippo.core.route.PublicResourceHandler;
 import ro.pippo.core.route.ResourceHandler;
 import ro.pippo.core.route.Route;
+import ro.pippo.core.route.RouteContext;
 import ro.pippo.core.route.RouteDispatcher;
 import ro.pippo.core.route.RouteHandler;
 import ro.pippo.core.route.RoutePostDispatchListenerList;
@@ -390,7 +391,9 @@ public class Application {
     }
 
     public static Application get() {
-        return RouteDispatcher.getRouteContext().getApplication();
+        RouteContext routeContext = RouteDispatcher.getRouteContext();
+
+        return (routeContext != null) ? routeContext.getApplication() : null;
     }
 
     private List<Initializer> getInitializers() {
