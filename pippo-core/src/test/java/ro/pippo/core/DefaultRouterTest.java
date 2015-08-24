@@ -16,7 +16,6 @@
 package ro.pippo.core;
 
 import org.junit.After;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -31,11 +30,12 @@ import java.util.List;
 import java.util.Map;
 
 import static org.hamcrest.CoreMatchers.equalTo;
+import static org.junit.Assert.*;
 
 /**
  * @author Decebal Suiu
  */
-public class DefaultRouterTest extends Assert {
+public class DefaultRouterTest {
 
     private DefaultRouter router;
 
