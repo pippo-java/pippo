@@ -15,17 +15,18 @@
  */
 package ro.pippo.core;
 
-import org.junit.Assert;
 import org.junit.Test;
 import ro.pippo.core.util.PathRegexBuilder;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import static org.junit.Assert.*;
+
 /**
  * @author Decebal Suiu
  */
-public class PathRegexBuilderTest extends Assert {
+public class PathRegexBuilderTest {
 
     @Test
     public void testBuild() throws Exception {

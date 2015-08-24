@@ -16,7 +16,6 @@
 package ro.pippo.core;
 
 import org.junit.After;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -34,10 +33,12 @@ import java.util.Set;
 import java.util.TreeSet;
 import java.util.UUID;
 
+import static org.junit.Assert.*;
+
 /**
  * @author James Moger
  */
-public class ParameterValueTest extends Assert {
+public class ParameterValueTest {
 
     @Rule
     public ExpectedException thrown = ExpectedException.none();
