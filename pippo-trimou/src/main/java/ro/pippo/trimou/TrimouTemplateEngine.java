@@ -43,7 +43,7 @@ import java.util.Map;
  *
  * @author James Moger
  */
-public class TrimouTemplateEngine implements TemplateEngine {
+public class TrimouTemplateEngine implements TemplateEngine<MustacheEngine> {
 
     private static final Logger log = LoggerFactory.getLogger(TrimouTemplateEngine.class);
 
@@ -171,6 +171,11 @@ public class TrimouTemplateEngine implements TemplateEngine {
         } finally {
             localeSupport.remove();
         }
+    }
+
+    @Override
+    public MustacheEngine getEngine() {
+        return engine;
     }
 
     private String getLocalizedTemplateName(String templateName, String localePart) {

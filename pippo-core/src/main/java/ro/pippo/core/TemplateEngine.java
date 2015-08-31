@@ -21,7 +21,7 @@ import java.util.Map;
 /**
  * @author Decebal Suiu
  */
-public interface TemplateEngine {
+public interface TemplateEngine<T> {
 
     public final static String DEFAULT_PATH_PREFIX = "/templates";
 
@@ -43,5 +43,7 @@ public interface TemplateEngine {
     public void renderString(String templateContent, Map<String, Object> model, Writer writer);
 
     public void renderResource(String templateName, Map<String, Object> model, Writer writer);
+
+    public T getEngine();
 
 }

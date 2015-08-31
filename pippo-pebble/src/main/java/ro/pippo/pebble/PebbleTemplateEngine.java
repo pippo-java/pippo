@@ -48,7 +48,7 @@ import com.mitchellbosecke.pebble.template.PebbleTemplate;
  *
  * @author James Moger
  */
-public class PebbleTemplateEngine implements TemplateEngine {
+public class PebbleTemplateEngine implements TemplateEngine<PebbleEngine> {
 
     private final Logger log = LoggerFactory.getLogger(PebbleTemplateEngine.class);
 
@@ -154,6 +154,11 @@ public class PebbleTemplateEngine implements TemplateEngine {
         } catch (Exception e) {
             throw new PippoRuntimeException(e);
         }
+    }
+
+    @Override
+    public PebbleEngine getEngine() {
+        return engine;
     }
 
     private PebbleTemplate getTemplate(String templateName, String localePart) throws PebbleException {

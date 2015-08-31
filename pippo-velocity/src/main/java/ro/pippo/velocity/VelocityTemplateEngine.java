@@ -40,7 +40,7 @@ import java.util.Properties;
 /**
  * @author Decebal Suiu
  */
-public class VelocityTemplateEngine implements TemplateEngine {
+public class VelocityTemplateEngine implements TemplateEngine<VelocityEngine> {
 
     public static final String VM = "vm";
     public static final String FILE_SUFFIX = "." + VM;
@@ -48,7 +48,7 @@ public class VelocityTemplateEngine implements TemplateEngine {
     private Languages languages;
     private Messages messages;
     private Router router;
-    private VelocityEngine velocityEngine;
+    private VelocityEngine engine;
 
     @Override
     public void init(Application application) {
@@ -87,11 +87,7 @@ public class VelocityTemplateEngine implements TemplateEngine {
 //        properties.setProperty("input.encoding","UTF-8");
 //        properties.setProperty("output.encoding","UTF-8");
 
-        velocityEngine = new VelocityEngine(properties);
-    }
-
-    public VelocityEngine getVelocityEngine() {
-        return velocityEngine;
+        engine = new VelocityEngine(properties);
     }
 
     @Override
@@ -126,11 +122,16 @@ public class VelocityTemplateEngine implements TemplateEngine {
 
         // merge the template
         try {
-            Template template = velocityEngine.getTemplate(templateName);
+            Template template = engine.getTemplate(templateName);
             template.merge(context, writer);
         } catch (Exception e) {
             throw new PippoRuntimeException(e);
         }
+    }
+
+    @Override
+    public VelocityEngine getEngine() {
+        return engine;
     }
 
     private VelocityContext createVelocityContext(Map<String, Object> model) {
