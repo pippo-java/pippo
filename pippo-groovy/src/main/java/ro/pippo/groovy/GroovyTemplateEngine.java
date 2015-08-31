@@ -41,7 +41,7 @@ import ro.pippo.core.util.StringUtils;
  *
  * @author James Moger
  */
-public class GroovyTemplateEngine implements TemplateEngine {
+public class GroovyTemplateEngine implements TemplateEngine<MarkupTemplateEngine> {
 
     private static final Logger log = LoggerFactory.getLogger(GroovyTemplateEngine.class);
 
@@ -123,6 +123,11 @@ public class GroovyTemplateEngine implements TemplateEngine {
             log.error("Error processing Groovy template {} ", templateName, e);
             throw new PippoRuntimeException(e);
         }
+    }
+
+    @Override
+    public MarkupTemplateEngine getEngine() {
+        return engine;
     }
 
 }

@@ -15,15 +15,11 @@
  */
 package ro.pippo.jade;
 
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.Reader;
-import java.io.StringReader;
-import java.io.Writer;
-import java.util.Locale;
-import java.util.Map;
-
+import de.neuland.jade4j.Jade4J.Mode;
+import de.neuland.jade4j.JadeConfiguration;
+import de.neuland.jade4j.template.JadeTemplate;
 import de.neuland.jade4j.template.ReaderTemplateLoader;
+import de.neuland.jade4j.template.TemplateLoader;
 import ro.pippo.core.Application;
 import ro.pippo.core.Languages;
 import ro.pippo.core.Messages;
@@ -33,15 +29,19 @@ import ro.pippo.core.PippoSettings;
 import ro.pippo.core.TemplateEngine;
 import ro.pippo.core.route.Router;
 import ro.pippo.core.util.StringUtils;
-import de.neuland.jade4j.Jade4J.Mode;
-import de.neuland.jade4j.JadeConfiguration;
-import de.neuland.jade4j.template.JadeTemplate;
-import de.neuland.jade4j.template.TemplateLoader;
+
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.Reader;
+import java.io.StringReader;
+import java.io.Writer;
+import java.util.Locale;
+import java.util.Map;
 
 /**
  * @author Decebal Suiu
  */
-public class JadeTemplateEngine implements TemplateEngine {
+public class JadeTemplateEngine implements TemplateEngine<JadeConfiguration> {
 
     private Languages languages;
     private Messages messages;
@@ -71,10 +71,6 @@ public class JadeTemplateEngine implements TemplateEngine {
         // set global template variables
         configuration.getSharedVariables().put("contextPath", router.getContextPath());
         configuration.getSharedVariables().put("appPath", router.getApplicationPath());
-    }
-
-    public JadeConfiguration getConfiguration() {
-        return configuration;
     }
 
     @Override
@@ -131,6 +127,11 @@ public class JadeTemplateEngine implements TemplateEngine {
         } catch (Exception e) {
             throw new PippoRuntimeException(e);
         }
+    }
+
+    @Override
+    public JadeConfiguration getEngine() {
+        return configuration;
     }
 
     private static class ClassTemplateLoader implements TemplateLoader {

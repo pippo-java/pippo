@@ -36,7 +36,7 @@ import freemarker.template.Template;
 /**
  * @author Decebal Suiu
  */
-public class FreemarkerTemplateEngine implements TemplateEngine {
+public class FreemarkerTemplateEngine implements TemplateEngine<Configuration> {
 
     public static final String FTL = "ftl";
     public static final String FILE_SUFFIX = "." + FTL;
@@ -100,10 +100,6 @@ public class FreemarkerTemplateEngine implements TemplateEngine {
         publicResourcesMethod = new PublicAtMethod(router);
     }
 
-    public Configuration getConfiguration() {
-        return configuration;
-    }
-
     @Override
     public void renderString(String templateContent, Map<String, Object> model, Writer writer) {
         // prepare the locale-aware i18n method
@@ -159,6 +155,11 @@ public class FreemarkerTemplateEngine implements TemplateEngine {
         } catch (Exception e) {
             throw new PippoRuntimeException(e);
         }
+    }
+
+    @Override
+    public Configuration getEngine() {
+        return configuration;
     }
 
 }
