@@ -98,10 +98,9 @@ public class FreemarkerTemplateEngine implements TemplateEngine {
 
         webjarResourcesMethod = new WebjarsAtMethod(router);
         publicResourcesMethod = new PublicAtMethod(router);
-    }
 
-    public Configuration getConfiguration() {
-        return configuration;
+        // allow custom initialization
+        init(configuration);
     }
 
     @Override
@@ -159,6 +158,9 @@ public class FreemarkerTemplateEngine implements TemplateEngine {
         } catch (Exception e) {
             throw new PippoRuntimeException(e);
         }
+    }
+
+    protected void init(Configuration configuration) {
     }
 
 }

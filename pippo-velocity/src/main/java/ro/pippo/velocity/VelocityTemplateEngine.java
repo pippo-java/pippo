@@ -87,11 +87,10 @@ public class VelocityTemplateEngine implements TemplateEngine {
 //        properties.setProperty("input.encoding","UTF-8");
 //        properties.setProperty("output.encoding","UTF-8");
 
-        velocityEngine = new VelocityEngine(properties);
-    }
+        // allow custom initialization
+        init(properties);
 
-    public VelocityEngine getVelocityEngine() {
-        return velocityEngine;
+        velocityEngine = new VelocityEngine(properties);
     }
 
     @Override
@@ -131,6 +130,9 @@ public class VelocityTemplateEngine implements TemplateEngine {
         } catch (Exception e) {
             throw new PippoRuntimeException(e);
         }
+    }
+
+    protected void init(Properties properties) {
     }
 
     private VelocityContext createVelocityContext(Map<String, Object> model) {

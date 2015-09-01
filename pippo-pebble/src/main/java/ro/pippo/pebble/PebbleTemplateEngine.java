@@ -96,6 +96,9 @@ public class PebbleTemplateEngine implements TemplateEngine {
         // set global template variables
         engine.getGlobalVariables().put("contextPath", router.getContextPath());
         engine.getGlobalVariables().put("appPath", router.getApplicationPath());
+
+        // allow custom initialization
+        init(engine);
     }
 
     @Override
@@ -154,6 +157,9 @@ public class PebbleTemplateEngine implements TemplateEngine {
         } catch (Exception e) {
             throw new PippoRuntimeException(e);
         }
+    }
+
+    protected void init(PebbleEngine engine) {
     }
 
     private PebbleTemplate getTemplate(String templateName, String localePart) throws PebbleException {

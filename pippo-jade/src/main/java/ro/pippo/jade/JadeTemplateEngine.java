@@ -71,10 +71,9 @@ public class JadeTemplateEngine implements TemplateEngine {
         // set global template variables
         configuration.getSharedVariables().put("contextPath", router.getContextPath());
         configuration.getSharedVariables().put("appPath", router.getApplicationPath());
-    }
 
-    public JadeConfiguration getConfiguration() {
-        return configuration;
+        // allow custom initialization
+        init(configuration);
     }
 
     @Override
@@ -131,6 +130,9 @@ public class JadeTemplateEngine implements TemplateEngine {
         } catch (Exception e) {
             throw new PippoRuntimeException(e);
         }
+    }
+
+    protected void init(JadeConfiguration configuration) {
     }
 
     private static class ClassTemplateLoader implements TemplateLoader {

@@ -85,6 +85,10 @@ public class GroovyTemplateEngine implements TemplateEngine {
         GroovyTemplateResolver cachingResolver = new GroovyTemplateResolver(pathPrefix);
 
         ClassLoader classLoader = getClass().getClassLoader();
+
+        // allow custom initialization
+        init(configuration);
+
         engine = new MarkupTemplateEngine(classLoader, configuration, cachingResolver);
     }
 
@@ -123,6 +127,9 @@ public class GroovyTemplateEngine implements TemplateEngine {
             log.error("Error processing Groovy template {} ", templateName, e);
             throw new PippoRuntimeException(e);
         }
+    }
+
+    protected void init(TemplateConfiguration configuration) {
     }
 
 }

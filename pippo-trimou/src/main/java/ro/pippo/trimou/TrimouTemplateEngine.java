@@ -92,6 +92,9 @@ public class TrimouTemplateEngine implements TemplateEngine {
         builder.addGlobalData("contextPath", router.getContextPath());
         builder.addGlobalData("appPath", router.getApplicationPath());
 
+        // allow custom initialization
+        init(builder);
+
         engine = builder.build();
     }
 
@@ -171,6 +174,9 @@ public class TrimouTemplateEngine implements TemplateEngine {
         } finally {
             localeSupport.remove();
         }
+    }
+
+    protected void init(MustacheEngineBuilder builder) {
     }
 
     private String getLocalizedTemplateName(String templateName, String localePart) {
