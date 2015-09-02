@@ -15,7 +15,7 @@
     <description>Fastjson integration</description>
 
     <properties>
-        <fastjson.version>1.2.6</fastjson.version>
+        <fastjson.version>1.2.7</fastjson.version>
     </properties>
 
     <dependencies>
