@@ -88,7 +88,7 @@ public class VelocityTemplateEngine implements TemplateEngine {
 //        properties.setProperty("output.encoding","UTF-8");
 
         // allow custom initialization
-        init(properties);
+        init(application, properties);
 
         velocityEngine = new VelocityEngine(properties);
     }
@@ -132,7 +132,7 @@ public class VelocityTemplateEngine implements TemplateEngine {
         }
     }
 
-    protected void init(Properties properties) {
+    protected void init(Application application, Properties properties) {
     }
 
     private VelocityContext createVelocityContext(Map<String, Object> model) {

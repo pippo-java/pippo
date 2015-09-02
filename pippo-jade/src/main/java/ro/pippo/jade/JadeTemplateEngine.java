@@ -73,7 +73,7 @@ public class JadeTemplateEngine implements TemplateEngine {
         configuration.getSharedVariables().put("appPath", router.getApplicationPath());
 
         // allow custom initialization
-        init(configuration);
+        init(application, configuration);
     }
 
     @Override
@@ -132,7 +132,7 @@ public class JadeTemplateEngine implements TemplateEngine {
         }
     }
 
-    protected void init(JadeConfiguration configuration) {
+    protected void init(Application application, JadeConfiguration configuration) {
     }
 
     private static class ClassTemplateLoader implements TemplateLoader {

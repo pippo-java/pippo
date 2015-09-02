@@ -87,7 +87,7 @@ public class GroovyTemplateEngine implements TemplateEngine {
         ClassLoader classLoader = getClass().getClassLoader();
 
         // allow custom initialization
-        init(configuration);
+        init(application, configuration);
 
         engine = new MarkupTemplateEngine(classLoader, configuration, cachingResolver);
     }
@@ -129,7 +129,7 @@ public class GroovyTemplateEngine implements TemplateEngine {
         }
     }
 
-    protected void init(TemplateConfiguration configuration) {
+    protected void init(Application application, TemplateConfiguration configuration) {
     }
 
 }

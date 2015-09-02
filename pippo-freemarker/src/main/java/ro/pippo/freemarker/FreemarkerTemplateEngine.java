@@ -100,7 +100,7 @@ public class FreemarkerTemplateEngine implements TemplateEngine {
         publicResourcesMethod = new PublicAtMethod(router);
 
         // allow custom initialization
-        init(configuration);
+        init(application, configuration);
     }
 
     @Override
@@ -160,7 +160,7 @@ public class FreemarkerTemplateEngine implements TemplateEngine {
         }
     }
 
-    protected void init(Configuration configuration) {
+    protected void init(Application application, Configuration configuration) {
     }
 
 }

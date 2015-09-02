@@ -98,7 +98,7 @@ public class PebbleTemplateEngine implements TemplateEngine {
         engine.getGlobalVariables().put("appPath", router.getApplicationPath());
 
         // allow custom initialization
-        init(engine);
+        init(application, engine);
     }
 
     @Override
@@ -159,7 +159,7 @@ public class PebbleTemplateEngine implements TemplateEngine {
         }
     }
 
-    protected void init(PebbleEngine engine) {
+    protected void init(Application application, PebbleEngine engine) {
     }
 
     private PebbleTemplate getTemplate(String templateName, String localePart) throws PebbleException {
