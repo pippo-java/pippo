@@ -4,6 +4,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 ### [Unreleased][unreleased]
 #### Fixed
+- [#215]: Fixed CSRF guard ignoring POST requests with content-types that specify a charset
 #### Changed
 - Updated [pippo-pebble] to Pebble 1.5.2
 - Updated [pippo-metrics-librato] to Librato 4.0.1.11
@@ -168,6 +169,7 @@ Initial release.
 [0.3.0]: https://github.com/decebals/pippo/compare/pippo-parent-0.2.0...pippo-parent-0.3.0
 [0.2.0]: https://github.com/decebals/pippo/compare/pippo-parent-0.1.0...pippo-parent-0.2.0
 
+[#215]: https://github.com/decebals/pippo/issues/215
 [#185]: https://github.com/decebals/pippo/issues/185
 [#184]: https://github.com/decebals/pippo/issues/184
 [#183]: https://github.com/decebals/pippo/issues/183

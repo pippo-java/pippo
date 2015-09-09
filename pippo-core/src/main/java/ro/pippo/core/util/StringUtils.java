@@ -212,4 +212,19 @@ public class StringUtils {
         return "";
     }
 
+    /**
+     * Returns the prefix of the input string from 0 to the first index of the delimiter OR it returns the input string.
+     *
+     * @param input
+     * @param delimiter
+     * @return the prefix substring or the entire input string if the delimiter is not found
+     */
+    public static String getPrefix(String input, char delimiter) {
+        int index = input.indexOf(delimiter);
+        if (index > -1) {
+            return input.substring(0, index);
+        }
+        return input;
+    }
+
 }
