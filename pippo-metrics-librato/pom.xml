@@ -22,7 +22,7 @@
 	<description>Librato Metrics integration</description>
 
 	<properties>
-		<librato.version>4.0.1.11</librato.version>
+		<librato.version>4.0.1.12</librato.version>
 	</properties>
 
 	<dependencies>

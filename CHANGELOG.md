@@ -7,7 +7,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 - [#215]: Fixed CSRF guard ignoring POST requests with content-types that specify a charset
 #### Changed
 - Updated [pippo-pebble] to Pebble 1.5.2
-- Updated [pippo-metrics-librato] to Librato 4.0.1.11
+- Updated [pippo-metrics-librato] to Librato 4.0.1.12
 - Updated [pippo-undertow] to Undertow 1.2.9
 - Updated [pippo-freemarker] to Freemarker 2.3.23
 - Updated [pippo-fastjson] to FastJSON 1.2.7
