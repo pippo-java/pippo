@@ -25,6 +25,7 @@ import ro.pippo.core.Session;
 import ro.pippo.core.util.StringUtils;
 
 import java.io.File;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -151,6 +152,13 @@ public class DefaultRouteContext implements RouteContext {
         response.header(name, t.toString());
 
         return t;
+    }
+
+    @Override
+    public Date setHeader(String name, Date date) {
+        response.header(name, date);
+
+        return date;
     }
 
     @Override
