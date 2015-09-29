@@ -22,6 +22,7 @@ import ro.pippo.core.Response;
 import ro.pippo.core.Session;
 
 import java.io.File;
+import java.util.Date;
 import java.util.Map;
 
 /**
@@ -66,6 +67,8 @@ public interface RouteContext {
     public String getHeader(String name);
 
     public <T> T setHeader(String name, T t);
+
+    public Date setHeader(String name, Date date);
 
     public void flashError(String message, Object... args);
 

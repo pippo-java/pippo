@@ -13,6 +13,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 - Updated [pippo-undertow] to Undertow 1.2.12
 - Updated [pippo-trimou] to Trimou 1.8.2
 #### Added
+- [#216]: Add convenience methods for setting date headers
 #### Removed
 
 ### [0.6.0] - 2015-06-03
@@ -169,6 +170,7 @@ Initial release.
 [0.3.0]: https://github.com/decebals/pippo/compare/pippo-parent-0.2.0...pippo-parent-0.3.0
 [0.2.0]: https://github.com/decebals/pippo/compare/pippo-parent-0.1.0...pippo-parent-0.2.0
 
+[#216]: https://github.com/decebals/pippo/issues/216
 [#215]: https://github.com/decebals/pippo/issues/215
 [#185]: https://github.com/decebals/pippo/issues/185
 [#184]: https://github.com/decebals/pippo/issues/184

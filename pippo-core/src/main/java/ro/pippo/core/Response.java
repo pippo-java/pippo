@@ -19,6 +19,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ro.pippo.core.route.RouteContext;
 import ro.pippo.core.route.RouteDispatcher;
+import ro.pippo.core.util.DateUtils;
 import ro.pippo.core.util.IoUtils;
 import ro.pippo.core.util.MimeTypes;
 import ro.pippo.core.util.StringUtils;
@@ -33,6 +34,7 @@ import java.io.InputStream;
 import java.io.StringWriter;
 import java.nio.charset.StandardCharsets;
 import java.util.Collection;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -266,6 +268,21 @@ public final class Response {
         checkCommitted();
 
         getHeaderMap().put(name, value);
+
+        return this;
+    }
+
+    /**
+     * Sets a header.
+     *
+     * @param name
+     * @param value
+     * @return the response
+     */
+    public Response header(String name, Date value) {
+        checkCommitted();
+
+        getHeaderMap().put(name, DateUtils.formatForHttpHeader(value));
 
         return this;
     }
