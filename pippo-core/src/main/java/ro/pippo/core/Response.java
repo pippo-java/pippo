@@ -31,6 +31,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.io.StringWriter;
 import java.nio.charset.StandardCharsets;
 import java.util.Collection;
@@ -1056,6 +1057,22 @@ public final class Response {
         }
 
         return finalizeListeners;
+    }
+
+    public OutputStream getOutputStream() {
+        checkCommitted();
+        finalizeResponse();
+
+        // content type to OCTET_STREAM if it's not set
+        if (getContentType() == null) {
+            contentType(HttpConstants.ContentType.APPLICATION_OCTET_STREAM);
+        }
+
+        try {
+            return httpServletResponse.getOutputStream();
+        } catch (IOException e) {
+            throw new PippoRuntimeException(e);
+        }
     }
 
     public static Response get() {
