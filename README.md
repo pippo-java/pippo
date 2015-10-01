@@ -128,8 +128,8 @@ Open your internet browser and check the routes declared in Application:
 
 Documentation
 ---------------
-Documentation is available on [www.pippo.ro](http://www.pippo.ro)
+Documentation is available on [pippo.ro](http://www.pippo.ro)
 
 Demo
 ---------------
-Demo applications are vailable on [pippo-demo](https://github.com/decebals/pippo-demo)
+Demo applications are available on [pippo-demo](https://github.com/decebals/pippo-demo)
