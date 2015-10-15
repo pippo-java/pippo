@@ -63,29 +63,29 @@ public class ParameterValueTest {
 
     @Test
     public void testBytes() throws Exception {
-        assertEquals(127, new ParameterValue("127").toByte());
-        assertEquals(127, new ParameterValue("127", "96", "64").toByte());
+        assertEquals(127, new ParameterValue("127").toByte().byteValue());
+        assertEquals(127, new ParameterValue("127", "96", "64").toByte().byteValue());
         assertArrayEquals(new byte[]{127, 96, 64}, new ParameterValue("127", "96", "64").to(byte[].class));
     }
 
     @Test
     public void testShorts() throws Exception {
-        assertEquals(4096, new ParameterValue("4096").toShort());
-        assertEquals(4096, new ParameterValue("4096", "2048", "1024").toShort());
+        assertEquals(4096, new ParameterValue("4096").toShort().shortValue());
+        assertEquals(4096, new ParameterValue("4096", "2048", "1024").toShort().shortValue());
         assertArrayEquals(new short[]{4096, 2048, 1024}, new ParameterValue(new String[]{"4096", "2048", "1024"}).to(short[].class));
     }
 
     @Test
     public void testIntegers() throws Exception {
-        assertEquals(131070, new ParameterValue("131070").toInt());
-        assertEquals(131070, new ParameterValue("131070", "65535", "32767").toInt());
+        assertEquals(131070, new ParameterValue("131070").toInt().intValue());
+        assertEquals(131070, new ParameterValue("131070", "65535", "32767").toInt().intValue());
         assertArrayEquals(new int[]{131070, 65535, 32767}, new ParameterValue("131070", "65535", "32767").to(int[].class));
     }
 
     @Test
     public void testLongs() throws Exception {
-        assertEquals(8589934588L, new ParameterValue("8589934588").toLong());
-        assertEquals(8589934588L, new ParameterValue("8589934588", "4294967294", "2147483647").toLong());
+        assertEquals(8589934588L, new ParameterValue("8589934588").toLong().longValue());
+        assertEquals(8589934588L, new ParameterValue("8589934588", "4294967294", "2147483647").toLong().longValue());
         assertArrayEquals(new long[]{8589934588L, 4294967294L, 2147483647L}, new ParameterValue("8589934588", "4294967294", "2147483647").to(long[].class));
     }
 
@@ -273,6 +273,35 @@ public class ParameterValueTest {
         assertEquals(Alphabet.A, new ParameterValue("0").toEnum(Alphabet.class, null, false));
         assertEquals(Alphabet.D, new ParameterValue("3").toEnum(Alphabet.class, null, false));
 
+    }
+
+    @Test
+    public void testNull() {
+        // null value
+        ParameterValue parameterValue = new ParameterValue();
+
+        assertNull(parameterValue.toBoolean());
+        assertNull(parameterValue.toCharacter());
+        assertNull(parameterValue.toByte());
+        assertNull(parameterValue.toShort());
+        assertNull(parameterValue.toInt());
+        assertNull(parameterValue.toLong());
+        assertNull(parameterValue.toFloat());
+        assertNull(parameterValue.toDouble());
+        assertNull(parameterValue.toBigDecimal());
+
+        // empty value
+        parameterValue = new ParameterValue("");
+
+        assertNull(parameterValue.toBoolean());
+        assertNull(parameterValue.toCharacter());
+        assertNull(parameterValue.toByte());
+        assertNull(parameterValue.toShort());
+        assertNull(parameterValue.toInt());
+        assertNull(parameterValue.toLong());
+        assertNull(parameterValue.toFloat());
+        assertNull(parameterValue.toDouble());
+        assertNull(parameterValue.toBigDecimal());
     }
 
     public static enum Alphabet {
