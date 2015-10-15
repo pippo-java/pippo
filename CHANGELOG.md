@@ -13,6 +13,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 - Updated [pippo-undertow] to Undertow 1.3.0
 - Updated [pippo-trimou] to Trimou 1.8.2
 - Updated [pippo-jetty] to Jetty 9.3.5
+- Updated [pippo-jackson] to Jackson 2.6.3
 #### Added
 - [#217]: Add convenience methods for setting date headers
 - [#218]: Add Response method to finalize a response and return the OutputStream for custom streaming
