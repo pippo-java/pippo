@@ -57,6 +57,9 @@ public class ParameterValueTest {
         assertEquals(true, new ParameterValue("true", "true", "true").toBoolean());
         assertEquals(true, new ParameterValue("yes").toBoolean());
         assertEquals(true, new ParameterValue("on").toBoolean());
+        assertEquals(true, new ParameterValue("1").toBoolean());
+        assertEquals(true, new ParameterValue("2").toBoolean());
+        assertEquals(false, new ParameterValue("0").toBoolean());
         assertArrayEquals(new Boolean[]{true, false, true}, new ParameterValue("true", "false", "true").to(Boolean[].class));
         assertArrayEquals(new Boolean[]{true, true, true}, new ParameterValue("true", "yes", "on").to(Boolean[].class));
     }

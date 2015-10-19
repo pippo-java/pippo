@@ -63,6 +63,11 @@ public class ParameterValue implements Serializable {
             case "on":
                 return true;
             default:
+                try {
+                    return Integer.parseInt(values[0]) > 0;
+                } catch (NumberFormatException e) {
+                    // NaN
+                }
                 return Boolean.parseBoolean(values[0]);
         }
     }
