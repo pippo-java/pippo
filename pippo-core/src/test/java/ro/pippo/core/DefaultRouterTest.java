@@ -191,6 +191,112 @@ public class DefaultRouterTest {
     }
 
     @Test
+    public void testPosixAlpha() throws Exception {
+        Route route = new Route("/user/{login: :alpha:+}/todo/{id: :digit:+}", HttpConstants.Method.GET,
+            new EmptyRouteHandler());
+        router.addRoute(route);
+
+        List<RouteMatch> routeMatches = router.findRoutes("/user/jämяs/todo/57", HttpConstants.Method.GET);
+        assertEquals(1, routeMatches.size());
+
+        Map<String, String> pathParameters = routeMatches.get(0).getPathParameters();
+        assertNotNull(pathParameters);
+        assertEquals(2, pathParameters.size());
+        assertTrue(pathParameters.containsKey("login"));
+        assertEquals("jämяs", pathParameters.get("login"));
+        assertTrue(pathParameters.containsKey("id"));
+        assertEquals("57", pathParameters.get("id"));
+    }
+
+    @Test
+    public void testPosixAlpha2() throws Exception {
+        Route route = new Route("/user/{login: [:digit::alpha:-_\\+\\.]+}/todo/{id: :digit:+}", HttpConstants.Method.GET,
+            new EmptyRouteHandler());
+        router.addRoute(route);
+
+        List<RouteMatch> routeMatches = router.findRoutes("/user/j.ä_я3-s/todo/57", HttpConstants.Method.GET);
+        assertEquals(1, routeMatches.size());
+
+        Map<String, String> pathParameters = routeMatches.get(0).getPathParameters();
+        assertNotNull(pathParameters);
+        assertEquals(2, pathParameters.size());
+        assertTrue(pathParameters.containsKey("login"));
+        assertEquals("j.ä_я3-s", pathParameters.get("login"));
+        assertTrue(pathParameters.containsKey("id"));
+        assertEquals("57", pathParameters.get("id"));
+    }
+
+    @Test
+    public void testPosixAlnum() throws Exception {
+        Route route = new Route("/user/{login: :alnum:+}", HttpConstants.Method.GET,
+            new EmptyRouteHandler());
+        router.addRoute(route);
+
+        List<RouteMatch> routeMatches = router.findRoutes("/user/james5", HttpConstants.Method.GET);
+        assertEquals(1, routeMatches.size());
+
+        Map<String, String> pathParameters = routeMatches.get(0).getPathParameters();
+        assertNotNull(pathParameters);
+        assertEquals(1, pathParameters.size());
+        assertTrue(pathParameters.containsKey("login"));
+        assertEquals("james5", pathParameters.get("login"));
+    }
+
+    @Test
+    public void testPosixDigit() throws Exception {
+        Route route = new Route("/contact/{id: :digit:+}/{field: :alpha:+}", HttpConstants.Method.GET,
+            new EmptyRouteHandler());
+        router.addRoute(route);
+
+        List<RouteMatch> routeMatches = router.findRoutes("/contact/57/telephone", HttpConstants.Method.GET);
+        assertEquals(1, routeMatches.size());
+
+        Map<String, String> pathParameters = routeMatches.get(0).getPathParameters();
+        assertNotNull(pathParameters);
+        assertEquals(2, pathParameters.size());
+        assertTrue(pathParameters.containsKey("id"));
+        assertEquals("57", pathParameters.get("id"));
+        assertTrue(pathParameters.containsKey("field"));
+        assertEquals("telephone", pathParameters.get("field"));
+    }
+
+    @Test
+    public void testPosixHexDigit() throws Exception {
+        Route route = new Route("/contact/{id: :xdigit:+}/{field: :digit:+}", HttpConstants.Method.GET,
+            new EmptyRouteHandler());
+        router.addRoute(route);
+
+        List<RouteMatch> routeMatches = router.findRoutes("/contact/5ace076/97", HttpConstants.Method.GET);
+        assertEquals(1, routeMatches.size());
+
+        Map<String, String> pathParameters = routeMatches.get(0).getPathParameters();
+        assertNotNull(pathParameters);
+        assertEquals(2, pathParameters.size());
+        assertTrue(pathParameters.containsKey("id"));
+        assertEquals("5ace076", pathParameters.get("id"));
+        assertTrue(pathParameters.containsKey("field"));
+        assertEquals("97", pathParameters.get("field"));
+    }
+
+    @Test
+    public void testPosixASCII() throws Exception {
+        Route route = new Route("/contact/{id: :ascii:+}/{field: :digit:+}", HttpConstants.Method.GET,
+            new EmptyRouteHandler());
+        router.addRoute(route);
+
+        List<RouteMatch> routeMatches = router.findRoutes("/contact/5ace076/97", HttpConstants.Method.GET);
+        assertEquals(1, routeMatches.size());
+
+        Map<String, String> pathParameters = routeMatches.get(0).getPathParameters();
+        assertNotNull(pathParameters);
+        assertEquals(2, pathParameters.size());
+        assertTrue(pathParameters.containsKey("id"));
+        assertEquals("5ace076", pathParameters.get("id"));
+        assertTrue(pathParameters.containsKey("field"));
+        assertEquals("97", pathParameters.get("field"));
+    }
+
+    @Test
     public void testWebjarsRoute() throws Exception {
         WebjarsResourceHandler webjars = new WebjarsResourceHandler();
         Route route = new Route(webjars.getUriPattern(), HttpConstants.Method.GET, new EmptyRouteHandler());

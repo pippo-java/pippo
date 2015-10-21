@@ -18,6 +18,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 #### Added
 - [#217]: Add convenience methods for setting date headers
 - [#218]: Add Response method to finalize a response and return the OutputStream for custom streaming
+- [#220]: Add support for `:alnum:`, `:alpha:`, `:ascii:`, `:digit:`, `:xdigit:` POSIX character classes for URL path parameters. This allows use of UTF-8 in path parameters.
 #### Removed
 
 ### [0.6.0] - 2015-06-03
@@ -174,6 +175,7 @@ Initial release.
 [0.3.0]: https://github.com/decebals/pippo/compare/pippo-parent-0.2.0...pippo-parent-0.3.0
 [0.2.0]: https://github.com/decebals/pippo/compare/pippo-parent-0.1.0...pippo-parent-0.2.0
 
+[#220]: https://github.com/decebals/pippo/issues/220
 [#218]: https://github.com/decebals/pippo/issues/218
 [#217]: https://github.com/decebals/pippo/issues/217
 [#215]: https://github.com/decebals/pippo/issues/215
