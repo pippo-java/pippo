@@ -332,7 +332,8 @@ public class DefaultRouter implements Router {
 
             if (namedVariablePartOfRoute != null) {
                 // we convert that into a regex matcher group itself
-                namedVariablePartOfORouteReplacedWithRegex = "(" + Matcher.quoteReplacement(namedVariablePartOfRoute) + ")";
+                String variableRegex = replacePosixClasses(namedVariablePartOfRoute);
+                namedVariablePartOfORouteReplacedWithRegex = "(" + Matcher.quoteReplacement(variableRegex) + ")";
             } else {
                 // we convert that into the default namedVariablePartOfRoute regex group
                 namedVariablePartOfORouteReplacedWithRegex = VARIABLE_ROUTES_DEFAULT_REGEX;
@@ -345,6 +346,21 @@ public class DefaultRouter implements Router {
         matcher.appendTail(buffer);
 
         return buffer.toString();
+    }
+
+    /**
+     * Replace any specified POSIX character classes with the Java equivalent.
+     *
+     * @param input
+     * @return a Java regex
+     */
+    private String replacePosixClasses(String input) {
+        return input
+            .replace(":alnum:", "\\p{Alnum}")
+            .replace(":alpha:", "\\p{L}")
+            .replace(":ascii:", "\\p{ASCII}")
+            .replace(":digit:", "\\p{Digit}")
+            .replace(":xdigit:", "\\p{XDigit}");
     }
 
     /**
