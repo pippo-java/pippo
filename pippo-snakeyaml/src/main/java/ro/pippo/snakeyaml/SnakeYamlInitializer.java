@@ -15,8 +15,6 @@
  */
 package ro.pippo.snakeyaml;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import ro.pippo.core.Application;
 import ro.pippo.core.Initializer;
 
@@ -24,8 +22,6 @@ import ro.pippo.core.Initializer;
  * @author James Moger
  */
 public class SnakeYamlInitializer implements Initializer {
-
-    private static final Logger log = LoggerFactory.getLogger(SnakeYamlInitializer.class);
 
     @Override
     public void init(Application application) {
