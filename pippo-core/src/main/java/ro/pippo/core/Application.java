@@ -32,20 +32,13 @@ import ro.pippo.core.route.Router;
 import ro.pippo.core.route.WebjarsResourceHandler;
 import ro.pippo.core.util.HttpCacheToolkit;
 import ro.pippo.core.util.MimeTypes;
-import ro.pippo.core.util.StringUtils;
+import ro.pippo.core.util.ServiceLocator;
 
 import java.io.File;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.Reader;
-import java.net.URL;
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
-import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Properties;
 
 /**
  * @author Decebal Suiu
@@ -397,38 +390,7 @@ public class Application {
     }
 
     private List<Initializer> getInitializers() {
-        try {
-            List<Initializer> initializers = new ArrayList<>();
-
-            ClassLoader classLoader = getClass().getClassLoader();
-            Enumeration<URL> resources = classLoader.getResources("pippo.properties");
-            while (resources.hasMoreElements()) {
-                URL resource = resources.nextElement();
-                log.debug("Read '{}'", resource.getFile());
-                Properties properties = new Properties();
-                try (Reader reader = new InputStreamReader(resource.openStream(), StandardCharsets.UTF_8)) {
-                    properties.load(reader);
-                } catch (IOException e) {
-                    log.error("Failed to read '{}'", resource.getFile(), e);
-                    continue;
-                }
-
-                String initializerClassName = properties.getProperty("initializer");
-                if (StringUtils.isNullOrEmpty(initializerClassName)) {
-                    log.warn("'{}' does not specify an 'initializer' setting!", resource.getFile());
-                } else {
-                    log.debug("Found initializer '{}'", initializerClassName);
-                    Class<Initializer> initializerClass = (Class<Initializer>) classLoader.loadClass(initializerClassName);
-
-                    Initializer initializer = initializerClass.newInstance();
-                    initializers.add(initializer);
-                }
-            }
-
-            return initializers;
-        } catch (IOException | InstantiationException | IllegalAccessException | ClassNotFoundException e) {
-            throw new PippoRuntimeException("Failed to locate Initializers", e);
-        }
+        return ServiceLocator.locateAll(Initializer.class);
     }
 
     @Override
