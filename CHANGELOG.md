@@ -3,8 +3,13 @@ All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
 ### [Unreleased][unreleased]
+
 #### Fixed
+- [#188]: Fix alias substitution in webjars paths
+- [#206]: Problem wtih Request.updateEntityFromParameters method
 - [#215]: Fixed CSRF guard ignoring POST requests with content-types that specify a charset
+- [#219]: Java8 build fails with javadoc warning 
+
 #### Changed
 - Updated [pippo-pebble] to Pebble 1.5.2
 - Updated [pippo-metrics-librato] to Librato 4.0.1.12
@@ -14,11 +19,19 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 - Updated [pippo-trimou] to Trimou 1.8.2
 - Updated [pippo-jetty] to Jetty 9.3.5
 - Updated [pippo-jackson] to Jackson 2.6.3
+- Upgrade [pippo-tomcat] to Tomcat version 8.0.24
 - Add support for simple integer->boolean conversion in ParameterValue
+- [#221]: Use standard java service loader mechanism via ServiceLocator and remove pippo.properties files
+- [#189]: Register Json, Xml, and Yaml engines with [pippo-jackson]
+- Move demo applications to pippo-demo repository
+
 #### Added
+- [#207]: Add PathRegexBuilder 
+- [#211]: Add custom Filters, Extensions in PebbleEngine from Application
 - [#217]: Add convenience methods for setting date headers
 - [#218]: Add Response method to finalize a response and return the OutputStream for custom streaming
 - [#220]: Add support for `:alnum:`, `:alpha:`, `:ascii:`, `:digit:`, `:xdigit:` POSIX character classes for URL path parameters. This allows use of UTF-8 in path parameters.
+
 #### Removed
 
 ### [0.6.0] - 2015-06-03
@@ -175,10 +188,17 @@ Initial release.
 [0.3.0]: https://github.com/decebals/pippo/compare/pippo-parent-0.2.0...pippo-parent-0.3.0
 [0.2.0]: https://github.com/decebals/pippo/compare/pippo-parent-0.1.0...pippo-parent-0.2.0
 
+[#221]: https://github.com/decebals/pippo/issues/221
 [#220]: https://github.com/decebals/pippo/issues/220
+[#219]: https://github.com/decebals/pippo/issues/219
 [#218]: https://github.com/decebals/pippo/issues/218
 [#217]: https://github.com/decebals/pippo/issues/217
 [#215]: https://github.com/decebals/pippo/issues/215
+[#211]: https://github.com/decebals/pippo/issues/211
+[#207]: https://github.com/decebals/pippo/issues/207
+[#206]: https://github.com/decebals/pippo/issues/206
+[#189]: https://github.com/decebals/pippo/issues/189
+[#188]: https://github.com/decebals/pippo/issues/188
 [#185]: https://github.com/decebals/pippo/issues/185
 [#184]: https://github.com/decebals/pippo/issues/184
 [#183]: https://github.com/decebals/pippo/issues/183
