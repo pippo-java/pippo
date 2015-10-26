@@ -38,14 +38,12 @@ public class SnakeYamlEngine implements ContentTypeEngine {
 
     @Override
     public String toString(Object object) {
-        String content = new Yaml().dump(object);
-        return content;
+        return new Yaml().dump(object);
     }
 
     @Override
     public <T> T fromString(String content, Class<T> classOfT) {
-        Object o = new Yaml().load(content);
-        return (T) o;
+        return (T) new Yaml().load(content);
     }
 
 }
