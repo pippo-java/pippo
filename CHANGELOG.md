@@ -15,7 +15,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 - Updated [pippo-metrics-librato] to Librato 4.0.1.12
 - Updated [pippo-freemarker] to Freemarker 2.3.23
 - Updated [pippo-fastjson] to FastJSON 1.2.7
-- Updated [pippo-undertow] to Undertow 1.3.4
+- Updated [pippo-undertow] to Undertow 1.3.5
 - Updated [pippo-trimou] to Trimou 1.8.2
 - Updated [pippo-jetty] to Jetty 9.3.5
 - Updated [pippo-jackson] to Jackson 2.6.3
