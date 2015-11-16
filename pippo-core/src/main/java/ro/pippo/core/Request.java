@@ -147,16 +147,22 @@ public final class Request {
                 // support indexed parameter arrays e.g. setting[0], setting[1], setting[2]
                 int brk = name.indexOf('[');
                 String base = name.substring(0, brk);
-                int idx = Integer.parseInt(name.substring(brk + 1, name.length() - 1));
-                if (!arrays.containsKey(base)) {
-                    // use an ordered map because we can not rely on parameter
-                    // order from the servlet container nor from the request
-                    arrays.put(base, new TreeMap<Integer, String>());
-                }
+                try {
+                    // added try-catch for requests in the form //server/?a[123123123123123123123123123123], defaults to string param
+                    int idx = Integer.parseInt(name.substring(brk + 1, name.length() - 1));
+                    if (!arrays.containsKey(base)) {
+                        // use an ordered map because we can not rely on parameter
+                        // order from the servlet container nor from the request
+                        arrays.put(base, new TreeMap<Integer, String>());
+                    }
 
-                Map<Integer, String> map = arrays.get(base);
-                String value = httpServletRequest.getParameterValues(name)[0];
-                map.put(idx, value);
+                    Map<Integer, String> map = arrays.get(base);
+                    String value = httpServletRequest.getParameterValues(name)[0];
+                    map.put(idx, value);
+                } catch (Exception ex) {
+                    String[] values = httpServletRequest.getParameterValues(name);
+                    tmp.put(name, new ParameterValue(values));
+                }
             } else {
                 String[] values = httpServletRequest.getParameterValues(name);
                 tmp.put(name, new ParameterValue(values));
