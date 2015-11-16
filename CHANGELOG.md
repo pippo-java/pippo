@@ -190,7 +190,8 @@ Initial release.
 - Added [pippo-freemarker]
 - Added [pippo-jetty]
 
-[unreleased]: https://github.com/decebals/pippo/compare/release-0.6.0...HEAD
+[unreleased]: https://github.com/decebals/pippo/compare/release-0.7.0...HEAD
+[0.7.0]: https://github.com/decebals/pippo/compare/release-0.6.0...release-0.7.0
 [0.6.0]: https://github.com/decebals/pippo/compare/release-0.5.0...release-0.6.0
 [0.5.0]: https://github.com/decebals/pippo/compare/release-0.4.2...release-0.5.0
 [0.4.2]: https://github.com/decebals/pippo/compare/release-0.4.1...release-0.4.2
