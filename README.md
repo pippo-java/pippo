@@ -5,8 +5,10 @@ Micro Java Web Framework
 [![Coverage Status](https://coveralls.io/repos/decebals/pippo/badge.svg?branch=master&service=github)](https://coveralls.io/github/decebals/pippo?branch=master)
 [![Maven Central](http://img.shields.io/maven-central/v/ro.pippo/pippo.svg)](http://search.maven.org/#search|ga|1|ro.pippo)
 
+<!--
 [![Issue Stats](http://www.issuestats.com/github/decebals/pippo/badge/issue?style=flat)](http://www.issuestats.com/github/decebals/pippo)
 [![Issue Stats](http://www.issuestats.com/github/decebals/pippo/badge/pr?style=flat)](http://www.issuestats.com/github/decebals/pippo)
+-->
 
 
 It's an open source (Apache License) micro web framework in Java, with minimal dependencies and a quick learning curve.     
