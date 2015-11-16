@@ -5,6 +5,17 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 ### [Unreleased][unreleased]
 
 #### Fixed
+- [#209]: Exception handling for requests with arrays and very large numbers
+
+#### Changed
+
+#### Added
+
+#### Removed
+
+### [0.7.0] - 2015-11-09
+
+#### Fixed
 - [#188]: Fix alias substitution in webjars paths
 - [#206]: Problem wtih Request.updateEntityFromParameters method
 - [#215]: Fixed CSRF guard ignoring POST requests with content-types that specify a charset
@@ -195,6 +206,7 @@ Initial release.
 [#217]: https://github.com/decebals/pippo/issues/217
 [#215]: https://github.com/decebals/pippo/issues/215
 [#211]: https://github.com/decebals/pippo/issues/211
+[#209]: https://github.com/decebals/pippo/issues/209
 [#207]: https://github.com/decebals/pippo/issues/207
 [#206]: https://github.com/decebals/pippo/issues/206
 [#189]: https://github.com/decebals/pippo/issues/189
