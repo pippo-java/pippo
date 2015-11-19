@@ -134,4 +134,5 @@ Documentation is available on [pippo.ro](http://www.pippo.ro)
 
 Demo
 ---------------
-Demo applications are available on [pippo-demo](https://github.com/decebals/pippo-demo)
+Demo applications are available on [pippo-demo](https://github.com/decebals/pippo-demo)   
+For a real life application built with Pippo please look at [Web Accounting - Pippo Demo](https://github.com/decebals/matilda)
