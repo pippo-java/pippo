@@ -8,6 +8,9 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 - [#209]: Exception handling for requests with arrays and very large numbers
 
 #### Changed
+- Upgrade [pippo-tomcat] to Tomcat version 8.0.28
+- Upgrade [pippo-weld] to Weld version 2.3.1.Final
+- Upgrade [pippo-less4j] to Less4j version 1.15.2
 
 #### Added
 
