@@ -11,7 +11,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 - Upgrade [pippo-tomcat] to Tomcat version 8.0.28
 - Upgrade [pippo-weld] to Weld version 2.3.1.Final
 - Upgrade [pippo-less4j] to Less4j version 1.15.2
-- Upgrade [pippo-undertow] to Undertow 1.3.6
+- Upgrade [pippo-undertow] to Undertow 1.3.7
 
 #### Added
 
