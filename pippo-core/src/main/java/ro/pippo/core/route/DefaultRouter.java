@@ -142,7 +142,7 @@ public class DefaultRouter implements Router {
     }
 
     @Override
-    public List<RouteMatch> findRoutes(String requestUri, String requestMethod) {
+    public List<RouteMatch> findRoutes(String requestMethod, String requestUri) {
         log.trace("Finding route matches for {} '{}'", requestMethod, requestUri);
 
         List<RouteMatch> routeMatches = new ArrayList<>();

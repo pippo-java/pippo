@@ -103,15 +103,15 @@ public class DefaultRouterTest {
         Route route = new Route(HttpConstants.Method.GET, "/contact", new EmptyRouteHandler());
         router.addRoute(route);
 
-        List<RouteMatch> routeMatches = router.findRoutes("/contact", HttpConstants.Method.GET);
+        List<RouteMatch> routeMatches = router.findRoutes(HttpConstants.Method.GET, "/contact");
         assertNotNull(routeMatches);
         assertEquals(1, routeMatches.size());
 
-        routeMatches = router.findRoutes("/contact", HttpConstants.Method.POST);
+        routeMatches = router.findRoutes(HttpConstants.Method.POST, "/contact");
         assertNotNull(routeMatches);
         assertEquals(0, routeMatches.size());
 
-        routeMatches = router.findRoutes("/", HttpConstants.Method.GET);
+        routeMatches = router.findRoutes(HttpConstants.Method.GET, "/");
         assertNotNull(routeMatches);
         assertEquals(0, routeMatches.size());
     }
@@ -121,7 +121,7 @@ public class DefaultRouterTest {
         Route route = new Route(HttpConstants.Method.GET, "/contact/{id}", new EmptyRouteHandler());
         router.addRoute(route);
 
-        List<RouteMatch> routeMatches = router.findRoutes("/contact/3", HttpConstants.Method.GET);
+        List<RouteMatch> routeMatches = router.findRoutes(HttpConstants.Method.GET, "/contact/3");
         assertEquals(1, routeMatches.size());
 
         Map<String, String> pathParameters = routeMatches.get(0).getPathParameters();
@@ -136,7 +136,7 @@ public class DefaultRouterTest {
         Route route = new Route(HttpConstants.Method.GET, "/.*", new EmptyRouteHandler());
         router.addRoute(route);
 
-        List<RouteMatch> routeMatches = router.findRoutes("/contact/3", HttpConstants.Method.GET);
+        List<RouteMatch> routeMatches = router.findRoutes(HttpConstants.Method.GET, "/contact/3");
         assertEquals(1, routeMatches.size());
     }
 
@@ -145,7 +145,7 @@ public class DefaultRouterTest {
         Route route = new Route(HttpConstants.Method.PATCH, "/contact/{id}", new EmptyRouteHandler());
         router.addRoute(route);
 
-        List<RouteMatch> routeMatches = router.findRoutes("/contact/3", HttpConstants.Method.PATCH);
+        List<RouteMatch> routeMatches = router.findRoutes(HttpConstants.Method.PATCH, "/contact/3");
         assertEquals(1, routeMatches.size());
 
         Map<String, String> pathParameters = routeMatches.get(0).getPathParameters();
@@ -160,7 +160,7 @@ public class DefaultRouterTest {
         Route route = new Route(HttpConstants.Method.PATCH, "/contact/{id: [0-9]+}", new EmptyRouteHandler());
         router.addRoute(route);
 
-        List<RouteMatch> routeMatches = router.findRoutes("/contact/3", HttpConstants.Method.PATCH);
+        List<RouteMatch> routeMatches = router.findRoutes(HttpConstants.Method.PATCH, "/contact/3");
         assertEquals(1, routeMatches.size());
 
         Map<String, String> pathParameters = routeMatches.get(0).getPathParameters();
@@ -169,7 +169,7 @@ public class DefaultRouterTest {
         assertTrue(pathParameters.containsKey("id"));
         assertEquals(String.valueOf(3), pathParameters.get("id"));
 
-        routeMatches = router.findRoutes("/contact/a", HttpConstants.Method.PATCH);
+        routeMatches = router.findRoutes(HttpConstants.Method.PATCH, "/contact/a");
         assertEquals(0, routeMatches.size());
     }
 
@@ -179,7 +179,7 @@ public class DefaultRouterTest {
             new EmptyRouteHandler());
         router.addRoute(route);
 
-        List<RouteMatch> routeMatches = router.findRoutes("/contact/3/something/borrowed", HttpConstants.Method.GET);
+        List<RouteMatch> routeMatches = router.findRoutes(HttpConstants.Method.GET, "/contact/3/something/borrowed");
         assertEquals(1, routeMatches.size());
 
         Map<String, String> pathParameters = routeMatches.get(0).getPathParameters();
@@ -196,7 +196,7 @@ public class DefaultRouterTest {
             new EmptyRouteHandler());
         router.addRoute(route);
 
-        List<RouteMatch> routeMatches = router.findRoutes("/user/jämяs/todo/57", HttpConstants.Method.GET);
+        List<RouteMatch> routeMatches = router.findRoutes(HttpConstants.Method.GET, "/user/jämяs/todo/57");
         assertEquals(1, routeMatches.size());
 
         Map<String, String> pathParameters = routeMatches.get(0).getPathParameters();
@@ -214,7 +214,7 @@ public class DefaultRouterTest {
             new EmptyRouteHandler());
         router.addRoute(route);
 
-        List<RouteMatch> routeMatches = router.findRoutes("/user/j.ä_я3-s/todo/57", HttpConstants.Method.GET);
+        List<RouteMatch> routeMatches = router.findRoutes(HttpConstants.Method.GET, "/user/j.ä_я3-s/todo/57");
         assertEquals(1, routeMatches.size());
 
         Map<String, String> pathParameters = routeMatches.get(0).getPathParameters();
@@ -232,7 +232,7 @@ public class DefaultRouterTest {
             new EmptyRouteHandler());
         router.addRoute(route);
 
-        List<RouteMatch> routeMatches = router.findRoutes("/user/james5", HttpConstants.Method.GET);
+        List<RouteMatch> routeMatches = router.findRoutes(HttpConstants.Method.GET, "/user/james5");
         assertEquals(1, routeMatches.size());
 
         Map<String, String> pathParameters = routeMatches.get(0).getPathParameters();
@@ -248,7 +248,7 @@ public class DefaultRouterTest {
             new EmptyRouteHandler());
         router.addRoute(route);
 
-        List<RouteMatch> routeMatches = router.findRoutes("/contact/57/telephone", HttpConstants.Method.GET);
+        List<RouteMatch> routeMatches = router.findRoutes(HttpConstants.Method.GET, "/contact/57/telephone");
         assertEquals(1, routeMatches.size());
 
         Map<String, String> pathParameters = routeMatches.get(0).getPathParameters();
@@ -266,7 +266,7 @@ public class DefaultRouterTest {
             new EmptyRouteHandler());
         router.addRoute(route);
 
-        List<RouteMatch> routeMatches = router.findRoutes("/contact/5ace076/97", HttpConstants.Method.GET);
+        List<RouteMatch> routeMatches = router.findRoutes(HttpConstants.Method.GET, "/contact/5ace076/97");
         assertEquals(1, routeMatches.size());
 
         Map<String, String> pathParameters = routeMatches.get(0).getPathParameters();
@@ -284,7 +284,7 @@ public class DefaultRouterTest {
             new EmptyRouteHandler());
         router.addRoute(route);
 
-        List<RouteMatch> routeMatches = router.findRoutes("/contact/5ace076/97", HttpConstants.Method.GET);
+        List<RouteMatch> routeMatches = router.findRoutes(HttpConstants.Method.GET, "/contact/5ace076/97");
         assertEquals(1, routeMatches.size());
 
         Map<String, String> pathParameters = routeMatches.get(0).getPathParameters();
@@ -302,8 +302,8 @@ public class DefaultRouterTest {
         Route route = new Route(HttpConstants.Method.GET, webjars.getUriPattern(), new EmptyRouteHandler());
         router.addRoute(route);
 
-        List<RouteMatch> routeMatches = router.findRoutes("/webjars/bootstrap/3.0.2/css/bootstrap.min.css",
-            HttpConstants.Method.GET);
+        List<RouteMatch> routeMatches = router.findRoutes(HttpConstants.Method.GET, "/webjars/bootstrap/3.0.2/css/bootstrap.min.css"
+        );
         assertEquals(1, routeMatches.size());
     }
 
@@ -314,9 +314,9 @@ public class DefaultRouterTest {
         // /////////////////////////////////////////////////////////////////////
         router.addRoute(new Route(HttpConstants.Method.GET, "/{name}/dashboard", new EmptyRouteHandler()));
 
-        assertEquals(0, router.findRoutes("/dashboard", HttpConstants.Method.GET).size());
+        assertEquals(0, router.findRoutes(HttpConstants.Method.GET, "/dashboard").size());
 
-        List<RouteMatch> matches = router.findRoutes("/John/dashboard", HttpConstants.Method.GET);
+        List<RouteMatch> matches = router.findRoutes(HttpConstants.Method.GET, "/John/dashboard");
         assertEquals(1, matches.size());
         assertEquals("John", matches.get(0).getPathParameters().get("name"));
 
@@ -325,9 +325,9 @@ public class DefaultRouterTest {
         // /////////////////////////////////////////////////////////////////////
         router.addRoute(new Route(HttpConstants.Method.GET, "/{name}/{id}/dashboard", new EmptyRouteHandler()));
 
-        assertEquals(0, router.findRoutes("/dashboard", HttpConstants.Method.GET).size());
+        assertEquals(0, router.findRoutes(HttpConstants.Method.GET, "/dashboard").size());
 
-        matches = router.findRoutes("/John/20/dashboard", HttpConstants.Method.GET);
+        matches = router.findRoutes(HttpConstants.Method.GET, "/John/20/dashboard");
         assertEquals(1, matches.size());
         assertEquals("John", matches.get(0).getPathParameters().get("name"));
         assertEquals("20", matches.get(0).getPathParameters().get("id"));
@@ -337,19 +337,19 @@ public class DefaultRouterTest {
     public void testParametersAndRegex() throws Exception {
         router.addRoute(new Route(HttpConstants.Method.GET, "/John/{id}/.*", new EmptyRouteHandler()));
 
-        List<RouteMatch> matches = router.findRoutes("/John/20/dashboard", HttpConstants.Method.GET);
+        List<RouteMatch> matches = router.findRoutes(HttpConstants.Method.GET, "/John/20/dashboard");
         assertEquals(1, matches.size());
         RouteMatch match = matches.get(0);
         assertEquals(1, match.getPathParameters().size());
         assertEquals("20", match.getPathParameters().get("id"));
 
-        matches = router.findRoutes("/John/20/admin", HttpConstants.Method.GET);
+        matches = router.findRoutes(HttpConstants.Method.GET, "/John/20/admin");
         assertEquals(1, matches.size());
         match = matches.get(0);
         assertEquals(1, match.getPathParameters().size());
         assertEquals("20", match.getPathParameters().get("id"));
 
-        matches = router.findRoutes("/John/20/mock", HttpConstants.Method.GET);
+        matches = router.findRoutes(HttpConstants.Method.GET, "/John/20/mock");
         assertEquals(1, matches.size());
         match = matches.get(0);
         assertEquals(1, match.getPathParameters().size());
@@ -361,21 +361,21 @@ public class DefaultRouterTest {
         router.addRoute(new Route(HttpConstants.Method.GET, "/public/{path: .*}", new EmptyRouteHandler()));
 
         String pathUnderTest = "/public/css/app.css";
-        List<RouteMatch> matches = router.findRoutes(pathUnderTest, HttpConstants.Method.GET);
+        List<RouteMatch> matches = router.findRoutes(HttpConstants.Method.GET, pathUnderTest);
         assertEquals(1, matches.size());
         RouteMatch match = matches.get(0);
         assertEquals(1, match.getPathParameters().size());
         assertEquals("css/app.css", match.getPathParameters().get("path"));
 
         pathUnderTest = "/public/js/main.js";
-        matches = router.findRoutes(pathUnderTest, HttpConstants.Method.GET);
+        matches = router.findRoutes(HttpConstants.Method.GET, pathUnderTest);
         assertEquals(1, matches.size());
         match = matches.get(0);
         assertEquals(1, match.getPathParameters().size());
         assertEquals("js/main.js", match.getPathParameters().get("path"));
 
         pathUnderTest = "/public/robots.txt";
-        matches = router.findRoutes(pathUnderTest, HttpConstants.Method.GET);
+        matches = router.findRoutes(HttpConstants.Method.GET, pathUnderTest);
         assertEquals(1, matches.size());
         match = matches.get(0);
         assertEquals(1, match.getPathParameters().size());
@@ -385,14 +385,14 @@ public class DefaultRouterTest {
         router.addRoute(new Route(HttpConstants.Method.GET, "/{name: .+}/photos/{id: [0-9]+}", new EmptyRouteHandler()));
 
         pathUnderTest = "/John/photos/2201";
-        matches = router.findRoutes(pathUnderTest, HttpConstants.Method.GET);
+        matches = router.findRoutes(HttpConstants.Method.GET, pathUnderTest);
         assertEquals(1, matches.size());
         match = matches.get(0);
         assertEquals(2, match.getPathParameters().size());
         assertEquals("John", match.getPathParameters().get("name"));
         assertEquals("2201", match.getPathParameters().get("id"));
 
-        assertEquals(0, router.findRoutes("John/photos/first", HttpConstants.Method.GET).size());
+        assertEquals(0, router.findRoutes(HttpConstants.Method.GET, "John/photos/first").size());
     }
 
     @Test
@@ -401,10 +401,10 @@ public class DefaultRouterTest {
             new EmptyRouteHandler()));
 
         // this must match
-        assertEquals(1, router.findRoutes("/blah/id/id2/id3/morestuff/at/the/end", HttpConstants.Method.GET).size());
+        assertEquals(1, router.findRoutes(HttpConstants.Method.GET, "/blah/id/id2/id3/morestuff/at/the/end").size());
 
         // this should not match as the last "end" is missing
-        assertEquals(0, router.findRoutes("/blah/id/id2/id3/morestuff/at/the", HttpConstants.Method.GET).size());
+        assertEquals(0, router.findRoutes(HttpConstants.Method.GET, "/blah/id/id2/id3/morestuff/at/the").size());
     }
 
     @Test
@@ -414,7 +414,7 @@ public class DefaultRouterTest {
         // the "." in the route should not make any trouble:
         String routeFromServer = "/blah/my.id/myname";
 
-        List<RouteMatch> matches = router.findRoutes(routeFromServer, HttpConstants.Method.GET);
+        List<RouteMatch> matches = router.findRoutes(HttpConstants.Method.GET, routeFromServer);
         assertEquals(1, matches.size());
         RouteMatch match = matches.get(0);
         assertEquals(1, match.getPathParameters().size());
@@ -422,7 +422,7 @@ public class DefaultRouterTest {
 
         // and another slightly different route
         routeFromServer = "/blah/my.id/myname/should_not_match";
-        matches = router.findRoutes(routeFromServer, HttpConstants.Method.GET);
+        matches = router.findRoutes(HttpConstants.Method.GET, routeFromServer);
         assertEquals(0, matches.size());
     }
 
@@ -432,7 +432,7 @@ public class DefaultRouterTest {
 
         // the "." in the route should not make any trouble:
         // even if it's the last part of the route
-        List<RouteMatch> matches = router.findRoutes("/blah/my.id", HttpConstants.Method.GET);
+        List<RouteMatch> matches = router.findRoutes(HttpConstants.Method.GET, "/blah/my.id");
         assertEquals(1, matches.size());
         RouteMatch match = matches.get(0);
         assertEquals(1, match.getPathParameters().size());
@@ -445,17 +445,17 @@ public class DefaultRouterTest {
         // regex with escaped construct in a route
         router.addRoute(new Route(HttpConstants.Method.GET, "/customers/\\d+", new EmptyRouteHandler()));
 
-        assertEquals(1, router.findRoutes("/customers/1234", HttpConstants.Method.GET).size());
-        assertEquals(0, router.findRoutes("/customers/12ab", HttpConstants.Method.GET).size());
+        assertEquals(1, router.findRoutes(HttpConstants.Method.GET, "/customers/1234").size());
+        assertEquals(0, router.findRoutes(HttpConstants.Method.GET, "/customers/12ab").size());
 
         // regex with escaped construct in a route with variable parts
         router = new DefaultRouter();
         router.addRoute(new Route(HttpConstants.Method.GET, "/customers/{id: \\d+}", new EmptyRouteHandler()));
 
-        assertEquals(1, router.findRoutes("/customers/1234", HttpConstants.Method.GET).size());
-        assertEquals(0, router.findRoutes("/customers/12x", HttpConstants.Method.GET).size());
+        assertEquals(1, router.findRoutes(HttpConstants.Method.GET, "/customers/1234").size());
+        assertEquals(0, router.findRoutes(HttpConstants.Method.GET, "/customers/12x").size());
 
-        RouteMatch routeMatch = router.findRoutes("/customers/1234", HttpConstants.Method.GET).get(0);
+        RouteMatch routeMatch = router.findRoutes(HttpConstants.Method.GET, "/customers/1234").get(0);
         Map<String, String> map = routeMatch.getPathParameters();
         assertEquals(1, map.size());
         assertEquals("1234", map.get("id"));
@@ -469,7 +469,7 @@ public class DefaultRouterTest {
         // the "." in the real route should work without any problems:
         String routeFromServer = "/blah/my.id/and/some/more/stuff";
 
-        List<RouteMatch> routeMatches = router.findRoutes(routeFromServer, HttpConstants.Method.GET);
+        List<RouteMatch> routeMatches = router.findRoutes(HttpConstants.Method.GET, routeFromServer);
         assertEquals(1, routeMatches.size());
         RouteMatch routeMatch = routeMatches.get(0);
         assertEquals(route, routeMatch.getRoute());
@@ -480,7 +480,7 @@ public class DefaultRouterTest {
         // another slightly different route.
         routeFromServer = "/blah/my.id/";
 
-        routeMatches = router.findRoutes(routeFromServer, HttpConstants.Method.GET);
+        routeMatches = router.findRoutes(HttpConstants.Method.GET, routeFromServer);
         assertEquals(1, routeMatches.size());
         routeMatch = routeMatches.get(0);
         assertEquals(route, routeMatch.getRoute());
@@ -488,7 +488,7 @@ public class DefaultRouterTest {
         assertEquals(1, routeMatch.getPathParameters().size());
         assertEquals("my.id", routeMatch.getPathParameters().get("id"));
 
-        routeMatches = router.findRoutes("/blah/my.id", HttpConstants.Method.GET);
+        routeMatches = router.findRoutes(HttpConstants.Method.GET, "/blah/my.id");
         assertEquals(0, routeMatches.size());
     }
 
@@ -501,7 +501,7 @@ public class DefaultRouterTest {
         // uri: decoded this would be /blah/my/id/and/some/more/stuff
         String routeFromServer = "/blah/my%2fid/and/some/more/stuff";
 
-        List<RouteMatch> routeMatches = router.findRoutes(routeFromServer, HttpConstants.Method.GET);
+        List<RouteMatch> routeMatches = router.findRoutes(HttpConstants.Method.GET, routeFromServer);
         assertEquals(1, routeMatches.size());
         RouteMatch routeMatch = routeMatches.get(0);
         assertEquals(route, routeMatch.getRoute());
@@ -548,7 +548,7 @@ public class DefaultRouterTest {
 
         assertThat(path, equalTo("/repository/test/myrepo/ticket/5"));
 
-        List<RouteMatch> matches = router.findRoutes("/repository/test/myrepo/ticket/5", HttpConstants.Method.GET);
+        List<RouteMatch> matches = router.findRoutes(HttpConstants.Method.GET, "/repository/test/myrepo/ticket/5");
 
         assertFalse(matches.isEmpty());
         assertEquals("test/myrepo", matches.get(0).getPathParameters().get("repo"));
@@ -587,13 +587,13 @@ public class DefaultRouterTest {
         Route route = new Route(HttpConstants.Method.ALL, "^(?!/(webjars|public)/).*", new EmptyRouteHandler());
         router.addRoute(route);
 
-        List<RouteMatch> matches = router.findRoutes("/test/route", HttpConstants.Method.GET);
+        List<RouteMatch> matches = router.findRoutes(HttpConstants.Method.GET, "/test/route");
         assertEquals(1, matches.size());
 
-        matches = router.findRoutes("/webjars/route", HttpConstants.Method.GET);
+        matches = router.findRoutes(HttpConstants.Method.GET, "/webjars/route");
         assertEquals(0, matches.size());
 
-        matches = router.findRoutes("/public/route", HttpConstants.Method.GET);
+        matches = router.findRoutes(HttpConstants.Method.GET, "/public/route");
         assertEquals(0, matches.size());
     }
 
@@ -602,19 +602,19 @@ public class DefaultRouterTest {
         Route route = new Route(HttpConstants.Method.ALL, "/api/contact/{id: [0-9]+}(\\.(json|xml|yaml))?", new EmptyRouteHandler());
         router.addRoute(route);
 
-        List<RouteMatch> matches = router.findRoutes("/api/contact/5", HttpConstants.Method.GET);
+        List<RouteMatch> matches = router.findRoutes(HttpConstants.Method.GET, "/api/contact/5");
         assertEquals(1, matches.size());
 
-        matches = router.findRoutes("/api/contact/5.json", HttpConstants.Method.GET);
+        matches = router.findRoutes(HttpConstants.Method.GET, "/api/contact/5.json");
         assertEquals(1, matches.size());
 
-        matches = router.findRoutes("/api/contact/5.xml", HttpConstants.Method.GET);
+        matches = router.findRoutes(HttpConstants.Method.GET, "/api/contact/5.xml");
         assertEquals(1, matches.size());
 
-        matches = router.findRoutes("/api/contact/5.yaml", HttpConstants.Method.GET);
+        matches = router.findRoutes(HttpConstants.Method.GET, "/api/contact/5.yaml");
         assertEquals(1, matches.size());
 
-        matches = router.findRoutes("/api/contact/5.unknown", HttpConstants.Method.GET);
+        matches = router.findRoutes(HttpConstants.Method.GET, "/api/contact/5.unknown");
         assertEquals(0, matches.size());
     }
 
@@ -623,19 +623,19 @@ public class DefaultRouterTest {
         Route route = new Route(HttpConstants.Method.ALL, "/api/contact/{id: [0-9]+}(\\.(json|xml|yaml))", new EmptyRouteHandler());
         router.addRoute(route);
 
-        List<RouteMatch> matches = router.findRoutes("/api/contact/5", HttpConstants.Method.GET);
+        List<RouteMatch> matches = router.findRoutes(HttpConstants.Method.GET, "/api/contact/5");
         assertEquals(0, matches.size());
 
-        matches = router.findRoutes("/api/contact/5.json", HttpConstants.Method.GET);
+        matches = router.findRoutes(HttpConstants.Method.GET, "/api/contact/5.json");
         assertEquals(1, matches.size());
 
-        matches = router.findRoutes("/api/contact/5.xml", HttpConstants.Method.GET);
+        matches = router.findRoutes(HttpConstants.Method.GET, "/api/contact/5.xml");
         assertEquals(1, matches.size());
 
-        matches = router.findRoutes("/api/contact/5.yaml", HttpConstants.Method.GET);
+        matches = router.findRoutes(HttpConstants.Method.GET, "/api/contact/5.yaml");
         assertEquals(1, matches.size());
 
-        matches = router.findRoutes("/api/contact/5.unknown", HttpConstants.Method.GET);
+        matches = router.findRoutes(HttpConstants.Method.GET, "/api/contact/5.unknown");
         assertEquals(0, matches.size());
     }
 
