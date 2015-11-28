@@ -243,8 +243,8 @@ public class Application {
         return addRoute(uriPattern, HttpConstants.Method.ALL, routeHandler);
     }
 
-    public Route addRoute(String uriPattern, String requestMethod, RouteHandler routeHandler) {
-        Route route = new Route(uriPattern, requestMethod, routeHandler);
+    public Route addRoute(String requestMethod, String uriPattern, RouteHandler routeHandler) {
+        Route route = new Route(requestMethod, uriPattern, routeHandler);
         getRouter().addRoute(route);
 
         return route;

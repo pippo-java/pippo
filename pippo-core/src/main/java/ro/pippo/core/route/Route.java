@@ -20,24 +20,25 @@ package ro.pippo.core.route;
  */
 public class Route {
 
-    private String uriPattern;
     private String requestMethod;
+    private String uriPattern;
     private RouteHandler routeHandler;
+
     private boolean runAsFinally;
     private String name;
 
-    public Route(String uriPattern, String requestMethod, RouteHandler routeHandler) {
-        this.uriPattern = uriPattern;
+    public Route(String requestMethod, String uriPattern, RouteHandler routeHandler) {
         this.requestMethod = requestMethod;
+        this.uriPattern = uriPattern;
         this.routeHandler = routeHandler;
-    }
-
-    public String getUriPattern() {
-        return uriPattern;
     }
 
     public String getRequestMethod() {
         return requestMethod;
+    }
+
+    public String getUriPattern() {
+        return uriPattern;
     }
 
     public RouteHandler getRouteHandler() {
