@@ -15,6 +15,8 @@
  */
 package ro.pippo.core.route;
 
+import ro.pippo.core.HttpConstants;
+
 /**
  * @author Decebal Suiu
  */
@@ -31,6 +33,83 @@ public class Route {
         this.requestMethod = requestMethod;
         this.uriPattern = uriPattern;
         this.routeHandler = routeHandler;
+    }
+
+    /**
+     * Create a GET route.
+     *
+     * @param uriPattern
+     * @param routeHandler
+     * @return
+     */
+    public static Route GET(String uriPattern, RouteHandler routeHandler) {
+        return new Route(HttpConstants.Method.GET, uriPattern, routeHandler);
+    }
+
+    /**
+     * Create a POST route.
+     *
+     * @param uriPattern
+     * @param routeHandler
+     * @return
+     */
+    public static Route POST(String uriPattern, RouteHandler routeHandler) {
+        return new Route(HttpConstants.Method.POST, uriPattern, routeHandler);
+    }
+
+    /**
+     * Create a DELETE route.
+     *
+     * @param uriPattern
+     * @param routeHandler
+     * @return
+     */
+    public static Route DELETE(String uriPattern, RouteHandler routeHandler) {
+        return new Route(HttpConstants.Method.DELETE, uriPattern, routeHandler);
+    }
+
+    /**
+     * Create a HEAD route.
+     *
+     * @param uriPattern
+     * @param routeHandler
+     * @return
+     */
+    public static Route HEAD(String uriPattern, RouteHandler routeHandler) {
+        return new Route(HttpConstants.Method.HEAD, uriPattern, routeHandler);
+    }
+
+    /**
+     * Create a PUT route.
+     *
+     * @param uriPattern
+     * @param routeHandler
+     * @return
+     */
+    public static Route PUT(String uriPattern, RouteHandler routeHandler) {
+        return new Route(HttpConstants.Method.PUT, uriPattern, routeHandler);
+    }
+
+    /**
+     * Create a PATCH route.
+     *
+     * @param uriPattern
+     * @param routeHandler
+     * @return
+     */
+    public static Route PATCH(String uriPattern, RouteHandler routeHandler) {
+        return new Route(HttpConstants.Method.PATCH, uriPattern, routeHandler);
+    }
+
+    /**
+     * Create a ALL route.
+     *
+     * @param uriPattern
+     * @param routeHandler
+     * @return
+     */
+    public static Route ALL(String uriPattern, RouteHandler routeHandler) {
+        return new Route(HttpConstants.Method.ALL, uriPattern, routeHandler);
     }
 
     public String getRequestMethod() {
