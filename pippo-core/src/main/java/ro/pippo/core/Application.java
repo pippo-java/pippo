@@ -85,7 +85,7 @@ public class Application {
     }
 
     public final void init() {
-        initializers.addAll(getInitializers());
+        initializers.addAll(ServiceLocator.locateAll(Initializer.class));
         for (Initializer initializer : initializers) {
             log.debug("Initializing '{}'", initializer.getClass().getName());
             try {
@@ -408,10 +408,6 @@ public class Application {
         RouteContext routeContext = RouteDispatcher.getRouteContext();
 
         return (routeContext != null) ? routeContext.getApplication() : null;
-    }
-
-    private List<Initializer> getInitializers() {
-        return ServiceLocator.locateAll(Initializer.class);
     }
 
     @Override
