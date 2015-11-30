@@ -407,7 +407,8 @@ public class DefaultRouter implements Router {
     }
 
     private String uriFor(PatternBinding binding, Map<String, Object> parameters) {
-        String uri = binding.getRoute().getUriPattern();
+        Route route = binding.getRoute();
+        boolean isResourceRoute = UrlResourceHandler.class.isAssignableFrom(route.getRouteHandler().getClass());
 
         List<String> parameterNames = binding.getParameterNames();
         if (!parameters.keySet().containsAll(parameterNames)) {
@@ -416,16 +417,22 @@ public class DefaultRouter implements Router {
 
         Map<String, Object> queryParameters = new HashMap<>(parameters.size());
 
+        String uri = route.getUriPattern();
+
         for (Entry<String, Object> parameterPair : parameters.entrySet()) {
             boolean foundAsPathParameter = false;
 
             StringBuffer sb = new StringBuffer();
-            String buffer = String.format(VARIABLE_PART_PATTERN_WITH_PLACEHOLDER, parameterPair.getKey());
-
-            Pattern pattern = Pattern.compile(buffer);
+            String regex = String.format(VARIABLE_PART_PATTERN_WITH_PLACEHOLDER, parameterPair.getKey());
+            Pattern pattern = Pattern.compile(regex);
             Matcher matcher = pattern.matcher(uri);
             while (matcher.find()) {
                 String pathValue = parameterPair.getValue().toString();
+                if (isResourceRoute && ResourceHandler.PATH_PARAMETER.equals(parameterPair.getKey())) {
+                    String versionedResourcePath = ((UrlResourceHandler) route.getRouteHandler()).injectVersion(pathValue);
+                    log.debug("Inject version in resource path: '{}' => '{}'", pathValue, versionedResourcePath);
+                    pathValue = versionedResourcePath;
+                }
                 matcher.appendReplacement(sb, pathValue);
                 foundAsPathParameter = true;
             }
@@ -447,11 +454,11 @@ public class DefaultRouter implements Router {
                 Entry<String, Object> parameterEntry = iterator.next();
                 String parameterName = parameterEntry.getKey();
                 Object parameterValue = parameterEntry.getValue();
-                String encodedParameterValue = null;
+                String encodedParameterValue;
                 try {
                     encodedParameterValue = URLEncoder.encode(parameterValue.toString(), PippoConstants.UTF8);
                 } catch (UnsupportedEncodingException e) {
-                    throw new PippoRuntimeException("Cannot encode the parameter value '" + parameterValue.toString() + "'", e);
+                    throw new PippoRuntimeException("Cannot encode the parameter value '{}'", e, parameterValue.toString());
                 }
                 query.append(parameterName).append("=").append(encodedParameterValue);
 
