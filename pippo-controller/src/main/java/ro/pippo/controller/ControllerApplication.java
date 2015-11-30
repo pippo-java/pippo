@@ -18,7 +18,6 @@ package ro.pippo.controller;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ro.pippo.core.Application;
-import ro.pippo.core.HttpConstants;
 import ro.pippo.core.PippoRuntimeException;
 import ro.pippo.core.PippoSettings;
 import ro.pippo.core.route.Route;
@@ -49,38 +48,31 @@ public class ControllerApplication extends Application {
     }
 
     public Route GET(String uriPattern, Class<? extends Controller> controllerClass, String methodName) {
-        return addRoute(uriPattern, HttpConstants.Method.GET, controllerClass, methodName);
+        return GET(uriPattern, createRouteHandler(controllerClass, methodName));
     }
 
     public Route POST(String uriPattern, Class<? extends Controller> controllerClass, String methodName) {
-        return addRoute(uriPattern, HttpConstants.Method.POST, controllerClass, methodName);
+        return POST(uriPattern, createRouteHandler(controllerClass, methodName));
     }
 
     public Route DELETE(String uriPattern, Class<? extends Controller> controllerClass, String methodName) {
-        return addRoute(uriPattern, HttpConstants.Method.DELETE, controllerClass, methodName);
+        return DELETE(uriPattern, createRouteHandler(controllerClass, methodName));
     }
 
     public Route HEAD(String uriPattern, Class<? extends Controller> controllerClass, String methodName) {
-        return addRoute(uriPattern, HttpConstants.Method.HEAD, controllerClass, methodName);
+        return HEAD(uriPattern, createRouteHandler(controllerClass, methodName));
     }
 
     public Route PUT(String uriPattern, Class<? extends Controller> controllerClass, String methodName) {
-        return addRoute(uriPattern, HttpConstants.Method.PUT, controllerClass, methodName);
+        return PUT(uriPattern, createRouteHandler(controllerClass, methodName));
     }
 
     public Route PATCH(String uriPattern, Class<? extends Controller> controllerClass, String methodName) {
-        return addRoute(uriPattern, HttpConstants.Method.PATCH, controllerClass, methodName);
+        return PATCH(uriPattern, createRouteHandler(controllerClass, methodName));
     }
 
     public Route ALL(String uriPattern, Class<? extends Controller> controllerClass, String methodName) {
-        return addRoute(uriPattern, HttpConstants.Method.ALL, controllerClass, methodName);
-    }
-
-    public Route addRoute(String uriPattern, String requestMethod, Class<? extends Controller> controllerClass, String methodName) {
-        RouteHandler routeHandler = getControllerHandlerFactory().createHandler(controllerClass, methodName);
-        Route route = addRoute(uriPattern, requestMethod, routeHandler);
-
-        return route;
+        return ALL(uriPattern, createRouteHandler(controllerClass, methodName));
     }
 
     public ControllerHandlerFactory getControllerHandlerFactory() {
@@ -149,6 +141,10 @@ public class ControllerApplication extends Application {
     public void setControllerFactory(ControllerFactory controllerFactory) {
         this.controllerFactory = controllerFactory;
         log.debug("Controller factory is '{}'", controllerFactory.getClass().getName());
+    }
+
+    public RouteHandler createRouteHandler(Class<? extends Controller> controllerClass, String methodName) {
+        return getControllerHandlerFactory().createHandler(controllerClass, methodName);
     }
 
 }

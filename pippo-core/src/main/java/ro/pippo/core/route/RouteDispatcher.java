@@ -131,7 +131,7 @@ public class RouteDispatcher {
             return;
         }
 
-        List<RouteMatch> routeMatches = router.findRoutes(requestPath, requestMethod);
+        List<RouteMatch> routeMatches = router.findRoutes(requestMethod, requestPath);
         RouteContext routeContext = routeContextFactory.createRouteContext(application, request, response, routeMatches);
         ROUTE_CONTEXT_THREAD_LOCAL.set(routeContext);
 

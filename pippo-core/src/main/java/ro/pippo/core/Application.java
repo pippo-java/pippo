@@ -85,7 +85,7 @@ public class Application {
     }
 
     public final void init() {
-        initializers.addAll(getInitializers());
+        initializers.addAll(ServiceLocator.locateAll(Initializer.class));
         for (Initializer initializer : initializers) {
             log.debug("Initializing '{}'", initializer.getClass().getName());
             try {
@@ -216,38 +216,56 @@ public class Application {
             throw new PippoRuntimeException("Please use 'addResourceRoute()'");
         }
 
-        return addRoute(uriPattern, HttpConstants.Method.GET, routeHandler);
+        Route route = Route.GET(uriPattern, routeHandler);
+        addRoute(route);
+
+        return route;
     }
 
     public Route POST(String uriPattern, RouteHandler routeHandler) {
-        return addRoute(uriPattern, HttpConstants.Method.POST, routeHandler);
+        Route route = Route.POST(uriPattern, routeHandler);
+        addRoute(route);
+
+        return route;
     }
 
     public Route DELETE(String uriPattern, RouteHandler routeHandler) {
-        return addRoute(uriPattern, HttpConstants.Method.DELETE, routeHandler);
+        Route route = Route.DELETE(uriPattern, routeHandler);
+        addRoute(route);
+
+        return route;
     }
 
     public Route HEAD(String uriPattern, RouteHandler routeHandler) {
-        return addRoute(uriPattern, HttpConstants.Method.HEAD, routeHandler);
+        Route route = Route.HEAD(uriPattern, routeHandler);
+        addRoute(route);
+
+        return route;
     }
 
     public Route PUT(String uriPattern, RouteHandler routeHandler) {
-        return addRoute(uriPattern, HttpConstants.Method.PUT, routeHandler);
+        Route route = Route.PUT(uriPattern, routeHandler);
+        addRoute(route);
+
+        return route;
     }
 
     public Route PATCH(String uriPattern, RouteHandler routeHandler) {
-        return addRoute(uriPattern, HttpConstants.Method.PATCH, routeHandler);
+        Route route = Route.PATCH(uriPattern, routeHandler);
+        addRoute(route);
+
+        return route;
     }
 
     public Route ALL(String uriPattern, RouteHandler routeHandler) {
-        return addRoute(uriPattern, HttpConstants.Method.ALL, routeHandler);
-    }
-
-    public Route addRoute(String uriPattern, String requestMethod, RouteHandler routeHandler) {
-        Route route = new Route(uriPattern, requestMethod, routeHandler);
-        getRouter().addRoute(route);
+        Route route = Route.ALL(uriPattern, routeHandler);
+        addRoute(route);
 
         return route;
+    }
+
+    public void addRoute(Route route) {
+        getRouter().addRoute(route);
     }
 
     /**
@@ -301,7 +319,10 @@ public class Application {
     }
 
     public Route addResourceRoute(ResourceHandler resourceHandler) {
-        return addRoute(resourceHandler.getUriPattern(), HttpConstants.Method.GET, resourceHandler);
+        Route route = Route.GET(resourceHandler.getUriPattern(), resourceHandler);
+        addRoute(route);
+
+        return route;
     }
 
     public ErrorHandler getErrorHandler() {
@@ -387,10 +408,6 @@ public class Application {
         RouteContext routeContext = RouteDispatcher.getRouteContext();
 
         return (routeContext != null) ? routeContext.getApplication() : null;
-    }
-
-    private List<Initializer> getInitializers() {
-        return ServiceLocator.locateAll(Initializer.class);
     }
 
     @Override

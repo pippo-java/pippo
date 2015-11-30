@@ -50,7 +50,7 @@ public interface Router {
 
     public void removeRoute(Route route);
 
-    public List<RouteMatch> findRoutes(String requestUri, String requestMethod);
+    public List<RouteMatch> findRoutes(String requestMethod, String requestUri);
 
     public List<Route> getRoutes();
 
