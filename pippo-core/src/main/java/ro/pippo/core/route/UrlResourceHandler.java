@@ -43,12 +43,6 @@ public abstract class UrlResourceHandler extends ResourceHandler {
 
     @Override
     public final void handleResource(String resourcePath, RouteContext routeContext) {
-        String unversionedResourcePath = removeVersion(resourcePath);
-        if (!unversionedResourcePath.equals(resourcePath)) {
-            log.trace("Remove version from resource path: '{}' => '{}'", resourcePath, unversionedResourcePath);
-            resourcePath = unversionedResourcePath;
-        }
-
         URL url = getResourceUrl(resourcePath);
         if (url == null) {
             routeContext.getResponse().notFound().commit();
@@ -69,9 +63,7 @@ public abstract class UrlResourceHandler extends ResourceHandler {
         }
     }
 
-    /**
-     * Inject version fragment.
-     */
+    @Override
     public String injectVersion(String resourcePath) {
         String version = getResourceVersion(resourcePath);
         if (StringUtils.isNullOrEmpty(version)) {
@@ -98,9 +90,7 @@ public abstract class UrlResourceHandler extends ResourceHandler {
         return versionedResourcePath.toString();
     }
 
-    /**
-     * Remove version fragment.
-     */
+    @Override
     public String removeVersion(String resourcePath) {
         Matcher matcher = VERSION_PATTERN.matcher(resourcePath);
         if (matcher.find()) {

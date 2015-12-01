@@ -408,7 +408,7 @@ public class DefaultRouter implements Router {
 
     private String uriFor(PatternBinding binding, Map<String, Object> parameters) {
         Route route = binding.getRoute();
-        boolean isResourceRoute = UrlResourceHandler.class.isAssignableFrom(route.getRouteHandler().getClass());
+        boolean isResourceRoute = ResourceHandler.class.isAssignableFrom(route.getRouteHandler().getClass());
 
         List<String> parameterNames = binding.getParameterNames();
         if (!parameters.keySet().containsAll(parameterNames)) {
@@ -429,8 +429,7 @@ public class DefaultRouter implements Router {
             while (matcher.find()) {
                 String pathValue = parameterPair.getValue().toString();
                 if (isResourceRoute && ResourceHandler.PATH_PARAMETER.equals(parameterPair.getKey())) {
-                    String versionedResourcePath = ((UrlResourceHandler) route.getRouteHandler()).injectVersion(pathValue);
-                    pathValue = versionedResourcePath;
+                    pathValue = ((ResourceHandler) route.getRouteHandler()).injectVersion(pathValue);
                 }
                 matcher.appendReplacement(sb, pathValue);
                 foundAsPathParameter = true;

@@ -43,12 +43,29 @@ public abstract class ResourceHandler implements RouteHandler {
     public final void handle(RouteContext routeContext) {
         String resourcePath = getResourcePath(routeContext);
         log.trace("Request resource '{}'", resourcePath);
+
+        String unversionedResourcePath = removeVersion(resourcePath);
+        if (!unversionedResourcePath.equals(resourcePath)) {
+            log.trace("Remove version from resource path: '{}' => '{}'", resourcePath, unversionedResourcePath);
+            resourcePath = unversionedResourcePath;
+        }
+
         handleResource(resourcePath, routeContext);
 
         routeContext.next();
     }
 
     public abstract void handleResource(String resourcePath, RouteContext routeContext);
+
+    /**
+     * Inject version fragment.
+     */
+    public abstract String injectVersion(String resourcePath);
+
+    /**
+     * Remove version fragment.
+     */
+    public abstract String removeVersion(String resourcePath);
 
     protected String getResourcePath(RouteContext routeContext) {
         return getNormalizedPath(routeContext.getParameter(PATH_PARAMETER).toString());
