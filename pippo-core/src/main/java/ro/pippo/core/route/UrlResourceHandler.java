@@ -35,7 +35,7 @@ public abstract class UrlResourceHandler extends ResourceHandler {
 
     private static final Logger log = LoggerFactory.getLogger(UrlResourceHandler.class);
 
-    private static final Pattern VERSION_PATTERN = Pattern.compile("-ver-[0-9]+\\.");
+    private static final Pattern VERSION_PATTERN = Pattern.compile("-ver-[0-9a-f]+\\.");
 
     public UrlResourceHandler(String urlPath) {
         super(urlPath);
@@ -59,34 +59,43 @@ public abstract class UrlResourceHandler extends ResourceHandler {
 
     public abstract URL getResourceUrl(String resourcePath);
 
+    protected String getResourceVersion(String resourcePath) {
+        URL resourceUrl = getResourceUrl(resourcePath);
+        try {
+            long lastModified = resourceUrl.openConnection().getLastModified();
+            return Long.toHexString(lastModified);
+        } catch (IOException e) {
+            throw new PippoRuntimeException("Failed to read lastModified property for {}", e, resourceUrl);
+        }
+    }
+
     /**
      * Inject version fragment.
      */
     public String injectVersion(String resourcePath) {
-        URL resourceUrl = getResourceUrl(resourcePath);
-        try {
-            long lastModified = resourceUrl.openConnection().getLastModified();
-
-            // check for extension
-            int extensionAt = resourcePath.lastIndexOf('.');
-
-            StringBuilder versionedResourcePath = new StringBuilder();
-
-            if (extensionAt == -1) {
-                versionedResourcePath.append(resourcePath);
-                versionedResourcePath.append("-ver-").append(lastModified);
-            } else {
-                versionedResourcePath.append(resourcePath.substring(0, extensionAt));
-                versionedResourcePath.append("-ver-").append(lastModified);
-                versionedResourcePath.append(resourcePath.substring(extensionAt, resourcePath.length()));
-            }
-
-            log.trace("Inject version in resource path: '{}' => '{}'", resourcePath, versionedResourcePath);
-
-            return versionedResourcePath.toString();
-        } catch (IOException e) {
-            throw new PippoRuntimeException("Failed to read lastModified property for {}", e, resourceUrl);
+        String version = getResourceVersion(resourcePath);
+        if (StringUtils.isNullOrEmpty(version)) {
+            // unversioned, pass-through resource path
+            return resourcePath;
         }
+
+        // check for extension
+        int extensionAt = resourcePath.lastIndexOf('.');
+
+        StringBuilder versionedResourcePath = new StringBuilder();
+
+        if (extensionAt == -1) {
+            versionedResourcePath.append(resourcePath);
+            versionedResourcePath.append("-ver-").append(version);
+        } else {
+            versionedResourcePath.append(resourcePath.substring(0, extensionAt));
+            versionedResourcePath.append("-ver-").append(version);
+            versionedResourcePath.append(resourcePath.substring(extensionAt, resourcePath.length()));
+        }
+
+        log.trace("Inject version in resource path: '{}' => '{}'", resourcePath, versionedResourcePath);
+
+        return versionedResourcePath.toString();
     }
 
     /**
