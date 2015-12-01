@@ -35,7 +35,7 @@ public abstract class UrlResourceHandler extends ResourceHandler {
 
     private static final Logger log = LoggerFactory.getLogger(UrlResourceHandler.class);
 
-    private static final Pattern VERSION_PATTERN = Pattern.compile("-[0-9]+\\.");
+    private static final Pattern VERSION_PATTERN = Pattern.compile("-ver-[0-9]+\\.");
 
     public UrlResourceHandler(String urlPath) {
         super(urlPath);
@@ -45,7 +45,7 @@ public abstract class UrlResourceHandler extends ResourceHandler {
     public final void handleResource(String resourcePath, RouteContext routeContext) {
         String unversionedResourcePath = removeVersion(resourcePath);
         if (!unversionedResourcePath.equals(resourcePath)) {
-            log.debug("Remove version from resource path: '{}' => '{}'", resourcePath, unversionedResourcePath);
+            log.trace("Remove version from resource path: '{}' => '{}'", resourcePath, unversionedResourcePath);
             resourcePath = unversionedResourcePath;
         }
 
@@ -74,12 +74,14 @@ public abstract class UrlResourceHandler extends ResourceHandler {
 
             if (extensionAt == -1) {
                 versionedResourcePath.append(resourcePath);
-                versionedResourcePath.append("-").append(lastModified);
+                versionedResourcePath.append("-ver-").append(lastModified);
             } else {
                 versionedResourcePath.append(resourcePath.substring(0, extensionAt));
-                versionedResourcePath.append("-").append(lastModified);
+                versionedResourcePath.append("-ver-").append(lastModified);
                 versionedResourcePath.append(resourcePath.substring(extensionAt, resourcePath.length()));
             }
+
+            log.trace("Inject version in resource path: '{}' => '{}'", resourcePath, versionedResourcePath);
 
             return versionedResourcePath.toString();
         } catch (IOException e) {

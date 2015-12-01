@@ -430,7 +430,6 @@ public class DefaultRouter implements Router {
                 String pathValue = parameterPair.getValue().toString();
                 if (isResourceRoute && ResourceHandler.PATH_PARAMETER.equals(parameterPair.getKey())) {
                     String versionedResourcePath = ((UrlResourceHandler) route.getRouteHandler()).injectVersion(pathValue);
-                    log.debug("Inject version in resource path: '{}' => '{}'", pathValue, versionedResourcePath);
                     pathValue = versionedResourcePath;
                 }
                 matcher.appendReplacement(sb, pathValue);
