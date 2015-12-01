@@ -429,7 +429,10 @@ public class DefaultRouter implements Router {
             while (matcher.find()) {
                 String pathValue = parameterPair.getValue().toString();
                 if (isResourceRoute && ResourceHandler.PATH_PARAMETER.equals(parameterPair.getKey())) {
-                    pathValue = ((ResourceHandler) route.getRouteHandler()).injectVersion(pathValue);
+                    ResourceHandler resourceHandler = (ResourceHandler) route.getRouteHandler();
+                    if (resourceHandler.isVersioned()) {
+                        pathValue = resourceHandler.injectVersion(pathValue);
+                    }
                 }
                 matcher.appendReplacement(sb, pathValue);
                 foundAsPathParameter = true;
