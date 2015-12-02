@@ -19,6 +19,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ro.pippo.core.PippoRuntimeException;
 import ro.pippo.core.util.ClasspathUtils;
+import ro.pippo.core.util.CryptoUtils;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -54,6 +55,24 @@ public class WebjarsResourceHandler extends ClasspathResourceHandler {
         super(urlPath, "META-INF/resources/webjars");
         this.pathAliases = indexWebjars();
     }
+
+    @Override
+    protected String getResourceVersion(String resourcePath) {
+        String artifactPath = resourcePath.substring(0, resourcePath.indexOf('/') + 1);
+        if (pathAliases.containsKey(artifactPath)) {
+            String artifactVersion = pathAliases.get(artifactPath);
+
+            // Do not replace already fixed-version paths.
+            // i.e. skip replacing first path segment of "/jquery/1.11.1/jquery.min.js"
+            // BUT do replace first path segment of "jquery/jquery.min.js".
+            if (!resourcePath.startsWith(artifactVersion)) {
+                return CryptoUtils.getHashMD5(artifactVersion);
+            }
+        }
+
+        return null;
+    }
+
 
     @Override
     public URL getResourceUrl(String resourcePath) {

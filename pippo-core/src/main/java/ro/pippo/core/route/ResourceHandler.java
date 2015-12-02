@@ -30,6 +30,7 @@ public abstract class ResourceHandler implements RouteHandler {
     public static final String PATH_PARAMETER = "path";
 
     private final String uriPattern;
+    private boolean versioned = true;
 
     public ResourceHandler(String urlPath) {
         this.uriPattern = String.format("/%s/{%s: .*}", getNormalizedPath(urlPath), PATH_PARAMETER);
@@ -43,12 +44,35 @@ public abstract class ResourceHandler implements RouteHandler {
     public final void handle(RouteContext routeContext) {
         String resourcePath = getResourcePath(routeContext);
         log.trace("Request resource '{}'", resourcePath);
+
+        if (versioned) {
+            resourcePath = removeVersion(resourcePath);
+        }
+
         handleResource(resourcePath, routeContext);
 
         routeContext.next();
     }
 
     public abstract void handleResource(String resourcePath, RouteContext routeContext);
+
+    /**
+     * Inject version fragment.
+     */
+    public abstract String injectVersion(String resourcePath);
+
+    /**
+     * Remove version fragment.
+     */
+    public abstract String removeVersion(String resourcePath);
+
+    public boolean isVersioned() {
+        return versioned;
+    }
+
+    public void setVersioned(boolean versioned) {
+        this.versioned = versioned;
+    }
 
     protected String getResourcePath(RouteContext routeContext) {
         return getNormalizedPath(routeContext.getParameter(PATH_PARAMETER).toString());
