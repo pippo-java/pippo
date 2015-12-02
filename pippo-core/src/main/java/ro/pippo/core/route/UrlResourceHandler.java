@@ -54,12 +54,16 @@ public abstract class UrlResourceHandler extends ResourceHandler {
     public abstract URL getResourceUrl(String resourcePath);
 
     protected String getResourceVersion(String resourcePath) {
+        String version = null;
+
         URL resourceUrl = getResourceUrl(resourcePath);
         try {
-            return Long.toString(resourceUrl.openConnection().getLastModified());
+            version =  Long.toString(resourceUrl.openConnection().getLastModified());
         } catch (IOException e) {
-            throw new PippoRuntimeException("Failed to read lastModified property for {}", e, resourceUrl);
+            log.error("Failed to read lastModified property for {}", resourceUrl, e);
         }
+
+        return version;
     }
 
     @Override
