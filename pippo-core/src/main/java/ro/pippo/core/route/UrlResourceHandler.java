@@ -98,7 +98,10 @@ public abstract class UrlResourceHandler extends ResourceHandler {
             int endIndex = matcher.end() - 1;
             String version = resourcePath.substring(startIndex + 1, endIndex);
 
-            return resourcePath.replace(version, "");
+            String unversionedResourcePath = resourcePath.replace(version, "");
+            log.trace("Remove version from resource path: '{}' => '{}'", resourcePath, unversionedResourcePath);
+
+            return unversionedResourcePath;
         }
 
         return resourcePath;

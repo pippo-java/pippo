@@ -46,11 +46,7 @@ public abstract class ResourceHandler implements RouteHandler {
         log.trace("Request resource '{}'", resourcePath);
 
         if (versioned) {
-            String unversionedResourcePath = removeVersion(resourcePath);
-            if (!unversionedResourcePath.equals(resourcePath)) {
-                log.trace("Remove version from resource path: '{}' => '{}'", resourcePath, unversionedResourcePath);
-                resourcePath = unversionedResourcePath;
-            }
+            resourcePath = removeVersion(resourcePath);
         }
 
         handleResource(resourcePath, routeContext);
