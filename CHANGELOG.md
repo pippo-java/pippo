@@ -14,6 +14,8 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 - Upgrade [pippo-undertow] to Undertow 1.3.7
 
 #### Added
+- [#228]: Versioning public resources
+- Add static factory methods for GET, POST, ... in Route class
 
 #### Removed
 
@@ -204,6 +206,7 @@ Initial release.
 [0.3.0]: https://github.com/decebals/pippo/compare/pippo-parent-0.2.0...pippo-parent-0.3.0
 [0.2.0]: https://github.com/decebals/pippo/compare/pippo-parent-0.1.0...pippo-parent-0.2.0
 
+[#228]: https://github.com/decebals/pippo/issues/228
 [#221]: https://github.com/decebals/pippo/issues/221
 [#220]: https://github.com/decebals/pippo/issues/220
 [#219]: https://github.com/decebals/pippo/issues/219
