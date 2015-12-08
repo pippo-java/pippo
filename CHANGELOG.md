@@ -12,6 +12,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 - Upgrade [pippo-weld] to Weld version 2.3.1.Final
 - Upgrade [pippo-less4j] to Less4j version 1.15.2
 - Upgrade [pippo-undertow] to Undertow 1.3.9
+- Move to Java 8
 
 #### Added
 - [#228]: Versioning public resources
