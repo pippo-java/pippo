@@ -59,7 +59,7 @@ public abstract class UrlResourceHandler extends ResourceHandler {
         URL resourceUrl = getResourceUrl(resourcePath);
         try {
             version =  Long.toString(resourceUrl.openConnection().getLastModified());
-        } catch (IOException e) {
+        } catch (NullPointerException | IOException e) {
             log.error("Failed to read lastModified property for {}", resourceUrl, e);
         }
 
