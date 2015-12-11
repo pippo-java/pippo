@@ -13,6 +13,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 - Upgrade [pippo-less4j] to Less4j version 1.15.2
 - Upgrade [pippo-undertow] to Undertow 1.3.9
 - Move to Java 8
+- Move quickstart maven archetype to Java 8
 
 #### Added
 - [#228]: Versioning public resources
