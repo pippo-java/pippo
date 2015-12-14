@@ -187,6 +187,7 @@
 		<module>pippo-velocity</module>
         <module>pippo-less4j</module>
         <module>pippo-sasscompiler</module>
+        <module>pippo-test</module>
     </modules>
 
     <profiles>
