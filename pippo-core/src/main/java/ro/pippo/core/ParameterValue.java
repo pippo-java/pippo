@@ -303,7 +303,7 @@ public class ParameterValue implements Serializable {
     }
 
     public Date toDate(Date defaultValue, String pattern) {
-        if (isNull()) {
+        if (isNull() || values[0].isEmpty()) {
             return defaultValue;
         }
 
@@ -321,7 +321,7 @@ public class ParameterValue implements Serializable {
     }
 
     public java.sql.Date toSqlDate(java.sql.Date defaultValue) {
-        if (isNull()) {
+        if (isNull() || values[0].isEmpty()) {
             return defaultValue;
         }
 
@@ -334,7 +334,7 @@ public class ParameterValue implements Serializable {
     }
 
     public Time toSqlTime(Time defaultValue) {
-        if (isNull()) {
+        if (isNull() || values[0].isEmpty()) {
             return defaultValue;
         }
 
@@ -347,7 +347,7 @@ public class ParameterValue implements Serializable {
     }
 
     public Timestamp toSqlTimestamp(Timestamp defaultValue) {
-        if (isNull()) {
+        if (isNull() || values[0].isEmpty()) {
             return defaultValue;
         }
 

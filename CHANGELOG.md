@@ -6,6 +6,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 #### Fixed
 - [#209]: Exception handling for requests with arrays and very large numbers
+- Fixed parsing of dates, times, and timestamps when parameter value is an empty string
 
 #### Changed
 - Upgrade [pippo-tomcat] to Tomcat version 8.0.28

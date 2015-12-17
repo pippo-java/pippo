@@ -140,6 +140,7 @@ public class ParameterValueTest {
 
     @Test
     public void testDate() throws Exception {
+        assertNull(new ParameterValue("").toDate("yyyy-MM-dd"));
         assertEquals(Date.valueOf("2014-12-25"), new ParameterValue("2014-12-25").toDate("yyyy-MM-dd"));
         assertEquals(Date.valueOf("2014-12-25"), new ParameterValue("2014-12-25", "2015-12-25", "2016-12-25").toDate("yyyy-MM-dd"));
         assertArrayEquals(new Date[]{Date.valueOf("2014-12-25"), Date.valueOf("2015-12-25"), Date.valueOf("2016-12-25")}, new ParameterValue("2014-12-25", "2015-12-25", "2016-12-25").to(Date[].class, "yyyy-MM-dd"));
@@ -147,6 +148,7 @@ public class ParameterValueTest {
 
     @Test
     public void testSqlDate() throws Exception {
+        assertNull(new ParameterValue("").toSqlDate());
         assertEquals(Date.valueOf("2014-12-25"), new ParameterValue("2014-12-25").toSqlDate());
         assertEquals(Date.valueOf("2014-12-25"), new ParameterValue("2014-12-25", "2015-12-25", "2016-12-25").toSqlDate());
         assertArrayEquals(new Date[]{Date.valueOf("2014-12-25"), Date.valueOf("2015-12-25"), Date.valueOf("2016-12-25")}, new ParameterValue("2014-12-25", "2015-12-25", "2016-12-25").to(Date[].class));
@@ -154,6 +156,7 @@ public class ParameterValueTest {
 
     @Test
     public void testSqlTime() throws Exception {
+        assertNull(new ParameterValue("").toSqlTime());
         assertEquals(Time.valueOf("13:45:20"), new ParameterValue("13:45:20").toSqlTime());
         assertEquals(Time.valueOf("13:45:20"), new ParameterValue("13:45:20", "8:45:35", "20:45:07").toSqlTime());
         assertArrayEquals(new Time[]{Time.valueOf("13:45:20"), Time.valueOf("8:45:35"), Time.valueOf("20:45:07")}, new ParameterValue("13:45:20", "8:45:35", "20:45:07").to(Time[].class));
@@ -161,6 +164,7 @@ public class ParameterValueTest {
 
     @Test
     public void testSqlTimestamp() throws Exception {
+        assertNull(new ParameterValue("").toSqlTimestamp());
         assertEquals(Timestamp.valueOf("2014-12-25 13:45:20"), new ParameterValue("2014-12-25 13:45:20").toSqlTimestamp());
         assertEquals(Timestamp.valueOf("2014-12-25 13:45:20"), new ParameterValue("2014-12-25 13:45:20", "2014-12-25 8:45:35", "2014-12-25 20:45:07").toSqlTimestamp());
         assertArrayEquals(new Timestamp[]{Timestamp.valueOf("2014-12-25 13:45:20"), Timestamp.valueOf("2014-12-25 8:45:35"), Timestamp.valueOf("2014-12-25 20:45:07")}, new ParameterValue("2014-12-25 13:45:20", "2014-12-25 8:45:35", "2014-12-25 20:45:07").to(Timestamp[].class));
