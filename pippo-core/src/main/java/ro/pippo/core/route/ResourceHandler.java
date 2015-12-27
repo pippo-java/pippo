@@ -33,7 +33,12 @@ public abstract class ResourceHandler implements RouteHandler {
     private boolean versioned = true;
 
     public ResourceHandler(String urlPath) {
-        this.uriPattern = String.format("/%s/{%s: .*}", getNormalizedPath(urlPath), PATH_PARAMETER);
+        String normalizedPath = getNormalizedPath(urlPath);
+        if (normalizedPath.length() > 0) {
+            this.uriPattern = String.format("/%s/{%s: .+}", getNormalizedPath(urlPath), PATH_PARAMETER);
+        } else {
+            this.uriPattern = String.format("/{%s: .+}", PATH_PARAMETER);
+        }
     }
 
     public String getUriPattern() {
@@ -82,7 +87,7 @@ public abstract class ResourceHandler implements RouteHandler {
         if ('/' == path.charAt(0)) {
             path = path.substring(1);
         }
-        if ('/' == path.charAt(path.length() - 1)) {
+        if (path.length() > 0 && '/' == path.charAt(path.length() - 1)) {
             path = path.substring(0, path.length() - 1);
         }
 

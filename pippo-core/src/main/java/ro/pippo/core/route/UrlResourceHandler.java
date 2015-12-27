@@ -44,9 +44,7 @@ public abstract class UrlResourceHandler extends ResourceHandler {
     @Override
     public final void handleResource(String resourcePath, RouteContext routeContext) {
         URL url = getResourceUrl(resourcePath);
-        if (url == null) {
-            routeContext.getResponse().notFound().commit();
-        } else {
+        if (url != null) {
             streamResource(url, routeContext);
         }
     }

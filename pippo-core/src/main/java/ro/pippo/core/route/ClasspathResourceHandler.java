@@ -15,9 +15,6 @@
  */
 package ro.pippo.core.route;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.net.URL;
 
 /**
@@ -26,8 +23,6 @@ import java.net.URL;
  * @author James Moger
  */
 public class ClasspathResourceHandler extends UrlResourceHandler {
-
-    private static final Logger log = LoggerFactory.getLogger(ClasspathResourceHandler.class);
 
     private final String resourceBasePath;
 
@@ -40,12 +35,7 @@ public class ClasspathResourceHandler extends UrlResourceHandler {
     @Override
     public URL getResourceUrl(String resourcePath) {
         String resourceName = getResourceBasePath() + "/" + resourcePath;
-        URL url = this.getClass().getClassLoader().getResource(resourceName);
-        if (url == null) {
-            log.warn("Resource '{}' not found", resourceName);
-        }
-
-        return url;
+        return this.getClass().getClassLoader().getResource(resourceName);
     }
 
     public String getResourceBasePath() {
