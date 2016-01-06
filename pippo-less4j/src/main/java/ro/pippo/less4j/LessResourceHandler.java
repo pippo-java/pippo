@@ -36,7 +36,7 @@ public class LessResourceHandler extends ClasspathResourceHandler {
 
     private static final Logger log = LoggerFactory.getLogger(LessResourceHandler.class);
 
-    private boolean compress;
+    private boolean minify;
     private Map<String, String> sourceMap = new ConcurrentHashMap<>(); // cache
 
     public LessResourceHandler(String urlPath, String resourceBasePath) {
@@ -53,7 +53,7 @@ public class LessResourceHandler extends ClasspathResourceHandler {
             if (result == null) {
                 ThreadUnsafeLessCompiler compiler = new ThreadUnsafeLessCompiler();
                 LessCompiler.Configuration configuration = new LessCompiler.Configuration();
-                configuration.setCompressing(compress);
+                configuration.setCompressing(minify);
                 LessCompiler.CompilationResult compilationResult = compiler.compile(resourceUrl, configuration);
                 for (LessCompiler.Problem warning : compilationResult.getWarnings()) {
                     log.warn("Line: {}, Character: {}, Message: {} ", warning.getLine(), warning.getCharacter(), warning.getMessage());
@@ -74,7 +74,7 @@ public class LessResourceHandler extends ClasspathResourceHandler {
     }
 
     public LessResourceHandler useMinimized(boolean minimized){
-        this.compress = minimized;
+        this.minify = minimized;
         return this;
     }
 
