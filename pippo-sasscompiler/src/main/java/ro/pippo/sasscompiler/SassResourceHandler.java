@@ -23,7 +23,10 @@ import ro.pippo.core.PippoRuntimeException;
 import ro.pippo.core.route.ClasspathResourceHandler;
 import ro.pippo.core.route.RouteContext;
 
-import java.io.*;
+
+import java.io.IOException;
+import java.io.StringWriter;
+import java.io.Writer;
 import java.net.URL;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
