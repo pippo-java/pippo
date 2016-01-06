@@ -23,7 +23,6 @@ import ro.pippo.core.PippoRuntimeException;
 import ro.pippo.core.route.ClasspathResourceHandler;
 import ro.pippo.core.route.RouteContext;
 
-
 import java.io.IOException;
 import java.io.StringWriter;
 import java.io.Writer;
