@@ -17,11 +17,13 @@ package ro.pippo.sasscompiler;
 
 import com.vaadin.sass.internal.ScssContext;
 import com.vaadin.sass.internal.ScssStylesheet;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import ro.pippo.core.PippoRuntimeException;
 import ro.pippo.core.route.ClasspathResourceHandler;
 import ro.pippo.core.route.RouteContext;
 
-import java.io.IOException;
+import java.io.*;
 import java.net.URL;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -31,6 +33,9 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class SassResourceHandler extends ClasspathResourceHandler {
 
+    private static final Logger log = LoggerFactory.getLogger(SassResourceHandler.class);
+
+    private boolean minify;
     private Map<String, String> sourceMap = new ConcurrentHashMap<>(); // cache
 
     public SassResourceHandler(String urlPath, String resourceBasePath) {
@@ -47,7 +52,9 @@ public class SassResourceHandler extends ClasspathResourceHandler {
             String result = sourceMap.get(content);
             if (result == null) {
                 scssStylesheet.compile(urlMode);
-                result = scssStylesheet.printState();
+                Writer writer = new StringWriter();
+                scssStylesheet.write(writer, minify);
+                result = writer.toString();
 
                 if (routeContext.getApplication().getPippoSettings().isDev()) {
                     sourceMap.put(content, result);
@@ -60,6 +67,11 @@ public class SassResourceHandler extends ClasspathResourceHandler {
         }  catch (Exception e) {
             throw new PippoRuntimeException(e);
         }
+    }
+
+    public SassResourceHandler useMinimized(boolean minimized){
+        this.minify = minimized;
+        return this;
     }
 
 }
