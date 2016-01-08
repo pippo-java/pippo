@@ -84,7 +84,7 @@ public abstract class ResourceHandler implements RouteHandler {
     }
 
     protected String getNormalizedPath(String path) {
-        if ('/' == path.charAt(0)) {
+        if (path.length() > 0 && '/' == path.charAt(0)) {
             path = path.substring(1);
         }
         if (path.length() > 0 && '/' == path.charAt(path.length() - 1)) {
