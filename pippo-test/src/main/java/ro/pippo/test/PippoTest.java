@@ -16,13 +16,6 @@
 package ro.pippo.test;
 
 import com.jayway.restassured.RestAssured;
-import org.junit.After;
-import org.junit.Before;
-import ro.pippo.core.Application;
-import ro.pippo.core.Pippo;
-
-import java.io.IOException;
-import java.net.ServerSocket;
 
 /**
  * Pippo Test marries Pippo, JUnit and RestAssured to provide a convenient
@@ -31,71 +24,18 @@ import java.net.ServerSocket;
  * PippoTest will start your Pippo application on a dynamically assigned port
  * in TEST mode for execution of your unit tests.
  * </p>
+ * <pre>
+ * // one Pippo instance for each test
+ * @Rule
+ * public PippoRule pippoRule = new PippoRule(new PippoApplication());
+ *
+ * // or
+ * // many Pippo instances for all tests
+ * @ClassRule
+ * public static PippoRule pippoRule = new PippoRule(new PippoApplication());
+ * </pre>
  *
  * @author Decebal Suiu
  */
 public abstract class PippoTest extends RestAssured {
-
-    private Pippo pippo;
-
-    @Before
-    public void setUp() {
-        startPippo();
-    }
-
-    @After
-    public void tearDown() {
-        stopPippo();
-    }
-
-    public abstract Application createApplication();
-
-    protected Pippo createPippo() {
-        Application application = createApplication();
-        // TODO how can I set the TEST mode?
-
-        return new Pippo(application);
-    }
-
-    protected final Pippo getPippo() {
-        if (pippo == null) {
-            pippo = createPippo();
-
-            // set server port;
-            // the port numbers in the range from 0 to 1023 are the well-known ports or system ports
-            int port = findAvailablePort(1024, 10000);
-            pippo.getServer().getSettings().port(port);
-        }
-
-        return pippo;
-    }
-
-    protected void startPippo() {
-        getPippo().start();
-
-        // init RestAssured
-        RestAssured.port = getPippo().getServer().getSettings().getPort();
-    }
-
-    protected void stopPippo() {
-        // TODO fix the bug in pippo-core (a starting flag maybe)
-        // it's not needed because we have an hook on shutdown
-//        getPippo().stop();
-
-        pippo = null;
-    }
-
-    protected final int findAvailablePort(int min, int max) {
-        for (int port = min; port < max; port++) {
-            try {
-                new ServerSocket(port).close();
-                return port;
-            } catch (IOException e) {
-                // must already be taken
-            }
-        }
-
-        throw new IllegalStateException("Could not find available port in range " + min + " to " + max);
-    }
-
 }
