@@ -16,11 +16,13 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 - Upgrade [pippo-undertow] to Undertow 1.3.10
 - Move to Java 8
 - Move quickstart maven archetype to Java 8
+- Upgrade vaadin-sass-compiler to 0.9.13
 
 #### Added
 - [#228]: Versioning public resources
 - Add static factory methods for GET, POST, ... in Route class
 - [#230]: Create distribution zip file with `mvn package`
+- [#231]: Add [pippo-test] module
 
 #### Removed
 
@@ -30,7 +32,8 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 - [#188]: Fix alias substitution in webjars paths
 - [#206]: Problem wtih Request.updateEntityFromParameters method
 - [#215]: Fixed CSRF guard ignoring POST requests with content-types that specify a charset
-- [#219]: Java8 build fails with javadoc warning 
+- [#219]: Java8 build fails with javadoc warning
+- [#233]: Serve static resources from the *root* url
 
 #### Changed
 - Updated [pippo-pebble] to Pebble 1.5.2
@@ -211,6 +214,9 @@ Initial release.
 [0.3.0]: https://github.com/decebals/pippo/compare/pippo-parent-0.2.0...pippo-parent-0.3.0
 [0.2.0]: https://github.com/decebals/pippo/compare/pippo-parent-0.1.0...pippo-parent-0.2.0
 
+[#234]: https://github.com/decebals/pippo/issues/234
+[#233]: https://github.com/decebals/pippo/issues/233
+[#231]: https://github.com/decebals/pippo/pull/231
 [#230]: https://github.com/decebals/pippo/issues/230
 [#228]: https://github.com/decebals/pippo/issues/228
 [#221]: https://github.com/decebals/pippo/issues/221
@@ -291,3 +297,4 @@ Initial release.
 [pippo-sasscompiler]: https://github.com/decebals/pippo/tree/master/pippo-sasscompiler
 [pippo-demo-css]: https://github.com/decebals/pippo/tree/master/pippo-demo/pippo-demo-css
 [pippo-jaxb]: https://github.com/decebals/pippo/tree/master/pippo-jaxb/pippo-jaxb
+[pippo-test]: https://github.com/decebals/pippo/tree/master/pippo-test
