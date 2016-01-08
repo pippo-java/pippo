@@ -25,12 +25,12 @@ import com.jayway.restassured.RestAssured;
  * in TEST mode for execution of your unit tests.
  * </p>
  * <pre>
- * // one Pippo instance for each test
+ * // one Pippo instance for EACH test
  * @Rule
  * public PippoRule pippoRule = new PippoRule(new PippoApplication());
  *
  * // or
- * // many Pippo instances for all tests
+ * // one Pippo instance for ALL tests
  * @ClassRule
  * public static PippoRule pippoRule = new PippoRule(new PippoApplication());
  * </pre>
