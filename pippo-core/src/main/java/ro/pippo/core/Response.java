@@ -869,7 +869,7 @@ public final class Response {
     }
 
     /**
-     * Copies the input stream to the response output stream.
+     * Copies the input stream to the response output stream and closes the input stream upon completion.
      * <p>This method commits the response.</p>
      *
      * @param input
@@ -911,7 +911,7 @@ public final class Response {
     }
 
     /**
-     * Copies the input stream to the response output stream as a download.
+     * Copies the input stream to the response output stream as a download and closes the input stream upon completion.
      * <p>This method commits the response.</p>
      *
      * @param filename
