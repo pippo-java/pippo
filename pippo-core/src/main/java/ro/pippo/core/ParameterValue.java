@@ -77,7 +77,7 @@ public class ParameterValue implements Serializable {
     }
 
     public byte toByte(byte defaultValue) {
-        if (isNull()) {
+        if (isNull() || StringUtils.isNullOrEmpty(values[0])) {
             return defaultValue;
         }
 
@@ -89,7 +89,7 @@ public class ParameterValue implements Serializable {
     }
 
     public short toShort(short defaultValue) {
-        if (isNull()) {
+        if (isNull() || StringUtils.isNullOrEmpty(values[0])) {
             return defaultValue;
         }
 
@@ -101,7 +101,7 @@ public class ParameterValue implements Serializable {
     }
 
     public int toInt(int defaultValue) {
-        if (isNull()) {
+        if (isNull() || StringUtils.isNullOrEmpty(values[0])) {
             return defaultValue;
         }
 
@@ -113,7 +113,7 @@ public class ParameterValue implements Serializable {
     }
 
     public long toLong(long defaultValue) {
-        if (isNull()) {
+        if (isNull() || StringUtils.isNullOrEmpty(values[0])) {
             return defaultValue;
         }
 
@@ -125,7 +125,7 @@ public class ParameterValue implements Serializable {
     }
 
     public float toFloat(float defaultValue) {
-        if (isNull()) {
+        if (isNull() || StringUtils.isNullOrEmpty(values[0])) {
             return defaultValue;
         }
 
@@ -137,7 +137,7 @@ public class ParameterValue implements Serializable {
     }
 
     public double toDouble(double defaultValue) {
-        if (isNull()) {
+        if (isNull() || StringUtils.isNullOrEmpty(values[0])) {
             return defaultValue;
         }
 
@@ -149,7 +149,7 @@ public class ParameterValue implements Serializable {
     }
 
     public BigDecimal toBigDecimal(BigDecimal defaultValue) {
-        if (isNull()) {
+        if (isNull() || StringUtils.isNullOrEmpty(values[0])) {
             return defaultValue;
         }
 
@@ -162,7 +162,7 @@ public class ParameterValue implements Serializable {
     }
 
     public UUID toUUID(UUID defaultValue) {
-        if (isNull()) {
+        if (isNull() || StringUtils.isNullOrEmpty(values[0])) {
             return defaultValue;
         }
 
@@ -174,7 +174,7 @@ public class ParameterValue implements Serializable {
     }
 
     public Character toCharacter(Character defaultValue) {
-        if (isNull()) {
+        if (isNull() || values[0].length() == 0) {
             return defaultValue;
         }
 
@@ -203,7 +203,7 @@ public class ParameterValue implements Serializable {
     }
 
     public <T extends Enum<?>> T toEnum(Class<T> classOfT, T defaultValue, boolean caseSensitive) {
-        if (isNull()) {
+        if (isNull() || StringUtils.isNullOrEmpty(values[0])) {
             return defaultValue;
         }
 
@@ -303,7 +303,7 @@ public class ParameterValue implements Serializable {
     }
 
     public Date toDate(Date defaultValue, String pattern) {
-        if (isNull() || values[0].isEmpty()) {
+        if (isNull() || StringUtils.isNullOrEmpty(values[0])) {
             return defaultValue;
         }
 
@@ -321,7 +321,7 @@ public class ParameterValue implements Serializable {
     }
 
     public java.sql.Date toSqlDate(java.sql.Date defaultValue) {
-        if (isNull() || values[0].isEmpty()) {
+        if (isNull() || StringUtils.isNullOrEmpty(values[0])) {
             return defaultValue;
         }
 
@@ -334,7 +334,7 @@ public class ParameterValue implements Serializable {
     }
 
     public Time toSqlTime(Time defaultValue) {
-        if (isNull() || values[0].isEmpty()) {
+        if (isNull() || StringUtils.isNullOrEmpty(values[0])) {
             return defaultValue;
         }
 
@@ -347,7 +347,7 @@ public class ParameterValue implements Serializable {
     }
 
     public Timestamp toSqlTimestamp(Timestamp defaultValue) {
-        if (isNull() || values[0].isEmpty()) {
+        if (isNull() || StringUtils.isNullOrEmpty(values[0])) {
             return defaultValue;
         }
 
