@@ -53,6 +53,8 @@ public class ParameterValueTest {
 
     @Test
     public void testBooleans() throws Exception {
+        assertEquals(false, new ParameterValue("").toBoolean());
+        assertEquals(false, new ParameterValue(" ").toBoolean());
         assertEquals(true, new ParameterValue("true").toBoolean());
         assertEquals(true, new ParameterValue("true", "true", "true").toBoolean());
         assertEquals(true, new ParameterValue("yes").toBoolean());
@@ -66,6 +68,8 @@ public class ParameterValueTest {
 
     @Test
     public void testBytes() throws Exception {
+        assertEquals(0, new ParameterValue("").toByte());
+        assertEquals(0, new ParameterValue(" ").toByte());
         assertEquals(127, new ParameterValue("127").toByte());
         assertEquals(127, new ParameterValue("127", "96", "64").toByte());
         assertArrayEquals(new byte[]{127, 96, 64}, new ParameterValue("127", "96", "64").to(byte[].class));
@@ -73,6 +77,8 @@ public class ParameterValueTest {
 
     @Test
     public void testShorts() throws Exception {
+        assertEquals(0, new ParameterValue("").toShort());
+        assertEquals(0, new ParameterValue(" ").toShort());
         assertEquals(4096, new ParameterValue("4096").toShort());
         assertEquals(4096, new ParameterValue("4096", "2048", "1024").toShort());
         assertArrayEquals(new short[]{4096, 2048, 1024}, new ParameterValue(new String[]{"4096", "2048", "1024"}).to(short[].class));
@@ -80,6 +86,8 @@ public class ParameterValueTest {
 
     @Test
     public void testIntegers() throws Exception {
+        assertEquals(0, new ParameterValue("").toInt());
+        assertEquals(0, new ParameterValue(" ").toInt());
         assertEquals(131070, new ParameterValue("131070").toInt());
         assertEquals(131070, new ParameterValue("131070", "65535", "32767").toInt());
         assertArrayEquals(new int[]{131070, 65535, 32767}, new ParameterValue("131070", "65535", "32767").to(int[].class));
@@ -87,6 +95,8 @@ public class ParameterValueTest {
 
     @Test
     public void testLongs() throws Exception {
+        assertEquals(0L, new ParameterValue("").toLong());
+        assertEquals(0L, new ParameterValue(" ").toLong());
         assertEquals(8589934588L, new ParameterValue("8589934588").toLong());
         assertEquals(8589934588L, new ParameterValue("8589934588", "4294967294", "2147483647").toLong());
         assertArrayEquals(new long[]{8589934588L, 4294967294L, 2147483647L}, new ParameterValue("8589934588", "4294967294", "2147483647").to(long[].class));
@@ -94,6 +104,8 @@ public class ParameterValueTest {
 
     @Test
     public void testFloat() throws Exception {
+        assertEquals(0f, new ParameterValue("").toFloat(), 0f);
+        assertEquals(0f, new ParameterValue(" ").toFloat(), 0f);
         assertEquals(3.14159f, new ParameterValue("3.14159").toFloat(), 0f);
         assertEquals(3.14159f, new ParameterValue("3.14159", "3.14159", "3.14159").toFloat(), 0f);
         assertArrayEquals(new Float[]{3.14159f, 3.14159f, 3.14159f}, new ParameterValue("3.14159", "3.14159", "3.14159").to(Float[].class));
@@ -101,6 +113,8 @@ public class ParameterValueTest {
 
     @Test
     public void testDouble() throws Exception {
+        assertEquals(0d, new ParameterValue("").toDouble(), 0d);
+        assertEquals(0d, new ParameterValue(" ").toDouble(), 0d);
         assertEquals(3.14159d, new ParameterValue("3.14159").toDouble(), 0d);
         assertEquals(3.14159d, new ParameterValue("3.14159", "3.14159", "3.14159").toDouble(), 0d);
         assertArrayEquals(new Double[]{3.14159d, 3.14159d, 3.14159d}, new ParameterValue("3.14159", "3.14159", "3.14159").to(Double[].class));
@@ -108,6 +122,8 @@ public class ParameterValueTest {
 
     @Test
     public void testBigDecimal() throws Exception {
+        assertEquals(new BigDecimal(0d), new ParameterValue("").toBigDecimal());
+        assertEquals(new BigDecimal(0d), new ParameterValue(" ").toBigDecimal());
         assertEquals(new BigDecimal(3.14159d), new ParameterValue("3.14159").toBigDecimal());
         assertEquals(new BigDecimal(3.14159d), new ParameterValue("3.14159", "3.14159", "3.14159").toBigDecimal());
         assertArrayEquals(new BigDecimal[]{new BigDecimal(3.14159d), new BigDecimal(3.14159d), new BigDecimal(3.14159d)}, new ParameterValue("3.14159", "3.14159", "3.14159").to(BigDecimal[].class));
@@ -119,6 +135,8 @@ public class ParameterValueTest {
         UUID b = UUID.randomUUID();
         UUID c = UUID.randomUUID();
 
+        assertNull(new ParameterValue("").toUUID());
+        assertNull(new ParameterValue(" ").toUUID());
         assertEquals(a, new ParameterValue(a.toString()).toUUID());
         assertEquals(a, new ParameterValue(a.toString(), b.toString(), c.toString()).toUUID());
         assertArrayEquals(new UUID[]{a, b, c}, new ParameterValue(a.toString(), b.toString(), c.toString()).to(UUID[].class));
@@ -126,6 +144,8 @@ public class ParameterValueTest {
 
     @Test
     public void testCharacter() throws Exception {
+        assertEquals(0, Character.compare((char) 0, new ParameterValue("").toCharacter()));
+        assertEquals(0, Character.compare(' ', new ParameterValue(" ").toCharacter()));
         assertEquals(0, Character.compare('f', new ParameterValue("f").toCharacter()));
         assertEquals(0, Character.compare('f', new ParameterValue("fred", "wilma", "barney").toCharacter()));
         assertArrayEquals(new char[]{'f', 'w', 'b'}, new ParameterValue("fred", "wilma", "barney").to(char[].class));
@@ -141,6 +161,7 @@ public class ParameterValueTest {
     @Test
     public void testDate() throws Exception {
         assertNull(new ParameterValue("").toDate("yyyy-MM-dd"));
+        assertNull(new ParameterValue(" ").toDate("yyyy-MM-dd"));
         assertEquals(Date.valueOf("2014-12-25"), new ParameterValue("2014-12-25").toDate("yyyy-MM-dd"));
         assertEquals(Date.valueOf("2014-12-25"), new ParameterValue("2014-12-25", "2015-12-25", "2016-12-25").toDate("yyyy-MM-dd"));
         assertArrayEquals(new Date[]{Date.valueOf("2014-12-25"), Date.valueOf("2015-12-25"), Date.valueOf("2016-12-25")}, new ParameterValue("2014-12-25", "2015-12-25", "2016-12-25").to(Date[].class, "yyyy-MM-dd"));
@@ -149,6 +170,7 @@ public class ParameterValueTest {
     @Test
     public void testSqlDate() throws Exception {
         assertNull(new ParameterValue("").toSqlDate());
+        assertNull(new ParameterValue(" ").toSqlDate());
         assertEquals(Date.valueOf("2014-12-25"), new ParameterValue("2014-12-25").toSqlDate());
         assertEquals(Date.valueOf("2014-12-25"), new ParameterValue("2014-12-25", "2015-12-25", "2016-12-25").toSqlDate());
         assertArrayEquals(new Date[]{Date.valueOf("2014-12-25"), Date.valueOf("2015-12-25"), Date.valueOf("2016-12-25")}, new ParameterValue("2014-12-25", "2015-12-25", "2016-12-25").to(Date[].class));
@@ -157,6 +179,7 @@ public class ParameterValueTest {
     @Test
     public void testSqlTime() throws Exception {
         assertNull(new ParameterValue("").toSqlTime());
+        assertNull(new ParameterValue(" ").toSqlTime());
         assertEquals(Time.valueOf("13:45:20"), new ParameterValue("13:45:20").toSqlTime());
         assertEquals(Time.valueOf("13:45:20"), new ParameterValue("13:45:20", "8:45:35", "20:45:07").toSqlTime());
         assertArrayEquals(new Time[]{Time.valueOf("13:45:20"), Time.valueOf("8:45:35"), Time.valueOf("20:45:07")}, new ParameterValue("13:45:20", "8:45:35", "20:45:07").to(Time[].class));
@@ -165,6 +188,7 @@ public class ParameterValueTest {
     @Test
     public void testSqlTimestamp() throws Exception {
         assertNull(new ParameterValue("").toSqlTimestamp());
+        assertNull(new ParameterValue(" ").toSqlTimestamp());
         assertEquals(Timestamp.valueOf("2014-12-25 13:45:20"), new ParameterValue("2014-12-25 13:45:20").toSqlTimestamp());
         assertEquals(Timestamp.valueOf("2014-12-25 13:45:20"), new ParameterValue("2014-12-25 13:45:20", "2014-12-25 8:45:35", "2014-12-25 20:45:07").toSqlTimestamp());
         assertArrayEquals(new Timestamp[]{Timestamp.valueOf("2014-12-25 13:45:20"), Timestamp.valueOf("2014-12-25 8:45:35"), Timestamp.valueOf("2014-12-25 20:45:07")}, new ParameterValue("2014-12-25 13:45:20", "2014-12-25 8:45:35", "2014-12-25 20:45:07").to(Timestamp[].class));
@@ -268,6 +292,7 @@ public class ParameterValueTest {
 
     @Test
     public void testEnums() throws Exception {
+        assertNull(new ParameterValue(" ").toEnum(Alphabet.class));
         assertEquals(Alphabet.B, new ParameterValue("B").toEnum(Alphabet.class));
         assertEquals(Alphabet.B, new ParameterValue("B", "A", "D").toEnum(Alphabet.class));
         assertArrayEquals(new Alphabet[]{Alphabet.B, Alphabet.A, Alphabet.D}, new ParameterValue("B", "A", "D").to(Alphabet[].class));
