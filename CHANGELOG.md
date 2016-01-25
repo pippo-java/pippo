@@ -17,6 +17,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 - Move to Java 8
 - Move quickstart maven archetype to Java 8
 - Upgrade vaadin-sass-compiler to 0.9.13
+- Upgrade [pippo-metrics-librato] to Librato 4.1.2.1
 
 #### Added
 - [#228]: Versioning public resources
