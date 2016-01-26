@@ -29,7 +29,7 @@ public class ClassUtils {
         List<Field> allFields = new ArrayList<>();
         allFields.addAll(Arrays.asList(clazz.getDeclaredFields()));
         Class superClass = clazz.getSuperclass();
-        if (!superClass.equals(Object.class)) {
+        if (superClass != null && !superClass.equals(Object.class)) {
             allFields.addAll(getAllFields(superClass));
         }
 
