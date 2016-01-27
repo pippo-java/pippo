@@ -53,26 +53,9 @@ public class WebjarsResourceHandler extends ClasspathResourceHandler {
 
     public WebjarsResourceHandler(String urlPath) {
         super(urlPath, "META-INF/resources/webjars");
+
         this.pathAliases = indexWebjars();
     }
-
-    @Override
-    protected String getResourceVersion(String resourcePath) {
-        String artifactPath = resourcePath.substring(0, resourcePath.indexOf('/') + 1);
-        if (pathAliases.containsKey(artifactPath)) {
-            String artifactVersion = pathAliases.get(artifactPath);
-
-            // Do not replace already fixed-version paths.
-            // i.e. skip replacing first path segment of "/jquery/1.11.1/jquery.min.js"
-            // BUT do replace first path segment of "jquery/jquery.min.js".
-            if (!resourcePath.startsWith(artifactVersion)) {
-                return CryptoUtils.getHashMD5(artifactVersion);
-            }
-        }
-
-        return null;
-    }
-
 
     @Override
     public URL getResourceUrl(String resourcePath) {
@@ -97,6 +80,23 @@ public class WebjarsResourceHandler extends ClasspathResourceHandler {
         }
 
         return url;
+    }
+
+    @Override
+    protected String getResourceVersion(String resourcePath) {
+        String artifactPath = resourcePath.substring(0, resourcePath.indexOf('/') + 1);
+        if (pathAliases.containsKey(artifactPath)) {
+            String artifactVersion = pathAliases.get(artifactPath);
+
+            // Do not replace already fixed-version paths.
+            // i.e. skip replacing first path segment of "/jquery/1.11.1/jquery.min.js"
+            // BUT do replace first path segment of "jquery/jquery.min.js".
+            if (!resourcePath.startsWith(artifactVersion)) {
+                return CryptoUtils.getHashMD5(artifactVersion);
+            }
+        }
+
+        return null;
     }
 
     /**
@@ -131,6 +131,7 @@ public class WebjarsResourceHandler extends ClasspathResourceHandler {
         for (Map.Entry<String, String> alias : pathAliases.entrySet()) {
             log.debug("Registered Webjars path alias '{}' => '{}'", alias.getKey(), alias.getValue());
         }
+
         return pathAliases;
     }
 
@@ -162,6 +163,7 @@ public class WebjarsResourceHandler extends ClasspathResourceHandler {
                 }
             }
         }
+
         return propertiesFiles;
     }
 
