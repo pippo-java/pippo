@@ -19,7 +19,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ro.pippo.core.route.ClasspathResourceHandler;
 import ro.pippo.core.route.DefaultRouter;
-import ro.pippo.core.route.DirectoryResourceHandler;
 import ro.pippo.core.route.FileResourceHandler;
 import ro.pippo.core.route.PublicResourceHandler;
 import ro.pippo.core.route.ResourceHandler;
@@ -267,36 +266,6 @@ public class Application {
 
     public void addRoute(Route route) {
         getRouter().addRoute(route);
-    }
-
-    /**
-     * Serve an external directory.
-     * <p>This method will register a GET handler for the directory and will serve all available files.</p>
-     * <p>In the event of a directory request, an index.html or index.htm welcome file will be displayed. If none
-     * is found then a default file listing will be generated.</p>
-     *
-     * @param path
-     * @param directory
-     * @return the GET route for the directory resource
-     */
-    public Route addDirectoryResourceRoute(String path, File directory) {
-        return addDirectoryResourceRoute(path, directory, null);
-    }
-
-    /**
-     * Serve an external directory.
-     * <p>This method will register a GET handler for the directory and will serve all available files.</p>
-     * <p>In the event of a directory request, the specified template will be rendered.</p>
-     *
-     * @param path
-     * @param directory
-     * @param templateName
-     * @return the GET route for the directory resource
-     */
-    public Route addDirectoryResourceRoute(String path, File directory, String templateName) {
-        DirectoryResourceHandler dirHandler = new DirectoryResourceHandler(path, directory);
-        dirHandler.setDirectoryTemplate(templateName);
-        return GET(dirHandler.getUriPattern(), dirHandler);
     }
 
     /**

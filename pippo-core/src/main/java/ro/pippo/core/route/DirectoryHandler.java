@@ -36,34 +36,29 @@ import java.util.List;
 import java.util.Optional;
 
 /**
- * Serves a directory as a resource.
+ * Serves a directory.
  *
- * This is different than a FileResourceHandler because...
- *   1. it will display a static welcome file for directory requests
- *   2. it will render file lists (either by template or generated) if there is no welcome file
- *   3. it will properly respond to HEAD requests
+ * It will display a static welcome file for directory requests.
+ * It will render file lists (either by template or generated) if there is no welcome file.
+ * It will properly respond to HEAD requests.
  *
  * @author James Moger
  */
-public class DirectoryResourceHandler implements RouteHandler {
+public class DirectoryHandler implements RouteHandler {
 
-    private static final Logger log = LoggerFactory.getLogger(DirectoryResourceHandler.class);
+    private static final Logger log = LoggerFactory.getLogger(DirectoryHandler.class);
 
     public static final String PATH_PARAMETER = "path";
 
     private final String urlPath;
-
     private final String uriPattern;
-
-    final File directory;
+    private final File directory;
 
     private String timestampPattern = "yyyy-MM-dd HH:mm Z";
-
     private String fileSizePattern = "#,000";
-
     private String directoryTemplate;
 
-    public DirectoryResourceHandler(String urlPath, File directory) {
+    public DirectoryHandler(String urlPath, File directory) {
         this.urlPath = urlPath;
         String normalizedPath = getNormalizedPath(urlPath);
         if (normalizedPath.length() > 0) {
@@ -75,7 +70,7 @@ public class DirectoryResourceHandler implements RouteHandler {
         this.directory = directory.getAbsoluteFile();
     }
 
-    public DirectoryResourceHandler(String urlPath, String directory) {
+    public DirectoryHandler(String urlPath, String directory) {
         this(urlPath, new File(directory));
     }
 
@@ -127,9 +122,7 @@ public class DirectoryResourceHandler implements RouteHandler {
             if (!requestedPath.startsWith(directory.getAbsolutePath())) {
                 log.warn("Request for '{}' which is not located in '{}'", requestedPath, directory);
             } else if (StringUtils.isNullOrEmpty(resourcePath) || "/".equals(resourcePath)) {
-
                 handleDirectoryRequest(routeContext, directory);
-
             } else {
                 // look for requested file
                 File file = requestedPath.toFile();
@@ -203,6 +196,7 @@ public class DirectoryResourceHandler implements RouteHandler {
                 + StringUtils.removeEnd(StringUtils.addStart(absoluteDirUri, "/"), "/")
                 + StringUtils.addStart(upDir.getName(), "/"), upDir));
         }
+
         return list;
     }
 
@@ -303,6 +297,7 @@ public class DirectoryResourceHandler implements RouteHandler {
                 df.format(dirEntry.getLastModified())));
         }
         sb.append("</table></body></html>");
+
         return sb.toString();
     }
 
@@ -348,5 +343,7 @@ public class DirectoryResourceHandler implements RouteHandler {
         public int compareTo(DirEntry o) {
             return getName().toLowerCase().compareTo(o.getName().toLowerCase());
         }
+        
     }
+
 }
