@@ -175,6 +175,7 @@
         <module>pippo-jaxb</module>
         <module>pippo-xstream</module>
         <module>pippo-snakeyaml</module>
+        <module>pippo-csv</module>
         <module>pippo-metrics</module>
         <module>pippo-metrics-ganglia</module>
         <module>pippo-metrics-graphite</module>
