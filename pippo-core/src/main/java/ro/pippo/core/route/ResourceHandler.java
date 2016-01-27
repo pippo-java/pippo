@@ -75,8 +75,10 @@ public abstract class ResourceHandler implements RouteHandler {
         return versioned;
     }
 
-    public void setVersioned(boolean versioned) {
+    public ResourceHandler setVersioned(boolean versioned) {
         this.versioned = versioned;
+
+        return this;
     }
 
     protected String getResourcePath(RouteContext routeContext) {
