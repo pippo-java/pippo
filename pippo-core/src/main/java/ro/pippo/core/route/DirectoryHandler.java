@@ -86,24 +86,30 @@ public class DirectoryHandler implements RouteHandler {
         return timestampPattern;
     }
 
-    public void setTimestampPattern(String pattern) {
+    public DirectoryHandler setTimestampPattern(String pattern) {
         this.timestampPattern = pattern;
+
+        return this;
     }
 
     public String getFileSizePattern() {
         return fileSizePattern;
     }
 
-    public void setFileSizePattern(String pattern) {
+    public DirectoryHandler setFileSizePattern(String pattern) {
         this.fileSizePattern = pattern;
+
+        return this;
     }
 
     public String getDirectoryTemplate() {
         return directoryTemplate;
     }
 
-    public void setDirectoryTemplate(String template) {
+    public DirectoryHandler setDirectoryTemplate(String template) {
         this.directoryTemplate = template;
+
+        return this;
     }
 
     @Override
@@ -343,7 +349,7 @@ public class DirectoryHandler implements RouteHandler {
         public int compareTo(DirEntry o) {
             return getName().toLowerCase().compareTo(o.getName().toLowerCase());
         }
-        
+
     }
 
 }
