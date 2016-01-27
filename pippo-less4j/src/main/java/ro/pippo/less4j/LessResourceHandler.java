@@ -43,6 +43,12 @@ public class LessResourceHandler extends ClasspathResourceHandler {
         super(urlPath, resourceBasePath);
     }
 
+    public LessResourceHandler useMinimized(boolean minimized){
+        this.minify = minimized;
+
+        return this;
+    }
+
     @Override
     protected void sendResource(URL resourceUrl, RouteContext routeContext) throws IOException {
         try {
@@ -71,11 +77,6 @@ public class LessResourceHandler extends ClasspathResourceHandler {
         } catch (Exception e) {
             throw new PippoRuntimeException(e);
         }
-    }
-
-    public LessResourceHandler useMinimized(boolean minimized){
-        this.minify = minimized;
-        return this;
     }
 
 }
