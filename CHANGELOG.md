@@ -25,7 +25,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 - Add static factory methods for GET, POST, ... in Route class
 - [#230]: Create distribution zip file with `mvn package`
 - [#231]: Add [pippo-test] module
-- Add DirectoryResourceHandler for serving external directories
+- Add DirectoryHandler for serving external directories
 
 #### Removed
 
