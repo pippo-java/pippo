@@ -44,6 +44,12 @@ public class SassResourceHandler extends ClasspathResourceHandler {
         super(urlPath, resourceBasePath);
     }
 
+    public SassResourceHandler useMinimized(boolean minimized){
+        this.minify = minimized;
+
+        return this;
+    }
+
     @Override
     protected void sendResource(URL resourceUrl, RouteContext routeContext) throws IOException {
         try {
@@ -69,11 +75,6 @@ public class SassResourceHandler extends ClasspathResourceHandler {
         }  catch (Exception e) {
             throw new PippoRuntimeException(e);
         }
-    }
-
-    public SassResourceHandler useMinimized(boolean minimized){
-        this.minify = minimized;
-        return this;
     }
 
 }
