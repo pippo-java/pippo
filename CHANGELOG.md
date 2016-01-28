@@ -26,6 +26,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 - [#230]: Create distribution zip file with `mvn package`
 - [#231]: Add [pippo-test] module
 - Add DirectoryHandler for serving external directories
+- Add pippo-csv content-type engine to easily serialize and deserialize to/from CSV
 
 #### Removed
 
