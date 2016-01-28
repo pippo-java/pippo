@@ -27,10 +27,12 @@ import ro.pippo.core.util.StringUtils;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.lang.reflect.Parameter;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 /**
@@ -211,7 +213,7 @@ public class DefaultControllerHandler implements ControllerHandler {
             return ((Param) annotation).value();
         }
 
-        return null;
+        return Optional.of(method.getParameters()[i]).filter(Parameter::isNamePresent).map(Parameter::getName).get();
     }
 
     protected Class<?> getParameterGenericType(Method method, int i) {
