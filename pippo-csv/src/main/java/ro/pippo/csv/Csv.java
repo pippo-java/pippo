@@ -25,7 +25,7 @@ public interface Csv {
      *
      * @return null or an array of column names
      */
-    String[] getCsvHeader();
+    public String[] getCsvHeader();
 
     /**
      * Return an array of objects that represent the CSV data.
@@ -33,5 +33,6 @@ public interface Csv {
      *
      * @return null or an array of objects
      */
-    Object[] getCsvData();
+    public Object[] getCsvData();
+
 }

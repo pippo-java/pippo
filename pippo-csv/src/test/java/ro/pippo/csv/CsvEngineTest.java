@@ -104,5 +104,7 @@ public class CsvEngineTest {
                 Product.builder().id(5).sku("12345").description("Pears").uuid(UUID.fromString("b3d0ad20-f16e-47ac-bc67-a05f2695838b")).lastRestock(Date.valueOf("2012-12-12")).build(),
             };
         }
+
     }
+
 }

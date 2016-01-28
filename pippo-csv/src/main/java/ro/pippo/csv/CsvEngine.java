@@ -44,19 +44,12 @@ public class CsvEngine implements ContentTypeEngine {
     private final static String YYYYMMDDHHMMSS = "yyyy-MM-dd HH:mm:ss";
 
     private boolean caseSensitiveFieldNames;
-
     private String datePattern = YYYYMMDDHHMMSS;
-
     private Character delimiter = ',';
-
     private Character escapeCharacter;
-
     private Character quoteCharacter = '\"';
-
     private QuoteMode quoteMode;
-
     private String nullString;
-
     private String recordSeparator = "\r\n";
 
     /**
@@ -120,8 +113,7 @@ public class CsvEngine implements ContentTypeEngine {
         if (object instanceof Csv) {
             return toCsv((Csv) object);
         } else if (object.getClass().isArray() && Csv.class.isAssignableFrom(object.getClass().getComponentType())) {
-            Csv[] objects = (Csv[]) object;
-            return toCsv(objects);
+            return toCsv((Csv[]) object);
         } else if (Collection.class.isAssignableFrom(object.getClass())) {
             // Collections are supported for serialization to CSV
             ArrayList<?> list = new ArrayList<>((Collection<?>) object);
@@ -131,8 +123,7 @@ public class CsvEngine implements ContentTypeEngine {
                 }
             }
 
-            Csv[] objects = list.toArray(new Csv[list.size()]);
-            return toCsv(objects);
+            return toCsv(list.toArray(new Csv[list.size()]));
         }
 
         throw new RuntimeException("Unexpected object type " + object.getClass().getName());
@@ -143,7 +134,6 @@ public class CsvEngine implements ContentTypeEngine {
             String[] header = records[0].getCsvHeader();
             StringWriter writer = new StringWriter();
             try (CSVPrinter printer = getCSVFormat().withHeader(header).print(writer)) {
-
                 for (Csv record : records) {
                     Object [] data = record.getCsvData();
                     if (data == null || data.length == 0) {
@@ -156,16 +146,18 @@ public class CsvEngine implements ContentTypeEngine {
                     }
                     printer.println();
                 }
-
             } catch (IOException e) {
                 log.error("Failed to generate CSV", e);
             }
+
             return writer.toString();
         }
+
         return null;
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public <T> T fromString(String content, Class<T> classOfT) {
         if (!classOfT.isArray()) {
             if (Collection.class.isAssignableFrom(classOfT)) {
@@ -207,8 +199,8 @@ public class CsvEngine implements ContentTypeEngine {
             for (int i = 0; i < objects.size(); i++) {
                 Array.set(array, i, objects.get(i));
             }
-            return (T) array;
 
+            return (T) array;
         } catch (Exception e) {
             throw new RuntimeException("Failed to parse CSV near line #" + currentLine, e);
         }
@@ -229,8 +221,7 @@ public class CsvEngine implements ContentTypeEngine {
         } else if (object instanceof java.sql.Timestamp) {
             return object.toString();
         } else if (object instanceof Date) {
-            SimpleDateFormat df = new SimpleDateFormat(datePattern);
-            return df.format((Date) object);
+            return new SimpleDateFormat(datePattern).format((Date) object);
         }
 
         return object.toString();
@@ -275,4 +266,5 @@ public class CsvEngine implements ContentTypeEngine {
 
         return map;
     }
+
 }

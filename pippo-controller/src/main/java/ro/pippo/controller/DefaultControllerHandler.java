@@ -167,6 +167,7 @@ public class DefaultControllerHandler implements ControllerHandler {
         return controllerMethod;
     }
 
+    @SuppressWarnings("unchecked")
     protected Object[] prepareMethodArgs(RouteContext routeContext) {
         Class<?>[] types = method.getParameterTypes();
 
@@ -207,8 +208,7 @@ public class DefaultControllerHandler implements ControllerHandler {
     protected String getParameterName(Method method, int i) {
         Annotation annotation = getAnnotation(method, i, Param.class);
         if (annotation != null) {
-            Param parameter = (Param) annotation;
-            return parameter.value();
+            return ((Param) annotation).value();
         }
 
         return null;
@@ -223,8 +223,7 @@ public class DefaultControllerHandler implements ControllerHandler {
 
         ParameterizedType parameterizedType = (ParameterizedType) genericType;
         try {
-            Class<?> genericClass = (Class<?>) parameterizedType.getActualTypeArguments()[0];
-            return genericClass;
+            return (Class<?>) parameterizedType.getActualTypeArguments()[0];
         } catch (ClassCastException e) {
             throw new PippoRuntimeException("Please specify a generic parameter type for '{}', parameter {} of '{}'",
                 method.getParameterTypes()[i].getName(), i, LangUtils.toString(method));
@@ -232,13 +231,11 @@ public class DefaultControllerHandler implements ControllerHandler {
     }
 
     protected boolean isBodyParameter(Method method, int i) {
-        Annotation annotation = getAnnotation(method, i, Body.class);
-        return annotation != null;
+        return getAnnotation(method, i, Body.class) != null;
     }
 
     protected boolean isFormParameter(Method method, int i) {
-        Annotation annotation = getAnnotation(method, i, Form.class);
-        return annotation != null;
+        return getAnnotation(method, i, Form.class) != null;
     }
 
     protected Annotation getAnnotation(Method method, int i, Class<?> annotationClass) {
