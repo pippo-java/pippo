@@ -7,6 +7,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 #### Fixed
 
 #### Changed
+- Upgrade [pippo-undertow] to Undertow 1.3.16
 
 #### Added
 
