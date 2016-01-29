@@ -55,9 +55,10 @@ public class JaxbEngine implements ContentTypeEngine {
 
             StringWriter writer = new StringWriter();
             jaxbMarshaller.marshal(object, writer);
+
             return writer.toString();
         } catch (JAXBException e) {
-            throw new PippoRuntimeException("Failed to serialize '{}' to XML'", e, object.getClass().getName());
+            throw new PippoRuntimeException(e, "Failed to serialize '{}' to XML'", object.getClass().getName());
         }
     }
 
@@ -67,10 +68,10 @@ public class JaxbEngine implements ContentTypeEngine {
         try (StringReader reader = new StringReader(content)) {
             JAXBContext jaxbContext = JAXBContext.newInstance(classOfT);
             Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
-            T t = (T) jaxbUnmarshaller.unmarshal(reader);
-            return t;
+
+            return (T) jaxbUnmarshaller.unmarshal(reader);
         } catch (JAXBException e) {
-            throw new PippoRuntimeException("Failed to deserialize content to '{}'", e, classOfT.getName());
+            throw new PippoRuntimeException(e, "Failed to deserialize content to '{}'", classOfT.getName());
         }
     }
 

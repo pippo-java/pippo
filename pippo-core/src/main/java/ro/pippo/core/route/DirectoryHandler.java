@@ -226,7 +226,7 @@ public class DirectoryHandler implements RouteHandler {
             long lastModified = resourceUrl.openConnection().getLastModified();
             routeContext.getApplication().getHttpCacheToolkit().addEtag(routeContext, lastModified);
         } catch (Exception e) {
-            throw new PippoRuntimeException("Failed to stream resource {}", e, resourceUrl);
+            throw new PippoRuntimeException(e, "Failed to stream resource {}", resourceUrl);
         }
     }
 
@@ -240,7 +240,7 @@ public class DirectoryHandler implements RouteHandler {
                 sendResource(resourceUrl, routeContext);
             }
         } catch (Exception e) {
-            throw new PippoRuntimeException("Failed to stream resource {}", e, resourceUrl);
+            throw new PippoRuntimeException(e, "Failed to stream resource {}", resourceUrl);
         }
     }
 

@@ -68,6 +68,7 @@ public class ParameterValue implements Serializable {
                 } catch (NumberFormatException e) {
                     // NaN
                 }
+
                 return Boolean.parseBoolean(values[0]);
         }
     }
@@ -153,8 +154,7 @@ public class ParameterValue implements Serializable {
             return defaultValue;
         }
 
-        double d = Double.parseDouble(values[0]);
-        return new BigDecimal(d);
+        return new BigDecimal(Double.parseDouble(values[0]));
     }
 
     public UUID toUUID() {
@@ -212,6 +212,7 @@ public class ParameterValue implements Serializable {
             // attempt to interpret value as an ordinal
             ordinal = Integer.parseInt(values[0]);
         } catch (Exception e) {
+            // do nothing
         }
 
         T[] constants = classOfT.getEnumConstants();
@@ -229,11 +230,12 @@ public class ParameterValue implements Serializable {
                 }
             }
         }
+
         return defaultValue;
     }
 
     public Set<String> toSet() {
-        return toSet(new HashSet<String>());
+        return toSet(new HashSet<>());
     }
 
     public Set<String> toSet(Set<String> defaultValue) {
@@ -242,9 +244,10 @@ public class ParameterValue implements Serializable {
         }
 
         if (values.length == 1) {
-            return new HashSet<String>(Arrays.asList(values[0].split(",")));
+            return new HashSet<>(Arrays.asList(values[0].split(",")));
         }
-        return new HashSet<String>(Arrays.asList(values));
+
+        return new HashSet<>(Arrays.asList(values));
     }
 
     /**
@@ -309,8 +312,7 @@ public class ParameterValue implements Serializable {
 
         SimpleDateFormat dateFormat = new SimpleDateFormat(pattern);
         try {
-            Date date = dateFormat.parse(values[0]);
-            return date;
+            return dateFormat.parse(values[0]);
         } catch (ParseException e) {
             throw new PippoRuntimeException(e);
         }
@@ -325,8 +327,7 @@ public class ParameterValue implements Serializable {
             return defaultValue;
         }
 
-        java.sql.Date date = java.sql.Date.valueOf(values[0]);
-        return date;
+        return java.sql.Date.valueOf(values[0]);
     }
 
     public Time toSqlTime() {
@@ -338,8 +339,7 @@ public class ParameterValue implements Serializable {
             return defaultValue;
         }
 
-        Time time = Time.valueOf(values[0]);
-        return time;
+        return Time.valueOf(values[0]);
     }
 
     public Timestamp toSqlTimestamp() {
@@ -351,8 +351,7 @@ public class ParameterValue implements Serializable {
             return defaultValue;
         }
 
-        Timestamp timestamp = Timestamp.valueOf(values[0]);
-        return timestamp;
+        return Timestamp.valueOf(values[0]);
     }
 
     public <T> T to(Class<T> classOfT) {
@@ -401,6 +400,7 @@ public class ParameterValue implements Serializable {
                     Array.set(array, i, object);
                 }
             }
+
             return (T) array;
         } else {
             return (T) toObject(classOfT, pattern);
@@ -446,12 +446,14 @@ public class ParameterValue implements Serializable {
                 T t = (T) parameterValue.toObject(classOfT, pattern);
                 collection.add(t);
             }
+
             return collection;
         } catch (NoSuchMethodException | InstantiationException | IllegalAccessException | InvocationTargetException e) {
-            throw new PippoRuntimeException("Failed to create collection", e);
+            throw new PippoRuntimeException(e, "Failed to create collection");
         }
     }
 
+    @SuppressWarnings("unchecked")
     private Object toObject(Class<?> type, String pattern) {
         if (type == String.class) {
             return toString();
@@ -498,8 +500,7 @@ public class ParameterValue implements Serializable {
         }
 
         if (type.isEnum()) {
-            Class<? extends Enum> enumClass = (Class<? extends Enum>) type;
-            return toEnum(enumClass);
+            return toEnum((Class<? extends Enum>) type);
         }
 
         if (pattern == null) {
@@ -530,7 +531,7 @@ public class ParameterValue implements Serializable {
             }
         }
 
-        throw new PippoRuntimeException("Cannot convert '" + toString() + "'to type '" + type + "'");
+        throw new PippoRuntimeException("Cannot convert '{}' to type '{}'", toString(), type);
     }
 
     public boolean isNull() {

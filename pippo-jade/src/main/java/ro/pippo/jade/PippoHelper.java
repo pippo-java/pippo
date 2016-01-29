@@ -73,12 +73,10 @@ public class PippoHelper {
 
     private String classpathResourceAt(String path, AtomicReference<String> patternRef,
                                        Class<? extends ClasspathResourceHandler> resourceHandlerClass) {
-
         if (patternRef.get() == null) {
             String pattern = router.uriPatternFor(resourceHandlerClass);
             if (pattern == null) {
-                throw new PippoRuntimeException("You must register a route for {}",
-                        resourceHandlerClass.getSimpleName());
+                throw new PippoRuntimeException("You must register a route for {}", resourceHandlerClass.getSimpleName());
             }
 
             patternRef.set(pattern);
@@ -86,18 +84,16 @@ public class PippoHelper {
 
         Map<String, Object> parameters = new HashMap<>();
         parameters.put(ClasspathResourceHandler.PATH_PARAMETER, path);
-        String url = router.uriFor(patternRef.get(), parameters);
-        return url;
+
+        return router.uriFor(patternRef.get(), parameters);
     }
 
     public String i18n(String messageKey) {
-        String messageValue = messages.get(messageKey, language);
-        return messageValue;
+        return messages.get(messageKey, language);
     }
 
     public String i18n(String messageKey, Object... args) {
-        String messageValue = messages.get(messageKey, language, args);
-        return messageValue;
+        return messages.get(messageKey, language, args);
     }
 
     public String formatTime(Object input, String styleOrPattern) {
@@ -109,12 +105,12 @@ public class PippoHelper {
             df = DateFormat.getDateTimeInstance(type, type, locale);
         }
         Date date = getDateObject(input);
+
         return df.format(date);
     }
 
     public String prettyTime(Object input) {
-        Date date = getDateObject(input);
-        return prettyTime.format(date);
+        return prettyTime.format(getDateObject(input));
     }
 
     private Date getDateObject(Object value) {
@@ -143,4 +139,5 @@ public class PippoHelper {
             return -1;
         }
     }
+
 }

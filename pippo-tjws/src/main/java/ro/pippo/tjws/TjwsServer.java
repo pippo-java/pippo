@@ -95,7 +95,7 @@ public class TjwsServer extends AbstractWebServer<WebServerSettings> {
                 // TJWS does not destroy the root servlet. :(
                 pippoServlet.destroy();
             } catch (Exception e) {
-                throw new PippoRuntimeException("Cannot stop RESTEasy TJWS Server", e);
+                throw new PippoRuntimeException(e, "Cannot stop RESTEasy TJWS Server");
             }
         }
     }

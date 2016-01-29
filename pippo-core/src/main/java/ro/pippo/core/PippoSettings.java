@@ -244,9 +244,9 @@ public class PippoSettings {
             }
 
         } catch (FileNotFoundException f) {
-            throw new PippoRuntimeException("Failed to find " + propertiesUrl, f);
+            throw new PippoRuntimeException(f, "Failed to find {}", propertiesUrl);
         } catch (Exception t) {
-            throw new PippoRuntimeException("Failed to read " + propertiesUrl, t);
+            throw new PippoRuntimeException(t, "Failed to read {}", propertiesUrl);
         }
 
         return properties;
@@ -922,9 +922,8 @@ public class PippoSettings {
         String value = getString(name, defaultValue);
         try {
             final String[] s = value.split(" ", 2);
-            TimeUnit timeUnit = TimeUnit.valueOf(s[1].trim().toUpperCase());
-            return timeUnit;
-        } catch (Exception ex) {
+            return TimeUnit.valueOf(s[1].trim().toUpperCase());
+        } catch (Exception e) {
             throw new PippoRuntimeException("{} must have format '<n> <TimeUnit>' where <TimeUnit> is one of 'MILLISECONDS', 'SECONDS', 'MINUTES', 'HOURS', 'DAYS'", name);
         }
     }

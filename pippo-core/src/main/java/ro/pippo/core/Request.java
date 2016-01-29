@@ -262,16 +262,16 @@ public final class Request {
                     if (Collection.class.isAssignableFrom(fieldClass)) {
                         Type parameterType = field.getGenericType();
                         if (!ParameterizedType.class.isAssignableFrom(parameterType.getClass())) {
-                            String msg = "Please specify a generic parameter type for field '{}' {}";
-                            throw new PippoRuntimeException(msg, field.getName(), fieldClass.getName());
+                            throw new PippoRuntimeException("Please specify a generic parameter type for field '{}' {}",
+                                    field.getName(), fieldClass.getName());
                         }
                         ParameterizedType parameterizedType = (ParameterizedType) parameterType;
                         Class<X> genericClass;
                         try {
                             genericClass = (Class<X>) parameterizedType.getActualTypeArguments()[0];
                         } catch (ClassCastException e) {
-                            String msg = "Please specify a generic parameter type for field '{}' {}";
-                            throw new PippoRuntimeException(msg, field.getName(), fieldClass.getName());
+                            throw new PippoRuntimeException("Please specify a generic parameter type for field '{}' {}",
+                                    field.getName(), fieldClass.getName());
                         }
 
                         if (Set.class == fieldClass) {
@@ -279,8 +279,8 @@ public final class Request {
                         } else if (List.class == fieldClass) {
                             value = getParameters().get(parameterName).toList(genericClass, pattern);
                         } else if (fieldClass.isInterface()) {
-                            String msg = "Field '{}' collection '{}' is not a supported type!";
-                            throw new PippoRuntimeException(msg, field.getName(), fieldClass.getName());
+                            throw new PippoRuntimeException("Field '{}' collection '{}' is not a supported type!",
+                                    field.getName(), fieldClass.getName());
                         } else {
                             Class<? extends Collection> collectionClass = (Class<? extends Collection>) fieldClass;
                             value = getParameters().get(parameterName).toCollection(collectionClass, genericClass, pattern);
@@ -334,7 +334,7 @@ public final class Request {
             throw e;
         } catch (Exception e) {
             // capture and re-throw all other exceptions
-            throw new PippoRuntimeException("Failed to create entity '{}' from request body!", e, entityClass.getName());
+            throw new PippoRuntimeException(e, "Failed to create entity '{}' from request body!", entityClass.getName());
         }
     }
 
@@ -406,7 +406,7 @@ public final class Request {
                 try {
                     body = IoUtils.toString(httpServletRequest.getInputStream());
                 } catch (Exception e) {
-                    throw new PippoRuntimeException("Exception when reading the request body", e);
+                    throw new PippoRuntimeException(e, "Exception when reading the request body");
                 }
             }
         }
@@ -588,7 +588,7 @@ public final class Request {
                     files.put(part.getName(), new FileItem(part));
                 }
             } catch (Exception e) {
-                throw new PippoRuntimeException("Cannot get files", e);
+                throw new PippoRuntimeException(e, "Cannot get files");
             }
         }
 

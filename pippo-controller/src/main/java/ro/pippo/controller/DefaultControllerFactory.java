@@ -30,7 +30,7 @@ public class DefaultControllerFactory implements ControllerFactory {
         try {
             return controllerClass.newInstance();
         } catch (InstantiationException | IllegalAccessException e) {
-            throw new PippoRuntimeException("Could not instantiate '{}'", e, controllerClass.getName());
+            throw new PippoRuntimeException(e, "Could not instantiate '{}'", controllerClass.getName());
         }
     }
 

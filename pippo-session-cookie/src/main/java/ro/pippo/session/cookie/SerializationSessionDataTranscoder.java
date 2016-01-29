@@ -66,7 +66,7 @@ public class SerializationSessionDataTranscoder implements SessionDataTranscoder
 
             return (SessionData) objectInputStream.readObject();
         } catch (IOException | ClassNotFoundException e) {
-            throw new PippoRuntimeException("Cannot deserialize session. A new one will be created.", e);
+            throw new PippoRuntimeException(e, "Cannot deserialize session. A new one will be created.");
         } finally {
             IoUtils.close(objectInputStream);
             IoUtils.close(inputStream);

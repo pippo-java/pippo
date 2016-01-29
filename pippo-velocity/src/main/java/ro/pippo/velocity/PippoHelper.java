@@ -77,8 +77,7 @@ public class PippoHelper {
         if (patternRef.get() == null) {
             String pattern = router.uriPatternFor(resourceHandlerClass);
             if (pattern == null) {
-                throw new PippoRuntimeException("You must register a route for {}",
-                    resourceHandlerClass.getSimpleName());
+                throw new PippoRuntimeException("You must register a route for {}", resourceHandlerClass.getSimpleName());
             }
 
             patternRef.set(pattern);

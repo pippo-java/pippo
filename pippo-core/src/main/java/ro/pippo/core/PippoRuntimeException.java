@@ -25,11 +25,7 @@ public class PippoRuntimeException extends RuntimeException {
     public PippoRuntimeException() {
     }
 
-    public PippoRuntimeException(String message, Object... args) {
-        super(StringUtils.format(message, args));
-    }
-
-    public PippoRuntimeException(String message, Throwable cause, Object... args) {
+    public PippoRuntimeException(Throwable cause, String message, Object... args) {
         super(StringUtils.format(message, args), cause);
     }
 
@@ -37,8 +33,8 @@ public class PippoRuntimeException extends RuntimeException {
         super(cause);
     }
 
-    public PippoRuntimeException(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace) {
-        super(message, cause, enableSuppression, writableStackTrace);
+    public PippoRuntimeException(String message, Object... args) {
+        super(StringUtils.format(message, args));
     }
 
 }

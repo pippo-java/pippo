@@ -53,7 +53,7 @@ public abstract class JacksonBaseEngine implements ContentTypeEngine {
         try {
             return objectMapper.writeValueAsString(object);
         } catch (JsonProcessingException e) {
-            throw new PippoRuntimeException("Error serializing object to {}", e, getContentType());
+            throw new PippoRuntimeException(e, "Error serializing object to {}", getContentType());
         }
     }
 
@@ -61,10 +61,10 @@ public abstract class JacksonBaseEngine implements ContentTypeEngine {
     public <T> T fromString(String content, Class<T> classOfT) {
         try {
             return objectMapper.readValue(content, classOfT);
-        } catch (JsonParseException | JsonMappingException ex) {
-            throw new PippoRuntimeException("Error deserializing {}", ex, getContentType());
+        } catch (JsonParseException | JsonMappingException e) {
+            throw new PippoRuntimeException(e, "Error deserializing {}", getContentType());
         } catch (IOException e) {
-            throw new PippoRuntimeException("Invalid {} document", e, getContentType());
+            throw new PippoRuntimeException(e, "Invalid {} document", getContentType());
         }
     }
 

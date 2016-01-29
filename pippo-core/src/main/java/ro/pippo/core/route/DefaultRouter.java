@@ -459,7 +459,7 @@ public class DefaultRouter implements Router {
                 try {
                     encodedParameterValue = URLEncoder.encode(parameterValue.toString(), PippoConstants.UTF8);
                 } catch (UnsupportedEncodingException e) {
-                    throw new PippoRuntimeException("Cannot encode the parameter value '{}'", e, parameterValue.toString());
+                    throw new PippoRuntimeException(e, "Cannot encode the parameter value '{}'", parameterValue.toString());
                 }
                 query.append(parameterName).append("=").append(encodedParameterValue);
 

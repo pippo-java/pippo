@@ -134,18 +134,16 @@ public abstract class PippoGroovyTemplate extends BaseTemplate {
 
         Map<String, Object> parameters = new HashMap<>();
         parameters.put(ClasspathResourceHandler.PATH_PARAMETER, path);
-        String uri = router.uriFor(patternRef.get(), parameters);
-        return uri;
+
+        return router.uriFor(patternRef.get(), parameters);
     }
 
     public String i18n(String messageKey) throws IOException {
-        String messageValue = messages.get(messageKey, language);
-        return messageValue;
+        return messages.get(messageKey, language);
     }
 
     public String i18n(String messageKey, Object... args) throws IOException {
-        String messageValue = messages.get(messageKey, language, args);
-        return messageValue;
+        return messages.get(messageKey, language, args);
     }
 
     public String formatTime(Object input, String styleOrPattern) {
@@ -159,8 +157,7 @@ public abstract class PippoGroovyTemplate extends BaseTemplate {
             df = DateFormat.getDateTimeInstance(type, type, locale);
         }
 
-        String value = df.format(date);
-        return value;
+        return df.format(date);
     }
 
     private Date getDateObject(Object value) {
@@ -196,8 +193,7 @@ public abstract class PippoGroovyTemplate extends BaseTemplate {
         }
         Date date = getDateObject(input);
 
-        String value = prettyTime.format(date);
-        return value;
+        return prettyTime.format(date);
     }
 
     public String ng(String content) throws IOException {
@@ -231,6 +227,7 @@ public abstract class PippoGroovyTemplate extends BaseTemplate {
                 .createTypeCheckedModelTemplate(resource, modelTypes).make(submodel);
         template.setup(languages, messages, router);
         template.writeTo(getOut());
+
         return this;
     }
 
@@ -239,6 +236,7 @@ public abstract class PippoGroovyTemplate extends BaseTemplate {
         Map result = new HashMap();
         result.putAll(getModel());
         result.putAll(m);
+
         return result;
     }
 

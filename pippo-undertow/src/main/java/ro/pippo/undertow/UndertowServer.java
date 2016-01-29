@@ -94,7 +94,7 @@ public class UndertowServer extends AbstractWebServer<UndertowSettings> {
 
                 pippoDeploymentManager.undeploy();
             } catch (Exception e) {
-                throw new PippoRuntimeException("Cannot stop Undertow Server", e);
+                throw new PippoRuntimeException(e, "Cannot stop Undertow Server");
             }
         }
     }
@@ -135,7 +135,7 @@ public class UndertowServer extends AbstractWebServer<UndertowSettings> {
                 SSLContext sslContext = createSSLContext(keyStore, trustStore);
                 builder.addHttpsListener(getSettings().getPort(), getSettings().getHost(), sslContext);
             } catch (Exception e) {
-                throw new PippoRuntimeException("Failed to setup an Undertow SSL listener!", e);
+                throw new PippoRuntimeException(e, "Failed to setup an Undertow SSL listener!");
             }
         }
 

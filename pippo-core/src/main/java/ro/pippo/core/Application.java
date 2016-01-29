@@ -166,7 +166,7 @@ public class Application {
             engine = engineClass.newInstance();
             setTemplateEngine(engine);
         } catch (Exception e) {
-            throw new PippoRuntimeException("Failed to instantiate '{}'", e, engineClass.getName());
+            throw new PippoRuntimeException(e, "Failed to instantiate '{}'", engineClass.getName());
         }
     }
 

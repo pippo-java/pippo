@@ -93,7 +93,7 @@ public class ContentTypeEngines {
         try {
             engine = engineClass.newInstance();
         } catch (Exception e) {
-            throw new PippoRuntimeException("Failed to instantiate '{}'", e, engineClass.getName());
+            throw new PippoRuntimeException(e, "Failed to instantiate '{}'", engineClass.getName());
         }
         if (!engines.containsKey(engine.getContentType())) {
             setContentTypeEngine(engine);

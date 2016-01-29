@@ -121,7 +121,7 @@ public class TomcatServer extends AbstractWebServer<TomcatSettings> {
             try {
                 tomcat.stop();
             } catch (Exception e) {
-                throw new PippoRuntimeException("Cannot stop Tomcat Server", e);
+                throw new PippoRuntimeException(e, "Cannot stop Tomcat Server");
             }
         }
     }

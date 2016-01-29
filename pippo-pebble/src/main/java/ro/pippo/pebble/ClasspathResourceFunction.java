@@ -49,6 +49,7 @@ abstract class ClasspathResourceFunction<T extends ClasspathResourceHandler> imp
         public List<String> getArgumentNames() {
             List<String> names = new ArrayList<>();
             names.add(ClasspathResourceHandler.PATH_PARAMETER);
+
             return names;
         }
 
@@ -57,8 +58,7 @@ abstract class ClasspathResourceFunction<T extends ClasspathResourceHandler> imp
             if (patternRef.get() == null) {
                 String pattern = router.uriPatternFor(resourceHandlerClass);
                 if (pattern == null) {
-                    throw new PippoRuntimeException("You must register a route for {}",
-                            resourceHandlerClass.getSimpleName());
+                    throw new PippoRuntimeException("You must register a route for {}", resourceHandlerClass.getSimpleName());
                 }
                 patternRef.set(pattern);
             }
@@ -66,8 +66,8 @@ abstract class ClasspathResourceFunction<T extends ClasspathResourceHandler> imp
             String path = (String) args.get(ClasspathResourceHandler.PATH_PARAMETER);
             Map<String, Object> parameters = new HashMap<>();
             parameters.put(ClasspathResourceHandler.PATH_PARAMETER, path);
-            String url = router.uriFor(patternRef.get(), parameters);
-            return url;
+
+            return router.uriFor(patternRef.get(), parameters);
         }
 
     }

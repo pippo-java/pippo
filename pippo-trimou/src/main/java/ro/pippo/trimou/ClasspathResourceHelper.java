@@ -34,33 +34,31 @@ import ro.pippo.core.route.Router;
  */
 abstract class ClasspathResourceHelper<T extends ClasspathResourceHandler> extends BasicValueHelper {
 
-        final Router router;
-        final Class<T> resourceHandlerClass;
-        final AtomicReference<String> patternRef;
+    final Router router;
+    final Class<T> resourceHandlerClass;
+    final AtomicReference<String> patternRef;
 
-        protected ClasspathResourceHelper(Router router, Class<T> resourceHandlerClass) {
-            this.router = router;
-            this.resourceHandlerClass = resourceHandlerClass;
-            this.patternRef = new AtomicReference<>();
-        }
+    protected ClasspathResourceHelper(Router router, Class<T> resourceHandlerClass) {
+        this.router = router;
+        this.resourceHandlerClass = resourceHandlerClass;
+        this.patternRef = new AtomicReference<>();
+    }
 
     @Override
     public void execute(Options options) {
-            if (patternRef.get() == null) {
-                String pattern = router.uriPatternFor(resourceHandlerClass);
-                if (pattern == null) {
-                    throw new PippoRuntimeException("You must register a route for {}",
-                            resourceHandlerClass.getSimpleName());
-                }
-                patternRef.set(pattern);
+        if (patternRef.get() == null) {
+            String pattern = router.uriPatternFor(resourceHandlerClass);
+            if (pattern == null) {
+                throw new PippoRuntimeException("You must register a route for {}", resourceHandlerClass.getSimpleName());
             }
+            patternRef.set(pattern);
+        }
 
         String path = (String) options.getParameters().get(0);
-            Map<String, Object> parameters = new HashMap<>();
-            parameters.put(ClasspathResourceHandler.PATH_PARAMETER, path);
-            String url = router.uriFor(patternRef.get(), parameters);
+        Map<String, Object> parameters = new HashMap<>();
+        parameters.put(ClasspathResourceHandler.PATH_PARAMETER, path);
+        String url = router.uriFor(patternRef.get(), parameters);
         append(options, url);
-
     }
 
-    }
+}
