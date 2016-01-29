@@ -5,6 +5,16 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 ### [Unreleased][unreleased]
 
 #### Fixed
+
+#### Changed
+
+#### Added
+
+#### Removed
+
+### [0.8.0] - 2016-01-29
+
+#### Fixed
 - [#209]: Exception handling for requests with arrays and very large numbers
 - Fixed parsing of dates, times, and timestamps when parameter value is an empty string
 - Fixed StringIndexOutOfBoundsException in ResourceHandler
