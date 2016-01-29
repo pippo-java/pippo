@@ -19,6 +19,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 - Move quickstart maven archetype to Java 8
 - Upgrade vaadin-sass-compiler to 0.9.13
 - Upgrade [pippo-metrics-librato] to Librato 4.1.2.1
+- [#241]: Transparently support Java 8 `-parameters` names for controllers
 
 #### Added
 - [#228]: Versioning public resources
@@ -26,7 +27,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 - [#230]: Create distribution zip file with `mvn package`
 - [#231]: Add [pippo-test] module
 - Add DirectoryHandler for serving external directories
-- Add pippo-csv content-type engine to easily serialize and deserialize to/from CSV
+- Add [pippo-csv] content-type engine to easily serialize and deserialize to/from CSV
 
 #### Removed
 
@@ -218,6 +219,7 @@ Initial release.
 [0.3.0]: https://github.com/decebals/pippo/compare/pippo-parent-0.2.0...pippo-parent-0.3.0
 [0.2.0]: https://github.com/decebals/pippo/compare/pippo-parent-0.1.0...pippo-parent-0.2.0
 
+[#241]: https://github.com/decebals/pippo/pull/241
 [#234]: https://github.com/decebals/pippo/issues/234
 [#233]: https://github.com/decebals/pippo/issues/233
 [#231]: https://github.com/decebals/pippo/pull/231
@@ -300,5 +302,6 @@ Initial release.
 [pippo-less4j]: https://github.com/decebals/pippo/tree/master/pippo-less4j
 [pippo-sasscompiler]: https://github.com/decebals/pippo/tree/master/pippo-sasscompiler
 [pippo-demo-css]: https://github.com/decebals/pippo/tree/master/pippo-demo/pippo-demo-css
-[pippo-jaxb]: https://github.com/decebals/pippo/tree/master/pippo-jaxb/pippo-jaxb
+[pippo-jaxb]: https://github.com/decebals/pippo/tree/master/pippo-jaxb
 [pippo-test]: https://github.com/decebals/pippo/tree/master/pippo-test
+[pippo-csv]: https://github.com/decebals/pippo/tree/master/pippo-csv
