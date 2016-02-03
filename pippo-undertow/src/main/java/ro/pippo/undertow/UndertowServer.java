@@ -29,12 +29,14 @@ import io.undertow.servlet.api.FilterInfo;
 import io.undertow.servlet.api.ServletInfo;
 import io.undertow.servlet.handlers.DefaultServlet;
 import io.undertow.servlet.util.ImmediateInstanceFactory;
+import org.kohsuke.MetaInfServices;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ro.pippo.core.AbstractWebServer;
 import ro.pippo.core.Application;
 import ro.pippo.core.PippoFilter;
 import ro.pippo.core.PippoRuntimeException;
+import ro.pippo.core.WebServer;
 import ro.pippo.core.util.StringUtils;
 
 import javax.net.ssl.KeyManager;
@@ -57,6 +59,7 @@ import java.security.KeyStore;
  *
  * @author James Moger
  */
+@MetaInfServices(WebServer.class)
 public class UndertowServer extends AbstractWebServer<UndertowSettings> {
 
     private static final Logger log = LoggerFactory.getLogger(UndertowServer.class);

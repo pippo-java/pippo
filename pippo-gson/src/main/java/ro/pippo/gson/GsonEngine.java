@@ -24,6 +24,7 @@ import com.google.gson.JsonPrimitive;
 import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
 import com.google.gson.JsonSyntaxException;
+import org.kohsuke.MetaInfServices;
 import ro.pippo.core.Application;
 import ro.pippo.core.ContentTypeEngine;
 import ro.pippo.core.HttpConstants;
@@ -41,6 +42,7 @@ import java.util.Locale;
  *
  * @author James Moger
  */
+@MetaInfServices(ContentTypeEngine.class)
 public class GsonEngine implements ContentTypeEngine {
 
     @Override

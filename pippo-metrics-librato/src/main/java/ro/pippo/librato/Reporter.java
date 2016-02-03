@@ -18,6 +18,7 @@ package ro.pippo.librato;
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
+import org.kohsuke.MetaInfServices;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -33,6 +34,7 @@ import com.librato.metrics.LibratoReporter;
  * @author James Moger
  *
  */
+@MetaInfServices(MetricsReporter.class)
 public class Reporter implements MetricsReporter {
 
 	private final Logger log = LoggerFactory.getLogger(Reporter.class);

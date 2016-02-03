@@ -19,6 +19,7 @@ import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.util.concurrent.TimeUnit;
 
+import org.kohsuke.MetaInfServices;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -38,6 +39,7 @@ import com.codahale.metrics.graphite.PickledGraphite;
  * @author James Moger
  *
  */
+@MetaInfServices(MetricsReporter.class)
 public class Reporter implements MetricsReporter {
 
 	private final Logger log = LoggerFactory.getLogger(Reporter.class);

@@ -15,6 +15,7 @@
  */
 package ro.pippo.jackson;
 
+import org.kohsuke.MetaInfServices;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ro.pippo.core.Application;
@@ -24,6 +25,7 @@ import ro.pippo.core.util.ClasspathUtils;
 /**
  * @author James Moger
  */
+@MetaInfServices(Initializer.class)
 public class JacksonInitializer implements Initializer {
 
     private static final Logger log = LoggerFactory.getLogger(JacksonInitializer.class);

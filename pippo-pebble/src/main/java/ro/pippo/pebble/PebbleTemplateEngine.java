@@ -21,6 +21,7 @@ import java.util.Locale;
 import java.util.Map;
 
 import com.mitchellbosecke.pebble.loader.StringLoader;
+import org.kohsuke.MetaInfServices;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -48,6 +49,7 @@ import com.mitchellbosecke.pebble.template.PebbleTemplate;
  *
  * @author James Moger
  */
+@MetaInfServices(TemplateEngine.class)
 public class PebbleTemplateEngine implements TemplateEngine {
 
     private final Logger log = LoggerFactory.getLogger(PebbleTemplateEngine.class);

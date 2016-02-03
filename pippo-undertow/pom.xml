@@ -26,6 +26,13 @@
             <artifactId>undertow-servlet</artifactId>
             <version>1.3.16.Final</version>
         </dependency>
+
+        <dependency>
+            <groupId>org.kohsuke.metainf-services</groupId>
+            <artifactId>metainf-services</artifactId>
+            <scope>provided</scope>
+        </dependency>
+
     </dependencies>
 
 </project>

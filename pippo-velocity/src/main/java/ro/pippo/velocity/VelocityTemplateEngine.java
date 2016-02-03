@@ -21,6 +21,7 @@ import org.apache.velocity.app.VelocityEngine;
 import org.apache.velocity.runtime.RuntimeServices;
 import org.apache.velocity.runtime.RuntimeSingleton;
 import org.apache.velocity.runtime.parser.node.SimpleNode;
+import org.kohsuke.MetaInfServices;
 import ro.pippo.core.Application;
 import ro.pippo.core.Languages;
 import ro.pippo.core.Messages;
@@ -40,6 +41,7 @@ import java.util.Properties;
 /**
  * @author Decebal Suiu
  */
+@MetaInfServices(TemplateEngine.class)
 public class VelocityTemplateEngine implements TemplateEngine {
 
     public static final String VM = "vm";

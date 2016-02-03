@@ -15,6 +15,7 @@
  */
 package ro.pippo.xstream;
 
+import org.kohsuke.MetaInfServices;
 import ro.pippo.core.Application;
 import ro.pippo.core.ContentTypeEngine;
 import ro.pippo.core.HttpConstants;
@@ -26,6 +27,7 @@ import com.thoughtworks.xstream.XStream;
  *
  * @author James Moger
  */
+@MetaInfServices(ContentTypeEngine.class)
 public class XstreamEngine implements ContentTypeEngine {
 
 	@Override

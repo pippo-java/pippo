@@ -151,6 +151,11 @@
                 <artifactId>prettytime</artifactId>
                 <version>3.2.5.Final</version>
             </dependency>
+            <dependency>
+                <groupId>org.kohsuke.metainf-services</groupId>
+                <artifactId>metainf-services</artifactId>
+                <version>1.1</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 

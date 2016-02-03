@@ -15,6 +15,7 @@
  */
 package ro.pippo.snakeyaml;
 
+import org.kohsuke.MetaInfServices;
 import org.yaml.snakeyaml.Yaml;
 import ro.pippo.core.Application;
 import ro.pippo.core.ContentTypeEngine;
@@ -25,6 +26,7 @@ import ro.pippo.core.HttpConstants;
  *
  * @author James Moger
  */
+@MetaInfServices(ContentTypeEngine.class)
 public class SnakeYamlEngine implements ContentTypeEngine {
 
     @Override

@@ -15,6 +15,7 @@
  */
 package ro.pippo.fastjson;
 
+import org.kohsuke.MetaInfServices;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -24,6 +25,7 @@ import ro.pippo.core.Initializer;
 /**
  * @author James Moger
  */
+@MetaInfServices(Initializer.class)
 public class FastjsonInitializer implements Initializer {
 
     private static final Logger log = LoggerFactory.getLogger(FastjsonInitializer.class);

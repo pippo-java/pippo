@@ -23,6 +23,7 @@ import java.io.IOException;
 import java.io.Writer;
 import java.util.Map;
 
+import org.kohsuke.MetaInfServices;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -41,6 +42,7 @@ import ro.pippo.core.util.StringUtils;
  *
  * @author James Moger
  */
+@MetaInfServices(TemplateEngine.class)
 public class GroovyTemplateEngine implements TemplateEngine {
 
     private static final Logger log = LoggerFactory.getLogger(GroovyTemplateEngine.class);
