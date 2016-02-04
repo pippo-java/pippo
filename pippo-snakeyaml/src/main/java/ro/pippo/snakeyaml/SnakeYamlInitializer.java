@@ -15,12 +15,14 @@
  */
 package ro.pippo.snakeyaml;
 
+import org.kohsuke.MetaInfServices;
 import ro.pippo.core.Application;
 import ro.pippo.core.Initializer;
 
 /**
  * @author James Moger
  */
+@MetaInfServices(Initializer.class)
 public class SnakeYamlInitializer implements Initializer {
 
     @Override

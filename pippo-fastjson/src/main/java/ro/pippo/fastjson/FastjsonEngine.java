@@ -16,6 +16,7 @@
 package ro.pippo.fastjson;
 
 import com.alibaba.fastjson.serializer.SerializerFeature;
+import org.kohsuke.MetaInfServices;
 import ro.pippo.core.Application;
 import ro.pippo.core.ContentTypeEngine;
 import ro.pippo.core.HttpConstants;
@@ -27,6 +28,7 @@ import com.alibaba.fastjson.JSON;
  *
  * @author James Moger
  */
+@MetaInfServices(ContentTypeEngine.class)
 public class FastjsonEngine implements ContentTypeEngine {
 
 	@Override

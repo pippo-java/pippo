@@ -15,6 +15,7 @@
  */
 package ro.pippo.jaxb;
 
+import org.kohsuke.MetaInfServices;
 import ro.pippo.core.Application;
 import ro.pippo.core.ContentTypeEngine;
 import ro.pippo.core.HttpConstants;
@@ -32,6 +33,7 @@ import java.io.StringWriter;
  *
  * @author James Moger
  */
+@MetaInfServices(ContentTypeEngine.class)
 public class JaxbEngine implements ContentTypeEngine {
 
     boolean prettyPrint;

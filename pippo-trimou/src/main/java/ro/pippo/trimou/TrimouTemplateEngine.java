@@ -15,6 +15,7 @@
  */
 package ro.pippo.trimou;
 
+import org.kohsuke.MetaInfServices;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.trimou.Mustache;
@@ -43,6 +44,7 @@ import java.util.Map;
  *
  * @author James Moger
  */
+@MetaInfServices(TemplateEngine.class)
 public class TrimouTemplateEngine implements TemplateEngine {
 
     private static final Logger log = LoggerFactory.getLogger(TrimouTemplateEngine.class);

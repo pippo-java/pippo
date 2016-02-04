@@ -16,6 +16,7 @@
 package ro.pippo.csv;
 
 import org.apache.commons.csv.*;
+import org.kohsuke.MetaInfServices;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ro.pippo.core.Application;
@@ -35,6 +36,7 @@ import java.util.*;
 /**
  * @author James Moger
  */
+@MetaInfServices(ContentTypeEngine.class)
 public class CsvEngine implements ContentTypeEngine {
 
     public final static String TEXT_CSV = "text/csv";

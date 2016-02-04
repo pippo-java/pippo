@@ -23,6 +23,7 @@ import com.codahale.metrics.jvm.ClassLoadingGaugeSet;
 import com.codahale.metrics.jvm.GarbageCollectorMetricSet;
 import com.codahale.metrics.jvm.MemoryUsageGaugeSet;
 import com.codahale.metrics.jvm.ThreadStatesGaugeSet;
+import org.kohsuke.MetaInfServices;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ro.pippo.core.Application;
@@ -46,6 +47,7 @@ import java.util.Map;
  *
  * @author James Moger
  */
+@MetaInfServices(RouteContextFactory.class)
 public class PippoMetrics implements RouteContextFactory<MetricsRouteContext> {
 
     private static final Logger log = LoggerFactory.getLogger(PippoMetrics.class);

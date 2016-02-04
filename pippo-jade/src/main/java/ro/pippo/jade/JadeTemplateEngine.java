@@ -24,6 +24,7 @@ import java.util.Locale;
 import java.util.Map;
 
 import de.neuland.jade4j.template.ReaderTemplateLoader;
+import org.kohsuke.MetaInfServices;
 import ro.pippo.core.Application;
 import ro.pippo.core.Languages;
 import ro.pippo.core.Messages;
@@ -41,6 +42,7 @@ import de.neuland.jade4j.template.TemplateLoader;
 /**
  * @author Decebal Suiu
  */
+@MetaInfServices(TemplateEngine.class)
 public class JadeTemplateEngine implements TemplateEngine {
 
     private Languages languages;

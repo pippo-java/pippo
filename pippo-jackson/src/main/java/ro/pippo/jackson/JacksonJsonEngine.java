@@ -16,6 +16,8 @@
 package ro.pippo.jackson;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.kohsuke.MetaInfServices;
+import ro.pippo.core.ContentTypeEngine;
 import ro.pippo.core.HttpConstants;
 
 /**
@@ -23,6 +25,7 @@ import ro.pippo.core.HttpConstants;
  *
  * @author James Moger
  */
+@MetaInfServices(ContentTypeEngine.class)
 public class JacksonJsonEngine extends JacksonBaseEngine {
 
     @Override

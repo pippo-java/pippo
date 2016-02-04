@@ -21,6 +21,7 @@ import java.util.concurrent.TimeUnit;
 import metrics_influxdb.InfluxdbHttp;
 import metrics_influxdb.InfluxdbReporter;
 
+import org.kohsuke.MetaInfServices;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -36,6 +37,7 @@ import com.codahale.metrics.MetricRegistry;
  * @author James Moger
  *
  */
+@MetaInfServices(MetricsReporter.class)
 public class Reporter implements MetricsReporter {
 
 	private final Logger log = LoggerFactory.getLogger(Reporter.class);

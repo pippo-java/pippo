@@ -19,6 +19,7 @@ import java.io.Writer;
 import java.util.Locale;
 import java.util.Map;
 
+import org.kohsuke.MetaInfServices;
 import ro.pippo.core.Application;
 import ro.pippo.core.Languages;
 import ro.pippo.core.Messages;
@@ -36,6 +37,7 @@ import freemarker.template.Template;
 /**
  * @author Decebal Suiu
  */
+@MetaInfServices(TemplateEngine.class)
 public class FreemarkerTemplateEngine implements TemplateEngine {
 
     public static final String FTL = "ftl";

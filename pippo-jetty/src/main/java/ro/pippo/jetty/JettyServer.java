@@ -23,11 +23,13 @@ import org.eclipse.jetty.servlet.FilterHolder;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.util.ssl.SslContextFactory;
 import org.eclipse.jetty.util.thread.QueuedThreadPool;
+import org.kohsuke.MetaInfServices;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ro.pippo.core.AbstractWebServer;
 import ro.pippo.core.HttpConstants;
 import ro.pippo.core.PippoRuntimeException;
+import ro.pippo.core.WebServer;
 
 import javax.servlet.DispatcherType;
 import javax.servlet.MultipartConfigElement;
@@ -41,6 +43,7 @@ import java.util.concurrent.TimeUnit;
 /**
  * @author Decebal Suiu
  */
+@MetaInfServices(WebServer.class)
 public class JettyServer extends AbstractWebServer<JettySettings> {
 
     private static final Logger log = LoggerFactory.getLogger(JettyServer.class);

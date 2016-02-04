@@ -20,6 +20,7 @@ import org.apache.catalina.LifecycleException;
 import org.apache.catalina.Wrapper;
 import org.apache.catalina.connector.Connector;
 import org.apache.catalina.startup.Tomcat;
+import org.kohsuke.MetaInfServices;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ro.pippo.core.AbstractWebServer;
@@ -28,6 +29,7 @@ import ro.pippo.core.PippoFilter;
 
 import ro.pippo.core.PippoRuntimeException;
 import ro.pippo.core.PippoServlet;
+import ro.pippo.core.WebServer;
 import ro.pippo.core.util.StringUtils;
 
 import java.io.File;
@@ -35,6 +37,7 @@ import java.io.File;
 /**
  * @author Daniel Jipa
  */
+@MetaInfServices(WebServer.class)
 public class TomcatServer extends AbstractWebServer<TomcatSettings> {
 
     private static final Logger log = LoggerFactory.getLogger(TomcatServer.class);
