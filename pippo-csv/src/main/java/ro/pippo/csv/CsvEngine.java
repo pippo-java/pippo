@@ -26,6 +26,7 @@ import org.slf4j.LoggerFactory;
 import ro.pippo.core.Application;
 import ro.pippo.core.ContentTypeEngine;
 import ro.pippo.core.ParameterValue;
+import ro.pippo.core.util.ClassUtils;
 
 import java.io.IOException;
 import java.io.StringReader;
@@ -265,7 +266,7 @@ public class CsvEngine implements ContentTypeEngine {
 
     private Map<String, Field> getFieldMap(Class<?> classOfT) {
         Map<String, Field> map = new HashMap<>();
-        for (Field field : classOfT.getDeclaredFields()) {
+        for (Field field : ClassUtils.getAllFields(classOfT)) {
             field.setAccessible(true);
             String name;
             if (caseSensitiveFieldNames) {

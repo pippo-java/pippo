@@ -9,6 +9,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 #### Changed
 - Upgrade [pippo-undertow] to Undertow 1.3.16
 - Use `org.kohsuke.metainf-services:meta-services` annotation processor to automatically generate all META-INF/services files
+- [pippo-csv] now properly collects all fields in a class hierarchy when deserializing objects
 
 #### Added
 
