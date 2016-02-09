@@ -25,7 +25,7 @@ import ro.pippo.core.route.ResourceHandler;
 import ro.pippo.core.route.Route;
 import ro.pippo.core.route.RouteContext;
 import ro.pippo.core.route.RouteDispatcher;
-import ro.pippo.core.route.RouteGroupHandler;
+import ro.pippo.core.route.RouteGroup;
 import ro.pippo.core.route.RouteHandler;
 import ro.pippo.core.route.RoutePostDispatchListenerList;
 import ro.pippo.core.route.RoutePreDispatchListenerList;
@@ -266,11 +266,11 @@ public class Application {
         return route;
     }
 
-    public void GROUP(String namespace, RouteGroupHandler routeGroupHandler) {
+    public void GROUP(String namespace, RouteGroup routeGroup) {
         if (StringUtils.isNullOrEmpty(namespace)) {
             throw new PippoRuntimeException("The group namespace cannot be null or empty");
         }
-        routeGroupHandler.routes(namespace).forEach(this::addRoute);
+        routeGroup.routes(namespace).forEach(this::addRoute);
     }
 
     public void addRoute(Route route) {
