@@ -33,6 +33,7 @@ import ro.pippo.core.route.WebjarsResourceHandler;
 import ro.pippo.core.util.HttpCacheToolkit;
 import ro.pippo.core.util.MimeTypes;
 import ro.pippo.core.util.ServiceLocator;
+import ro.pippo.core.util.StringUtils;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -262,6 +263,13 @@ public class Application {
         addRoute(route);
 
         return route;
+    }
+
+    public void GROUP(String namespace, RouteGroupHandler routeGroupHandler) {
+        if (StringUtils.isNullOrEmpty(namespace)) {
+            throw new PippoRuntimeException("The group namespace cannot be null or empty");
+        }
+        routeGroupHandler.routes(namespace).forEach(this::addRoute);
     }
 
     public void addRoute(Route route) {
