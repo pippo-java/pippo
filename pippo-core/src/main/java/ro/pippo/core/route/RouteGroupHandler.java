@@ -95,7 +95,7 @@ public abstract class RouteGroupHandler {
         return route;
     }
     public Route ALL(RouteHandler routeHandler) {
-        return PATCH("", routeHandler);
+        return ALL("", routeHandler);
     }
 
     public void GROUP(String namespace, RouteGroupHandler routeGroupHandler) {
@@ -112,23 +112,7 @@ public abstract class RouteGroupHandler {
     }
 
     private String buildPath(String uriPattern) {
-        String routePath;
-        if (namespace.endsWith("/")) {
-            if (uriPattern.startsWith("/")) {
-                routePath = namespace + uriPattern.substring(1);
-            } else {
-                routePath = namespace + uriPattern;
-            }
-        } else {
-            if (uriPattern.startsWith("/")) {
-                routePath = namespace + uriPattern;
-            } else {
-                routePath = namespace + "/" + uriPattern;
-            }
-        }
-        if (routePath.endsWith("/")) {
-            return routePath.substring(0, routePath.length() - 1);
-        }
-        return routePath;
+        String routePath = StringUtils.addEnd(StringUtils.addEnd(namespace, "/"), uriPattern);
+        return routePath.endsWith("/") ? routePath.substring(0, routePath.length() - 1) : routePath;
     }
 }
