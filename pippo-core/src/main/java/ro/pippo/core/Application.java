@@ -25,6 +25,7 @@ import ro.pippo.core.route.ResourceHandler;
 import ro.pippo.core.route.Route;
 import ro.pippo.core.route.RouteContext;
 import ro.pippo.core.route.RouteDispatcher;
+import ro.pippo.core.route.RouteGroup;
 import ro.pippo.core.route.RouteHandler;
 import ro.pippo.core.route.RoutePostDispatchListenerList;
 import ro.pippo.core.route.RoutePreDispatchListenerList;
@@ -266,6 +267,10 @@ public class Application {
 
     public void addRoute(Route route) {
         getRouter().addRoute(route);
+    }
+
+    public void addRouteGroup(RouteGroup routeGroup) {
+        getRouter().addRouteGroup(routeGroup);
     }
 
     /**
