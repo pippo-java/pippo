@@ -23,6 +23,7 @@ import org.junit.rules.ExpectedException;
 import ro.pippo.core.route.DefaultRouter;
 import ro.pippo.core.route.Route;
 import ro.pippo.core.route.RouteGroup;
+import ro.pippo.core.route.RouteHandler;
 import ro.pippo.core.route.RouteMatch;
 import ro.pippo.core.route.WebjarsResourceHandler;
 
@@ -37,6 +38,8 @@ import static org.junit.Assert.*;
  * @author Decebal Suiu
  */
 public class DefaultRouterTest {
+
+    private static final RouteHandler emptyRouteHandler = new EmptyRouteHandler();
 
     private DefaultRouter router;
 
@@ -55,7 +58,7 @@ public class DefaultRouterTest {
 
     @Test
     public void testNullUriPatternRoute() throws Exception {
-        Route route = Route.GET(null, new EmptyRouteHandler());
+        Route route = Route.GET(null, emptyRouteHandler);
         thrown.expect(Exception.class);
         thrown.expectMessage("The uri pattern cannot be null or empty");
         router.addRoute(route);
@@ -63,7 +66,7 @@ public class DefaultRouterTest {
 
     @Test
     public void testEmptyUriPatternRoute() throws Exception {
-        Route route = Route.GET("", new EmptyRouteHandler());
+        Route route = Route.GET("", emptyRouteHandler);
         thrown.expect(Exception.class);
         thrown.expectMessage("The uri pattern cannot be null or empty");
         router.addRoute(route);
@@ -71,7 +74,7 @@ public class DefaultRouterTest {
 
     @Test
     public void testUnspecifiedMethodRequestRoute() throws Exception {
-        Route route = new Route("", "/.*", new EmptyRouteHandler());
+        Route route = new Route("", "/.*", emptyRouteHandler);
         thrown.expect(Exception.class);
         thrown.expectMessage("Unspecified request method");
         router.addRoute(route);
@@ -79,7 +82,7 @@ public class DefaultRouterTest {
 
     @Test
     public void testAddRoute() throws Exception {
-        Route route = Route.GET("/.*", new EmptyRouteHandler());
+        Route route = Route.GET("/.*", emptyRouteHandler);
         router.addRoute(route);
 
         assertEquals(1, router.getRoutes().size());
@@ -88,7 +91,7 @@ public class DefaultRouterTest {
 
     @Test
     public void testRemoveRoute() throws Exception {
-        Route route = Route.GET("/.*", new EmptyRouteHandler());
+        Route route = Route.GET("/.*", emptyRouteHandler);
         router.addRoute(route);
 
         assertEquals(1, router.getRoutes().size());
@@ -101,7 +104,7 @@ public class DefaultRouterTest {
 
     @Test
     public void testFindRoutes() throws Exception {
-        Route route = Route.GET("/contact", new EmptyRouteHandler());
+        Route route = Route.GET("/contact", emptyRouteHandler);
         router.addRoute(route);
 
         List<RouteMatch> routeMatches = router.findRoutes(HttpConstants.Method.GET, "/contact");
@@ -119,7 +122,7 @@ public class DefaultRouterTest {
 
     @Test
     public void testPathParamsRoute() throws Exception {
-        Route route = Route.GET("/contact/{id}", new EmptyRouteHandler());
+        Route route = Route.GET("/contact/{id}", emptyRouteHandler);
         router.addRoute(route);
 
         List<RouteMatch> routeMatches = router.findRoutes(HttpConstants.Method.GET, "/contact/3");
@@ -134,7 +137,7 @@ public class DefaultRouterTest {
 
     @Test
     public void testWildcardRoute() throws Exception {
-        Route route = Route.GET("/.*", new EmptyRouteHandler());
+        Route route = Route.GET("/.*", emptyRouteHandler);
         router.addRoute(route);
 
         List<RouteMatch> routeMatches = router.findRoutes(HttpConstants.Method.GET, "/contact/3");
@@ -143,7 +146,7 @@ public class DefaultRouterTest {
 
     @Test
     public void testPatchRoute() throws Exception {
-        Route route = Route.PATCH("/contact/{id}", new EmptyRouteHandler());
+        Route route = Route.PATCH("/contact/{id}", emptyRouteHandler);
         router.addRoute(route);
 
         List<RouteMatch> routeMatches = router.findRoutes(HttpConstants.Method.PATCH, "/contact/3");
@@ -158,7 +161,7 @@ public class DefaultRouterTest {
 
     @Test
     public void testIntIdRoute() throws Exception {
-        Route route = Route.PATCH("/contact/{id: [0-9]+}", new EmptyRouteHandler());
+        Route route = Route.PATCH("/contact/{id: [0-9]+}", emptyRouteHandler);
         router.addRoute(route);
 
         List<RouteMatch> routeMatches = router.findRoutes(HttpConstants.Method.PATCH, "/contact/3");
@@ -176,7 +179,7 @@ public class DefaultRouterTest {
 
     @Test
     public void testIntIdRoute2() throws Exception {
-        Route route = Route.GET("/contact/{id: [0-9]+}/something/{else: [A-z]*}", new EmptyRouteHandler());
+        Route route = Route.GET("/contact/{id: [0-9]+}/something/{else: [A-z]*}", emptyRouteHandler);
         router.addRoute(route);
 
         List<RouteMatch> routeMatches = router.findRoutes(HttpConstants.Method.GET, "/contact/3/something/borrowed");
@@ -192,7 +195,7 @@ public class DefaultRouterTest {
 
     @Test
     public void testPosixAlpha() throws Exception {
-        Route route = Route.GET("/user/{login: :alpha:+}/todo/{id: :digit:+}", new EmptyRouteHandler());
+        Route route = Route.GET("/user/{login: :alpha:+}/todo/{id: :digit:+}", emptyRouteHandler);
         router.addRoute(route);
 
         List<RouteMatch> routeMatches = router.findRoutes(HttpConstants.Method.GET, "/user/jämяs/todo/57");
@@ -209,7 +212,7 @@ public class DefaultRouterTest {
 
     @Test
     public void testPosixAlpha2() throws Exception {
-        Route route = Route.GET("/user/{login: [:digit::alpha:-_\\+\\.]+}/todo/{id: :digit:+}", new EmptyRouteHandler());
+        Route route = Route.GET("/user/{login: [:digit::alpha:-_\\+\\.]+}/todo/{id: :digit:+}", emptyRouteHandler);
         router.addRoute(route);
 
         List<RouteMatch> routeMatches = router.findRoutes(HttpConstants.Method.GET, "/user/j.ä_я3-s/todo/57");
@@ -226,7 +229,7 @@ public class DefaultRouterTest {
 
     @Test
     public void testPosixAlnum() throws Exception {
-        Route route = Route.GET("/user/{login: :alnum:+}", new EmptyRouteHandler());
+        Route route = Route.GET("/user/{login: :alnum:+}", emptyRouteHandler);
         router.addRoute(route);
 
         List<RouteMatch> routeMatches = router.findRoutes(HttpConstants.Method.GET, "/user/james5");
@@ -241,7 +244,7 @@ public class DefaultRouterTest {
 
     @Test
     public void testPosixDigit() throws Exception {
-        Route route = Route.GET("/contact/{id: :digit:+}/{field: :alpha:+}", new EmptyRouteHandler());
+        Route route = Route.GET("/contact/{id: :digit:+}/{field: :alpha:+}", emptyRouteHandler);
         router.addRoute(route);
 
         List<RouteMatch> routeMatches = router.findRoutes(HttpConstants.Method.GET, "/contact/57/telephone");
@@ -258,7 +261,7 @@ public class DefaultRouterTest {
 
     @Test
     public void testPosixHexDigit() throws Exception {
-        Route route = Route.GET("/contact/{id: :xdigit:+}/{field: :digit:+}", new EmptyRouteHandler());
+        Route route = Route.GET("/contact/{id: :xdigit:+}/{field: :digit:+}", emptyRouteHandler);
         router.addRoute(route);
 
         List<RouteMatch> routeMatches = router.findRoutes(HttpConstants.Method.GET, "/contact/5ace076/97");
@@ -275,7 +278,7 @@ public class DefaultRouterTest {
 
     @Test
     public void testPosixASCII() throws Exception {
-        Route route = Route.GET("/contact/{id: :ascii:+}/{field: :digit:+}", new EmptyRouteHandler());
+        Route route = Route.GET("/contact/{id: :ascii:+}/{field: :digit:+}", emptyRouteHandler);
         router.addRoute(route);
 
         List<RouteMatch> routeMatches = router.findRoutes(HttpConstants.Method.GET, "/contact/5ace076/97");
@@ -293,7 +296,7 @@ public class DefaultRouterTest {
     @Test
     public void testWebjarsRoute() throws Exception {
         WebjarsResourceHandler webjars = new WebjarsResourceHandler();
-        Route route = Route.GET(webjars.getUriPattern(), new EmptyRouteHandler());
+        Route route = Route.GET(webjars.getUriPattern(), emptyRouteHandler);
         router.addRoute(route);
 
         List<RouteMatch> routeMatches = router.findRoutes(HttpConstants.Method.GET, "/webjars/bootstrap/3.0.2/css/bootstrap.min.css"
@@ -306,7 +309,7 @@ public class DefaultRouterTest {
         // /////////////////////////////////////////////////////////////////////
         // One parameter:
         // /////////////////////////////////////////////////////////////////////
-        router.addRoute(Route.GET("/{name}/dashboard", new EmptyRouteHandler()));
+        router.addRoute(Route.GET("/{name}/dashboard", emptyRouteHandler));
 
         assertEquals(0, router.findRoutes(HttpConstants.Method.GET, "/dashboard").size());
 
@@ -317,7 +320,7 @@ public class DefaultRouterTest {
         // /////////////////////////////////////////////////////////////////////
         // More parameters
         // /////////////////////////////////////////////////////////////////////
-        router.addRoute(Route.GET("/{name}/{id}/dashboard", new EmptyRouteHandler()));
+        router.addRoute(Route.GET("/{name}/{id}/dashboard", emptyRouteHandler));
 
         assertEquals(0, router.findRoutes(HttpConstants.Method.GET, "/dashboard").size());
 
@@ -329,7 +332,7 @@ public class DefaultRouterTest {
 
     @Test
     public void testParametersAndRegex() throws Exception {
-        router.addRoute(Route.GET("/John/{id}/.*", new EmptyRouteHandler()));
+        router.addRoute(Route.GET("/John/{id}/.*", emptyRouteHandler));
 
         List<RouteMatch> matches = router.findRoutes(HttpConstants.Method.GET, "/John/20/dashboard");
         assertEquals(1, matches.size());
@@ -352,7 +355,7 @@ public class DefaultRouterTest {
 
     @Test
     public void testParametersAndRegexInsideVariableParts() throws Exception {
-        router.addRoute(Route.GET("/public/{path: .*}", new EmptyRouteHandler()));
+        router.addRoute(Route.GET("/public/{path: .*}", emptyRouteHandler));
 
         String pathUnderTest = "/public/css/app.css";
         List<RouteMatch> matches = router.findRoutes(HttpConstants.Method.GET, pathUnderTest);
@@ -376,7 +379,7 @@ public class DefaultRouterTest {
         assertEquals("robots.txt", match.getPathParameters().get("path"));
 
         // multiple parameter parsing with regex expressions
-        router.addRoute(Route.GET("/{name: .+}/photos/{id: [0-9]+}", new EmptyRouteHandler()));
+        router.addRoute(Route.GET("/{name: .+}/photos/{id: [0-9]+}", emptyRouteHandler));
 
         pathUnderTest = "/John/photos/2201";
         matches = router.findRoutes(HttpConstants.Method.GET, pathUnderTest);
@@ -391,8 +394,7 @@ public class DefaultRouterTest {
 
     @Test
     public void testParametersDontCrossSlashes() throws Exception {
-        router.addRoute(Route.GET("/blah/{id}/{id2}/{id3}/morestuff/at/the/end",
-            new EmptyRouteHandler()));
+        router.addRoute(Route.GET("/blah/{id}/{id2}/{id3}/morestuff/at/the/end", emptyRouteHandler));
 
         // this must match
         assertEquals(1, router.findRoutes(HttpConstants.Method.GET, "/blah/id/id2/id3/morestuff/at/the/end").size());
@@ -403,7 +405,7 @@ public class DefaultRouterTest {
 
     @Test
     public void testPointsInRegexDontCrashRegexInTheMiddleOfTheRoute() throws Exception {
-        router.addRoute(Route.GET("/blah/{id}/myname", new EmptyRouteHandler()));
+        router.addRoute(Route.GET("/blah/{id}/myname", emptyRouteHandler));
 
         // the "." in the route should not make any trouble:
         String routeFromServer = "/blah/my.id/myname";
@@ -422,7 +424,7 @@ public class DefaultRouterTest {
 
     @Test
     public void testPointsInRegexDontCrashRegexAtEnd() throws Exception {
-        router.addRoute(Route.GET("/blah/{id}", new EmptyRouteHandler()));
+        router.addRoute(Route.GET("/blah/{id}", emptyRouteHandler));
 
         // the "." in the route should not make any trouble:
         // even if it's the last part of the route
@@ -437,14 +439,14 @@ public class DefaultRouterTest {
     public void testRegexInRouteWorksWithEscapes() throws Exception {
         // Test escaped constructs in regex
         // regex with escaped construct in a route
-        router.addRoute(Route.GET("/customers/\\d+", new EmptyRouteHandler()));
+        router.addRoute(Route.GET("/customers/\\d+", emptyRouteHandler));
 
         assertEquals(1, router.findRoutes(HttpConstants.Method.GET, "/customers/1234").size());
         assertEquals(0, router.findRoutes(HttpConstants.Method.GET, "/customers/12ab").size());
 
         // regex with escaped construct in a route with variable parts
         router = new DefaultRouter();
-        router.addRoute(Route.GET("/customers/{id: \\d+}", new EmptyRouteHandler()));
+        router.addRoute(Route.GET("/customers/{id: \\d+}", emptyRouteHandler));
 
         assertEquals(1, router.findRoutes(HttpConstants.Method.GET, "/customers/1234").size());
         assertEquals(0, router.findRoutes(HttpConstants.Method.GET, "/customers/12x").size());
@@ -457,7 +459,7 @@ public class DefaultRouterTest {
 
     @Test
     public void testRegexInRouteWorksWithoutSlashAtTheEnd() throws Exception {
-        Route route = Route.GET("/blah/{id}/.*", new EmptyRouteHandler());
+        Route route = Route.GET("/blah/{id}/.*", emptyRouteHandler);
         router.addRoute(route);
 
         // the "." in the real route should work without any problems:
@@ -488,7 +490,7 @@ public class DefaultRouterTest {
 
     @Test
     public void testRouteWithUrlEncodedSlashGetsChoppedCorrectly() throws Exception {
-        Route route = Route.GET("/blah/{id}/.*", new EmptyRouteHandler());
+        Route route = Route.GET("/blah/{id}/.*", emptyRouteHandler);
         router.addRoute(route);
 
         // Just a simple test to make sure everything works on a not encoded
@@ -506,7 +508,7 @@ public class DefaultRouterTest {
 
     @Test
     public void testUriForWithRegex() throws Exception {
-        Route route = Route.GET("/user/{email}/{id: .*}", new EmptyRouteHandler());
+        Route route = Route.GET("/user/{email}/{id: .*}", emptyRouteHandler);
         router.addRoute(route);
 
         Map<String, Object> parameters = new HashMap<>();
@@ -519,7 +521,7 @@ public class DefaultRouterTest {
 
     @Test
     public void testUriForWithMultipleRegex() throws Exception {
-        Route route = Route.GET("/user/{email: .*}/test/{id: .*}", new EmptyRouteHandler());
+        Route route = Route.GET("/user/{email: .*}/test/{id: .*}", emptyRouteHandler);
         router.addRoute(route);
 
         Map<String, Object> parameters = new HashMap<>();
@@ -532,7 +534,7 @@ public class DefaultRouterTest {
 
     @Test
     public void testUriForWithSplat() throws Exception {
-        Route route = Route.GET("/repository/{repo: .*}/ticket/{id: .*}", new EmptyRouteHandler());
+        Route route = Route.GET("/repository/{repo: .*}/ticket/{id: .*}", emptyRouteHandler);
         router.addRoute(route);
 
         Map<String, Object> parameters = new HashMap<>();
@@ -551,7 +553,7 @@ public class DefaultRouterTest {
 
     @Test
     public void testUriForWithRegexAndQueryParameters() throws Exception {
-        Route route = Route.GET("/user/{email}/{id: .*}", new EmptyRouteHandler());
+        Route route = Route.GET("/user/{email}/{id: .*}", emptyRouteHandler);
         router.addRoute(route);
 
         Map<String, Object> parameters = new HashMap<>();
@@ -565,7 +567,7 @@ public class DefaultRouterTest {
 
     @Test
     public void testUriForWithEncodedParameters() throws Exception {
-        Route route = Route.GET("/user/{email}", new EmptyRouteHandler());
+        Route route = Route.GET("/user/{email}", emptyRouteHandler);
         router.addRoute(route);
 
         Map<String, Object> parameters = new HashMap<>();
@@ -578,7 +580,7 @@ public class DefaultRouterTest {
 
     @Test
     public void testExclusionFilter() throws Exception {
-        Route route = Route.ALL("^(?!/(webjars|public)/).*", new EmptyRouteHandler());
+        Route route = Route.ALL("^(?!/(webjars|public)/).*", emptyRouteHandler);
         router.addRoute(route);
 
         List<RouteMatch> matches = router.findRoutes(HttpConstants.Method.GET, "/test/route");
@@ -593,7 +595,7 @@ public class DefaultRouterTest {
 
     @Test
     public void testOptionalSuffixGroup() throws Exception {
-        Route route = Route.ALL("/api/contact/{id: [0-9]+}(\\.(json|xml|yaml))?", new EmptyRouteHandler());
+        Route route = Route.ALL("/api/contact/{id: [0-9]+}(\\.(json|xml|yaml))?", emptyRouteHandler);
         router.addRoute(route);
 
         List<RouteMatch> matches = router.findRoutes(HttpConstants.Method.GET, "/api/contact/5");
@@ -614,7 +616,7 @@ public class DefaultRouterTest {
 
     @Test
     public void testRequiredSuffixGroup() throws Exception {
-        Route route = Route.ALL("/api/contact/{id: [0-9]+}(\\.(json|xml|yaml))", new EmptyRouteHandler());
+        Route route = Route.ALL("/api/contact/{id: [0-9]+}(\\.(json|xml|yaml))", emptyRouteHandler);
         router.addRoute(route);
 
         List<RouteMatch> matches = router.findRoutes(HttpConstants.Method.GET, "/api/contact/5");
@@ -636,7 +638,7 @@ public class DefaultRouterTest {
     @Test
     public void testAddGroup() {
         RouteGroup group = new RouteGroup("/users");
-        group.GET("{id}", routeContext -> routeContext.send("all posts"));
+        group.GET("{id}", emptyRouteHandler);
 
         router.addRouteGroup(group);
 
@@ -647,7 +649,7 @@ public class DefaultRouterTest {
     @Test
     public void testAddRouteWithGroup() {
         RouteGroup group = new RouteGroup("/users");
-        Route route = group.GET("{id}", routeContext -> routeContext.send("all posts"));
+        Route route = group.GET("{id}", emptyRouteHandler);
 
         router.addRoute(route);
 
@@ -658,7 +660,7 @@ public class DefaultRouterTest {
     @Test
     public void testGroupAddRoute() {
         RouteGroup group = new RouteGroup("/users");
-        Route route = new Route("GET", "{id}", routeContext -> {routeContext.send("all users");});
+        Route route = new Route("GET", "{id}", emptyRouteHandler);
         group.addRoute(route);
 
         router.addRouteGroup(group);
@@ -670,7 +672,7 @@ public class DefaultRouterTest {
     @Test
     public void testRouteInGroup() {
         RouteGroup group = new RouteGroup("/users");
-        Route route = new Route("GET", "{id}", routeContext -> {routeContext.send("all users");});
+        Route route = new Route("GET", "{id}", emptyRouteHandler);
         route.inGroup(group);
 
         router.addRouteGroup(group);
@@ -683,7 +685,7 @@ public class DefaultRouterTest {
     public void testGroupAddGroup() {
         RouteGroup group = new RouteGroup("/users");
         RouteGroup child = new RouteGroup("{id}");
-        Route route = new Route("POST", "like", routeContext -> {routeContext.send("i like you");});
+        Route route = new Route("POST", "like", emptyRouteHandler);
         group.addRouteGroup(child);
         child.addRoute(route);
 
@@ -697,7 +699,7 @@ public class DefaultRouterTest {
     public void testGroupInGroup() {
         RouteGroup group = new RouteGroup("/users");
         RouteGroup child = new RouteGroup("{id}");
-        Route route = new Route("POST", "like", routeContext -> {routeContext.send("i like you");});
+        Route route = new Route("POST", "like", emptyRouteHandler);
         child.inGroup(group);
         route.inGroup(child);
 
@@ -721,7 +723,7 @@ public class DefaultRouterTest {
         public UserGroup() {
             super("/users");
 
-            GET(routeContext -> routeContext.send("all users"));
+            GET(emptyRouteHandler);
         }
 
     }
