@@ -126,16 +126,19 @@ public class RouteGroup {
         return routes;
     }
 
-    public void addRoute(Route route) {
+    public RouteGroup addRoute(Route route) {
         route.inGroup(this);
+        return this;
     }
 
-    public void addGroup(RouteGroup routeGroup) {
+    public RouteGroup addGroup(RouteGroup routeGroup) {
         routeGroup.inGroup(this);
+        return this;
     }
 
-    public void inGroup(RouteGroup routeGroup) {
+    public RouteGroup inGroup(RouteGroup routeGroup) {
         this.parent = routeGroup;
         routeGroup.getChildren().add(this);
+        return this;
     }
 }
