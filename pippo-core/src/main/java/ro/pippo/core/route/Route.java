@@ -132,7 +132,7 @@ public class Route {
         RouteGroup group = this.group;
         String path = this.uriPattern;
         while (group != null) {
-            path = StringUtils.addStart(StringUtils.addStart(path, "/"), group.getNamespace());
+            path = StringUtils.addStart(StringUtils.addStart(path, "/"), group.getUriPattern());
             group = group.getParent();
         }
         if (StringUtils.isNullOrEmpty(path)) {

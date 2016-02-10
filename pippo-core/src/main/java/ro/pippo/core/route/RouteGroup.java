@@ -16,7 +16,6 @@
 package ro.pippo.core.route;
 
 import ro.pippo.core.PippoRuntimeException;
-import ro.pippo.core.util.StringUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,21 +26,22 @@ import java.util.List;
  */
 public class RouteGroup {
 
-    private String namespace;
+    private String uriPattern;
 
-    private List<Route> routes = new ArrayList<>();
+    private List<Route> routes;
 
     private RouteGroup parent;
 
-    private List<RouteGroup> children = new ArrayList<>();
+    private List<RouteGroup> children;
 
-    public RouteGroup withNamespace(String namespace) {
-        this.namespace = namespace;
-        return this;
+    public RouteGroup(String uriPattern) {
+        this.uriPattern = uriPattern;
+        this.routes = new ArrayList<>();
+        this.children = new ArrayList<>();
     }
 
-    public String getNamespace() {
-        return this.namespace;
+    public String getUriPattern() {
+        return this.uriPattern;
     }
 
     public RouteGroup getParent() {
@@ -51,8 +51,6 @@ public class RouteGroup {
     public List<RouteGroup> getChildren() {
         return children;
     }
-
-    public void onInit(){}
 
     public Route GET(String uriPattern, RouteHandler routeHandler) {
         if (routeHandler instanceof ResourceHandler) {
@@ -111,15 +109,6 @@ public class RouteGroup {
     }
     public Route ALL(RouteHandler routeHandler) {
         return ALL("", routeHandler);
-    }
-
-    public void GROUP(RouteGroup routeGroup) {
-        this.addGroup(routeGroup);
-    }
-
-    public List<Route> initRoutes() {
-        onInit();
-        return routes;
     }
 
     public List<Route> getRoutes() {

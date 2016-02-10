@@ -266,13 +266,6 @@ public class Application {
         return route;
     }
 
-    public void GROUP(RouteGroup routeGroup) {
-        routeGroup.initRoutes().forEach(this::addRoute);
-        for (RouteGroup child : routeGroup.getChildren()) {
-            child.initRoutes().forEach(this::addRoute);
-        }
-    }
-
     public void addRoute(Route route) {
         getRouter().addRoute(route);
     }
