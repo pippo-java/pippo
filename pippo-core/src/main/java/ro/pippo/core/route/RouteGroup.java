@@ -21,17 +21,18 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * Route groups allow you to prefix <code>uriPattern</code>,
+ * across a large number of routes without needing to define this attribute
+ * on each individual route.
+ * Also you can add (route) filters for all routes of the group.
+ *
  * @author ScienJus
- * @date 16/2/9.
  */
 public class RouteGroup {
 
     private String uriPattern;
-
     private List<Route> routes;
-
     private RouteGroup parent;
-
     private List<RouteGroup> children;
 
     public RouteGroup(String uriPattern) {
@@ -107,6 +108,7 @@ public class RouteGroup {
     public Route ALL(String uriPattern, RouteHandler routeHandler) {
         return Route.ALL(uriPattern, routeHandler).inGroup(this);
     }
+
     public Route ALL(RouteHandler routeHandler) {
         return ALL("", routeHandler);
     }
@@ -117,17 +119,21 @@ public class RouteGroup {
 
     public RouteGroup addRoute(Route route) {
         route.inGroup(this);
+
         return this;
     }
 
     public RouteGroup addRouteGroup(RouteGroup routeGroup) {
         routeGroup.inGroup(this);
+
         return this;
     }
 
     public RouteGroup inGroup(RouteGroup routeGroup) {
         this.parent = routeGroup;
         routeGroup.getChildren().add(this);
+
         return this;
     }
+
 }

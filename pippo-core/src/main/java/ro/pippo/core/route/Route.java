@@ -30,6 +30,7 @@ public class Route {
     private boolean runAsFinally;
     private String name;
     private RouteGroup group;
+    private String absoluteUriPattern;
 
     public Route(String requestMethod, String uriPattern, RouteHandler routeHandler) {
         this.requestMethod = requestMethod;
@@ -119,22 +120,30 @@ public class Route {
     }
 
     public String getUriPattern() {
-        return getFullUriPattern();
+        return getAbsoluteUriPattern();
+    }
+
+    public String getAbsoluteUriPattern() {
+        if (absoluteUriPattern == null) {
+            RouteGroup group = this.group;
+            String path = this.uriPattern;
+            while (group != null) {
+                path = StringUtils.addStart(StringUtils.addStart(path, "/"), group.getUriPattern());
+                group = group.getParent();
+            }
+
+            absoluteUriPattern = StringUtils.removeEnd(path, "/");
+        }
+
+        return absoluteUriPattern;
+    }
+
+    public String getRelativeUriPattern() {
+        return uriPattern;
     }
 
     public RouteHandler getRouteHandler() {
         return routeHandler;
-    }
-
-    // path with group
-    public String getFullUriPattern() {
-        RouteGroup group = this.group;
-        String path = this.uriPattern;
-        while (group != null) {
-            path = StringUtils.addStart(StringUtils.addStart(path, "/"), group.getUriPattern());
-            group = group.getParent();
-        }
-        return StringUtils.removeEnd(path, "/");
     }
 
     public boolean isRunAsFinally() {
@@ -163,10 +172,10 @@ public class Route {
         this.name = name;
     }
 
-
     public Route inGroup(RouteGroup group) {
         this.group = group;
         group.getRoutes().add(this);
+
         return this;
     }
 
@@ -194,7 +203,7 @@ public class Route {
     public String toString() {
         return "Route{" +
             "requestMethod='" + requestMethod + '\'' +
-            ", uriPattern='" + uriPattern + '\'' +
+            ", uriPattern='" + getUriPattern() + '\'' +
             '}';
     }
 

@@ -723,6 +723,7 @@ public class DefaultRouterTest {
 
             GET(routeContext -> routeContext.send("all users"));
         }
+
     }
 
 }
