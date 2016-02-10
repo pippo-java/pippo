@@ -33,26 +33,30 @@ public interface Router {
      *
      * @return the context path
      */
-    public String getContextPath();
+    String getContextPath();
 
     /**
      * Sets the context path for url generation.
      *
      * @param contextPath
      */
-    public void setContextPath(String contextPath);
+    void setContextPath(String contextPath);
 
-    public Set<String> getIgnorePaths();
+    Set<String> getIgnorePaths();
 
-    public void ignorePaths(String... paths);
+    void ignorePaths(String... paths);
 
-    public void addRoute(Route route);
+    void addRoute(Route route);
 
-    public void removeRoute(Route route);
+    void removeRoute(Route route);
 
-    public List<RouteMatch> findRoutes(String requestMethod, String requestUri);
+    void addRouteGroup(RouteGroup routeGroup);
 
-    public List<Route> getRoutes();
+    void removeRouteGroup(RouteGroup routeGroup);
+
+    List<RouteMatch> findRoutes(String requestMethod, String requestUri);
+
+    List<Route> getRoutes();
 
     /**
      * Get uri with context path.
@@ -60,17 +64,17 @@ public interface Router {
      * @param relativeUri
      * @return
      */
-    public String uriFor(String relativeUri);
+    String uriFor(String relativeUri);
 
-    public String uriFor(String nameOrUriPattern, Map<String, Object> parameters);
+    String uriFor(String nameOrUriPattern, Map<String, Object> parameters);
 
-    public String uriPatternFor(Class<? extends ResourceHandler> resourceHandlerClass);
+    String uriPatternFor(Class<? extends ResourceHandler> resourceHandlerClass);
 
     /**
      * Returns the base path for the Pippo application.
      */
-    public String getApplicationPath();
+    String getApplicationPath();
 
-    public void setApplicationPath(String pippoPath);
+    void setApplicationPath(String pippoPath);
 
 }

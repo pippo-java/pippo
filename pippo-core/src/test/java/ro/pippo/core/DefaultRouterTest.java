@@ -22,6 +22,7 @@ import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import ro.pippo.core.route.DefaultRouter;
 import ro.pippo.core.route.Route;
+import ro.pippo.core.route.RouteGroup;
 import ro.pippo.core.route.RouteMatch;
 import ro.pippo.core.route.WebjarsResourceHandler;
 
@@ -630,6 +631,98 @@ public class DefaultRouterTest {
 
         matches = router.findRoutes(HttpConstants.Method.GET, "/api/contact/5.unknown");
         assertEquals(0, matches.size());
+    }
+
+    @Test
+    public void testAddGroup() {
+        RouteGroup group = new RouteGroup("/users");
+        group.GET("{id}", routeContext -> routeContext.send("all posts"));
+
+        router.addRouteGroup(group);
+
+        List<RouteMatch> matches = router.findRoutes(HttpConstants.Method.GET, "/users/1");
+        assertEquals(1, matches.size());
+    }
+
+    @Test
+    public void testAddRouteWithGroup() {
+        RouteGroup group = new RouteGroup("/users");
+        Route route = group.GET("{id}", routeContext -> routeContext.send("all posts"));
+
+        router.addRoute(route);
+
+        List<RouteMatch> matches = router.findRoutes(HttpConstants.Method.GET, "/users/1");
+        assertEquals(1, matches.size());
+    }
+
+    @Test
+    public void testGroupAddRoute() {
+        RouteGroup group = new RouteGroup("/users");
+        Route route = new Route("GET", "{id}", routeContext -> {routeContext.send("all users");});
+        group.addRoute(route);
+
+        router.addRouteGroup(group);
+
+        List<RouteMatch> matches = router.findRoutes(HttpConstants.Method.GET, "/users/1");
+        assertEquals(1, matches.size());
+    }
+
+    @Test
+    public void testRouteInGroup() {
+        RouteGroup group = new RouteGroup("/users");
+        Route route = new Route("GET", "{id}", routeContext -> {routeContext.send("all users");});
+        route.inGroup(group);
+
+        router.addRouteGroup(group);
+
+        List<RouteMatch> matches = router.findRoutes(HttpConstants.Method.GET, "/users/1");
+        assertEquals(1, matches.size());
+    }
+
+    @Test
+    public void testGroupAddGroup() {
+        RouteGroup group = new RouteGroup("/users");
+        RouteGroup child = new RouteGroup("{id}");
+        Route route = new Route("POST", "like", routeContext -> {routeContext.send("i like you");});
+        group.addRouteGroup(child);
+        child.addRoute(route);
+
+        router.addRouteGroup(group);
+
+        List<RouteMatch> matches = router.findRoutes(HttpConstants.Method.POST, "/users/1/like");
+        assertEquals(1, matches.size());
+    }
+
+    @Test
+    public void testGroupInGroup() {
+        RouteGroup group = new RouteGroup("/users");
+        RouteGroup child = new RouteGroup("{id}");
+        Route route = new Route("POST", "like", routeContext -> {routeContext.send("i like you");});
+        child.inGroup(group);
+        route.inGroup(child);
+
+        router.addRoute(route);
+
+        List<RouteMatch> matches = router.findRoutes(HttpConstants.Method.POST, "/users/1/like");
+        assertEquals(1, matches.size());
+    }
+
+    @Test
+    public void testCustomGroup() {
+        UserGroup userGroup = new UserGroup();
+        router.addRouteGroup(userGroup);
+
+        List<RouteMatch> matches = router.findRoutes(HttpConstants.Method.GET, "/users");
+        assertEquals(1, matches.size());
+    }
+
+    private class UserGroup extends RouteGroup {
+
+        public UserGroup() {
+            super("/users");
+
+            GET(routeContext -> routeContext.send("all users"));
+        }
     }
 
 }

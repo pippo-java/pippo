@@ -120,7 +120,7 @@ public class RouteGroup {
         return this;
     }
 
-    public RouteGroup addGroup(RouteGroup routeGroup) {
+    public RouteGroup addRouteGroup(RouteGroup routeGroup) {
         routeGroup.inGroup(this);
         return this;
     }

@@ -34,7 +34,6 @@ import ro.pippo.core.route.WebjarsResourceHandler;
 import ro.pippo.core.util.HttpCacheToolkit;
 import ro.pippo.core.util.MimeTypes;
 import ro.pippo.core.util.ServiceLocator;
-import ro.pippo.core.util.StringUtils;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -270,11 +269,8 @@ public class Application {
         getRouter().addRoute(route);
     }
 
-    public void addGroup(RouteGroup routeGroup) {
-        routeGroup.getRoutes().forEach(this::addRoute);
-        for (RouteGroup child : routeGroup.getChildren()) {
-            child.getRoutes().forEach(this::addRoute);
-        }
+    public void addRouteGroup(RouteGroup routeGroup) {
+        getRouter().addRouteGroup(routeGroup);
     }
 
     /**

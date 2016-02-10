@@ -119,8 +119,7 @@ public class Route {
     }
 
     public String getUriPattern() {
-//        return uriPattern;
-        return getCompletePath();   //should i modify this method or modify methods in DefaultRouter to use getCompletePath ?
+        return getFullUriPattern();
     }
 
     public RouteHandler getRouteHandler() {
@@ -128,17 +127,14 @@ public class Route {
     }
 
     // path with group
-    public String getCompletePath() {
+    public String getFullUriPattern() {
         RouteGroup group = this.group;
         String path = this.uriPattern;
         while (group != null) {
             path = StringUtils.addStart(StringUtils.addStart(path, "/"), group.getUriPattern());
             group = group.getParent();
         }
-        if (StringUtils.isNullOrEmpty(path)) {
-            return path;
-        }
-        return path.endsWith("/") ? path.substring(0, path.length() - 1) : path;
+        return StringUtils.removeEnd(path, "/");
     }
 
     public boolean isRunAsFinally() {
