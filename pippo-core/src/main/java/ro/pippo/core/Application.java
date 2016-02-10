@@ -266,15 +266,22 @@ public class Application {
         return route;
     }
 
-    public void GROUP(String namespace, RouteGroup routeGroup) {
-        if (StringUtils.isNullOrEmpty(namespace)) {
-            throw new PippoRuntimeException("The group namespace cannot be null or empty");
+    public void GROUP(RouteGroup routeGroup) {
+        routeGroup.initRoutes().forEach(this::addRoute);
+        for (RouteGroup child : routeGroup.getChildren()) {
+            child.initRoutes().forEach(this::addRoute);
         }
-        routeGroup.routes(namespace).forEach(this::addRoute);
     }
 
     public void addRoute(Route route) {
         getRouter().addRoute(route);
+    }
+
+    public void addGroup(RouteGroup routeGroup) {
+        routeGroup.getRoutes().forEach(this::addRoute);
+        for (RouteGroup child : routeGroup.getChildren()) {
+            child.getRoutes().forEach(this::addRoute);
+        }
     }
 
     /**

@@ -16,6 +16,7 @@
 package ro.pippo.core.route;
 
 import ro.pippo.core.HttpConstants;
+import ro.pippo.core.util.StringUtils;
 
 /**
  * @author Decebal Suiu
@@ -28,6 +29,7 @@ public class Route {
 
     private boolean runAsFinally;
     private String name;
+    private RouteGroup group;
 
     public Route(String requestMethod, String uriPattern, RouteHandler routeHandler) {
         this.requestMethod = requestMethod;
@@ -117,11 +119,26 @@ public class Route {
     }
 
     public String getUriPattern() {
-        return uriPattern;
+//        return uriPattern;
+        return getCompletePath();   //should i modify this method or modify methods in DefaultRouter to use getCompletePath ?
     }
 
     public RouteHandler getRouteHandler() {
         return routeHandler;
+    }
+
+    // path with group
+    public String getCompletePath() {
+        RouteGroup group = this.group;
+        String path = this.uriPattern;
+        while (group != null) {
+            path = StringUtils.addStart(StringUtils.addStart(path, "/"), group.getNamespace());
+            group = group.getParent();
+        }
+        if (StringUtils.isNullOrEmpty(path)) {
+            return path;
+        }
+        return path.endsWith("/") ? path.substring(0, path.length() - 1) : path;
     }
 
     public boolean isRunAsFinally() {
@@ -150,6 +167,13 @@ public class Route {
         this.name = name;
     }
 
+
+    public Route inGroup(RouteGroup group) {
+        this.group = group;
+        group.getRoutes().add(this);
+        return this;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -158,7 +182,7 @@ public class Route {
         Route route = (Route) o;
 
         if (!requestMethod.equals(route.requestMethod)) return false;
-        if (!uriPattern.equals(route.uriPattern)) return false;
+        if (!getUriPattern().equals(route.getUriPattern())) return false;
 
         return true;
     }

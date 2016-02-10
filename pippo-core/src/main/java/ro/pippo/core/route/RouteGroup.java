@@ -25,23 +25,41 @@ import java.util.List;
  * @author ScienJus
  * @date 16/2/9.
  */
-public abstract class RouteGroup {
+public class RouteGroup {
 
     private String namespace;
 
     private List<Route> routes = new ArrayList<>();
 
-    public abstract void onInit();
+    private RouteGroup parent;
+
+    private List<RouteGroup> children = new ArrayList<>();
+
+    public RouteGroup withNamespace(String namespace) {
+        this.namespace = namespace;
+        return this;
+    }
+
+    public String getNamespace() {
+        return this.namespace;
+    }
+
+    public RouteGroup getParent() {
+        return parent;
+    }
+
+    public List<RouteGroup> getChildren() {
+        return children;
+    }
+
+    public void onInit(){}
 
     public Route GET(String uriPattern, RouteHandler routeHandler) {
         if (routeHandler instanceof ResourceHandler) {
             throw new PippoRuntimeException("Please use 'addResourceRoute()'");
         }
 
-        Route route = Route.GET(buildPath(uriPattern), routeHandler);
-        routes.add(route);
-
-        return route;
+        return Route.GET(uriPattern, routeHandler).inGroup(this);
     }
 
     public Route GET(RouteHandler routeHandler) {
@@ -49,10 +67,7 @@ public abstract class RouteGroup {
     }
 
     public Route POST(String uriPattern, RouteHandler routeHandler) {
-        Route route = Route.POST(buildPath(uriPattern), routeHandler);
-        routes.add(route);
-
-        return route;
+        return Route.POST(uriPattern, routeHandler).inGroup(this);
     }
 
     public Route POST(RouteHandler routeHandler) {
@@ -60,10 +75,7 @@ public abstract class RouteGroup {
     }
 
     public Route DELETE(String uriPattern, RouteHandler routeHandler) {
-        Route route = Route.DELETE(buildPath(uriPattern), routeHandler);
-        routes.add(route);
-
-        return route;
+        return Route.DELETE(uriPattern, routeHandler).inGroup(this);
     }
 
     public Route DELETE(RouteHandler routeHandler) {
@@ -71,10 +83,7 @@ public abstract class RouteGroup {
     }
 
     public Route HEAD(String uriPattern, RouteHandler routeHandler) {
-        Route route = Route.HEAD(buildPath(uriPattern), routeHandler);
-        routes.add(route);
-
-        return route;
+        return Route.HEAD(uriPattern, routeHandler).inGroup(this);
     }
 
     public Route HEAD(RouteHandler routeHandler) {
@@ -82,10 +91,7 @@ public abstract class RouteGroup {
     }
 
     public Route PUT(String uriPattern, RouteHandler routeHandler) {
-        Route route = Route.PUT(buildPath(uriPattern), routeHandler);
-        routes.add(route);
-
-        return route;
+        return Route.PUT(uriPattern, routeHandler).inGroup(this);
     }
 
     public Route PUT(RouteHandler routeHandler) {
@@ -93,10 +99,7 @@ public abstract class RouteGroup {
     }
 
     public Route PATCH(String uriPattern, RouteHandler routeHandler) {
-        Route route = Route.PATCH(buildPath(uriPattern), routeHandler);
-        routes.add(route);
-
-        return route;
+        return Route.PATCH(uriPattern, routeHandler).inGroup(this);
     }
 
     public Route PATCH(RouteHandler routeHandler) {
@@ -104,30 +107,35 @@ public abstract class RouteGroup {
     }
 
     public Route ALL(String uriPattern, RouteHandler routeHandler) {
-        Route route = Route.ALL(buildPath(uriPattern), routeHandler);
-        routes.add(route);
-
-        return route;
+        return Route.ALL(uriPattern, routeHandler).inGroup(this);
     }
     public Route ALL(RouteHandler routeHandler) {
         return ALL("", routeHandler);
     }
 
-    public void GROUP(String namespace, RouteGroup routeGroup) {
-        if (StringUtils.isNullOrEmpty(namespace)) {
-            throw new PippoRuntimeException("The group namespace cannot be null or empty");
-        }
-        routes.addAll(routeGroup.routes(buildPath(namespace)));
+    public void GROUP(RouteGroup routeGroup) {
+        this.addGroup(routeGroup);
     }
 
-    public List<Route> routes(String namespace) {
-        this.namespace = namespace;
+    public List<Route> initRoutes() {
         onInit();
         return routes;
     }
 
-    private String buildPath(String uriPattern) {
-        String routePath = StringUtils.addEnd(StringUtils.addEnd(namespace, "/"), uriPattern);
-        return routePath.endsWith("/") ? routePath.substring(0, routePath.length() - 1) : routePath;
+    public List<Route> getRoutes() {
+        return routes;
+    }
+
+    public void addRoute(Route route) {
+        route.inGroup(this);
+    }
+
+    public void addGroup(RouteGroup routeGroup) {
+        routeGroup.inGroup(this);
+    }
+
+    public void inGroup(RouteGroup routeGroup) {
+        this.parent = routeGroup;
+        routeGroup.getChildren().add(this);
     }
 }
