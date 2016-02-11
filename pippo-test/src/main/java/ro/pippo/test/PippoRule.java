@@ -55,7 +55,6 @@ public class PippoRule implements TestRule {
     }
 
     protected Pippo createPippo() {
-        System.out.println("##### PippoRule.createPippo");
         Pippo pippo = new Pippo(application);
         pippo.getServer().getSettings().port(port);
 
@@ -63,18 +62,19 @@ public class PippoRule implements TestRule {
     }
 
     protected void startPippo(final Pippo pippo) {
-        System.out.println("##### PippoRule.startPippo");
         pippo.start();
 
         // init RestAssured
         RestAssured.port = pippo.getServer().getSettings().getPort();
         RestAssured.objectMapper(new ObjectMapper() {
+
             @Override
             public Object deserialize(ObjectMapperDeserializationContext context) {
                 ContentTypeEngine engine = pippo.getApplication().getContentTypeEngine(context.getContentType());
                 if (engine == null) {
                     throw new PippoRuntimeException("No ContentTypeEngine registered for {}", context.getContentType());
                 }
+
                 return engine.fromString(context.getDataToDeserialize().asString(), context.getType());
             }
 
@@ -84,16 +84,16 @@ public class PippoRule implements TestRule {
                 if (engine == null) {
                     throw new PippoRuntimeException("No ContentTypeEngine registered for {}", context.getContentType());
                 }
+
                 return engine.toString(context.getObjectToSerialize());
             }
+
         });
     }
 
     protected void stopPippo(Pippo pippo) {
-        System.out.println("###### PippoRule.stopPippo");
         // TODO fix the bug in pippo-core (a starting flag maybe)
-        // it's not needed because we have an hook on shutdown
-//        pippo.stop();
+//        pippo.stop(); // it's not needed because we have an hook on shutdown
     }
 
     private Statement decorateStatement(Statement statement) {
