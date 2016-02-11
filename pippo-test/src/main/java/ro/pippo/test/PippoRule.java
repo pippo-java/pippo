@@ -16,11 +16,16 @@
 package ro.pippo.test;
 
 import com.jayway.restassured.RestAssured;
+import com.jayway.restassured.mapper.ObjectMapper;
+import com.jayway.restassured.mapper.ObjectMapperDeserializationContext;
+import com.jayway.restassured.mapper.ObjectMapperSerializationContext;
 import org.junit.rules.TestRule;
 import org.junit.runner.Description;
 import org.junit.runners.model.Statement;
 import ro.pippo.core.Application;
+import ro.pippo.core.ContentTypeEngine;
 import ro.pippo.core.Pippo;
+import ro.pippo.core.PippoRuntimeException;
 
 /**
  * Start Pippo prior to test execution and stop Pippo after the tests have completed.
@@ -57,12 +62,31 @@ public class PippoRule implements TestRule {
         return pippo;
     }
 
-    protected void startPippo(Pippo pippo) {
+    protected void startPippo(final Pippo pippo) {
         System.out.println("##### PippoRule.startPippo");
         pippo.start();
 
         // init RestAssured
         RestAssured.port = pippo.getServer().getSettings().getPort();
+        RestAssured.objectMapper(new ObjectMapper() {
+            @Override
+            public Object deserialize(ObjectMapperDeserializationContext context) {
+                ContentTypeEngine engine = pippo.getApplication().getContentTypeEngine(context.getContentType());
+                if (engine == null) {
+                    throw new PippoRuntimeException("No ContentTypeEngine registered for {}", context.getContentType());
+                }
+                return engine.fromString(context.getDataToDeserialize().asString(), context.getType());
+            }
+
+            @Override
+            public Object serialize(ObjectMapperSerializationContext context) {
+                ContentTypeEngine engine = pippo.getApplication().getContentTypeEngine(context.getContentType());
+                if (engine == null) {
+                    throw new PippoRuntimeException("No ContentTypeEngine registered for {}", context.getContentType());
+                }
+                return engine.toString(context.getObjectToSerialize());
+            }
+        });
     }
 
     protected void stopPippo(Pippo pippo) {
