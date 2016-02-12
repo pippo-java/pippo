@@ -53,7 +53,7 @@ public class DefaultRouter implements Router {
     private static final Pattern PATTERN_FOR_VARIABLE_PARTS_OF_ROUTE = Pattern.compile("\\{(.*?)(:\\s(.*?))?\\}");
 
     // This regex matches everything in between path slashes.
-    private static final String VARIABLE_ROUTES_DEFAULT_REGEX = "([^/]*)";
+    private static final String VARIABLE_ROUTES_DEFAULT_REGEX = "(?<%s>[^/]+)";
 
     // This regex works for both {myParam} AND {myParam: .*}
     private static final String VARIABLE_PART_PATTERN_WITH_PLACEHOLDER = "\\{(%s)(:\\s([^}]*))?\\}";
@@ -339,16 +339,17 @@ public class DefaultRouter implements Router {
         while (matcher.find()) {
             // By convention group 3 is the regex if provided by the user.
             // If it is not provided by the user the group 3 is null.
+            String variablePartOfRouteName = matcher.group(1);
             String namedVariablePartOfRoute = matcher.group(3);
             String namedVariablePartOfORouteReplacedWithRegex;
 
             if (namedVariablePartOfRoute != null) {
                 // we convert that into a regex matcher group itself
                 String variableRegex = replacePosixClasses(namedVariablePartOfRoute);
-                namedVariablePartOfORouteReplacedWithRegex = "(" + Matcher.quoteReplacement(variableRegex) + ")";
+                namedVariablePartOfORouteReplacedWithRegex = String.format("(?<%s>%s)", variablePartOfRouteName, Matcher.quoteReplacement(variableRegex));
             } else {
                 // we convert that into the default namedVariablePartOfRoute regex group
-                namedVariablePartOfORouteReplacedWithRegex = VARIABLE_ROUTES_DEFAULT_REGEX;
+                namedVariablePartOfORouteReplacedWithRegex = String.format(VARIABLE_ROUTES_DEFAULT_REGEX, variablePartOfRouteName);
             }
             // we replace the current namedVariablePartOfRoute group
             matcher.appendReplacement(buffer, namedVariablePartOfORouteReplacedWithRegex);
@@ -410,8 +411,8 @@ public class DefaultRouter implements Router {
         matcher.matches();
         int groupCount = matcher.groupCount();
         if (groupCount > 0) {
-            for (int i = 0; i < parameterNames.size(); i++) {
-                parameters.put(parameterNames.get(i), matcher.group(i + 1));
+            for (String name : parameterNames) {
+                parameters.put(name, matcher.group(name));
             }
         }
 
