@@ -131,8 +131,7 @@ public class Route {
                 path = StringUtils.addStart(StringUtils.addStart(path, "/"), group.getUriPattern());
                 group = group.getParent();
             }
-
-            absoluteUriPattern = StringUtils.removeEnd(path, "/");
+            absoluteUriPattern = "/".equals(path) ? path : StringUtils.removeEnd(path, "/");
         }
 
         return absoluteUriPattern;
