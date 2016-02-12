@@ -16,11 +16,16 @@
 package ro.pippo.test;
 
 import com.jayway.restassured.RestAssured;
+import com.jayway.restassured.mapper.ObjectMapper;
+import com.jayway.restassured.mapper.ObjectMapperDeserializationContext;
+import com.jayway.restassured.mapper.ObjectMapperSerializationContext;
 import org.junit.rules.TestRule;
 import org.junit.runner.Description;
 import org.junit.runners.model.Statement;
 import ro.pippo.core.Application;
+import ro.pippo.core.ContentTypeEngine;
 import ro.pippo.core.Pippo;
+import ro.pippo.core.PippoRuntimeException;
 
 /**
  * Start Pippo prior to test execution and stop Pippo after the tests have completed.
@@ -50,26 +55,45 @@ public class PippoRule implements TestRule {
     }
 
     protected Pippo createPippo() {
-        System.out.println("##### PippoRule.createPippo");
         Pippo pippo = new Pippo(application);
         pippo.getServer().getSettings().port(port);
 
         return pippo;
     }
 
-    protected void startPippo(Pippo pippo) {
-        System.out.println("##### PippoRule.startPippo");
+    protected void startPippo(final Pippo pippo) {
         pippo.start();
 
         // init RestAssured
         RestAssured.port = pippo.getServer().getSettings().getPort();
+        RestAssured.objectMapper(new ObjectMapper() {
+
+            @Override
+            public Object deserialize(ObjectMapperDeserializationContext context) {
+                ContentTypeEngine engine = pippo.getApplication().getContentTypeEngine(context.getContentType());
+                if (engine == null) {
+                    throw new PippoRuntimeException("No ContentTypeEngine registered for {}", context.getContentType());
+                }
+
+                return engine.fromString(context.getDataToDeserialize().asString(), context.getType());
+            }
+
+            @Override
+            public Object serialize(ObjectMapperSerializationContext context) {
+                ContentTypeEngine engine = pippo.getApplication().getContentTypeEngine(context.getContentType());
+                if (engine == null) {
+                    throw new PippoRuntimeException("No ContentTypeEngine registered for {}", context.getContentType());
+                }
+
+                return engine.toString(context.getObjectToSerialize());
+            }
+
+        });
     }
 
     protected void stopPippo(Pippo pippo) {
-        System.out.println("###### PippoRule.stopPippo");
         // TODO fix the bug in pippo-core (a starting flag maybe)
-        // it's not needed because we have an hook on shutdown
-//        pippo.stop();
+//        pippo.stop(); // it's not needed because we have an hook on shutdown
     }
 
     private Statement decorateStatement(Statement statement) {

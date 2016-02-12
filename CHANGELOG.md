@@ -10,8 +10,10 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 - Upgrade [pippo-undertow] to Undertow 1.3.16
 - Use `org.kohsuke.metainf-services:meta-services` annotation processor to automatically generate all META-INF/services files
 - [pippo-csv] now properly collects all fields in a class hierarchy when deserializing objects
+- [pippo-test] Automatically initialize RestAssurred with Pippo ContentType engines
 
 #### Added
+- [#245]: Route groups
 
 #### Removed
 
@@ -233,10 +235,11 @@ Initial release.
 [0.3.0]: https://github.com/decebals/pippo/compare/pippo-parent-0.2.0...pippo-parent-0.3.0
 [0.2.0]: https://github.com/decebals/pippo/compare/pippo-parent-0.1.0...pippo-parent-0.2.0
 
-[#241]: https://github.com/decebals/pippo/pull/241
+[#245]: https://github.com/decebals/pippo/issues/245
+[#241]: https://github.com/decebals/pippo/issues/241
 [#234]: https://github.com/decebals/pippo/issues/234
 [#233]: https://github.com/decebals/pippo/issues/233
-[#231]: https://github.com/decebals/pippo/pull/231
+[#231]: https://github.com/decebals/pippo/issues/231
 [#230]: https://github.com/decebals/pippo/issues/230
 [#228]: https://github.com/decebals/pippo/issues/228
 [#221]: https://github.com/decebals/pippo/issues/221
