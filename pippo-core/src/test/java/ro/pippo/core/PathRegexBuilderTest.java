@@ -26,6 +26,7 @@ import ro.pippo.core.route.RouteMatch;
 import ro.pippo.core.route.Router;
 import ro.pippo.core.util.PathRegexBuilder;
 
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -46,8 +47,8 @@ public class PathRegexBuilderTest {
     }
 
     @Test
-    public void testBuild() throws Exception {
-        String test = "/admin";
+    public void testInclude() throws Exception {
+        String uri = "/admin";
 
         String regex = new PathRegexBuilder()
             .includes(
@@ -60,13 +61,13 @@ public class PathRegexBuilderTest {
             )
             .build();
 
-        Matcher matcher = Pattern.compile(regex).matcher(test);
-        assertTrue(matcher.matches());
+        router.addRoute(Route.GET(regex, emptyRouteHandler));
+        assertEquals(1, router.findRoutes("GET", uri).size());
     }
 
     @Test
-    public void testAnt() throws Exception {
-        String test = "/aaa";
+    public void testIncludeAnt() throws Exception {
+        String uri = "/aaa";
 
         String regex = new PathRegexBuilder()
             .includes(
@@ -78,8 +79,145 @@ public class PathRegexBuilderTest {
             .build();
 
         router.addRoute(Route.GET(regex, emptyRouteHandler));
-        assertEquals("aaa", router.findRoutes("GET", test).get(0).getPathParameters().get("id"));
+        assertEquals(1, router.findRoutes("GET", uri).size());
     }
 
+    @Test
+    public void testMultiIncludeAnt() throws Exception {
+        String uri = "/aaa";
+
+        String regex = new PathRegexBuilder()
+            .includes(
+                "/{id}",
+                "/{name}"
+            )
+            .excludes(
+                "/admin"
+            )
+            .build();
+
+        router.addRoute(Route.GET(regex, emptyRouteHandler));
+        assertEquals(1, router.findRoutes("GET", uri).size());
+    }
+
+    @Test
+    public void testExclude() {
+        String uri = "/admin/login";
+
+        String regex = new PathRegexBuilder()
+            .includes(
+                "/admin/{id}"
+            )
+            .excludes(
+                "/admin/login"
+            )
+            .build();
+
+        router.addRoute(Route.GET(regex, emptyRouteHandler));
+        assertTrue(router.findRoutes("GET", uri).isEmpty());
+
+    }
+
+    @Test
+    public void testExcludeAnt() {
+        String uri = "/admin/login";
+
+        // ...why
+        String regex = new PathRegexBuilder()
+            .includes(
+                "/admin/login"
+            )
+            .excludes(
+                "/admin/{id}"
+            )
+            .build();
+
+        router.addRoute(Route.GET(regex, emptyRouteHandler));
+        assertTrue(router.findRoutes("GET", uri).isEmpty());
+
+    }
+
+    @Test
+    public void testAntPathParameter() throws Exception {
+        String uri = "/aaa";
+
+        String regex = new PathRegexBuilder()
+            .includes(
+                "/{id}"
+            )
+            .excludes(
+                "/admin"
+            )
+            .build();
+
+        router.addRoute(Route.GET(regex, emptyRouteHandler));
+        assertEquals("aaa", router.findRoutes("GET", uri).get(0).getPathParameters().get("id"));
+    }
+
+    @Test
+    public void testMultiPathParameter() throws Exception {
+        String uri = "/aaa/posts/bbb";
+
+        String regex = new PathRegexBuilder()
+            .includes(
+                "/{id}/posts/{pid}"
+            )
+            .excludes(
+                "/admin"
+            )
+            .build();
+
+        router.addRoute(Route.GET(regex, emptyRouteHandler));
+        Map<String, String> parameterMap =
+            router.findRoutes("GET", uri).get(0).getPathParameters();
+        assertEquals("aaa", parameterMap.get("id"));
+        assertEquals("bbb", parameterMap.get("pid"));
+    }
+
+    @Test
+    public void testMultiIncludeAntWithSameRegex() throws Exception {
+        String uri = "/aaa";
+
+        String regex = new PathRegexBuilder()
+            .includes(
+                "/{id}",
+                "/{name}"
+            )
+            .excludes(
+                "/admin"
+            )
+            .build();
+
+        router.addRoute(Route.GET(regex, emptyRouteHandler));
+        Map<String, String> parameterMap =
+            router.findRoutes("GET", uri).get(0).getPathParameters();
+        assertEquals(2, parameterMap.size());
+        assertEquals("aaa", parameterMap.get("id"));
+        assertEquals(null, parameterMap.get("name"));   //map had name key, but value is null
+    }
+
+    @Test
+    public void testMultiIncludeAntWithCustomRegex() throws Exception {
+        String uri = "/aaa";
+        String numUri = "/123";
+
+        String regex = new PathRegexBuilder()
+            .includes(
+                "/{id: [0-9]+}",
+                "/{name: \\w+}"
+            )
+            .excludes(
+                "/admin"
+            )
+            .build();
+
+        router.addRoute(Route.GET(regex, emptyRouteHandler));
+        Map<String, String> parameterMap =
+            router.findRoutes("GET", numUri).get(0).getPathParameters();
+        assertEquals("123", parameterMap.get("id"));
+        parameterMap =
+            router.findRoutes("GET", uri).get(0).getPathParameters();
+        assertEquals("aaa", parameterMap.get("name"));
+    }
 
 }
