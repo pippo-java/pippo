@@ -718,6 +718,15 @@ public class DefaultRouterTest {
         assertEquals(1, matches.size());
     }
 
+    @Test
+    public void testEmptyStringAsPathParameter() {
+        router.addRoute(Route.GET("/", emptyRouteHandler));
+        router.addRoute(Route.GET("/{id}", emptyRouteHandler));
+
+        List<RouteMatch> matches = router.findRoutes(HttpConstants.Method.GET, "/");
+        assertEquals(1, matches.size());
+    }
+
     private class UserGroup extends RouteGroup {
 
         public UserGroup() {

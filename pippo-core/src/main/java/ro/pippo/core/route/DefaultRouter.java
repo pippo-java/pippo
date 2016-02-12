@@ -53,7 +53,7 @@ public class DefaultRouter implements Router {
     private static final Pattern PATTERN_FOR_VARIABLE_PARTS_OF_ROUTE = Pattern.compile("\\{(.*?)(:\\s(.*?))?\\}");
 
     // This regex matches everything in between path slashes.
-    private static final String VARIABLE_ROUTES_DEFAULT_REGEX = "(?<%s>[^/]*)";
+    private static final String VARIABLE_ROUTES_DEFAULT_REGEX = "(?<%s>[^/]+)";
 
     // This regex works for both {myParam} AND {myParam: .*}
     private static final String VARIABLE_PART_PATTERN_WITH_PLACEHOLDER = "\\{(%s)(:\\s([^}]*))?\\}";
