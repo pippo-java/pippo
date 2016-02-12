@@ -15,7 +15,15 @@
  */
 package ro.pippo.core;
 
+import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
+import ro.pippo.core.route.DefaultRouter;
+import ro.pippo.core.route.Route;
+import ro.pippo.core.route.RouteHandler;
+import ro.pippo.core.route.RouteMatch;
+import ro.pippo.core.route.Router;
 import ro.pippo.core.util.PathRegexBuilder;
 
 import java.util.regex.Matcher;
@@ -27,6 +35,15 @@ import static org.junit.Assert.*;
  * @author Decebal Suiu
  */
 public class PathRegexBuilderTest {
+
+    private static final RouteHandler emptyRouteHandler = new EmptyRouteHandler();
+
+    private DefaultRouter router;
+
+    @Before
+    public void before() {
+        router = new DefaultRouter();
+    }
 
     @Test
     public void testBuild() throws Exception {
@@ -46,5 +63,23 @@ public class PathRegexBuilderTest {
         Matcher matcher = Pattern.compile(regex).matcher(test);
         assertTrue(matcher.matches());
     }
+
+    @Test
+    public void testAnt() throws Exception {
+        String test = "/aaa";
+
+        String regex = new PathRegexBuilder()
+            .includes(
+                "/{id}"
+            )
+            .excludes(
+                "/admin"
+            )
+            .build();
+
+        router.addRoute(Route.GET(regex, emptyRouteHandler));
+        assertEquals("aaa", router.findRoutes("GET", test).get(0).getPathParameters().get("id"));
+    }
+
 
 }
