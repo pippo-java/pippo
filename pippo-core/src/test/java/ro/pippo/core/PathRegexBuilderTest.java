@@ -16,19 +16,13 @@
 package ro.pippo.core;
 
 import org.junit.Before;
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.ExpectedException;
 import ro.pippo.core.route.DefaultRouter;
 import ro.pippo.core.route.Route;
 import ro.pippo.core.route.RouteHandler;
-import ro.pippo.core.route.RouteMatch;
-import ro.pippo.core.route.Router;
 import ro.pippo.core.util.PathRegexBuilder;
 
 import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import static org.junit.Assert.*;
 
@@ -115,7 +109,6 @@ public class PathRegexBuilderTest {
 
         router.addRoute(Route.GET(regex, emptyRouteHandler));
         assertTrue(router.findRoutes("GET", uri).isEmpty());
-
     }
 
     @Test
@@ -134,7 +127,6 @@ public class PathRegexBuilderTest {
 
         router.addRoute(Route.GET(regex, emptyRouteHandler));
         assertTrue(router.findRoutes("GET", uri).isEmpty());
-
     }
 
     @Test
@@ -168,8 +160,7 @@ public class PathRegexBuilderTest {
             .build();
 
         router.addRoute(Route.GET(regex, emptyRouteHandler));
-        Map<String, String> parameterMap =
-            router.findRoutes("GET", uri).get(0).getPathParameters();
+        Map<String, String> parameterMap = router.findRoutes("GET", uri).get(0).getPathParameters();
         assertEquals("aaa", parameterMap.get("id"));
         assertEquals("bbb", parameterMap.get("pid"));
     }
@@ -189,11 +180,10 @@ public class PathRegexBuilderTest {
             .build();
 
         router.addRoute(Route.GET(regex, emptyRouteHandler));
-        Map<String, String> parameterMap =
-            router.findRoutes("GET", uri).get(0).getPathParameters();
+        Map<String, String> parameterMap = router.findRoutes("GET", uri).get(0).getPathParameters();
         assertEquals(2, parameterMap.size());
         assertEquals("aaa", parameterMap.get("id"));
-        assertEquals(null, parameterMap.get("name"));   //map had name key, but value is null
+        assertEquals(null, parameterMap.get("name")); // map had name key, but value is null
     }
 
     @Test
@@ -212,11 +202,9 @@ public class PathRegexBuilderTest {
             .build();
 
         router.addRoute(Route.GET(regex, emptyRouteHandler));
-        Map<String, String> parameterMap =
-            router.findRoutes("GET", numUri).get(0).getPathParameters();
+        Map<String, String> parameterMap = router.findRoutes("GET", numUri).get(0).getPathParameters();
         assertEquals("123", parameterMap.get("id"));
-        parameterMap =
-            router.findRoutes("GET", uri).get(0).getPathParameters();
+        parameterMap = router.findRoutes("GET", uri).get(0).getPathParameters();
         assertEquals("aaa", parameterMap.get("name"));
     }
 
