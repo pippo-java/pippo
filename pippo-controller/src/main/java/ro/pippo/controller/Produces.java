@@ -15,8 +15,7 @@
  */
 package ro.pippo.controller;
 
-import ro.pippo.controller.extractor.BodyExtractor;
-import ro.pippo.controller.extractor.ExtractWith;
+import ro.pippo.core.HttpConstants;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
@@ -25,13 +24,27 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Annotation that identifies that a request body should be mapped to a Java object.
+ * Specifies returned Content-Types.
  *
  * @author James Moger
  */
 @Documented
+@Target({ElementType.TYPE, ElementType.METHOD})
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.PARAMETER})
-@ExtractWith(BodyExtractor.class)
-public @interface Body {
+public @interface Produces {
+
+    public static final String XML = HttpConstants.ContentType.APPLICATION_XML;
+
+    public static final String JSON = HttpConstants.ContentType.APPLICATION_JSON;
+
+    public static final String YAML = HttpConstants.ContentType.APPLICATION_X_YAML;
+
+    public static final String HTML = HttpConstants.ContentType.TEXT_HTML;
+
+    public static final String XHTML = HttpConstants.ContentType.TEXT_XHTML;
+
+    public static final String TEXT = HttpConstants.ContentType.TEXT_PLAIN;
+
+    String [] value();
+
 }

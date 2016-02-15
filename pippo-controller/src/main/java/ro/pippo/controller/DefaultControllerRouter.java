@@ -51,10 +51,10 @@ public class DefaultControllerRouter extends DefaultRouter implements Controller
         List<Route> routes = getRoutes();
         for (Route route : routes) {
             RouteHandler routeHandler = route.getRouteHandler();
-            if (routeHandler instanceof ControllerHandler) {
-                ControllerHandler controllerHandler = (ControllerHandler) routeHandler;
+            if (routeHandler instanceof DefaultControllerHandler) {
+                DefaultControllerHandler controllerHandler = (DefaultControllerHandler) routeHandler;
                 if (controllerClass == controllerHandler.getControllerClass()
-                    && methodName.equals(controllerHandler.getMethodName())) {
+                    && methodName.equals(controllerHandler.getControllerMethodName())) {
                     return route;
                 }
             }

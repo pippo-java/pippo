@@ -13,25 +13,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package ro.pippo.controller;
+package ro.pippo.controller.extractor;
 
-import ro.pippo.controller.extractor.BodyExtractor;
-import ro.pippo.controller.extractor.ExtractWith;
-
-import java.lang.annotation.Documented;
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import ro.pippo.controller.Context;
 
 /**
- * Annotation that identifies that a request body should be mapped to a Java object.
- *
  * @author James Moger
  */
-@Documented
-@Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.PARAMETER})
-@ExtractWith(BodyExtractor.class)
-public @interface Body {
+public class BodyExtractor extends DefaultObjectExtractor {
+
+    @Override
+    public void setObjectType(Class<?> objectType) {
+        this.objectType = objectType;
+    }
+
+    @Override
+    public Object extract(Context context) {
+        if (collectionType == null) {
+            return context.createEntityFromBody(objectType);
+        }
+
+        // TODO improve body collection support
+        return context.createEntityFromBody(collectionType);
+    }
+
 }

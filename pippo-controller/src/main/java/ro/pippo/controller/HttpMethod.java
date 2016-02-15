@@ -15,9 +15,6 @@
  */
 package ro.pippo.controller;
 
-import ro.pippo.controller.extractor.BodyExtractor;
-import ro.pippo.controller.extractor.ExtractWith;
-
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -25,13 +22,56 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Annotation that identifies that a request body should be mapped to a Java object.
- *
  * @author James Moger
  */
-@Documented
+@Target(ElementType.ANNOTATION_TYPE)
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.PARAMETER})
-@ExtractWith(BodyExtractor.class)
-public @interface Body {
+@Documented
+public @interface HttpMethod {
+
+    /**
+     * HTTP GET method.
+     */
+    public static final String GET = "GET";
+
+    /**
+     * HTTP PATCH method.
+     */
+    public static final String PATCH = "PATCH";
+
+    /**
+     * HTTP POST method.
+     */
+    public static final String POST = "POST";
+
+    /**
+     * HTTP PUT method.
+     */
+    public static final String PUT = "PUT";
+
+    /**
+     * HTTP DELETE method.
+     */
+    public static final String DELETE = "DELETE";
+
+    /**
+     * HTTP HEAD method.
+     */
+    public static final String HEAD = "HEAD";
+
+    /**
+     * HTTP OPTIONS method.
+     */
+    public static final String OPTIONS = "OPTIONS";
+
+    /**
+     * ALL filter.
+     */
+    public static final String ALL = "ALL";
+
+    /**
+     * Specifies the name of a HTTP method. E.g. "GET".
+     */
+    String value();
+
 }
