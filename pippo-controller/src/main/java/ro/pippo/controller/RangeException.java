@@ -15,23 +15,10 @@
  */
 package ro.pippo.controller;
 
-import ro.pippo.controller.extractor.BodyExtractor;
-import ro.pippo.controller.extractor.ExtractWith;
+public class RangeException extends ValidationException {
 
-import java.lang.annotation.Documented;
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+    public RangeException(String message, Object... args) {
+        super(message, args);
+    }
 
-/**
- * Annotation that identifies that a request body should be mapped to a Java object.
- *
- * @author James Moger
- */
-@Documented
-@Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.PARAMETER})
-@ExtractWith(BodyExtractor.class)
-public @interface Body {
 }

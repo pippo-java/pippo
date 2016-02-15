@@ -15,7 +15,7 @@
  */
 package ro.pippo.controller;
 
-import ro.pippo.controller.extractor.BodyExtractor;
+import ro.pippo.controller.extractor.BeanExtractor;
 import ro.pippo.controller.extractor.ExtractWith;
 
 import java.lang.annotation.Documented;
@@ -25,13 +25,13 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Annotation that identifies that a request body should be mapped to a Java object.
+ * Annotation that identifies that request parameters should be mapped to a Java object.
  *
  * @author James Moger
  */
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.PARAMETER})
-@ExtractWith(BodyExtractor.class)
-public @interface Body {
+@ExtractWith(BeanExtractor.class)
+public @interface Bean {
 }

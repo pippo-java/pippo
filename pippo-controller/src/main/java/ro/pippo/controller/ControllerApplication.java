@@ -147,4 +147,8 @@ public class ControllerApplication extends Application {
         return getControllerHandlerFactory().createHandler(controllerClass, methodName);
     }
 
+    public void addControllers() {
+
+    }
+
 }

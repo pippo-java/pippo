@@ -15,8 +15,8 @@
  */
 package ro.pippo.controller;
 
-import ro.pippo.controller.extractor.BodyExtractor;
 import ro.pippo.controller.extractor.ExtractWith;
+import ro.pippo.controller.extractor.HeaderExtractor;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
@@ -25,13 +25,18 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Annotation that identifies that a request body should be mapped to a Java object.
+ * Annotation that identifies that a request header should be mapped to a Java object.
  *
  * @author James Moger
  */
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.PARAMETER})
-@ExtractWith(BodyExtractor.class)
-public @interface Body {
+@ExtractWith(HeaderExtractor.class)
+public @interface Header {
+
+    String value() default "";
+
+    String pattern() default "";
+
 }

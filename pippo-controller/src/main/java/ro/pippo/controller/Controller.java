@@ -17,34 +17,40 @@ package ro.pippo.controller;
 
 import ro.pippo.core.Request;
 import ro.pippo.core.Response;
-import ro.pippo.core.route.RouteContext;
 
 /**
+ * Base class for a Controller.
+ *
  * @author Decebal Suiu
+ * @author James Moger
  */
 public class Controller {
 
-    private RouteContext routeContext;
+    private Context context;
 
-    public final RouteContext getRouteContext() {
-        return routeContext;
+    public final Context getContext() {
+        return context;
     }
 
     public final Request getRequest() {
-        return routeContext.getRequest();
+        return context.getRequest();
     }
 
     public final Response getResponse() {
-        return routeContext.getResponse();
+        return context.getResponse();
+    }
+
+    public final void redirectTo(String path) {
+        getContext().redirect(path);
     }
 
     @SuppressWarnings("unchecked")
     public <T extends ControllerApplication> T getApplication() {
-        return (T) routeContext.getApplication();
+        return (T) context.getApplication();
     }
 
-    protected void init(RouteContext routeContext) {
-        this.routeContext = routeContext;
+    protected final void setContext(Context context) {
+        this.context = context;
     }
 
 }

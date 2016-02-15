@@ -24,12 +24,12 @@ import java.lang.reflect.Method;
  *
  * @author James Moger
  */
-public interface ControllerHandler extends RouteHandler {
+public interface ControllerHandler extends RouteHandler<Context> {
 
     public Class<? extends Controller> getControllerClass();
 
-    public String getMethodName();
+    public String getControllerMethodName();
 
-    public Method getMethod();
+    public Method getControllerMethod();
 
 }
