@@ -33,24 +33,36 @@ public class RouteGroup {
 
     private String uriPattern;
     private List<Route> routes;
+    private List<RouteGroup> children;
 
     public RouteGroup(String uriPattern) {
         this.uriPattern = uriPattern;
         this.routes = new ArrayList<>();
+        this.children = new ArrayList<>();
     }
 
     public RouteGroup(RouteGroup parent, String uriPattern) {
         if (parent != null) {
             this.uriPattern = StringUtils.concatUriPattern(parent.getUriPattern(), uriPattern);
-            this.routes = parent.getRoutes();   // parent-children groups shared routes
+            parent.getChildren().add(this);
         } else {
             this.uriPattern = uriPattern;
-            this.routes = new ArrayList<>();
         }
+        this.routes = new ArrayList<>();
+        this.children = new ArrayList<>();
     }
 
     public String getUriPattern() {
         return this.uriPattern;
+    }
+
+    public List<RouteGroup> getChildren() {
+        return children;
+    }
+
+
+    public List<Route> getRoutes() {
+        return routes;
     }
 
     public Route GET(String uriPattern, RouteHandler routeHandler) {
@@ -125,10 +137,6 @@ public class RouteGroup {
 
     public Route ALL(RouteHandler routeHandler) {
         return ALL("", routeHandler);
-    }
-
-    public List<Route> getRoutes() {
-        return routes;
     }
 
     public RouteGroup addRoute(Route route) {
