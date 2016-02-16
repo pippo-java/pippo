@@ -676,7 +676,7 @@ public class DefaultRouterTest {
         Route route = Route.POST("like", emptyRouteHandler);
         child.addRoute(route);
 
-        router.addRouteGroup(group);
+        router.addRouteGroup(child);
 
         List<RouteMatch> matches = router.findRoutes(HttpConstants.Method.POST, "/users/1/like");
         assertEquals(1, matches.size());
