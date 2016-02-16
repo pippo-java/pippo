@@ -227,4 +227,8 @@ public class StringUtils {
         return input;
     }
 
+    public static String concatUriPattern(String prefix, String uriPattern) {
+        uriPattern = addStart(addStart(uriPattern, "/"), prefix);
+        return "/".equals(uriPattern) ? uriPattern : StringUtils.removeEnd(uriPattern, "/");
+    }
 }
