@@ -16,6 +16,7 @@
 package ro.pippo.core.route;
 
 import ro.pippo.core.PippoRuntimeException;
+import ro.pippo.core.util.StringUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,7 +33,6 @@ public class RouteGroup {
 
     private String uriPattern;
     private List<Route> routes;
-    private RouteGroup parent;
     private List<RouteGroup> children;
 
     public RouteGroup(String uriPattern) {
@@ -41,16 +41,28 @@ public class RouteGroup {
         this.children = new ArrayList<>();
     }
 
+    public RouteGroup(RouteGroup parent, String uriPattern) {
+        if (parent != null) {
+            this.uriPattern = StringUtils.concatUriPattern(parent.getUriPattern(), uriPattern);
+            parent.getChildren().add(this);
+        } else {
+            this.uriPattern = uriPattern;
+        }
+        this.routes = new ArrayList<>();
+        this.children = new ArrayList<>();
+    }
+
     public String getUriPattern() {
         return this.uriPattern;
     }
 
-    public RouteGroup getParent() {
-        return parent;
-    }
-
     public List<RouteGroup> getChildren() {
         return children;
+    }
+
+
+    public List<Route> getRoutes() {
+        return routes;
     }
 
     public Route GET(String uriPattern, RouteHandler routeHandler) {
@@ -58,7 +70,9 @@ public class RouteGroup {
             throw new PippoRuntimeException("Please use 'addResourceRoute()'");
         }
 
-        return Route.GET(uriPattern, routeHandler).inGroup(this);
+        Route route = Route.GET(uriPattern, routeHandler);
+        addRoute(route);
+        return route;
     }
 
     public Route GET(RouteHandler routeHandler) {
@@ -66,7 +80,9 @@ public class RouteGroup {
     }
 
     public Route POST(String uriPattern, RouteHandler routeHandler) {
-        return Route.POST(uriPattern, routeHandler).inGroup(this);
+        Route route = Route.POST(uriPattern, routeHandler);
+        addRoute(route);
+        return route;
     }
 
     public Route POST(RouteHandler routeHandler) {
@@ -74,7 +90,9 @@ public class RouteGroup {
     }
 
     public Route DELETE(String uriPattern, RouteHandler routeHandler) {
-        return Route.DELETE(uriPattern, routeHandler).inGroup(this);
+        Route route = Route.DELETE(uriPattern, routeHandler);
+        addRoute(route);
+        return route;
     }
 
     public Route DELETE(RouteHandler routeHandler) {
@@ -82,7 +100,9 @@ public class RouteGroup {
     }
 
     public Route HEAD(String uriPattern, RouteHandler routeHandler) {
-        return Route.HEAD(uriPattern, routeHandler).inGroup(this);
+        Route route = Route.HEAD(uriPattern, routeHandler);
+        addRoute(route);
+        return route;
     }
 
     public Route HEAD(RouteHandler routeHandler) {
@@ -90,7 +110,9 @@ public class RouteGroup {
     }
 
     public Route PUT(String uriPattern, RouteHandler routeHandler) {
-        return Route.PUT(uriPattern, routeHandler).inGroup(this);
+        Route route = Route.PUT(uriPattern, routeHandler);
+        addRoute(route);
+        return route;
     }
 
     public Route PUT(RouteHandler routeHandler) {
@@ -98,7 +120,9 @@ public class RouteGroup {
     }
 
     public Route PATCH(String uriPattern, RouteHandler routeHandler) {
-        return Route.PATCH(uriPattern, routeHandler).inGroup(this);
+        Route route = Route.PATCH(uriPattern, routeHandler);
+        addRoute(route);
+        return route;
     }
 
     public Route PATCH(RouteHandler routeHandler) {
@@ -106,34 +130,20 @@ public class RouteGroup {
     }
 
     public Route ALL(String uriPattern, RouteHandler routeHandler) {
-        return Route.ALL(uriPattern, routeHandler).inGroup(this);
+        Route route = Route.ALL(uriPattern, routeHandler);
+        addRoute(route);
+        return route;
     }
 
     public Route ALL(RouteHandler routeHandler) {
         return ALL("", routeHandler);
     }
 
-    public List<Route> getRoutes() {
-        return routes;
-    }
-
     public RouteGroup addRoute(Route route) {
-        route.inGroup(this);
-
+        route.setGroupUriPattern(this.uriPattern);
+        routes.add(route);
         return this;
     }
 
-    public RouteGroup addRouteGroup(RouteGroup routeGroup) {
-        routeGroup.inGroup(this);
-
-        return this;
-    }
-
-    public RouteGroup inGroup(RouteGroup routeGroup) {
-        this.parent = routeGroup;
-        routeGroup.getChildren().add(this);
-
-        return this;
-    }
 
 }

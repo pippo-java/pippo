@@ -16,6 +16,7 @@
 package ro.pippo.core.route;
 
 import ro.pippo.core.HttpConstants;
+import ro.pippo.core.PippoRuntimeException;
 import ro.pippo.core.util.StringUtils;
 
 /**
@@ -26,11 +27,10 @@ public class Route {
     private String requestMethod;
     private String uriPattern;
     private RouteHandler routeHandler;
+    private String absoluteUriPattern;
 
     private boolean runAsFinally;
     private String name;
-    private RouteGroup group;
-    private String absoluteUriPattern;
 
     public Route(String requestMethod, String uriPattern, RouteHandler routeHandler) {
         this.requestMethod = requestMethod;
@@ -120,25 +120,18 @@ public class Route {
     }
 
     public String getUriPattern() {
-        return getAbsoluteUriPattern();
-    }
-
-    public String getAbsoluteUriPattern() {
-        if (absoluteUriPattern == null) {
-            RouteGroup group = this.group;
-            String path = this.uriPattern;
-            while (group != null) {
-                path = StringUtils.addStart(StringUtils.addStart(path, "/"), group.getUriPattern());
-                group = group.getParent();
-            }
-            absoluteUriPattern = "/".equals(path) ? path : StringUtils.removeEnd(path, "/");
+        if (absoluteUriPattern != null) {
+            return absoluteUriPattern;
         }
-
-        return absoluteUriPattern;
+        return uriPattern;
     }
 
-    public String getRelativeUriPattern() {
-        return uriPattern;
+    public void setGroupUriPattern(String groupUriPattern) {
+        if (absoluteUriPattern != null) {
+            // when group1.addRoute(route); group2.addRoute(route);
+            throw new PippoRuntimeException("this route is already in a group");
+        }
+        absoluteUriPattern = StringUtils.concatUriPattern(groupUriPattern, this.uriPattern);
     }
 
     public RouteHandler getRouteHandler() {
@@ -169,13 +162,6 @@ public class Route {
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public Route inGroup(RouteGroup group) {
-        this.group = group;
-        group.getRoutes().add(this);
-
-        return this;
     }
 
     @Override

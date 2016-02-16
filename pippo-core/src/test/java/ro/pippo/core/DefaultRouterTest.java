@@ -669,41 +669,15 @@ public class DefaultRouterTest {
         assertEquals(1, matches.size());
     }
 
-    @Test
-    public void testRouteInGroup() {
-        RouteGroup group = new RouteGroup("/users");
-        Route route = new Route("GET", "{id}", emptyRouteHandler);
-        route.inGroup(group);
-
-        router.addRouteGroup(group);
-
-        List<RouteMatch> matches = router.findRoutes(HttpConstants.Method.GET, "/users/1");
-        assertEquals(1, matches.size());
-    }
 
     @Test
-    public void testGroupAddGroup() {
+    public void testNestGroup() {
         RouteGroup group = new RouteGroup("/users");
-        RouteGroup child = new RouteGroup("{id}");
-        Route route = new Route("POST", "like", emptyRouteHandler);
-        group.addRouteGroup(child);
+        RouteGroup child = new RouteGroup(group, "{id}");
+        Route route = Route.POST("like", emptyRouteHandler);
         child.addRoute(route);
 
         router.addRouteGroup(group);
-
-        List<RouteMatch> matches = router.findRoutes(HttpConstants.Method.POST, "/users/1/like");
-        assertEquals(1, matches.size());
-    }
-
-    @Test
-    public void testGroupInGroup() {
-        RouteGroup group = new RouteGroup("/users");
-        RouteGroup child = new RouteGroup("{id}");
-        Route route = new Route("POST", "like", emptyRouteHandler);
-        child.inGroup(group);
-        route.inGroup(child);
-
-        router.addRoute(route);
 
         List<RouteMatch> matches = router.findRoutes(HttpConstants.Method.POST, "/users/1/like");
         assertEquals(1, matches.size());
