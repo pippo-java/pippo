@@ -18,6 +18,9 @@ package ro.pippo.core.route;
 import java.util.Map;
 
 /**
+ * Represent an entry/item from the result of routing.
+ * Routing is the process of selecting the best matching candidate from a collection of routes for an incoming request.
+ *
  * @author Decebal Suiu
  */
 public class RouteMatch {
