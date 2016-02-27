@@ -231,4 +231,5 @@ public class StringUtils {
         uriPattern = addStart(addStart(uriPattern, "/"), prefix);
         return "/".equals(uriPattern) ? uriPattern : StringUtils.removeEnd(uriPattern, "/");
     }
+
 }

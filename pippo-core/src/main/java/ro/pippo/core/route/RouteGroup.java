@@ -33,12 +33,11 @@ public class RouteGroup {
 
     private String uriPattern;
     private List<Route> routes;
+//    private RouteGroup parent;
     private List<RouteGroup> children;
 
     public RouteGroup(String uriPattern) {
-        this.uriPattern = uriPattern;
-        this.routes = new ArrayList<>();
-        this.children = new ArrayList<>();
+        this(null, uriPattern);
     }
 
     public RouteGroup(RouteGroup parent, String uriPattern) {
@@ -48,6 +47,8 @@ public class RouteGroup {
         } else {
             this.uriPattern = uriPattern;
         }
+
+//        this.parent = parent;
         this.routes = new ArrayList<>();
         this.children = new ArrayList<>();
     }
@@ -56,10 +57,15 @@ public class RouteGroup {
         return this.uriPattern;
     }
 
+    /*
+    public RouteGroup getParent() {
+        return parent;
+    }
+    */
+
     public List<RouteGroup> getChildren() {
         return children;
     }
-
 
     public List<Route> getRoutes() {
         return routes;
@@ -72,6 +78,7 @@ public class RouteGroup {
 
         Route route = Route.GET(uriPattern, routeHandler);
         addRoute(route);
+
         return route;
     }
 
@@ -82,6 +89,7 @@ public class RouteGroup {
     public Route POST(String uriPattern, RouteHandler routeHandler) {
         Route route = Route.POST(uriPattern, routeHandler);
         addRoute(route);
+
         return route;
     }
 
@@ -92,6 +100,7 @@ public class RouteGroup {
     public Route DELETE(String uriPattern, RouteHandler routeHandler) {
         Route route = Route.DELETE(uriPattern, routeHandler);
         addRoute(route);
+
         return route;
     }
 
@@ -102,6 +111,7 @@ public class RouteGroup {
     public Route HEAD(String uriPattern, RouteHandler routeHandler) {
         Route route = Route.HEAD(uriPattern, routeHandler);
         addRoute(route);
+
         return route;
     }
 
@@ -112,6 +122,7 @@ public class RouteGroup {
     public Route PUT(String uriPattern, RouteHandler routeHandler) {
         Route route = Route.PUT(uriPattern, routeHandler);
         addRoute(route);
+
         return route;
     }
 
@@ -122,6 +133,7 @@ public class RouteGroup {
     public Route PATCH(String uriPattern, RouteHandler routeHandler) {
         Route route = Route.PATCH(uriPattern, routeHandler);
         addRoute(route);
+
         return route;
     }
 
@@ -132,6 +144,7 @@ public class RouteGroup {
     public Route ALL(String uriPattern, RouteHandler routeHandler) {
         Route route = Route.ALL(uriPattern, routeHandler);
         addRoute(route);
+
         return route;
     }
 
@@ -139,11 +152,9 @@ public class RouteGroup {
         return ALL("", routeHandler);
     }
 
-    public RouteGroup addRoute(Route route) {
+    public void addRoute(Route route) {
         route.setGroupUriPattern(this.uriPattern);
         routes.add(route);
-        return this;
     }
-
 
 }

@@ -42,6 +42,10 @@ import java.util.List;
 import java.util.Map;
 
 /**
+ * Base class for all Pippo applications.
+ * From here, you can make some configuration changes or enhancements (for example: custom router,
+ * custom request, custom response, ..) and add routes.
+ *
  * @author Decebal Suiu
  */
 public class Application {

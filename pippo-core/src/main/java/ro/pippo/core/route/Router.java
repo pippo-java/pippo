@@ -23,6 +23,7 @@ import java.util.Set;
  * This class allows you to do route requests based on the HTTP verb (request method) and the request URI,
  * in a manner similar to Sinatra or Express.
  * Routes are matched in the order they are added/defined.
+ * Routing is the process of selecting the best matching candidate from a collection of routes for an incoming request.
  *
  * @author Decebal Suiu
  */
