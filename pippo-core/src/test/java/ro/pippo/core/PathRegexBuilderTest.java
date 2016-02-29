@@ -208,4 +208,22 @@ public class PathRegexBuilderTest {
         assertEquals("aaa", parameterMap.get("name"));
     }
 
+    @Test
+    public void testUnderlineInPathParameter() throws Exception {
+        String uri = "/aaa";
+
+        String regex = new PathRegexBuilder()
+            .includes(
+                "/{user_id}"
+            )
+            .excludes(
+                "/admin"
+            )
+            .build();
+
+        router.addRoute(Route.GET(regex, emptyRouteHandler));
+        Map<String, String> parameterMap = router.findRoutes("GET", uri).get(0).getPathParameters();
+        assertEquals("aaa", parameterMap.get("user_id"));
+    }
+
 }
