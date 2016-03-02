@@ -58,6 +58,8 @@ public class DefaultRouter implements Router {
     // This regex works for both {myParam} AND {myParam: .*}
     private static final String VARIABLE_PART_PATTERN_WITH_PLACEHOLDER = "\\{(%s)(:\\s([^}]*))?\\}";
 
+    private static final String PATH_PARAMETER_REGEX_GROUP_NAME_PREFIX = "param";
+
     // key = request method
     private Map<String, List<PatternBinding>> bindingsCache;
 
@@ -336,29 +338,34 @@ public class DefaultRouter implements Router {
         StringBuffer buffer = new StringBuffer();
 
         Matcher matcher = PATTERN_FOR_VARIABLE_PARTS_OF_ROUTE.matcher(urlPattern);
+        int pathParameterIndex = 0;
         while (matcher.find()) {
             // By convention group 3 is the regex if provided by the user.
             // If it is not provided by the user the group 3 is null.
-            String variablePartOfRouteName = matcher.group(1);
             String namedVariablePartOfRoute = matcher.group(3);
             String namedVariablePartOfORouteReplacedWithRegex;
 
             if (namedVariablePartOfRoute != null) {
                 // we convert that into a regex matcher group itself
                 String variableRegex = replacePosixClasses(namedVariablePartOfRoute);
-                namedVariablePartOfORouteReplacedWithRegex = String.format("(?<%s>%s)", variablePartOfRouteName, Matcher.quoteReplacement(variableRegex));
+                namedVariablePartOfORouteReplacedWithRegex = String.format("(?<%s>%s)", getPathParameterRegexGroupName(pathParameterIndex), Matcher.quoteReplacement(variableRegex));
             } else {
                 // we convert that into the default namedVariablePartOfRoute regex group
-                namedVariablePartOfORouteReplacedWithRegex = String.format(VARIABLE_ROUTES_DEFAULT_REGEX, variablePartOfRouteName);
+                namedVariablePartOfORouteReplacedWithRegex = String.format(VARIABLE_ROUTES_DEFAULT_REGEX, getPathParameterRegexGroupName(pathParameterIndex));
             }
             // we replace the current namedVariablePartOfRoute group
             matcher.appendReplacement(buffer, namedVariablePartOfORouteReplacedWithRegex);
+            pathParameterIndex++;
         }
 
         // .. and we append the tail to complete the stringBuffer
         matcher.appendTail(buffer);
 
         return buffer.toString();
+    }
+
+    private static String getPathParameterRegexGroupName(int pathParameterIndex) {
+        return PATH_PARAMETER_REGEX_GROUP_NAME_PREFIX + pathParameterIndex;
     }
 
     /**
@@ -411,8 +418,8 @@ public class DefaultRouter implements Router {
         matcher.matches();
         int groupCount = matcher.groupCount();
         if (groupCount > 0) {
-            for (String name : parameterNames) {
-                parameters.put(name, matcher.group(name));
+            for (int i = 0; i < parameterNames.size(); i++) {
+                parameters.put(parameterNames.get(i), matcher.group(getPathParameterRegexGroupName(i)));
             }
         }
 
