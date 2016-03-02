@@ -120,18 +120,7 @@ public class Route {
     }
 
     public String getUriPattern() {
-        if (absoluteUriPattern != null) {
-            return absoluteUriPattern;
-        }
-        return uriPattern;
-    }
-
-    public void setGroupUriPattern(String groupUriPattern) {
-        if (absoluteUriPattern != null) {
-            // when group1.addRoute(route); group2.addRoute(route);
-            throw new PippoRuntimeException("this route is already in a group");
-        }
-        absoluteUriPattern = StringUtils.concatUriPattern(groupUriPattern, this.uriPattern);
+        return (absoluteUriPattern != null) ? absoluteUriPattern : uriPattern;
     }
 
     public RouteHandler getRouteHandler() {
@@ -162,6 +151,15 @@ public class Route {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    void setGroupUriPattern(String groupUriPattern) {
+        if (absoluteUriPattern != null) {
+            // when group1.addRoute(route); group2.addRoute(route);
+            throw new PippoRuntimeException("This route is already in a group");
+        }
+
+        absoluteUriPattern = StringUtils.concatUriPattern(groupUriPattern, this.uriPattern);
     }
 
     @Override

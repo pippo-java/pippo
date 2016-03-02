@@ -195,11 +195,13 @@ public class DefaultRouter implements Router {
     @Override
     public void addRouteGroup(RouteGroup routeGroup) {
         routeGroup.getRoutes().forEach(this::addRoute);
+        routeGroup.getChildren().forEach(this::addRouteGroup);
     }
 
     @Override
     public void removeRouteGroup(RouteGroup routeGroup) {
         routeGroup.getRoutes().forEach(this::removeRoute);
+        routeGroup.getChildren().forEach(this::removeRouteGroup);
     }
 
     @Override

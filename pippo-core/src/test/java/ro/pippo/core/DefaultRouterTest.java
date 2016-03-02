@@ -660,7 +660,7 @@ public class DefaultRouterTest {
     @Test
     public void testGroupAddRoute() {
         RouteGroup group = new RouteGroup("/users");
-        Route route = new Route("GET", "{id}", emptyRouteHandler);
+        Route route = Route.GET("{id}", emptyRouteHandler);
         group.addRoute(route);
 
         router.addRouteGroup(group);
@@ -668,7 +668,6 @@ public class DefaultRouterTest {
         List<RouteMatch> matches = router.findRoutes(HttpConstants.Method.GET, "/users/1");
         assertEquals(1, matches.size());
     }
-
 
     @Test
     public void testNestGroup() {
