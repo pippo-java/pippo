@@ -18,6 +18,7 @@ package ro.pippo.controller;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ro.pippo.core.Param;
+import ro.pippo.core.ParamPattern;
 import ro.pippo.core.ParameterValue;
 import ro.pippo.core.PippoRuntimeException;
 import ro.pippo.core.route.RouteContext;
@@ -172,6 +173,7 @@ public class DefaultControllerHandler implements ControllerHandler {
     @SuppressWarnings("unchecked")
     protected Object[] prepareMethodArgs(RouteContext routeContext) {
         Class<?>[] types = method.getParameterTypes();
+        Parameter[] parameters = method.getParameters();
 
         if (types.length == 0) {
             return new Object[]{};
@@ -199,7 +201,12 @@ public class DefaultControllerHandler implements ControllerHandler {
                         args[i] = value.toCollection((Class<? extends Collection>) type, genericType, null);
                     }
                 } else {
-                    args[i] = value.to(type);
+                    ParamPattern pattern = parameters[i].getAnnotation(ParamPattern.class);
+                    if (pattern != null) {
+                        args[i] = value.to(type, pattern.value());
+                    } else {
+                        args[i] = value.to(type);
+                    }
                 }
             }
         }

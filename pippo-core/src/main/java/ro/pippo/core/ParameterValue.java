@@ -318,6 +318,17 @@ public class ParameterValue implements Serializable {
         }
     }
 
+    private Date toDateFromUnixTimestamp() {
+        if (isNull() || StringUtils.isNullOrEmpty(values[0])) {
+            return null;
+        }
+        try {
+            return new Date(Long.parseLong(values[0]));
+        } catch (NumberFormatException e) {
+            throw new PippoRuntimeException(e);
+        }
+    }
+
     public java.sql.Date toSqlDate() {
         return toSqlDate(null);
     }
@@ -515,6 +526,11 @@ public class ParameterValue implements Serializable {
 
             if (type == Timestamp.class) {
                 return toSqlTimestamp();
+            }
+            // support java.util.Date
+            if (Date.class.isAssignableFrom(type)) {
+                //default from unix timestamp like System.currentTimeMillis()
+                return toDateFromUnixTimestamp();
             }
         } else {
             if (Date.class.isAssignableFrom(type)) {
