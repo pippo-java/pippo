@@ -62,7 +62,9 @@ public class PippoFilter implements Filter {
 
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
-        log.info(PippoUtils.getPippoLogo());
+        if (System.getProperty("pippo.hideLogo") == null) {
+            log.info(PippoUtils.getPippoLogo());
+        }
 
         // check for runtime mode in filter init parameter
         String mode = filterConfig.getInitParameter(MODE_PARAM);

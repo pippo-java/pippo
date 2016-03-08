@@ -66,7 +66,9 @@ public class PippoServlet extends HttpServlet {
 
     @Override
     public void init(ServletConfig servletConfig) {
-        log.info(PippoUtils.getPippoLogo());
+        if (System.getProperty("pippo.hideLogo") == null) {
+            log.info(PippoUtils.getPippoLogo());
+        }
 
         // check for runtime mode in filter init parameter
         String mode = servletConfig.getInitParameter(MODE_PARAM);
@@ -147,4 +149,5 @@ public class PippoServlet extends HttpServlet {
             throw new PippoRuntimeException(e);
         }
     }
+
 }
