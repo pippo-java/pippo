@@ -30,7 +30,7 @@ public class ListenerList<T> implements Iterable<T> {
     private List<T> listeners;
 
     public ListenerList() {
-        listeners = Collections.synchronizedList(new ArrayList<T>());
+        listeners = Collections.synchronizedList(new ArrayList<>());
     }
 
     public void add(T listener) {
@@ -60,9 +60,9 @@ public class ListenerList<T> implements Iterable<T> {
         }
     }
 
-    protected static interface Notifier<T> {
+    protected interface Notifier<T> {
 
-        public void notify(T listener);
+        void notify(T listener);
 
     }
 

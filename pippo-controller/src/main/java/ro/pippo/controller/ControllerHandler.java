@@ -26,10 +26,10 @@ import java.lang.reflect.Method;
  */
 public interface ControllerHandler extends RouteHandler {
 
-    public Class<? extends Controller> getControllerClass();
+    Class<? extends Controller> getControllerClass();
 
-    public String getMethodName();
+    String getMethodName();
 
-    public Method getMethod();
+    Method getMethod();
 
 }

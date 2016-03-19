@@ -20,20 +20,20 @@ package ro.pippo.core;
  */
 public interface WebServer<T extends WebServerSettings> {
 
-    public T getSettings();
+    T getSettings();
 
-    public PippoFilter getPippoFilter();
+    PippoFilter getPippoFilter();
 
-    public void setPippoFilter(PippoFilter pippoFilter);
+    void setPippoFilter(PippoFilter pippoFilter);
 
-    public String getPippoFilterPath();
+    String getPippoFilterPath();
 
-    public void setPippoFilterPath(String pippoFilterPath);
+    void setPippoFilterPath(String pippoFilterPath);
 
-    public void init(PippoSettings pippoSettings);
+    void init(PippoSettings pippoSettings);
 
-    public void start();
+    void start();
 
-    public void stop();
+    void stop();
 
 }

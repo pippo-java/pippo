@@ -20,8 +20,8 @@ package ro.pippo.core;
  */
 public interface Initializer {
 
-    public void init(Application application);
+    void init(Application application);
 
-    public void destroy(Application application);
+    void destroy(Application application);
 
 }

@@ -24,8 +24,8 @@ import java.util.Map;
  */
 public interface ControllerRouter extends Router {
 
-    public String uriFor(Class<? extends Controller> controllerClass, String methodName, Map<String, Object> parameters);
+    String uriFor(Class<? extends Controller> controllerClass, String methodName, Map<String, Object> parameters);
 
-    public String uriFor(Class<? extends Controller> controllerClass, String methodName);
+    String uriFor(Class<? extends Controller> controllerClass, String methodName);
 
 }

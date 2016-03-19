@@ -22,12 +22,12 @@ package ro.pippo.session;
  */
 public interface SessionDataStorage {
 
-    public SessionData create();
+    SessionData create();
 
-    public void save(SessionData sessionData);
+    void save(SessionData sessionData);
 
-    public SessionData get(String sessionId);
+    SessionData get(String sessionId);
 
-    public void delete(String sessionId);
+    void delete(String sessionId);
 
 }

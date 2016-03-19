@@ -28,6 +28,6 @@ public interface ControllerInitializationListener {
      *
      * @param controller
      */
-    public void onInitialize(Controller controller);
+    void onInitialize(Controller controller);
 
 }

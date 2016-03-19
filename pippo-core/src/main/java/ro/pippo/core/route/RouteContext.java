@@ -30,96 +30,96 @@ import java.util.Map;
  */
 public interface RouteContext {
 
-    public Application getApplication();
+    Application getApplication();
 
-    public Request getRequest();
+    Request getRequest();
 
-    public Response getResponse();
+    Response getResponse();
 
-    public boolean hasSession();
+    boolean hasSession();
 
-    public Session getSession();
+    Session getSession();
 
-    public void recreateSession();
+    void recreateSession();
 
-    public void resetSession();
+    void resetSession();
 
-    public void touchSession();
+    void touchSession();
 
-    public void invalidateSession();
+    void invalidateSession();
 
-    public <T> T setSession(String name, T t);
+    <T> T setSession(String name, T t);
 
-    public <T> T getSession(String name);
+    <T> T getSession(String name);
 
-    public <T> T removeSession(String name);
+    <T> T removeSession(String name);
 
-    public <T> T setLocal(String name, T t);
+    <T> T setLocal(String name, T t);
 
-    public void setLocals(Map<String, Object> locals);
+    void setLocals(Map<String, Object> locals);
 
-    public <T> T getLocal(String name);
+    <T> T getLocal(String name);
 
-    public <T> T removeLocal(String name);
+    <T> T removeLocal(String name);
 
-    public ParameterValue getParameter(String name);
+    ParameterValue getParameter(String name);
 
-    public String getHeader(String name);
+    String getHeader(String name);
 
-    public <T> T setHeader(String name, T t);
+    <T> T setHeader(String name, T t);
 
-    public Date setHeader(String name, Date date);
+    Date setHeader(String name, Date date);
 
-    public void flashError(String message, Object... args);
+    void flashError(String message, Object... args);
 
-    public void flashWarning(String message, Object... args);
+    void flashWarning(String message, Object... args);
 
-    public void flashInfo(String message, Object... args);
+    void flashInfo(String message, Object... args);
 
-    public void flashSuccess(String message, Object... args);
+    void flashSuccess(String message, Object... args);
 
-    public <T> T createEntityFromParameters(Class<T> classOfT);
+    <T> T createEntityFromParameters(Class<T> classOfT);
 
-    public <T> T createEntityFromBody(Class<T> classOfT);
+    <T> T createEntityFromBody(Class<T> classOfT);
 
-    public String getRequestUri();
+    String getRequestUri();
 
-    public String getRequestMethod();
+    String getRequestMethod();
 
-    public boolean isRequestMethod(String method);
+    boolean isRequestMethod(String method);
 
-    public void render(String templateName);
+    void render(String templateName);
 
-    public void render(String templateName, Map<String, Object> model);
+    void render(String templateName, Map<String, Object> model);
 
-    public void send(CharSequence content);
+    void send(CharSequence content);
 
-    public void send(File file);
+    void send(File file);
 
-    public void send(Object object);
+    void send(Object object);
 
-    public void redirect(String path);
+    void redirect(String path);
 
-    public void redirect(String nameOrUriPattern, Map<String, Object> parameters);
+    void redirect(String nameOrUriPattern, Map<String, Object> parameters);
 
-    public void next();
+    void next();
 
-    public void runFinallyRoutes();
+    void runFinallyRoutes();
 
-    public RouteContext text();
+    RouteContext text();
 
-    public RouteContext xml();
+    RouteContext xml();
 
-    public RouteContext json();
+    RouteContext json();
 
-    public RouteContext yaml();
+    RouteContext yaml();
 
-    public RouteContext html();
+    RouteContext html();
 
-    public RouteContext negotiateContentType();
+    RouteContext negotiateContentType();
 
-    public RouteContext status(int code);
+    RouteContext status(int code);
 
-    public String uriFor(String nameOrUriPattern, Map<String, Object> parameters);
+    String uriFor(String nameOrUriPattern, Map<String, Object> parameters);
 
 }

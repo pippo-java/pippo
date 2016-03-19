@@ -21,12 +21,12 @@ package ro.pippo.core;
  */
 public interface ContentTypeEngine {
 
-    public void init(Application application);
+    void init(Application application);
 
-    public String getContentType();
+    String getContentType();
 
-    public String toString(Object object);
+    String toString(Object object);
 
-    public <T> T fromString(String content, Class<T> classOfT);
+    <T> T fromString(String content, Class<T> classOfT);
 
 }

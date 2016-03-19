@@ -38,10 +38,10 @@ public interface TemplateEngine {
     public final static String OVERLOADED_502 = "pippo/502overloaded";
     public final static String SERVICE_UNAVAILABLE_503 = "pippo/503serviceUnavailable";
 
-    public void init(Application application);
+    void init(Application application);
 
-    public void renderString(String templateContent, Map<String, Object> model, Writer writer);
+    void renderString(String templateContent, Map<String, Object> model, Writer writer);
 
-    public void renderResource(String templateName, Map<String, Object> model, Writer writer);
+    void renderResource(String templateName, Map<String, Object> model, Writer writer);
 
 }

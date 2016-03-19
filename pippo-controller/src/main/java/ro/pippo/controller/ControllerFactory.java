@@ -27,6 +27,6 @@ public interface ControllerFactory {
      *
      * @param controllerClass
      */
-    public <T extends Controller> T createController(Class<T> controllerClass);
+    <T extends Controller> T createController(Class<T> controllerClass);
 
 }

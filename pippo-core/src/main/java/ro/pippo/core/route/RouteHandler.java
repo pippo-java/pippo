@@ -20,6 +20,6 @@ package ro.pippo.core.route;
  */
 public interface RouteHandler<T extends RouteContext> {
 
-    public void handle(T routeContext);
+    void handle(T routeContext);
 
 }

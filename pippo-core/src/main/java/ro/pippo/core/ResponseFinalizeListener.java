@@ -21,6 +21,6 @@ package ro.pippo.core;
  */
 public interface ResponseFinalizeListener {
 
-    public void onFinalize(Response response);
+    void onFinalize(Response response);
 
 }

@@ -28,6 +28,6 @@ public interface ControllerInstantiationListener {
      *
      * @param controller
      */
-    public void onInstantiation(Controller controller);
+    void onInstantiation(Controller controller);
 
 }

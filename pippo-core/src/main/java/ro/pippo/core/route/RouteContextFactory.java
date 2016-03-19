@@ -27,8 +27,6 @@ import java.util.List;
  */
 public interface RouteContextFactory<T extends RouteContext> extends Initializer {
 
-    public T createRouteContext(Application application,
-                                Request request,
-                                Response response,
-                                List<RouteMatch> routeMatches);
+    T createRouteContext(Application application, Request request, Response response, List<RouteMatch> routeMatches);
+
 }

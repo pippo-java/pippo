@@ -29,6 +29,6 @@ public interface ControllerInvokeListener {
      *
      * @param controller
      */
-    public void onInvoke(Controller controller, Method method);
+    void onInvoke(Controller controller, Method method);
 
 }

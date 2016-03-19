@@ -23,6 +23,6 @@ import ro.pippo.core.route.RouteHandler;
  */
 public interface ControllerHandlerFactory extends Initializer {
 
-    public RouteHandler createHandler(Class<? extends Controller> controllerClass, String methodName);
+    RouteHandler createHandler(Class<? extends Controller> controllerClass, String methodName);
 
 }

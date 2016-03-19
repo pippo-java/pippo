@@ -29,10 +29,10 @@ import ro.pippo.core.route.RouteContext;
  */
 public interface ErrorHandler extends ExceptionHandler {
 
-    public void setExceptionHandler(Class<? extends Exception> exceptionClass, ExceptionHandler exceptionHandler);
+    void setExceptionHandler(Class<? extends Exception> exceptionClass, ExceptionHandler exceptionHandler);
 
-    public ExceptionHandler getExceptionHandler(Exception exception);
+    ExceptionHandler getExceptionHandler(Exception exception);
 
-    public void handle(int statusCode, RouteContext routeContext);
+    void handle(int statusCode, RouteContext routeContext);
 
 }

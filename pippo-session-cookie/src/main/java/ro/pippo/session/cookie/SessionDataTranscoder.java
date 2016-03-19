@@ -25,8 +25,8 @@ import ro.pippo.session.SessionData;
  */
 public interface SessionDataTranscoder {
 
-    public String encode(SessionData sessionData);
+    String encode(SessionData sessionData);
 
-    public SessionData decode(String data);
+    SessionData decode(String data);
 
 }

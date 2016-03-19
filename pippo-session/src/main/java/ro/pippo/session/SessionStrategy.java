@@ -23,10 +23,10 @@ import javax.servlet.http.HttpServletResponse;
  */
 public interface SessionStrategy {
 
-    public String getRequestedSessionId(HttpServletRequest request);
+    String getRequestedSessionId(HttpServletRequest request);
 
-    public void onNewSession(HttpServletRequest request, HttpServletResponse response, SessionData sessionData);
+    void onNewSession(HttpServletRequest request, HttpServletResponse response, SessionData sessionData);
 
-    public void onInvalidatedSession(HttpServletRequest request, HttpServletResponse response);
+    void onInvalidatedSession(HttpServletRequest request, HttpServletResponse response);
 
 }
