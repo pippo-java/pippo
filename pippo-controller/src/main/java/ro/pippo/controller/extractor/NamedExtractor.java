@@ -22,8 +22,8 @@ package ro.pippo.controller.extractor;
  */
 public interface NamedExtractor extends ArgumentExtractor {
 
-    public String getName();
+    String getName();
 
-    public void setName(String name);
+    void setName(String name);
 
 }

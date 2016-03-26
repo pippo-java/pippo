@@ -36,10 +36,11 @@ import java.util.Set;
 
 /**
  * Base class for identifying annotated controllers.
+ * It's used internally by {@link ControllerRegistrar}.
  *
  * @author James Moger
  */
-public abstract class ControllerScanner {
+class ControllerScanner {
 
     private static final Logger log = LoggerFactory.getLogger(ControllerScanner.class);
 

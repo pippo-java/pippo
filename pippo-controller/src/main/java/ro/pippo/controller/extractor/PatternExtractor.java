@@ -22,8 +22,8 @@ package ro.pippo.controller.extractor;
  */
 public interface PatternExtractor extends ArgumentExtractor {
 
-    public String getPattern();
+    String getPattern();
 
-    public void setPattern(String pattern);
+    void setPattern(String pattern);
 
 }

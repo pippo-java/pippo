@@ -24,6 +24,6 @@ import ro.pippo.controller.Context;
  */
 public interface ArgumentExtractor {
 
-    public Object extract(Context context);
+    Object extract(Context context);
 
 }

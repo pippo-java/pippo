@@ -19,7 +19,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ro.pippo.controller.util.ClassUtils;
 import ro.pippo.controller.util.ControllerUtils;
-import ro.pippo.core.PippoSettings;
 import ro.pippo.core.util.StringUtils;
 
 import java.lang.annotation.Annotation;
@@ -39,16 +38,20 @@ import java.util.stream.Stream;
  *
  * @author James Moger
  */
-public class ControllerRegistrar extends ControllerScanner {
+public class ControllerRegistrar {
 
     private static final Logger log = LoggerFactory.getLogger(ControllerRegistrar.class);
 
+    private final ControllerApplication application;
     private final List<RouteRegistration> routeRegistrations;
 
-    public ControllerRegistrar(PippoSettings settings) {
-        super(settings);
+    private ControllerScanner scanner;
 
-        this.routeRegistrations = new ArrayList<>();
+    public ControllerRegistrar(ControllerApplication application) {
+        this.application = application;
+
+        routeRegistrations = new ArrayList<>();
+        scanner = new ControllerScanner(application.getPippoSettings());
     }
 
     public final void init(Package... packages) {
@@ -67,7 +70,7 @@ public class ControllerRegistrar extends ControllerScanner {
      * @param packageNames
      */
     public final void init(String... packageNames) {
-        Collection<Class<?>> classes = discoverClasses(packageNames);
+        Collection<Class<?>> classes = scanner.discoverClasses(packageNames);
         if (classes.isEmpty()) {
             log.warn("No annotated controllers found in package(s) '{}'", Arrays.toString(packageNames));
             return;
@@ -99,7 +102,7 @@ public class ControllerRegistrar extends ControllerScanner {
     }
 
     private void init(Collection<Class<?>> classes) {
-        Map<Method, Class<? extends Annotation>> discoveredMethods = discoverMethods(classes);
+        Map<Method, Class<? extends Annotation>> discoveredMethods = scanner.discoverMethods(classes);
         if (discoveredMethods.isEmpty()) {
             // if we are using the registrar we expect to discover controllers!
             log.warn("No annotated controller methods found in classes(s) '{}'", classes);
@@ -118,14 +121,15 @@ public class ControllerRegistrar extends ControllerScanner {
      *
      * @param discoveredMethods
      */
+    @SuppressWarnings("unchecked")
     private void registerControllerMethods(Map<Method, Class<? extends Annotation>> discoveredMethods) {
-        Collection<Method> methods = sortMethods(discoveredMethods.keySet());
+        Collection<Method> methods = scanner.sortMethods(discoveredMethods.keySet());
 
         Map<Class<? extends Controller>, Set<String>> controllers = new HashMap<>();
         for (Method method : methods) {
             Class<? extends Controller> controllerClass = (Class<? extends Controller>) method.getDeclaringClass();
             if (!controllers.containsKey(controllerClass)) {
-                Set<String> paths = collectPaths(controllerClass);
+                Set<String> paths = scanner.collectPaths(controllerClass);
                 controllers.put(controllerClass, paths);
             }
 
@@ -145,7 +149,7 @@ public class ControllerRegistrar extends ControllerScanner {
                 if (methodPaths.length == 0) {
                     // method does not specify a path, inherit from controller
                     String fullPath = StringUtils.addStart(StringUtils.removeEnd(controllerPath, "/"), "/");
-                    ControllerHandler handler = new DefaultControllerHandler(controllerClass, method.getName());
+                    ControllerHandler handler = new DefaultControllerHandler(application, controllerClass, method.getName());
                     RouteRegistration registration = new RouteRegistration(httpMethod, fullPath, handler);
                     configureRegistration(registration, method);
 //                    routeRegistrations.add(registration);
@@ -157,7 +161,7 @@ public class ControllerRegistrar extends ControllerScanner {
                             .collect(Collectors.joining("/"));
                         String fullPath = StringUtils.addStart(StringUtils.removeEnd(path, "/"), "/");
 
-                        DefaultControllerHandler handler = new DefaultControllerHandler(controllerClass, method.getName());
+                        DefaultControllerHandler handler = new DefaultControllerHandler(application, controllerClass, method.getName());
                         RouteRegistration registration = new RouteRegistration(httpMethod, fullPath, handler);
                         configureRegistration(registration, method);
 //                        routeRegistrations.add(registration);

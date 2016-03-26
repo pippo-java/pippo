@@ -49,7 +49,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.Optional;
 import java.util.Set;
 import java.util.TreeSet;
 
@@ -62,9 +61,11 @@ public class DefaultControllerHandler implements ControllerHandler {
 
     private static final Logger log = LoggerFactory.getLogger(DefaultControllerHandler.class);
 
+    protected final ControllerApplication application;
     protected final Class<? extends Controller> controllerClass;
     protected final String methodName;
     protected final Method method;
+    protected final Messages messages;
     protected final List<RouteHandler<Context>> routeInterceptors;
     protected final List<String> declaredConsumes;
     protected final List<String> declaredProduces;
@@ -74,7 +75,8 @@ public class DefaultControllerHandler implements ControllerHandler {
     protected ArgumentExtractor[] extractors;
     protected String[] patterns;
 
-    public DefaultControllerHandler(Class<? extends Controller> controllerClass, String methodName) {
+    public DefaultControllerHandler(ControllerApplication application, Class<? extends Controller> controllerClass, String methodName) {
+        this.application = application;
         this.controllerClass = controllerClass;
         this.methodName = methodName;
 
@@ -83,19 +85,22 @@ public class DefaultControllerHandler implements ControllerHandler {
         this.method = findMethod(controllerClass, methodName);
         // TODO
 //        this.messages = injector.getInstance(Messages.class);
+        this.messages = application.getMessages();
 
         // TODO
 //        Preconditions.checkNotNull(method, "Failed to find method '%s'", Util.toString(controllerClass, methodName));
         log.trace("Obtained method for '{}'", LangUtils.toString(method));
 
         this.routeInterceptors = new ArrayList<>();
+        // TODO
         for (Class<? extends RouteHandler<Context>> handlerClass : ControllerUtils.collectRouteInterceptors(method)) {
-            RouteHandler<Context> handler = injector.getInstance(handlerClass);
-            this.routeInterceptors.add(handler);
+//            RouteHandler<Context> handler = injector.getInstance(handlerClass);
+//            this.routeInterceptors.add(handler);
         }
 
         // TODO
 //        ContentTypeEngines engines = injector.getInstance(ContentTypeEngines.class);
+        ContentTypeEngines engines = application.getContentTypeEngines();
 
         this.declaredConsumes = ControllerUtils.getConsumes(method);
         validateConsumes(engines.getContentTypes());
@@ -107,7 +112,7 @@ public class DefaultControllerHandler implements ControllerHandler {
         validateDeclaredReturns();
 
         this.contentTypeSuffixes = configureContentTypeSuffixes(engines);
-        configureMethodArgs(injector);
+        configureMethodArgs();
 
         this.isNoCache = ClassUtils.getAnnotation(method, NoCache.class) != null;
     }
@@ -169,7 +174,10 @@ public class DefaultControllerHandler implements ControllerHandler {
             Object[] args = prepareMethodArgs(context);
 
             log.trace("Invoking '{}'", LangUtils.toString(method));
-            Controller controller = controllerProvider.get();
+            // TODO
+//            Controller controller = controllerProvider.get();
+            // create the controller instance
+            Controller controller = application.getControllerFactory().createController(controllerClass);
             controller.setContext(context);
 
             specifyCacheControls(context);
@@ -224,7 +232,7 @@ public class DefaultControllerHandler implements ControllerHandler {
                         }
 
                         if (result instanceof CharSequence) {
-                            // send a charsequence (e.g. pre-formatted JSON, XML, YAML, etc)
+                            // send a char sequence (e.g. pre-formatted JSON, XML, YAML, etc)
                             CharSequence charSequence = (CharSequence) result;
                             context.send(charSequence);
                         } else if (result instanceof File) {
@@ -305,10 +313,9 @@ public class DefaultControllerHandler implements ControllerHandler {
 
     /**
      * Configures the controller method arguments.
-     *
-     * @param injector
      */
-    protected void configureMethodArgs(Injector injector) {
+    @SuppressWarnings("unchecked")
+    protected void configureMethodArgs() {
         Class<?>[] types = method.getParameterTypes();
         extractors = new ArgumentExtractor[types.length];
         patterns = new String[types.length];
@@ -333,7 +340,13 @@ public class DefaultControllerHandler implements ControllerHandler {
             }
 
             // instantiate the extractor
-            extractors[i] = injector.getInstance(extractorType);
+            // TODO
+//            extractors[i] = injector.getInstance(extractorType);
+            try {
+                extractors[i] = extractorType.getConstructor().newInstance();
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
 
             // configure the extractor
             if (extractors[i] instanceof ConfigurableExtractor<?>) {
@@ -379,12 +392,11 @@ public class DefaultControllerHandler implements ControllerHandler {
                         log.error("Properly annotate your controller methods OR specify the '-parameters' flag for your Java compiler!");
                         throw new PippoRuntimeException(
                                 "Controller method '{}' parameter {} of type '{}' does not specify a name!",
-                                LangUtils.toString(method), i + 1, Util.toString(collectionType, objectType));
+                                LangUtils.toString(method), i + 1, LangUtils.toString(collectionType, objectType));
                     }
                 }
             }
         }
-
     }
 
     /**
@@ -573,15 +585,6 @@ public class DefaultControllerHandler implements ControllerHandler {
         }
 
         return args;
-    }
-
-    protected String getParameterName(Method method, int i) {
-        Annotation annotation = getAnnotation(method, i, Param.class);
-        if (annotation != null) {
-            return ((Param) annotation).value();
-        }
-
-        return Optional.of(method.getParameters()[i]).filter(Parameter::isNamePresent).map(Parameter::getName).get();
     }
 
     protected void validateParameterValue(Parameter parameter, Object value) {

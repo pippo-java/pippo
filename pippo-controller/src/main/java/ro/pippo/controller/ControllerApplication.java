@@ -25,6 +25,10 @@ import ro.pippo.core.route.RouteHandler;
 import ro.pippo.core.route.Router;
 import ro.pippo.core.util.ServiceLocator;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
 /**
  * @author Decebal Suiu
  */
@@ -38,13 +42,18 @@ public class ControllerApplication extends Application {
     private ControllerInvokeListenerList controllerInvokeListeners;
 
     private ControllerFactory controllerFactory;
+    private List<RouteRegistration> routeRegistrations;
 
     public ControllerApplication() {
         super();
+
+        routeRegistrations = new ArrayList<>();
     }
 
     public ControllerApplication(PippoSettings settings) {
         super(settings);
+
+        routeRegistrations = new ArrayList<>();
     }
 
     public Route GET(String uriPattern, Class<? extends Controller> controllerClass, String methodName) {
@@ -147,8 +156,48 @@ public class ControllerApplication extends Application {
         return getControllerHandlerFactory().createHandler(controllerClass, methodName);
     }
 
-    public void addControllers() {
+    public void addControllers(String... packageNames) {
+        ControllerRegistrar registrar = new ControllerRegistrar(this);
+        registrar.init(packageNames);
+        routeRegistrations.addAll(registrar.getRouteRegistrations());
+    }
 
+    public void addControllers(Package... packages) {
+        ControllerRegistrar registrar = new ControllerRegistrar(this);
+        registrar.init(packages);
+        routeRegistrations.addAll(registrar.getRouteRegistrations());
+    }
+
+    public void addControllers(Class<? extends Controller>... controllers) {
+        ControllerRegistrar registrar = new ControllerRegistrar(this);
+        registrar.init(controllers);
+        routeRegistrations.addAll(registrar.getRouteRegistrations());
+    }
+
+    // TODO
+    /**
+     * Adds Routes to the Router respecting exclusion rules.
+     *
+     * Also wraps RouteHandlers with Metrics handlers and sets Route names.
+     */
+    private void compileRoutes() {
+        Iterator<RouteRegistration> iterator = routeRegistrations.iterator();
+        while (iterator.hasNext()) {
+            RouteRegistration routeRegistration = iterator.next();
+            iterator.remove();
+
+            // make some validations/checks
+
+            // add route to router
+            RouteHandler routeHandler = routeRegistration.getRouteHandler();
+            Route route = new Route(routeRegistration.getRequestMethod(), routeRegistration.getUriPattern(), routeHandler);
+            route.setName(routeRegistration.getName());
+            if (routeRegistration.isRunAsFinally()) {
+                route.runAsFinally();
+            }
+
+            router.addRoute(route);
+        }
     }
 
 }

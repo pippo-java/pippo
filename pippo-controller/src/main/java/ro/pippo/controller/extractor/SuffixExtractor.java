@@ -22,8 +22,8 @@ import java.util.Set;
  */
 public interface SuffixExtractor extends ArgumentExtractor {
 
-    public void setSuffixes(Set<String> suffixes);
+    void setSuffixes(Set<String> suffixes);
 
-    public Set<String> getSuffixes();
+    Set<String> getSuffixes();
 
 }

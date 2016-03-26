@@ -25,13 +25,16 @@ import ro.pippo.core.route.RouteHandler;
  */
 public class DefaultControllerHandlerFactory implements ControllerHandlerFactory {
 
+    private ControllerApplication application;
+
     @Override
     public RouteHandler createHandler(Class<? extends Controller> controllerClass, String methodName) {
-        return new DefaultControllerHandler(controllerClass, methodName);
+        return new DefaultControllerHandler(application, controllerClass, methodName);
     }
 
     @Override
     public void init(Application application) {
+        this.application = (ControllerApplication) application;
     }
 
     @Override

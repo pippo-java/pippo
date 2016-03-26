@@ -22,6 +22,6 @@ import java.util.Collection;
  */
 public interface CollectionExtractor extends TypedExtractor {
 
-    public void setCollectionType(Class<? extends Collection> collectionType);
+    void setCollectionType(Class<? extends Collection> collectionType);
 
 }

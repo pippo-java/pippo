@@ -20,6 +20,6 @@ package ro.pippo.controller.extractor;
  */
 public interface TypedExtractor extends ArgumentExtractor {
 
-    public void setObjectType(Class<?> objectType);
+    void setObjectType(Class<?> objectType);
 
 }

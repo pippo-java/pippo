@@ -24,7 +24,6 @@ import ro.pippo.controller.Context;
 public class BoolExtractor implements ArgumentExtractor, NamedExtractor, ConfigurableExtractor<Bool> {
 
     private String name;
-
     private boolean defaultValue;
 
     @Override

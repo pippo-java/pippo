@@ -24,8 +24,8 @@ import java.lang.annotation.Annotation;
  */
 public interface ConfigurableExtractor<A extends Annotation> extends ArgumentExtractor {
 
-    public Class<A> getAnnotationClass();
+    Class<A> getAnnotationClass();
 
-    public void configure(A annotation);
+    void configure(A annotation);
 
 }
