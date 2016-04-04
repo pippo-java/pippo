@@ -17,6 +17,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 - Upgrade [pippo-fastjson] to FastJSON 1.2.8
 - Upgrade [pippo-groovy] to Groovy 2.4.6
 - Upgrade [pippo-jackson] to Jackson 2.7.3
+- Upgrade [pippo-jetty] to Jetty 9.3.8
 
 #### Added
 - [#245]: Route groups
