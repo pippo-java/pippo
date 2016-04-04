@@ -19,6 +19,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 - Upgrade [pippo-jackson] to Jackson 2.7.3
 - Upgrade [pippo-jetty] to Jetty 9.3.8
 - Upgrade [pippo-tomcat] to Tomcat 8.0.33
+- Upgrade [pippo-jade] to Jade 1.1.4
 
 #### Added
 - [#245]: Route groups
