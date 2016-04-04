@@ -12,6 +12,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 - [pippo-csv] now properly collects all fields in a class hierarchy when deserializing objects
 - [pippo-test] Automatically initialize RestAssurred with Pippo ContentType engines
 - Upgrade [pippo-trimou] to Trimou 1.8.4
+- Upgrade [pippo-xstream] to XStream 1.4.9
 
 #### Added
 - [#245]: Route groups
