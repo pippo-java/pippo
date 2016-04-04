@@ -244,10 +244,10 @@ public class DefaultRouteContext implements RouteContext {
     @Override
     public void next() {
         if (iterator.hasNext()) {
-            // retrieves the next route
+            // retrieves the next compiledRoute
             RouteMatch routeMatch = iterator.next();
-            Route route = routeMatch.getRoute();
-            log.trace("Found {}", route);
+            CompiledRoute compiledRoute = routeMatch.getCompiledRoute();
+            log.trace("Found {}", compiledRoute);
 
             // set the new path parameters in request
             Map<String, String> pathParameters = routeMatch.getPathParameters();
@@ -256,10 +256,10 @@ public class DefaultRouteContext implements RouteContext {
                 log.trace("Added path parameters to request");
             }
 
-            // remove route from chain
+            // remove compiledRoute from chain
             iterator.remove();
 
-            handleRoute(route);
+            handleRoute(compiledRoute);
         }
     }
 
@@ -269,20 +269,20 @@ public class DefaultRouteContext implements RouteContext {
     @Override
     public void runFinallyRoutes() {
         while (iterator.hasNext()) {
-            Route route = iterator.next().getRoute();
-            if (route.isRunAsFinally()) {
+            CompiledRoute compiledRoute = iterator.next().getCompiledRoute();
+            if (compiledRoute.isRunAsFinally()) {
                 try {
-                    handleRoute(route);
+                    handleRoute(compiledRoute);
                 } catch (Exception e) {
                     log.error("Unexpected error in Finally Route", e);
                 }
             } else if (log.isDebugEnabled()) {
-                if (StringUtils.isNullOrEmpty(route.getName())) {
-                    log.debug("context.next() not called, skipping handler for {} '{}'", route.getRequestMethod(),
-                        route.getUriPattern());
+                if (StringUtils.isNullOrEmpty(compiledRoute.getName())) {
+                    log.debug("context.next() not called, skipping handler for {} '{}'", compiledRoute.getRequestMethod(),
+                        compiledRoute.getUriPattern());
                 } else {
-                    log.debug("context.next() not called, skipping '{}' for {} '{}'", route.getName(),
-                        route.getRequestMethod(), route.getUriPattern());
+                    log.debug("context.next() not called, skipping '{}' for {} '{}'", compiledRoute.getName(),
+                        compiledRoute.getRequestMethod(), compiledRoute.getUriPattern());
                 }
             }
         }
@@ -343,13 +343,13 @@ public class DefaultRouteContext implements RouteContext {
     }
 
     @SuppressWarnings("unchecked")
-    protected void handleRoute(Route route) {
-        if (StringUtils.isNullOrEmpty(route.getName())) {
-            log.debug("Executing handler for {} '{}'", route.getRequestMethod(), route.getUriPattern());
+    protected void handleRoute(CompiledRoute compiledRoute) {
+        if (StringUtils.isNullOrEmpty(compiledRoute.getName())) {
+            log.debug("Executing handler for {} '{}'", compiledRoute.getRequestMethod(), compiledRoute.getUriPattern());
         } else {
-            log.debug("Executing '{}' for {} '{}'", route.getName(), route.getRequestMethod(), route.getUriPattern());
+            log.debug("Executing '{}' for {} '{}'", compiledRoute.getName(), compiledRoute.getRequestMethod(), compiledRoute.getUriPattern());
         }
-        route.getRouteHandler().handle(this);
+        compiledRoute.getRouteHandler().handle(this);
     }
 
 }

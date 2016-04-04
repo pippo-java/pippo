@@ -59,6 +59,8 @@ public interface Router {
 
     List<Route> getRoutes();
 
+    void compileRoutes();
+
     /**
      * Get uri with context path.
      *
@@ -77,5 +79,7 @@ public interface Router {
     String getApplicationPath();
 
     void setApplicationPath(String pippoPath);
+
+    void addCompiledRouteTransformer(CompiledRouteTransformer transformer);
 
 }

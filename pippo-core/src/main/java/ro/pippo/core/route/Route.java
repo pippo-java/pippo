@@ -19,23 +19,31 @@ import ro.pippo.core.HttpConstants;
 import ro.pippo.core.PippoRuntimeException;
 import ro.pippo.core.util.StringUtils;
 
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * @author Decebal Suiu
  */
 public class Route {
 
-    private String requestMethod;
-    private String uriPattern;
-    private RouteHandler routeHandler;
-    private String absoluteUriPattern;
+    protected String requestMethod;
+    protected String uriPattern;
+    protected RouteHandler routeHandler;
+    protected String absoluteUriPattern;
 
-    private boolean runAsFinally;
-    private String name;
+    protected boolean runAsFinally;
+    protected String name;
+
+    protected Map<String, Object> attributes;
 
     public Route(String requestMethod, String uriPattern, RouteHandler routeHandler) {
         this.requestMethod = requestMethod;
         this.uriPattern = uriPattern;
         this.routeHandler = routeHandler;
+
+        attributes = new HashMap<>();
     }
 
     /**
@@ -151,6 +159,24 @@ public class Route {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    /**
+     * Bind a value to a name. The idea is to extends the standard metadata (uriPattern,
+     * requestPattern, name, runAsFinally) and to make the route definition more dynamic.
+     *
+     * @param name
+     * @param value
+     * @return
+     */
+    public Route bind(String name, Object value) {
+        attributes.put(name, value);
+
+        return this;
+    }
+
+    public Map<String, Object> getAttributes() {
+        return Collections.unmodifiableMap(attributes);
     }
 
     void setGroupUriPattern(String groupUriPattern) {

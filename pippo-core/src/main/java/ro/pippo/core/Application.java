@@ -101,6 +101,8 @@ public class Application {
         }
 
         onInit();
+
+        getRouter().compileRoutes();
     }
 
     public final void destroy() {

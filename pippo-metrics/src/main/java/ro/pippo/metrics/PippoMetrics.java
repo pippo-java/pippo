@@ -53,7 +53,6 @@ public class PippoMetrics implements RouteContextFactory<MetricsRouteContext> {
     private static final Logger log = LoggerFactory.getLogger(PippoMetrics.class);
 
     private final MetricRegistry metricRegistry;
-
     private final List<Closeable> reporters;
 
     public PippoMetrics() {

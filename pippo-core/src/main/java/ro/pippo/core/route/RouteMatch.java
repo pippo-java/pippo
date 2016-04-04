@@ -25,16 +25,20 @@ import java.util.Map;
  */
 public class RouteMatch {
 
-    private final Route route;
+    private final CompiledRoute compiledRoute;
     private final Map<String, String> pathParameters;
 
-    public RouteMatch(Route route, Map<String, String> pathParameters) {
-        this.route = route;
+    public RouteMatch(CompiledRoute compiledRoute, Map<String, String> pathParameters) {
+        this.compiledRoute = compiledRoute;
         this.pathParameters = pathParameters;
     }
 
+    public CompiledRoute getCompiledRoute() {
+        return compiledRoute;
+    }
+
     public Route getRoute() {
-        return route;
+        return compiledRoute.getRoute();
     }
 
     public Map<String, String> getPathParameters() {
@@ -44,8 +48,8 @@ public class RouteMatch {
     @Override
     public String toString() {
         return "RouteMatch{" +
-            "requestMethod='" + route.getRequestMethod() + '\'' +
-            ", uriPattern='" + route.getUriPattern() + '\'' +
+            "requestMethod='" + getRoute().getRequestMethod() + '\'' +
+            ", uriPattern='" + getRoute().getUriPattern() + '\'' +
             '}';
     }
 
