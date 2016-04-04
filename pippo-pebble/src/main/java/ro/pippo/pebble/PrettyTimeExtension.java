@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
+import com.mitchellbosecke.pebble.extension.escaper.SafeString;
 import org.ocpsoft.prettytime.PrettyTime;
 
 import com.google.common.cache.CacheBuilder;
@@ -70,7 +71,7 @@ public class PrettyTimeExtension extends AbstractExtension {
 
             String result = prettyTimeCache.getUnchecked(locale).format(getFormattableObject(input));
 
-            return result;
+            return new SafeString(result);
         }
 
         private Date getFormattableObject(Object value) {
