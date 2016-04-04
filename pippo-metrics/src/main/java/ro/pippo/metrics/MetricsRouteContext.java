@@ -63,8 +63,7 @@ public class MetricsRouteContext extends DefaultRouteContext {
                 method = compiledRoute.getRouteHandler().getClass().getMethod("handle", RouteContext.class);
             }
             */
-            RouteHandler routeHandler = compiledRoute.getRouteHandler();
-            Method method = routeHandler.getClass().getMethod("handle", RouteContext.class);
+            Method method = handler.getClass().getMethod("handle", RouteContext.class);
 
             String metricName = MetricRegistry.name(method.getDeclaringClass(), method.getName());
 
@@ -75,7 +74,7 @@ public class MetricsRouteContext extends DefaultRouteContext {
                 if (!metered.value().isEmpty()) {
                     metricName = metered.value();
                 }
-                handler = new MeteredRouteHandler(metricName, routeHandler, metricRegistry);
+                handler = new MeteredRouteHandler(metricName, handler, metricRegistry);
             } else if (method.isAnnotationPresent(Timed.class)) {
                 log.debug("Found '{}' annotation on method '{}'", Timed.class.getSimpleName(), LangUtils.toString(method));
                 // route handler is Timed
@@ -83,7 +82,7 @@ public class MetricsRouteContext extends DefaultRouteContext {
                 if (!timed.value().isEmpty()) {
                     metricName = timed.value();
                 }
-                handler = new TimedRouteHandler(metricName, routeHandler, metricRegistry);
+                handler = new TimedRouteHandler(metricName, handler, metricRegistry);
             } else if (method.isAnnotationPresent(Counted.class)) {
                 log.debug("Found '{}' annotation on method '{}'", Counted.class.getSimpleName(), LangUtils.toString(method));
                 // route handler is Counted
@@ -91,7 +90,7 @@ public class MetricsRouteContext extends DefaultRouteContext {
                 if (!counted.value().isEmpty()) {
                     metricName = counted.value();
                 }
-                handler = new CountedRouteHandler(metricName, counted.active(), routeHandler, metricRegistry);
+                handler = new CountedRouteHandler(metricName, counted.active(), handler, metricRegistry);
             }
         } catch (Exception e) {
             log.error("Failed to get method?!", e);
