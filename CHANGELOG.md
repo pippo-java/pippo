@@ -11,6 +11,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 - Use `org.kohsuke.metainf-services:meta-services` annotation processor to automatically generate all META-INF/services files
 - [pippo-csv] now properly collects all fields in a class hierarchy when deserializing objects
 - [pippo-test] Automatically initialize RestAssurred with Pippo ContentType engines
+- Upgrade [pippo-trimou] to Trimou 1.8.4
 
 #### Added
 - [#245]: Route groups

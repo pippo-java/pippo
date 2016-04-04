@@ -22,7 +22,7 @@
 	<description>Trimou template engine</description>
 
 	<properties>
-		<trimou.version>1.8.2.Final</trimou.version>
+		<trimou.version>1.8.4.Final</trimou.version>
 	</properties>
 
 	<dependencies>
