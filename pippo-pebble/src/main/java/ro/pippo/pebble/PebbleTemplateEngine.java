@@ -15,16 +15,19 @@
  */
 package ro.pippo.pebble;
 
-import java.io.Writer;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-
+import com.google.common.base.Strings;
+import com.google.common.collect.Lists;
+import com.mitchellbosecke.pebble.PebbleEngine;
+import com.mitchellbosecke.pebble.error.LoaderException;
+import com.mitchellbosecke.pebble.error.PebbleException;
+import com.mitchellbosecke.pebble.extension.debug.DebugExtension;
+import com.mitchellbosecke.pebble.loader.DelegatingLoader;
+import com.mitchellbosecke.pebble.loader.Loader;
 import com.mitchellbosecke.pebble.loader.StringLoader;
+import com.mitchellbosecke.pebble.template.PebbleTemplate;
 import org.kohsuke.MetaInfServices;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import ro.pippo.core.Application;
 import ro.pippo.core.Languages;
 import ro.pippo.core.PippoConstants;
@@ -34,15 +37,10 @@ import ro.pippo.core.TemplateEngine;
 import ro.pippo.core.route.Router;
 import ro.pippo.core.util.StringUtils;
 
-import com.google.common.base.Strings;
-import com.google.common.collect.Lists;
-import com.mitchellbosecke.pebble.PebbleEngine;
-import com.mitchellbosecke.pebble.error.LoaderException;
-import com.mitchellbosecke.pebble.error.PebbleException;
-import com.mitchellbosecke.pebble.extension.debug.DebugExtension;
-import com.mitchellbosecke.pebble.loader.DelegatingLoader;
-import com.mitchellbosecke.pebble.loader.Loader;
-import com.mitchellbosecke.pebble.template.PebbleTemplate;
+import java.io.Writer;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 
 /**
  * Pebble template engine for Pippo.
@@ -73,34 +71,36 @@ public class PebbleTemplateEngine implements TemplateEngine {
             pathPrefix = TemplateEngine.DEFAULT_PATH_PREFIX;
         }
 
-        List<Loader> loaders = Lists.newArrayList();
+        List<Loader<?>> loaders = Lists.newArrayList();
         PippoTemplateLoader templateLoader = new PippoTemplateLoader();
         templateLoader.setCharset(PippoConstants.UTF8);
         templateLoader.setPrefix(pathPrefix);
         templateLoader.setSuffix(FILE_SUFFIX);
         loaders.add(templateLoader);
 
-        engine = new PebbleEngine(new DelegatingLoader(loaders));
-        engine.setStrictVariables(false);
-        engine.addExtension(new I18nExtension(application.getMessages()));
-        engine.addExtension(new FormatTimeExtension());
-        engine.addExtension(new PrettyTimeExtension());
-        engine.addExtension(new AngularJSExtension());
-        engine.addExtension(new WebjarsAtExtension(router));
-        engine.addExtension(new PublicAtExtension(router));
+        PebbleEngine.Builder builder = new PebbleEngine.Builder()
+            .loader(new DelegatingLoader(loaders))
+            .strictVariables(false)
+            .extension(new GlobalVariablesExtension()
+                .set("contextPath", router.getContextPath())
+                .set("appPath", router.getApplicationPath()))
+            .extension(new I18nExtension(application.getMessages()))
+            .extension(new FormatTimeExtension())
+            .extension(new PrettyTimeExtension())
+            .extension(new AngularJSExtension())
+            .extension(new WebjarsAtExtension(router))
+            .extension(new PublicAtExtension(router));
 
         if (pippoSettings.isDev()) {
             // do not cache templates in dev mode
-            engine.setTemplateCache(null);
-            engine.addExtension(new DebugExtension());
+            builder.templateCache(null);
+            builder.extension(new DebugExtension());
         }
 
-        // set global template variables
-        engine.getGlobalVariables().put("contextPath", router.getContextPath());
-        engine.getGlobalVariables().put("appPath", router.getApplicationPath());
-
         // allow custom initialization
-        init(application, engine);
+        init(application, builder);
+
+        engine = builder.build();
     }
 
     @Override
@@ -115,9 +115,11 @@ public class PebbleTemplateEngine implements TemplateEngine {
         }
 
         try {
-            PebbleEngine stringEngine = new PebbleEngine(new StringLoader());
-            stringEngine.setStrictVariables(engine.isStrictVariables());
-            stringEngine.setTemplateCache(null);
+            PebbleEngine stringEngine = new PebbleEngine.Builder()
+                .loader(new StringLoader())
+                .strictVariables(engine.isStrictVariables())
+                .templateCache(null)
+                .build();
 
             PebbleTemplate template = stringEngine.getTemplate(templateContent);
             template.evaluate(writer, model, locale);
@@ -161,7 +163,7 @@ public class PebbleTemplateEngine implements TemplateEngine {
         }
     }
 
-    protected void init(Application application, PebbleEngine engine) {
+    protected void init(Application application, PebbleEngine.Builder builder) {
     }
 
     private PebbleTemplate getTemplate(String templateName, String localePart) throws PebbleException {

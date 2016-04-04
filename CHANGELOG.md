@@ -20,6 +20,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 - Upgrade [pippo-jetty] to Jetty 9.3.8
 - Upgrade [pippo-tomcat] to Tomcat 8.0.33
 - Upgrade [pippo-jade] to Jade 1.1.4
+- Upgrade [pippo-pebble] to Pebble 2.2.1
 
 #### Added
 - [#245]: Route groups
