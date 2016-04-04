@@ -63,34 +63,35 @@ public class MetricsRouteContext extends DefaultRouteContext {
                 method = compiledRoute.getRouteHandler().getClass().getMethod("handle", RouteContext.class);
             }
             */
-            Method method = compiledRoute.getRouteHandler().getClass().getMethod("handle", RouteContext.class);
+            RouteHandler routeHandler = compiledRoute.getRouteHandler();
+            Method method = routeHandler.getClass().getMethod("handle", RouteContext.class);
 
             String metricName = MetricRegistry.name(method.getDeclaringClass(), method.getName());
 
             if (method.isAnnotationPresent(Metered.class)) {
                 log.debug("Found '{}' annotation on method '{}'", Metered.class.getSimpleName(), LangUtils.toString(method));
-                // compiledRoute handler is Metered
+                // route handler is Metered
                 Metered metered = method.getAnnotation(Metered.class);
                 if (!metered.value().isEmpty()) {
                     metricName = metered.value();
                 }
-                handler = new MeteredRouteHandler(metricName, compiledRoute.getRouteHandler(), metricRegistry);
+                handler = new MeteredRouteHandler(metricName, routeHandler, metricRegistry);
             } else if (method.isAnnotationPresent(Timed.class)) {
                 log.debug("Found '{}' annotation on method '{}'", Timed.class.getSimpleName(), LangUtils.toString(method));
-                // compiledRoute handler is Timed
+                // route handler is Timed
                 Timed timed = method.getAnnotation(Timed.class);
                 if (!timed.value().isEmpty()) {
                     metricName = timed.value();
                 }
-                handler = new TimedRouteHandler(metricName, compiledRoute.getRouteHandler(), metricRegistry);
+                handler = new TimedRouteHandler(metricName, routeHandler, metricRegistry);
             } else if (method.isAnnotationPresent(Counted.class)) {
                 log.debug("Found '{}' annotation on method '{}'", Counted.class.getSimpleName(), LangUtils.toString(method));
-                // compiledRoute handler is Counted
+                // route handler is Counted
                 Counted counted = method.getAnnotation(Counted.class);
                 if (!counted.value().isEmpty()) {
                     metricName = counted.value();
                 }
-                handler = new CountedRouteHandler(metricName, counted.active(), compiledRoute.getRouteHandler(), metricRegistry);
+                handler = new CountedRouteHandler(metricName, counted.active(), routeHandler, metricRegistry);
             }
         } catch (Exception e) {
             log.error("Failed to get method?!", e);
