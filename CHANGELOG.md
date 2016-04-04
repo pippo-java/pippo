@@ -15,6 +15,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 - Upgrade [pippo-xstream] to XStream 1.4.9
 - Upgrade [pippo-snakeyaml] to SnakeYaml 1.17
 - Upgrade [pippo-fastjson] to FastJSON 1.2.8
+- Upgrade [pippo-groovy] to Groovy 2.4.6
 
 #### Added
 - [#245]: Route groups
