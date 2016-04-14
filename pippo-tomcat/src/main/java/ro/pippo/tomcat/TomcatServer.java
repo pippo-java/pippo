@@ -43,7 +43,6 @@ public class TomcatServer extends AbstractWebServer<TomcatSettings> {
     private static final Logger log = LoggerFactory.getLogger(TomcatServer.class);
 
     private Application application;
-
     private Tomcat tomcat;
 
     @Override
@@ -110,7 +109,7 @@ public class TomcatServer extends AbstractWebServer<TomcatSettings> {
         connector.setAttribute("keystoreFile", getSettings().getKeystoreFile());
         connector.setAttribute("truststoreFile", getSettings().getTruststoreFile());
         connector.setAttribute("truststorePass", getSettings().getTruststorePassword());
-        connector.setAttribute("clientAuth", "false");
+        connector.setAttribute("clientAuth", getSettings().getClientAuth());
         connector.setAttribute("protocol", "HTTP/1.1");
         connector.setAttribute("sslProtocol", "TLS");
         connector.setAttribute("maxThreads", getSettings().getMaxConnections());

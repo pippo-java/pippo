@@ -27,11 +27,13 @@ public class TomcatSettings extends WebServerSettings {
     public static final String MAX_CONNECTIONS = "tomcat.maxConnections";
     public static final String KEY_ALIAS = "tomcat.keyAlias";
     public static final String KEY_TYPE = "tomcat.keyType";
+    public static final String CLIENT_AUTH = "tomcat.clientAuth";
 
     private String baseFolder;
     private int maxConnections;
     private String keyAlias;
     private String keyType;
+    private boolean clientAuth;
 
     public TomcatSettings(PippoSettings pippoSettings) {
         super(pippoSettings);
@@ -40,6 +42,7 @@ public class TomcatSettings extends WebServerSettings {
         this.maxConnections = pippoSettings.getInteger(TomcatSettings.MAX_CONNECTIONS, 100);
         this.keyAlias = pippoSettings.getString(TomcatSettings.KEY_ALIAS, "tomcat");
         this.keyType = pippoSettings.getString(TomcatSettings.KEY_TYPE, "JKS");
+        this.clientAuth = pippoSettings.getBoolean(TomcatSettings.CLIENT_AUTH, false);
     }
 
     public String getBaseFolder() {
@@ -58,23 +61,37 @@ public class TomcatSettings extends WebServerSettings {
         return keyAlias;
     }
 
+    public boolean getClientAuth() {
+        return clientAuth;
+    }
+
     public TomcatSettings baseFolder(String baseFolder) {
         this.baseFolder = baseFolder;
+
         return this;
     }
 
     public TomcatSettings maxConnections(int maxConnections) {
         this.maxConnections = maxConnections;
+
         return this;
     }
 
     public TomcatSettings keyAlias(String keyAlias) {
         this.keyAlias = keyAlias;
+
         return this;
     }
 
     public TomcatSettings keyType(String keyType) {
         this.keyType = keyType;
+
+        return this;
+    }
+
+    public TomcatSettings setClientAuth(boolean clientAuth) {
+        this.clientAuth = clientAuth;
+
         return this;
     }
 
