@@ -7,10 +7,20 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 #### Fixed
 
 #### Changed
-- Upgrade [pippo-undertow] to Undertow 1.3.16
+- Upgrade [pippo-undertow] to Undertow 1.3.21
 - Use `org.kohsuke.metainf-services:meta-services` annotation processor to automatically generate all META-INF/services files
 - [pippo-csv] now properly collects all fields in a class hierarchy when deserializing objects
 - [pippo-test] Automatically initialize RestAssurred with Pippo ContentType engines
+- Upgrade [pippo-trimou] to Trimou 1.8.4
+- Upgrade [pippo-xstream] to XStream 1.4.9
+- Upgrade [pippo-snakeyaml] to SnakeYaml 1.17
+- Upgrade [pippo-fastjson] to FastJSON 1.2.8
+- Upgrade [pippo-groovy] to Groovy 2.4.6
+- Upgrade [pippo-jackson] to Jackson 2.7.3
+- Upgrade [pippo-jetty] to Jetty 9.3.8
+- Upgrade [pippo-tomcat] to Tomcat 8.0.33
+- Upgrade [pippo-jade] to Jade 1.1.4
+- Upgrade [pippo-pebble] to Pebble 2.2.1
 
 #### Added
 - [#245]: Route groups

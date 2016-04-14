@@ -12,7 +12,7 @@
     <name>Pippo Tomcat</name>
     <description>Tomcat Embedded Web Server</description>
     <properties>
-        <tomcat.version>8.0.28</tomcat.version>
+        <tomcat.version>8.0.33</tomcat.version>
     </properties>
 
 

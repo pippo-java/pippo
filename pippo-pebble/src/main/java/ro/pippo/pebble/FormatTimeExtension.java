@@ -26,6 +26,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
+import com.mitchellbosecke.pebble.extension.escaper.SafeString;
 import ro.pippo.core.PippoRuntimeException;
 
 import com.mitchellbosecke.pebble.extension.AbstractExtension;
@@ -86,7 +87,7 @@ public class FormatTimeExtension extends AbstractExtension {
                 date = getDateObject(input);
             }
 
-            return intendedFormat.format(date);
+            return new SafeString(intendedFormat.format(date));
         }
 
         private Date getDateObject(Object value) {

@@ -21,6 +21,8 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
+import com.mitchellbosecke.pebble.extension.escaper.SafeString;
+import com.mitchellbosecke.pebble.template.EvaluationContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -29,7 +31,6 @@ import ro.pippo.core.Messages;
 import com.google.common.collect.Lists;
 import com.mitchellbosecke.pebble.extension.AbstractExtension;
 import com.mitchellbosecke.pebble.extension.Function;
-import com.mitchellbosecke.pebble.extension.LocaleAware;
 
 public class I18nExtension extends AbstractExtension {
 
@@ -48,14 +49,7 @@ public class I18nExtension extends AbstractExtension {
         return functions;
     }
 
-    class I18nFunction implements Function, LocaleAware {
-
-        private Locale locale;
-
-        @Override
-        public void setLocale(Locale locale) {
-            this.locale = locale;
-        }
+    class I18nFunction implements Function {
 
         @Override
         public List<String> getArgumentNames() {
@@ -75,6 +69,8 @@ public class I18nExtension extends AbstractExtension {
         public Object execute(Map<String, Object> args) {
             String messageKey = (String) args.get("key");
 
+            EvaluationContext context = (EvaluationContext) args.get("_context");
+            Locale locale = context.getLocale();
             String requestLang = locale.toLanguageTag();
 
             List<Object> messageArgs = Lists.newArrayList();
@@ -86,8 +82,7 @@ public class I18nExtension extends AbstractExtension {
             }
 
             String messageValue = messages.get(messageKey, requestLang, messageArgs.toArray());
-
-            return messageValue;
+            return new SafeString(messageValue);
         }
 
     }
