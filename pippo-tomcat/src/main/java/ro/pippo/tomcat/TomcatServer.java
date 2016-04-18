@@ -92,12 +92,12 @@ public class TomcatServer extends AbstractWebServer<TomcatSettings> {
         tomcat.getServer().await();
     }
 
-    private void enablePlainConnector(Tomcat tomcat){
+    private void enablePlainConnector(Tomcat tomcat) {
         log.info("Using http protocol");
         tomcat.setPort(getSettings().getPort());
     }
 
-    private void enableSSLConnector(Tomcat tomcat){
+    private void enableSSLConnector(Tomcat tomcat) {
         log.info("Using https protocol");
         Connector connector = tomcat.getConnector();
         connector.setPort(getSettings().getPort());
@@ -108,7 +108,7 @@ public class TomcatServer extends AbstractWebServer<TomcatSettings> {
         connector.setAttribute("keystoreType", getSettings().getKeyType());
         connector.setAttribute("keystoreFile", getSettings().getKeystoreFile());
         connector.setAttribute("clientAuth", getSettings().getClientAuth());
-        if (getSettings().getClientAuth()){
+        if (getSettings().getClientAuth()) {
         	connector.setAttribute("truststoreFile", getSettings().getTruststoreFile());
             connector.setAttribute("truststorePass", getSettings().getTruststorePassword());
         }
