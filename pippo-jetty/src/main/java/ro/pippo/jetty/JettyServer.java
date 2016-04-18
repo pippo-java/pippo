@@ -122,7 +122,7 @@ public class JettyServer extends AbstractWebServer<JettySettings> {
             sslContextFactory.setKeyStorePassword(getSettings().getKeystorePassword());
         }
         if (getSettings().getTruststoreFile() != null) {
-            sslContextFactory.setTrustStorePath(getSettings().getKeystorePassword());
+            sslContextFactory.setTrustStorePath(getSettings().getTruststoreFile());
         }
         if (getSettings().getTruststorePassword() != null) {
             sslContextFactory.setTrustStorePassword(getSettings().getTruststorePassword());
