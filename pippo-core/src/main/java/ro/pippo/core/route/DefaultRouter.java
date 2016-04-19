@@ -72,6 +72,7 @@ public class DefaultRouter implements Router {
     private Set<String> ignorePaths;
     private String contextPath;
     private String applicationPath;
+    private boolean routesCompiled; // flag that routes was compiled
 
     public DefaultRouter() {
         routes = new ArrayList<>();
@@ -127,6 +128,7 @@ public class DefaultRouter implements Router {
 
     @Override
     public void compileRoutes() {
+        log.debug("Compile routes");
         for (Route route : routes) {
             CompiledRoute compiledRoute = compileRoute(route);
             for (CompiledRouteTransformer transformer : compiledRouteTransformers) {
@@ -140,6 +142,8 @@ public class DefaultRouter implements Router {
                 addCompiledRoute(compiledRoute);
             }
         }
+
+        routesCompiled = true;
     }
 
     public List<Route> getRoutes(String requestMethod) {
@@ -151,6 +155,11 @@ public class DefaultRouter implements Router {
     @Override
     public List<RouteMatch> findRoutes(String requestMethod, String requestUri) {
         log.trace("Finding route matches for {} '{}'", requestMethod, requestUri);
+
+        if (!routesCompiled) {
+            // force compile routes
+            compileRoutes();
+        }
 
         List<RouteMatch> routeMatches = new ArrayList<>();
 
