@@ -266,6 +266,7 @@ public class Languages {
      */
     private Cookie generateLanguageCookie(String language) {
         Cookie cookie = new Cookie(applicationCookiePrefix + "_LANG", language);
+        cookie.setSecure(true);
         cookie.setMaxAge(TEN_YEARS);
         return cookie;
     }

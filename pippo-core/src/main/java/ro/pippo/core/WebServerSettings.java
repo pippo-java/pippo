@@ -24,10 +24,10 @@ public class WebServerSettings implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    private static final int defaultPort = 8338;
+    private static final int DEFAULT_PORT = 8338;
 
     private String host = "localhost";
-    private int port = defaultPort;
+    private int port = DEFAULT_PORT;
     private String contextPath = "/";
     private String keystoreFile;
     private String keystorePassword;
@@ -35,7 +35,7 @@ public class WebServerSettings implements Serializable {
     private String truststorePassword;
 
     public WebServerSettings(PippoSettings pippoSettings) {
-        this.port = pippoSettings.getInteger(PippoConstants.SETTING_SERVER_PORT, defaultPort);
+        this.port = pippoSettings.getInteger(PippoConstants.SETTING_SERVER_PORT, DEFAULT_PORT);
         this.host = pippoSettings.getString(PippoConstants.SETTING_SERVER_HOST, host);
         this.contextPath = pippoSettings.getString(PippoConstants.SETTING_SERVER_CONTEXT_PATH, contextPath);
         this.keystoreFile = pippoSettings.getString(PippoConstants.SETTING_SERVER_KEYSTORE_FILE, keystoreFile);

@@ -170,6 +170,7 @@ public final class Response {
      */
     public Response cookie(String name, String value) {
         Cookie cookie = new Cookie(name, value);
+        cookie.setSecure(true);
         addCookie(cookie);
 
         return this;
@@ -185,6 +186,7 @@ public final class Response {
      */
     public Response cookie(String name, String value, int maxAge) {
         Cookie cookie = new Cookie(name, value);
+        cookie.setSecure(true);
         cookie.setMaxAge(maxAge);
         addCookie(cookie);
 
@@ -240,6 +242,7 @@ public final class Response {
      */
     public Response removeCookie(String name) {
         Cookie cookie = new Cookie(name, "");
+        cookie.setSecure(true);
         cookie.setMaxAge(0);
         addCookie(cookie);
 
@@ -977,7 +980,6 @@ public final class Response {
         // add session (if exists) to model
         Session session = Session.get();
         if (session != null) {
-//            model.put("session", session.getAll());
             model.put("session", session);
         }
 

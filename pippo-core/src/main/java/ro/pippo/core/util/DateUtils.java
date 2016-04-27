@@ -26,6 +26,8 @@ import java.util.Locale;
  */
 public class DateUtils {
 
+    private DateUtils() {}
+
     /**
      * From here: http://www.ietf.org/rfc/rfc1123.txt
      */

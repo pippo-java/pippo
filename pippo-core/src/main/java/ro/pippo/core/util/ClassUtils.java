@@ -25,6 +25,8 @@ import java.util.List;
  */
 public class ClassUtils {
 
+    private ClassUtils() {}
+
     public static List<Field> getAllFields(Class clazz) {
         List<Field> allFields = new ArrayList<>();
         allFields.addAll(Arrays.asList(clazz.getDeclaredFields()));

@@ -26,6 +26,8 @@ import java.util.List;
  */
 public class CookieUtils {
 
+    private CookieUtils() {}
+
     public static List<Cookie> getCookies(HttpServletRequest request) {
         Cookie[] cookies = request.getCookies();
         if ((cookies == null) || (cookies.length == 0)) {

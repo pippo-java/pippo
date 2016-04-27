@@ -22,6 +22,8 @@ import java.lang.reflect.Method;
  */
 public class LangUtils {
 
+    private LangUtils() {}
+
     public static String toString(Method method) {
         return method.getDeclaringClass().getName() + "::" + method.getName();
     }
