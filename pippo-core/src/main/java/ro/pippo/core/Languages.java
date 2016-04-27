@@ -40,7 +40,7 @@ public class Languages {
 
     private final String applicationCookiePrefix;
 
-    private final int TEN_YEARS = 60 * 60 * 24 * 365 * 10;
+    private static final int TEN_YEARS = 60 * 60 * 24 * 365 * 10;
 
     private final PippoSettings pippoSettings;
 
@@ -180,20 +180,14 @@ public class Languages {
         // The Response always has priority over the Request because it may have
         // been set earlier in the HandlerChain.
         Cookie cookie = routeContext.getResponse().getCookie(cookieName);
-        if (cookie != null) {
-            if (!StringUtils.isNullOrEmpty(cookie.getValue())) {
-                String language = getLanguageOrDefault(cookie.getValue());
-                return language;
-            }
+        if (cookie != null && !StringUtils.isNullOrEmpty(cookie.getValue())) {
+            return getLanguageOrDefault(cookie.getValue());
         }
 
         // Step 2: Look for a Request cookie.
         cookie = routeContext.getRequest().getCookie(cookieName);
-        if (cookie != null) {
-            if (!StringUtils.isNullOrEmpty(cookie.getValue())) {
-                String language = getLanguageOrDefault(cookie.getValue());
-                return language;
-            }
+        if (cookie != null && !StringUtils.isNullOrEmpty(cookie.getValue())) {
+            return getLanguageOrDefault(cookie.getValue());
         }
 
         // Step 3: Look for a lang parameter in the response locals
@@ -205,9 +199,7 @@ public class Languages {
 
         // Step 4: Look for a language in the Accept-Language header.
         String acceptLanguage = routeContext.getHeader(HttpConstants.Header.ACCEPT_LANGUAGE);
-        String language = getLanguageOrDefault(acceptLanguage);
-
-        return language;
+        return getLanguageOrDefault(acceptLanguage);
     }
 
     /**
@@ -294,8 +286,7 @@ public class Languages {
         }
 
         // the first language specified is the default language
-        String defaultLanguage = applicationLanguages.get(0);
-        return defaultLanguage;
+        return applicationLanguages.get(0);
     }
 
 }

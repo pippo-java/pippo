@@ -85,7 +85,9 @@ public class PippoSettings {
 
     private static final Logger log = LoggerFactory.getLogger(PippoSettings.class);
 
-    private final String defaultListDelimiter = ",";
+    private static final String USING_DEFAULT_OF = " using default of ";
+
+    private static final String defaultListDelimiter = ",";
 
     private final RuntimeMode runtimeMode;
 
@@ -457,8 +459,7 @@ public class PippoSettings {
      */
     public String getInterpolatedString(String name, String defaultValue) {
         String value = getString(name, defaultValue);
-        final String interpolatedValue = interpolateString(value);
-        return interpolatedValue;
+        return interpolateString(value);
     }
 
     /**
@@ -495,7 +496,7 @@ public class PippoSettings {
                 return Integer.parseInt(value.trim().split(" ")[0]);
             }
         } catch (NumberFormatException e) {
-            log.warn("Failed to parse integer for " + name + " using default of "
+            log.warn("Failed to parse integer for " + name + USING_DEFAULT_OF
                 + defaultValue);
         }
 
@@ -518,7 +519,7 @@ public class PippoSettings {
                 return Long.parseLong(value.trim().split(" ")[0]);
             }
         } catch (NumberFormatException e) {
-            log.warn("Failed to parse long for " + name + " using default of "
+            log.warn("Failed to parse long for " + name + USING_DEFAULT_OF
                 + defaultValue);
         }
 
@@ -541,7 +542,7 @@ public class PippoSettings {
                 return Float.parseFloat(value.trim().split(" ")[0]);
             }
         } catch (NumberFormatException e) {
-            log.warn("Failed to parse float for " + name + " using default of "
+            log.warn("Failed to parse float for " + name + USING_DEFAULT_OF
                 + defaultValue);
         }
 
@@ -564,7 +565,7 @@ public class PippoSettings {
                 return Double.parseDouble(value.trim().split(" ")[0]);
             }
         } catch (NumberFormatException e) {
-            log.warn("Failed to parse double for " + name + " using default of "
+            log.warn("Failed to parse double for " + name + USING_DEFAULT_OF
                 + defaultValue);
         }
 
@@ -626,9 +627,7 @@ public class PippoSettings {
         if (StringUtils.isNullOrEmpty(value)) {
             return Collections.emptyList();
         }
-        List<String> stringList = StringUtils.getList(value, delimiter);
-
-        return stringList;
+        return StringUtils.getList(value, delimiter);
     }
 
     /**
@@ -946,7 +945,7 @@ public class PippoSettings {
      * @param value
      */
     public void overrideSetting(String name, boolean value) {
-        overrides.put(name, "" + value);
+        overrides.put(name, Boolean.toString(value));
     }
 
     /**
@@ -968,7 +967,7 @@ public class PippoSettings {
      * @param value
      */
     public void overrideSetting(String name, char value) {
-        overrides.put(name, "" + value);
+        overrides.put(name, Character.toString(value));
     }
 
     /**
@@ -979,7 +978,7 @@ public class PippoSettings {
      * @param value
      */
     public void overrideSetting(String name, int value) {
-        overrides.put(name, "" + value);
+        overrides.put(name, Integer.toString(value));
     }
 
     /**
@@ -990,7 +989,7 @@ public class PippoSettings {
      * @param value
      */
     public void overrideSetting(String name, long value) {
-        overrides.put(name, "" + value);
+        overrides.put(name, Long.toString(value));
     }
 
     /**
@@ -1001,7 +1000,7 @@ public class PippoSettings {
      * @param value
      */
     public void overrideSetting(String name, float value) {
-        overrides.put(name, "" + value);
+        overrides.put(name, Float.toString(value));
     }
 
     /**
@@ -1012,7 +1011,7 @@ public class PippoSettings {
      * @param value
      */
     public void overrideSetting(String name, double value) {
-        overrides.put(name, "" + value);
+        overrides.put(name, Double.toString(value));
     }
 
 }

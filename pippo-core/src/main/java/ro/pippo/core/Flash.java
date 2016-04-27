@@ -90,7 +90,7 @@ public class Flash implements Iterable<Flash.Message>, Serializable {
     }
 
     public List<String> getErrorList() {
-        return hasError() ? get(Message.ERROR) : Collections.EMPTY_LIST;
+        return hasError() ? get(Message.ERROR) : Collections.emptyList();
     }
 
     public void success(String message) {
@@ -110,7 +110,7 @@ public class Flash implements Iterable<Flash.Message>, Serializable {
     }
 
     public List<String> getSuccessList() {
-        return hasSuccess() ? get(Message.SUCCESS) : Collections.EMPTY_LIST;
+        return hasSuccess() ? get(Message.SUCCESS) : Collections.emptyList();
     }
 
     public void warning(String message) {
@@ -130,7 +130,7 @@ public class Flash implements Iterable<Flash.Message>, Serializable {
     }
 
     public List<String> getWarningList() {
-        return hasWarning() ? get(Message.WARNING) : Collections.EMPTY_LIST;
+        return hasWarning() ? get(Message.WARNING) : Collections.emptyList();
     }
 
     public void info(String message) {
@@ -150,7 +150,7 @@ public class Flash implements Iterable<Flash.Message>, Serializable {
     }
 
     public List<String> getInfoList() {
-        return hasInfo() ? get(Message.INFO) : Collections.EMPTY_LIST;
+        return hasInfo() ? get(Message.INFO) : Collections.emptyList();
     }
 
     @Override

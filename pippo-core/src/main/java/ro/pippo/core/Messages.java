@@ -114,8 +114,7 @@ public class Messages {
         Properties messages = getMessagesForLanguage(language);
         String value = messages.getProperty(key);
         if (value != null) {
-            String message = formatMessage(value, language, args);
-            return message;
+            return formatMessage(value, language, args);
         } else {
             log.warn("Failed to find '{}' in Messages", key);
             return key;

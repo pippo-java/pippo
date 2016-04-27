@@ -28,6 +28,8 @@ import java.util.Map;
  */
 public class Session {
 
+    private static final String FLASH = "flash";
+
     private HttpSession httpSession;
 
     public Session(HttpSession httpSession) {
@@ -69,9 +71,9 @@ public class Session {
     }
 
     public Flash getFlash() {
-        Flash flash = get("flash");
+        Flash flash = get(FLASH);
         if (flash == null) {
-            put("flash", flash = new Flash());
+            put(FLASH, flash = new Flash());
         }
 
         return flash;
@@ -97,7 +99,7 @@ public class Session {
         Enumeration<String> names = getNames();
         while (names.hasMoreElements() ) {
             String name = names.nextElement();
-            if ("flash".equalsIgnoreCase(name)) {
+            if (FLASH.equalsIgnoreCase(name)) {
                 continue;
             }
 

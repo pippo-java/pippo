@@ -36,7 +36,7 @@ public class StatusCodeException extends PippoRuntimeException {
     }
 
     public StatusCodeException(int statusCode) {
-        super("" + statusCode);
+        super(Integer.toString(statusCode));
         this.statusCode = statusCode;
     }
 
