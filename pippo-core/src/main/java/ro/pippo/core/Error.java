@@ -34,14 +34,62 @@ public class Error implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    public int statusCode;
-    public String statusMessage;
-    public String requestMethod;
-    public String requestUri;
-    public String message;
-    public String stacktrace;
+    private int statusCode;
+    private String statusMessage;
+    private String requestMethod;
+    private String requestUri;
+    private String message;
+    private String stacktrace;
 
     public Error() {
+    }
+
+    public int getStatusCode() {
+        return statusCode;
+    }
+
+    public void setStatusCode(int statusCode) {
+        this.statusCode = statusCode;
+    }
+
+    public String getStatusMessage() {
+        return statusMessage;
+    }
+
+    public void setStatusMessage(String statusMessage) {
+        this.statusMessage = statusMessage;
+    }
+
+    public String getRequestMethod() {
+        return requestMethod;
+    }
+
+    public void setRequestMethod(String requestMethod) {
+        this.requestMethod = requestMethod;
+    }
+
+    public String getRequestUri() {
+        return requestUri;
+    }
+
+    public void setRequestUri(String requestUri) {
+        this.requestUri = requestUri;
+    }
+
+    public String getMessage() {
+        return message;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
+    }
+
+    public String getStacktrace() {
+        return stacktrace;
+    }
+
+    public void setStacktrace(String stacktrace) {
+        this.stacktrace = stacktrace;
     }
 
     @Override

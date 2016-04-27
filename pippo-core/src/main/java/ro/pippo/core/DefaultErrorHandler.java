@@ -40,6 +40,8 @@ public class DefaultErrorHandler implements ErrorHandler {
 
     private static final Logger log = LoggerFactory.getLogger(DefaultErrorHandler.class);
 
+    private static final String MESSAGE = "message";
+
     private Application application;
 
     private final Map<Class<? extends Exception>, ExceptionHandler> exceptionHandlers;
@@ -84,8 +86,7 @@ public class DefaultErrorHandler implements ErrorHandler {
             exceptionHandlers.put(exceptionClass, null);
         }
 
-        ExceptionHandler exceptionHandler = exceptionHandlers.get(exceptionClass);
-        return exceptionHandler;
+        return exceptionHandlers.get(exceptionClass);
     }
 
     @Override
@@ -185,8 +186,8 @@ public class DefaultErrorHandler implements ErrorHandler {
         }
 
         String message = exception.getMessage();
-        if (!StringUtils.isNullOrEmpty(message) && !routeContext.getResponse().getLocals().containsKey("message")) {
-            routeContext.setLocal("message", message);
+        if (!StringUtils.isNullOrEmpty(message) && !routeContext.getResponse().getLocals().containsKey(MESSAGE)) {
+            routeContext.setLocal(MESSAGE, message);
         }
 
         if (application.getPippoSettings().isDev()) {
@@ -259,13 +260,13 @@ public class DefaultErrorHandler implements ErrorHandler {
         String messageKey = "pippo.statusCode" + statusCode;
 
         Error error = new Error();
-        error.statusCode = statusCode;
-        error.statusMessage = application.getMessages().get(messageKey, routeContext);
-        error.requestMethod = routeContext.getRequestMethod();
-        error.requestUri = routeContext.getRequestUri();
-        error.requestUri = routeContext.getRequestUri();
-        error.stacktrace = routeContext.getLocal("stacktrace");
-        error.message = routeContext.getLocal("message");
+        error.setStatusCode(statusCode);
+        error.setStatusMessage(application.getMessages().get(messageKey, routeContext));
+        error.setRequestMethod(routeContext.getRequestMethod());
+        error.setRequestUri(routeContext.getRequestUri());
+        error.setRequestUri(routeContext.getRequestUri());
+        error.setStacktrace(routeContext.getLocal("stacktrace"));
+        error.setMessage(routeContext.getLocal(MESSAGE));
 
         return error;
     }

@@ -27,8 +27,6 @@ import ro.pippo.core.Initializer;
 @MetaInfServices(Initializer.class)
 public class CsvInitializer implements Initializer {
 
-    private static final Logger log = LoggerFactory.getLogger(CsvInitializer.class);
-
     @Override
     public void init(Application application) {
         application.registerContentTypeEngine(CsvEngine.class);
