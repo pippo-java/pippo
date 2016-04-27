@@ -35,6 +35,8 @@ public class CryptoUtils {
 
     public static final String HMAC_SHA256 = "HmacSHA256";
 
+    private CryptoUtils() {}
+
     public static String getHmacSHA256(String message, String secretKey) {
         return hmacDigest(message, secretKey, HMAC_SHA256);
     }

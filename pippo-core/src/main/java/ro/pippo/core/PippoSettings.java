@@ -87,7 +87,7 @@ public class PippoSettings {
 
     private static final String USING_DEFAULT_OF = " using default of ";
 
-    private static final String defaultListDelimiter = ",";
+    private static final String DEFAULT_LIST_DELIMITER = ",";
 
     private final RuntimeMode runtimeMode;
 
@@ -301,7 +301,7 @@ public class PippoSettings {
         String include = (String) currentProperties.remove(key);
         if (!StringUtils.isNullOrEmpty(include)) {
             // allow for multiples
-            List<String> names = StringUtils.getList(include, defaultListDelimiter);
+            List<String> names = StringUtils.getList(include, DEFAULT_LIST_DELIMITER);
             for (String name : names) {
                 if (StringUtils.isNullOrEmpty(name)) {
                     continue;
@@ -612,7 +612,7 @@ public class PippoSettings {
      * @return list of strings
      */
     public List<String> getStrings(String name) {
-        return getStrings(name, defaultListDelimiter);
+        return getStrings(name, DEFAULT_LIST_DELIMITER);
     }
 
     /**
@@ -637,7 +637,7 @@ public class PippoSettings {
      * @return list of strings
      */
     public List<Integer> getIntegers(String name) {
-        return getIntegers(name, defaultListDelimiter);
+        return getIntegers(name, DEFAULT_LIST_DELIMITER);
     }
 
     /**
@@ -672,7 +672,7 @@ public class PippoSettings {
      * @return list of strings
      */
     public List<Long> getLongs(String name) {
-        return getLongs(name, defaultListDelimiter);
+        return getLongs(name, DEFAULT_LIST_DELIMITER);
     }
 
     /**

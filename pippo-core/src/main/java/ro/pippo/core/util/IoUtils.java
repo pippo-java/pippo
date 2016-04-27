@@ -34,6 +34,8 @@ import java.nio.charset.StandardCharsets;
  */
 public class IoUtils {
 
+    private IoUtils() {}
+
     /**
      * Copies all data from an InputStream to an OutputStream.
      *
@@ -41,7 +43,7 @@ public class IoUtils {
      * @throws IOException if an I/O error occurs
      */
     public static long copy(InputStream input, OutputStream output) throws IOException {
-        byte buffer[] = new byte[2 * 1024];
+        byte[] buffer = new byte[2 * 1024];
         long total = 0;
         int count;
         while ((count = input.read(buffer)) != -1) {

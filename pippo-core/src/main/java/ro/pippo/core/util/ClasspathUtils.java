@@ -32,6 +32,8 @@ public class ClasspathUtils {
 
     private final static Logger log = LoggerFactory.getLogger(ClasspathUtils.class);
 
+    private ClasspathUtils() {}
+
     /**
      * Tries to find a resource with the given name in the classpath.
      *

@@ -33,6 +33,8 @@ public class PippoUtils {
         + " ) __/ _)(_  ) __/ ) __/ )(_)(   http://pippo.ro\n"
         + "(__)  (____)(__)  (__)  (_____)  {}\n";
 
+    private PippoUtils() {}
+
     public static String getPippoLogo() {
         return StringUtils.format(PIPPO_LOGO, getPippoVersion());
     }
@@ -45,7 +47,7 @@ public class PippoUtils {
      */
     public static String getPippoVersion() {
         // and the key inside the properties file.
-        String PIPPO_VERSION_PROPERTY_KEY = "pippo.version";
+        String pippoVersionPropertyKey = "pippo.version";
 
         String pippoVersion;
 
@@ -55,7 +57,7 @@ public class PippoUtils {
             InputStream stream = url.openStream();
             prop.load(stream);
 
-            pippoVersion = prop.getProperty(PIPPO_VERSION_PROPERTY_KEY);
+            pippoVersion = prop.getProperty(pippoVersionPropertyKey);
         } catch (Exception e) {
             //this should not happen. Never.
             throw new PippoRuntimeException("Something is wrong with your build. Cannot find resource {}",

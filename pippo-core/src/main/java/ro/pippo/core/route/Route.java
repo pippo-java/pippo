@@ -164,13 +164,21 @@ public class Route {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
 
         Route route = (Route) o;
 
-        if (!requestMethod.equals(route.requestMethod)) return false;
-        if (!getUriPattern().equals(route.getUriPattern())) return false;
+        if (!requestMethod.equals(route.requestMethod)) {
+            return false;
+        }
+        if (!getUriPattern().equals(route.getUriPattern())) {
+            return false;
+        }
 
         return true;
     }
