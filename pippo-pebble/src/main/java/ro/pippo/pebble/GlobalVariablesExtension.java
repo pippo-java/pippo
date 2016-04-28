@@ -16,20 +16,12 @@
 package ro.pippo.pebble;
 
 import com.mitchellbosecke.pebble.extension.AbstractExtension;
-import com.mitchellbosecke.pebble.extension.Function;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class GlobalVariablesExtension extends AbstractExtension {
-
-    private static final Logger log = LoggerFactory.getLogger(GlobalVariablesExtension.class);
 
     private final Map<String, Object> globalVariables;
 

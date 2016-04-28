@@ -17,8 +17,7 @@ package ro.pippo.sasscompiler;
 
 import com.vaadin.sass.internal.ScssContext;
 import com.vaadin.sass.internal.ScssStylesheet;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+
 import ro.pippo.core.PippoRuntimeException;
 import ro.pippo.core.route.ClasspathResourceHandler;
 import ro.pippo.core.route.RouteContext;
@@ -34,8 +33,6 @@ import java.util.concurrent.ConcurrentHashMap;
  * @author Daniel Jipa
  */
 public class SassResourceHandler extends ClasspathResourceHandler {
-
-    private static final Logger log = LoggerFactory.getLogger(SassResourceHandler.class);
 
     private boolean minify;
     private Map<String, String> sourceMap = new ConcurrentHashMap<>(); // cache

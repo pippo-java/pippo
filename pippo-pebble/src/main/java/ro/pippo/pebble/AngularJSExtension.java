@@ -20,15 +20,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.mitchellbosecke.pebble.extension.AbstractExtension;
 import com.mitchellbosecke.pebble.extension.Function;
 
 public class AngularJSExtension extends AbstractExtension {
-
-    private static final Logger log = LoggerFactory.getLogger(AngularJSExtension.class);
 
     public AngularJSExtension() {
     }

@@ -16,8 +16,6 @@
 package ro.pippo.jade;
 
 import org.kohsuke.MetaInfServices;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import ro.pippo.core.Application;
 import ro.pippo.core.Initializer;
@@ -27,8 +25,6 @@ import ro.pippo.core.Initializer;
  */
 @MetaInfServices(Initializer.class)
 public class JadeInitializer implements Initializer {
-
-    private static final Logger log = LoggerFactory.getLogger(JadeInitializer.class);
 
     @Override
     public void init(Application application) {

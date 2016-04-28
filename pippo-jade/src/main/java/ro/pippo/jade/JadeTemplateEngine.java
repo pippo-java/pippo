@@ -139,7 +139,7 @@ public class JadeTemplateEngine implements TemplateEngine {
 
     private static class ClassTemplateLoader implements TemplateLoader {
 
-        private static final String suffix = ".jade";
+        private static final String SUFFIX = ".jade";
 
         private Class<?> clazz;
         private String pathPrefix;
@@ -163,8 +163,8 @@ public class JadeTemplateEngine implements TemplateEngine {
 
         @Override
         public Reader getReader(String name) throws IOException {
-            if (!name.endsWith(suffix)) {
-                name += suffix;
+            if (!name.endsWith(SUFFIX)) {
+                name += SUFFIX;
             }
 
             String fullPath = pathPrefix + name;

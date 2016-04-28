@@ -47,11 +47,13 @@ public class FormatTimeExtension extends AbstractExtension {
 
     public class FormatTimeFilter implements Filter {
 
+        private static final String EXISTING_FORMAT = "existingFormat";
+
         @Override
         public List<String> getArgumentNames() {
             List<String> names = new ArrayList<>();
             names.add("format");
-            names.add("existingFormat");
+            names.add(EXISTING_FORMAT);
             return names;
         }
 
@@ -64,8 +66,8 @@ public class FormatTimeExtension extends AbstractExtension {
             EvaluationContext context = (EvaluationContext) args.get("_context");
             Locale locale = context.getLocale();
 
-            DateFormat existingFormat = null;
-            DateFormat intendedFormat = null;
+            DateFormat existingFormat;
+            DateFormat intendedFormat;
 
             String format = (String) args.get("format");
             int type = parseStyle(format);
@@ -76,8 +78,8 @@ public class FormatTimeExtension extends AbstractExtension {
             }
 
             Date date;
-            if (args.get("existingFormat") != null) {
-                existingFormat = new SimpleDateFormat((String) args.get("existingFormat"), locale);
+            if (args.get(EXISTING_FORMAT) != null) {
+                existingFormat = new SimpleDateFormat((String) args.get(EXISTING_FORMAT), locale);
                 try {
                     date = existingFormat.parse((String) input);
                 } catch (ParseException e) {

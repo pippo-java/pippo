@@ -20,8 +20,6 @@ import java.util.List;
 import java.util.Locale;
 
 import org.ocpsoft.prettytime.PrettyTime;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import ro.pippo.core.PippoRuntimeException;
 import freemarker.template.SimpleDate;
@@ -37,8 +35,6 @@ import freemarker.template.TemplateModelException;
  * @author James Moger
  */
 public class PrettyTimeMethod implements TemplateMethodModelEx {
-
-    private final static Logger log = LoggerFactory.getLogger(PrettyTimeMethod.class);
 
     private final PrettyTime prettyTime;
 
