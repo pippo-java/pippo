@@ -55,10 +55,12 @@ public abstract class UrlResourceHandler extends ResourceHandler {
         String version = null;
 
         URL resourceUrl = getResourceUrl(resourcePath);
-        try {
-            version =  Long.toString(resourceUrl.openConnection().getLastModified());
-        } catch (NullPointerException | IOException e) {
-            log.error("Failed to read lastModified property for {}", resourceUrl, e);
+        if (resourceUrl != null) {
+            try {
+                version = Long.toString(resourceUrl.openConnection().getLastModified());
+            } catch (NullPointerException | IOException e) {
+                log.error("Failed to read lastModified property for {}", resourceUrl, e);
+            }
         }
 
         return version;
