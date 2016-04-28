@@ -18,9 +18,6 @@ package ro.pippo.freemarker;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import ro.pippo.core.Messages;
 import freemarker.ext.beans.StringModel;
 import freemarker.template.SimpleNumber;
@@ -36,8 +33,6 @@ import freemarker.template.TemplateModelException;
  * @author James Moger
  */
 public class I18nMethod implements TemplateMethodModelEx {
-
-    private final static Logger log = LoggerFactory.getLogger(I18nMethod.class);
 
     final Messages messages;
     final String language;

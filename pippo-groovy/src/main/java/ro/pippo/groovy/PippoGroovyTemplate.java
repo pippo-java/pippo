@@ -31,8 +31,6 @@ import java.util.Map;
 import java.util.concurrent.atomic.AtomicReference;
 
 import org.ocpsoft.prettytime.PrettyTime;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import ro.pippo.core.Languages;
 import ro.pippo.core.Messages;
@@ -50,8 +48,6 @@ import ro.pippo.core.util.StringUtils;
  * @author James Moger
  */
 public abstract class PippoGroovyTemplate extends BaseTemplate {
-
-    private final Logger log = LoggerFactory.getLogger(PippoGroovyTemplate.class);
 
     private final Map<String, String> modelTypes;
 

@@ -23,8 +23,6 @@ import java.util.Map;
 
 import com.mitchellbosecke.pebble.extension.escaper.SafeString;
 import com.mitchellbosecke.pebble.template.EvaluationContext;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import ro.pippo.core.Messages;
 
@@ -33,8 +31,6 @@ import com.mitchellbosecke.pebble.extension.AbstractExtension;
 import com.mitchellbosecke.pebble.extension.Function;
 
 public class I18nExtension extends AbstractExtension {
-
-    private static final Logger log = LoggerFactory.getLogger(I18nExtension.class);
 
     private final Messages messages;
 

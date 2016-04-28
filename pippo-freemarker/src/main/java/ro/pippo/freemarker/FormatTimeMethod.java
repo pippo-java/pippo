@@ -21,9 +21,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import ro.pippo.core.PippoRuntimeException;
 import freemarker.template.SimpleDate;
 import freemarker.template.SimpleScalar;
@@ -38,8 +35,6 @@ import freemarker.template.TemplateModelException;
  *
  */
 public class FormatTimeMethod implements TemplateMethodModelEx {
-
-    private final static Logger log = LoggerFactory.getLogger(FormatTimeMethod.class);
 
     private final Locale locale;
 

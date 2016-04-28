@@ -98,7 +98,7 @@ public class GroovyTemplateEngine implements TemplateEngine {
     public void renderString(String templateContent, Map<String, Object> model, Writer writer) {
         try {
             Template groovyTemplate = engine.createTemplate(templateContent);
-            PippoGroovyTemplate gt = ((PippoGroovyTemplate) groovyTemplate.make(model));
+            PippoGroovyTemplate gt = (PippoGroovyTemplate) groovyTemplate.make(model);
             gt.setup(languages, messages, router);
             gt.writeTo(writer);
         } catch (Exception e) {
@@ -122,7 +122,7 @@ public class GroovyTemplateEngine implements TemplateEngine {
         }
 
         try {
-            PippoGroovyTemplate gt = ((PippoGroovyTemplate) groovyTemplate.make(model));
+            PippoGroovyTemplate gt = (PippoGroovyTemplate) groovyTemplate.make(model);
             gt.setup(languages, messages, router);
             gt.writeTo(writer);
         } catch (Exception e) {
