@@ -279,6 +279,11 @@ public class DefaultRouter implements Router {
         transformers.add(transformer);
     }
 
+    @Override
+    public List<CompiledRouteTransformer> getCompiledRouteTransformers() {
+        return transformers;
+    }
+
     protected void validateRoute(Route route) {
         // validate the request method
         if (StringUtils.isNullOrEmpty(route.getRequestMethod())) {

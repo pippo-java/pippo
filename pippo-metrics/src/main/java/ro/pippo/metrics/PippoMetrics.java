@@ -27,12 +27,10 @@ import org.kohsuke.MetaInfServices;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ro.pippo.core.Application;
+import ro.pippo.core.Initializer;
 import ro.pippo.core.PippoConstants;
 import ro.pippo.core.PippoSettings;
-import ro.pippo.core.Request;
-import ro.pippo.core.Response;
-import ro.pippo.core.route.RouteContextFactory;
-import ro.pippo.core.route.RouteMatch;
+import ro.pippo.core.route.CompiledRouteTransformer;
 import ro.pippo.core.util.ServiceLocator;
 
 import java.io.Closeable;
@@ -47,8 +45,8 @@ import java.util.Map;
  *
  * @author James Moger
  */
-@MetaInfServices(RouteContextFactory.class)
-public class PippoMetrics implements RouteContextFactory<MetricsRouteContext> {
+@MetaInfServices(Initializer.class)
+public class PippoMetrics implements Initializer {
 
     private static final Logger log = LoggerFactory.getLogger(PippoMetrics.class);
 
@@ -104,6 +102,10 @@ public class PippoMetrics implements RouteContextFactory<MetricsRouteContext> {
         MetricsDispatchListener metricsDispatchListener = new MetricsDispatchListener(metricRegistry);
         application.getRoutePreDispatchListeners().add(metricsDispatchListener);
         application.getRoutePostDispatchListeners().add(metricsDispatchListener);
+
+        // Add MetricsTransformer
+        CompiledRouteTransformer transformer = new MetricsTransformer(metricRegistry);
+        application.getRouter().addCompiledRouteTransformer(transformer);
     }
 
     @Override
@@ -116,11 +118,6 @@ public class PippoMetrics implements RouteContextFactory<MetricsRouteContext> {
                 log.error("Failed to stop Metrics reporter", e);
             }
         }
-    }
-
-    @Override
-    public MetricsRouteContext createRouteContext(Application application, Request request, Response response, List<RouteMatch> routeMatches) {
-        return new MetricsRouteContext(metricRegistry, application, request, response, routeMatches);
     }
 
     private void registerAll(String prefix, MetricSet metrics) throws IllegalArgumentException {

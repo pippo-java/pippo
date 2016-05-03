@@ -82,4 +82,6 @@ public interface Router {
 
     void addCompiledRouteTransformer(CompiledRouteTransformer transformer);
 
+    List<CompiledRouteTransformer> getCompiledRouteTransformers();
+
 }

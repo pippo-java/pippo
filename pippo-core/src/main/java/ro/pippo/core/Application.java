@@ -18,6 +18,7 @@ package ro.pippo.core;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ro.pippo.core.route.ClasspathResourceHandler;
+import ro.pippo.core.route.CompiledRouteTransformer;
 import ro.pippo.core.route.DefaultRouter;
 import ro.pippo.core.route.FileResourceHandler;
 import ro.pippo.core.route.PublicResourceHandler;
@@ -168,9 +169,9 @@ public class Application {
             log.debug("Template engine already registered, ignoring '{}'", engineClass.getName());
             return;
         }
-        TemplateEngine engine = null;
+
         try {
-            engine = engineClass.newInstance();
+            TemplateEngine engine = engineClass.newInstance();
             setTemplateEngine(engine);
         } catch (Exception e) {
             throw new PippoRuntimeException(e, "Failed to instantiate '{}'", engineClass.getName());
@@ -215,6 +216,16 @@ public class Application {
     }
 
     public void setRouter(Router router) {
+        setRouter(router, true);
+    }
+
+    public void setRouter(Router router, boolean preserveOldTransformers) {
+        if (preserveOldTransformers && (router != null)) {
+            // preserve route transformers already registered
+            List<CompiledRouteTransformer> transformers = this.router.getCompiledRouteTransformers();
+            transformers.forEach(router::addCompiledRouteTransformer);
+        }
+
         this.router = router;
     }
 
