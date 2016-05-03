@@ -68,16 +68,16 @@ public class DefaultRouter implements Router {
 
     private List<Route> routes;
     private List<CompiledRoute> compiledRoutes;
-    private List<CompiledRouteTransformer> compiledRouteTransformers;
+    private List<CompiledRouteTransformer> transformers;
     private Set<String> ignorePaths;
     private String contextPath;
     private String applicationPath;
-    private boolean routesCompiled; // flag that routes was compiled
+    private boolean routesCompiled; // flag that routes were compiled
 
     public DefaultRouter() {
         routes = new ArrayList<>();
         compiledRoutes = new ArrayList<>();
-        compiledRouteTransformers = new ArrayList<>();
+        transformers = new ArrayList<>();
         ignorePaths = new TreeSet<>();
         routesCache = new HashMap<>();
         compiledRoutesCache = new HashMap<>();
@@ -131,7 +131,7 @@ public class DefaultRouter implements Router {
         log.debug("Compile routes");
         for (Route route : routes) {
             CompiledRoute compiledRoute = compileRoute(route);
-            for (CompiledRouteTransformer transformer : compiledRouteTransformers) {
+            for (CompiledRouteTransformer transformer : transformers) {
                 compiledRoute = transformer.transform(compiledRoute);
                 if (compiledRoute == null) {
                     break;
@@ -276,7 +276,7 @@ public class DefaultRouter implements Router {
 
     @Override
     public void addCompiledRouteTransformer(CompiledRouteTransformer transformer) {
-        compiledRouteTransformers.add(transformer);
+        transformers.add(transformer);
     }
 
     protected void validateRoute(Route route) {

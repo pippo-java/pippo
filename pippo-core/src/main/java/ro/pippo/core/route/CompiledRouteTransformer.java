@@ -24,6 +24,12 @@ package ro.pippo.core.route;
  */
 public interface CompiledRouteTransformer {
 
+    /**
+     * Transform the supplied compiled route and return a new replacement compiled route.
+     * If you want to disable/remove the supplied compiled route you can returns null.
+     * @param compiledRoute
+     * @return a transformed compiled route or null
+     */
     CompiledRoute transform(CompiledRoute compiledRoute);
 
 }
