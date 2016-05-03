@@ -57,6 +57,7 @@ public class DirectoryHandler implements RouteHandler {
     private String timestampPattern = "yyyy-MM-dd HH:mm Z";
     private String fileSizePattern = "#,000";
     private String directoryTemplate;
+    private boolean chunked;
 
     public DirectoryHandler(String urlPath, File directory) {
         this.urlPath = urlPath;
@@ -112,6 +113,16 @@ public class DirectoryHandler implements RouteHandler {
         return this;
     }
 
+    public boolean getChunkedTransfer() {
+        return chunked;
+    }
+
+    public DirectoryHandler setChunkedTransfer(boolean chunked) {
+        this.chunked = chunked;
+
+        return this;
+    }
+
     @Override
     public final void handle(RouteContext routeContext) {
         String resourcePath = getResourcePath(routeContext);
@@ -134,6 +145,7 @@ public class DirectoryHandler implements RouteHandler {
                 File file = requestedPath.toFile();
                 if (file.exists()) {
                     if (file.isFile()) {
+                        routeContext.getResponse().contentLength(file.length());
                         URL url = requestedPath.toUri().toURL();
                         switch (routeContext.getRequestMethod()) {
                             case HttpConstants.Method.HEAD:
@@ -174,6 +186,7 @@ public class DirectoryHandler implements RouteHandler {
     protected void handleDirectoryRequest(RouteContext routeContext, File dir) throws MalformedURLException {
         File index = getIndexFile(dir);
         if (index != null) {
+            routeContext.getResponse().contentLength(index.length());
             URL url = index.toURI().toURL();
             streamResource(url, routeContext);
             return;
@@ -225,6 +238,13 @@ public class DirectoryHandler implements RouteHandler {
         try {
             long lastModified = resourceUrl.openConnection().getLastModified();
             routeContext.getApplication().getHttpCacheToolkit().addEtag(routeContext, lastModified);
+
+            String filename = resourceUrl.getFile();
+            String mimeType = routeContext.getApplication().getMimeTypes().getContentType(filename);
+            if (!StringUtils.isNullOrEmpty(mimeType)) {
+                routeContext.getResponse().contentType(mimeType);
+            }
+
         } catch (Exception e) {
             throw new PippoRuntimeException(e, "Failed to stream resource {}", resourceUrl);
         }
@@ -250,12 +270,11 @@ public class DirectoryHandler implements RouteHandler {
         if (!StringUtils.isNullOrEmpty(mimeType)) {
             // stream the resource
             log.debug("Streaming as resource '{}'", resourceUrl);
-            routeContext.getResponse().contentType(mimeType);
-            routeContext.getResponse().ok().resource(resourceUrl.openStream());
+            routeContext.getResponse().ok().chunked(chunked).resource(resourceUrl.openStream());
         } else {
             // stream the file
             log.debug("Streaming as file '{}'", resourceUrl);
-            routeContext.getResponse().ok().file(filename, resourceUrl.openStream());
+            routeContext.getResponse().ok().chunked(chunked).file(filename, resourceUrl.openStream());
         }
     }
 

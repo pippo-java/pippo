@@ -58,6 +58,7 @@ public final class Response {
     private MimeTypes mimeTypes;
 
     private int status;
+    private boolean chunked;
 
     public Response(HttpServletResponse httpServletResponse, Application application) {
         this.httpServletResponse = httpServletResponse;
@@ -352,6 +353,29 @@ public final class Response {
 
         httpServletResponse.setStatus(status);
         this.status = status;
+
+        return this;
+    }
+
+    /**
+     * Sets the chunked transfer encoding.
+     *
+     * @return the response
+     */
+    public Response chunked() {
+        return chunked(true);
+    }
+
+    /**
+     * Controls the chunked transfer encoding.
+     *
+     * @param chunked
+     * @return the response
+     */
+    public Response chunked(boolean chunked) {
+        checkCommitted();
+
+        this.chunked = chunked;
 
         return this;
     }
@@ -890,8 +914,10 @@ public final class Response {
             // by calling httpServletResponse.getOutputStream() we are committing the response
             IoUtils.copy(input, httpServletResponse.getOutputStream());
 
-            // flushing the buffer forces chunked-encoding
-            httpServletResponse.flushBuffer();
+            if (chunked) {
+                // flushing the buffer forces chunked-encoding
+                httpServletResponse.flushBuffer();
+            }
         } catch (Exception e) {
             throw new PippoRuntimeException(e);
         } finally {
@@ -907,6 +933,7 @@ public final class Response {
      */
     public void file(File file) {
         try {
+            contentLength(file.length());
             file(file.getName(), new FileInputStream(file));
         } catch (FileNotFoundException e) {
             throw new PippoRuntimeException(e);
@@ -942,8 +969,10 @@ public final class Response {
             // by calling httpServletResponse.getOutputStream() we are committing the response
             IoUtils.copy(input, httpServletResponse.getOutputStream());
 
-            // flushing the buffer forces chunked-encoding
-            httpServletResponse.flushBuffer();
+            if (chunked) {
+                // flushing the buffer forces chunked-encoding
+                httpServletResponse.flushBuffer();
+            }
         } catch (Exception e) {
             throw new PippoRuntimeException(e);
         } finally {
@@ -1020,12 +1049,16 @@ public final class Response {
             contentType(HttpConstants.ContentType.TEXT_HTML);
         }
 
+
         try {
             if (content != null) {
+                contentLength(content.length());
                 httpServletResponse.getWriter().append(content);
             }
             log.trace("Response committed");
-            httpServletResponse.flushBuffer();
+            if (chunked) {
+                httpServletResponse.flushBuffer();
+            }
         } catch (IOException e) {
             throw new PippoRuntimeException(e);
         }

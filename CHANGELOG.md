@@ -21,6 +21,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 - Upgrade [pippo-tomcat] to Tomcat 8.0.33
 - Upgrade [pippo-jade] to Jade 1.1.4
 - Upgrade [pippo-pebble] to Pebble 2.2.1
+- Make `chunked` transfer-encoding optional, not the default
 
 #### Added
 - [#245]: Route groups
