@@ -33,6 +33,7 @@ import ro.pippo.core.WebServer;
 import ro.pippo.core.util.StringUtils;
 
 import java.io.File;
+import ro.pippo.core.RuntimeMode;
 
 /**
  * @author Daniel Jipa
@@ -89,7 +90,9 @@ public class TomcatServer extends AbstractWebServer<TomcatSettings> {
         } catch (LifecycleException e) {
             throw new PippoRuntimeException(e);
         }
-        tomcat.getServer().await();
+        if (RuntimeMode.getCurrent() != RuntimeMode.TEST) {
+            tomcat.getServer().await();
+        }
     }
 
     private void enablePlainConnector(Tomcat tomcat) {
@@ -109,7 +112,7 @@ public class TomcatServer extends AbstractWebServer<TomcatSettings> {
         connector.setAttribute("keystoreFile", getSettings().getKeystoreFile());
         connector.setAttribute("clientAuth", getSettings().getClientAuth());
         if (getSettings().getClientAuth()) {
-        	connector.setAttribute("truststoreFile", getSettings().getTruststoreFile());
+            connector.setAttribute("truststoreFile", getSettings().getTruststoreFile());
             connector.setAttribute("truststorePass", getSettings().getTruststorePassword());
         }
         connector.setAttribute("protocol", "HTTP/1.1");

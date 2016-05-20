@@ -39,6 +39,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.EnumSet;
 import java.util.concurrent.TimeUnit;
+import ro.pippo.core.RuntimeMode;
 
 /**
  * @author Decebal Suiu
@@ -71,7 +72,9 @@ public class JettyServer extends AbstractWebServer<JettySettings> {
             String version = server.getClass().getPackage().getImplementationVersion();
             log.info("Starting Jetty Server {} on port {}", version, getSettings().getPort());
             server.start();
-            server.join();
+            if (RuntimeMode.getCurrent() != RuntimeMode.TEST) {
+                server.join();
+            }
         } catch (Exception e) {
             throw new PippoRuntimeException(e);
         }
