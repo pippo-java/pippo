@@ -90,7 +90,7 @@ public class TomcatServer extends AbstractWebServer<TomcatSettings> {
         } catch (LifecycleException e) {
             throw new PippoRuntimeException(e);
         }
-        if (RuntimeMode.getCurrent() != RuntimeMode.TEST) {
+        if (pippoSettings.isTest()) {
             tomcat.getServer().await();
         }
     }
