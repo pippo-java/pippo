@@ -33,7 +33,6 @@ import ro.pippo.core.WebServer;
 import ro.pippo.core.util.StringUtils;
 
 import java.io.File;
-import ro.pippo.core.RuntimeMode;
 
 /**
  * @author Daniel Jipa
@@ -90,7 +89,7 @@ public class TomcatServer extends AbstractWebServer<TomcatSettings> {
         } catch (LifecycleException e) {
             throw new PippoRuntimeException(e);
         }
-        if (pippoSettings.isTest()) {
+        if (!pippoSettings.isTest()) {
             tomcat.getServer().await();
         }
     }
