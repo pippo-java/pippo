@@ -71,7 +71,9 @@ public class JettyServer extends AbstractWebServer<JettySettings> {
             String version = server.getClass().getPackage().getImplementationVersion();
             log.info("Starting Jetty Server {} on port {}", version, getSettings().getPort());
             server.start();
-            server.join();
+            if (!pippoSettings.isTest()) {
+                server.join();
+            }
         } catch (Exception e) {
             throw new PippoRuntimeException(e);
         }
