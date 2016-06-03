@@ -13,21 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package ro.pippo.session.cookie;
+package ro.pippo.session;
 
 import ro.pippo.core.PippoRuntimeException;
-import ro.pippo.core.util.IoUtils;
-import ro.pippo.session.SessionData;
 
-import javax.xml.bind.DatatypeConverter;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.util.Base64;
 
 /**
- * A {@link SessionDataTranscoder} that serializes {@link SessionData}s using java serialization.
+ * A {@link SessionDataTranscoder} that serializes {@link SessionData}s using
+ * java serialization.
  *
  * @author Decebal Suiu
  */
@@ -35,41 +34,24 @@ public class SerializationSessionDataTranscoder implements SessionDataTranscoder
 
     @Override
     public String encode(SessionData sessionData) {
-        ByteArrayOutputStream outputStream = null;
-        ObjectOutputStream objectOutputStream = null;
-        try {
-            outputStream = new ByteArrayOutputStream();
-            objectOutputStream = new ObjectOutputStream(outputStream);
+        try (ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+                ObjectOutputStream objectOutputStream = new ObjectOutputStream(outputStream)) {
             objectOutputStream.writeObject(sessionData);
             byte[] bytes = outputStream.toByteArray();
-
-            // TODO use java.util.Base64 from java 8
-            return DatatypeConverter.printBase64Binary(bytes);
-        }catch (IOException e) {
+            return Base64.getEncoder().encodeToString(bytes);
+        } catch (IOException e) {
             throw new PippoRuntimeException(e);
-        } finally {
-            IoUtils.close(objectOutputStream);
-            IoUtils.close(outputStream);
         }
     }
 
     @Override
     public SessionData decode(String data) {
-        // TODO use java.util.Base64 from java 8
-        byte[] bytes = DatatypeConverter.parseBase64Binary(data);
-
-        ByteArrayInputStream inputStream = null;
-        ObjectInputStream objectInputStream = null;
-        try {
-            inputStream = new ByteArrayInputStream(bytes);
-            objectInputStream = new ObjectInputStream(inputStream);
-
+        byte[] bytes = Base64.getDecoder().decode(data);
+        try (ByteArrayInputStream inputStream = new ByteArrayInputStream(bytes);
+                ObjectInputStream objectInputStream = new ObjectInputStream(inputStream)) {
             return (SessionData) objectInputStream.readObject();
         } catch (IOException | ClassNotFoundException e) {
             throw new PippoRuntimeException(e, "Cannot deserialize session. A new one will be created.");
-        } finally {
-            IoUtils.close(objectInputStream);
-            IoUtils.close(inputStream);
         }
     }
 

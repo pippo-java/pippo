@@ -13,9 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package ro.pippo.session.cookie;
-
-import ro.pippo.session.SessionData;
+package ro.pippo.session;
 
 /**
  * By default <code>CookieSessionDataStorage</code> uses Java's serialization to serialize session data
