@@ -15,6 +15,8 @@
  */
 package ro.pippo.session.cookie;
 
+import ro.pippo.session.SerializationSessionDataTranscoder;
+import ro.pippo.session.SessionDataTranscoder;
 import ro.pippo.core.Request;
 import ro.pippo.core.Response;
 import ro.pippo.core.util.CookieUtils;
