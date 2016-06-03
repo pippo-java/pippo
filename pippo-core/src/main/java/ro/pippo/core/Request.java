@@ -76,7 +76,7 @@ public final class Request {
         initParameters();
 
         // empty path parameters for now (see setPathParameters method)
-        pathParameters = Collections.unmodifiableMap(new HashMap<String, ParameterValue>());
+        pathParameters = Collections.unmodifiableMap(new HashMap<>());
 
         // init all parameters
         initAllParameters();
@@ -415,6 +415,10 @@ public final class Request {
 
     public String getHeader(String name) {
         return httpServletRequest.getHeader(name);
+    }
+
+    public Enumeration<String> getHeaders(String name) {
+        return httpServletRequest.getHeaders(name);
     }
 
     public boolean isSecure() {
