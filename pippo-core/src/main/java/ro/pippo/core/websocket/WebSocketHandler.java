@@ -31,7 +31,7 @@ public interface WebSocketHandler {
      * @param message
      *      the text message from the client
      */
-    void onMessage(WebSocketConnection connection, final String message);
+    void onMessage(WebSocketContext webSocketContext, final String message);
 
     /**
      * Called when a binary message arrives from the client.
@@ -43,7 +43,7 @@ public interface WebSocketHandler {
      * @param length
      *      how much data to read
      */
-    default void onMessage(WebSocketConnection connection, byte[] data, int offset, int length) {
+    default void onMessage(WebSocketContext webSocketContext, byte[] data, int offset, int length) {
         // do nothing
     }
 
@@ -53,7 +53,7 @@ public interface WebSocketHandler {
      * @param connection
      *      the web socket connection to use to communicate with the client
      */
-    default void onOpen(WebSocketConnection connection) {
+    default void onOpen(WebSocketContext webSocketContext) {
         log.debug("Open websocket connection");
     }
 
@@ -64,14 +64,14 @@ public interface WebSocketHandler {
      * @param closeCode
      * @param message
      */
-    default void onClose(WebSocketConnection connection, int closeCode, String message) {
+    default void onClose(WebSocketContext webSocketContext, int closeCode, String message) {
         log.debug("Close websocket connection");
     }
 
     /**
      * A notification that the web socket does not receive any message for the specified timeout period.
      */
-    default void onTimeout(WebSocketConnection connection) {
+    default void onTimeout(WebSocketContext webSocketContext) {
         log.debug("Timeout websocket connection");
     }
 
@@ -81,7 +81,7 @@ public interface WebSocketHandler {
      * @param t
      *      The throwable for the communication problem
      */
-    default void onError(WebSocketConnection connection, Throwable t) {
+    default void onError(WebSocketContext webSocketContext, Throwable t) {
         log.error("Error websocket", t);
     }
 

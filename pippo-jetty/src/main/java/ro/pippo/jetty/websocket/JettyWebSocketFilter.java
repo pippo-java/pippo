@@ -17,11 +17,14 @@ package ro.pippo.jetty.websocket;
 
 import org.eclipse.jetty.websocket.api.WebSocketPolicy;
 import org.eclipse.jetty.websocket.server.WebSocketServerFactory;
+import org.eclipse.jetty.websocket.servlet.ServletUpgradeRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ro.pippo.core.Request;
 import ro.pippo.core.Response;
+import ro.pippo.core.util.StringUtils;
 import ro.pippo.core.websocket.AbstractWebSocketFilter;
+import ro.pippo.core.websocket.WebSocketHandler;
 
 import javax.servlet.FilterConfig;
 import javax.servlet.ServletException;
@@ -59,7 +62,7 @@ public class JettyWebSocketFilter extends AbstractWebSocketFilter {
             }
 
             webSocketFactory = new WebSocketServerFactory(serverPolicy);
-            webSocketFactory.setCreator((req, resp) -> new JettyWebSocketProcessor(req, resp, getApplication()));
+            webSocketFactory.setCreator((request, response) -> createWebSocketProcessor(request));
             webSocketFactory.start();
         } catch (ServletException e) {
             throw e;
@@ -85,6 +88,21 @@ public class JettyWebSocketFilter extends AbstractWebSocketFilter {
     protected boolean acceptWebSocket(Request request, Response response) throws IOException, ServletException {
         return super.acceptWebSocket(request, response) && webSocketFactory
             .acceptWebSocket(request.getHttpServletRequest(), response.getHttpServletResponse());
+    }
+
+    protected JettyWebSocketProcessor createWebSocketProcessor(ServletUpgradeRequest request) {
+        return new JettyWebSocketProcessor(getWebSocketHandler(request));
+    }
+
+    private WebSocketHandler getWebSocketHandler(ServletUpgradeRequest request) {
+        String applicationPath = getApplication().getRouter().getContextPath();
+        String requestUri = request.getRequestPath();
+        String path = applicationPath.isEmpty() ? requestUri : requestUri.substring(applicationPath.length());
+        if (StringUtils.isNullOrEmpty(path)) {
+            path = "/";
+        }
+
+        return getApplication().getWebSocketHandler(path);
     }
 
 }

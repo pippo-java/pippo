@@ -17,17 +17,16 @@ package ro.pippo.jetty.websocket;
 
 import org.eclipse.jetty.websocket.api.Session;
 import org.eclipse.jetty.websocket.api.WebSocketListener;
-import org.eclipse.jetty.websocket.servlet.ServletUpgradeRequest;
-import org.eclipse.jetty.websocket.servlet.ServletUpgradeResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import ro.pippo.core.Application;
-import ro.pippo.core.util.StringUtils;
 import ro.pippo.core.websocket.WebSocketConnection;
+import ro.pippo.core.websocket.WebSocketContext;
 import ro.pippo.core.websocket.WebSocketHandler;
 import ro.pippo.core.websocket.WebSocketProcessor;
 
 import java.net.SocketTimeoutException;
+import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * @author Decebal Suiu
@@ -36,34 +35,25 @@ public class JettyWebSocketProcessor implements WebSocketProcessor, WebSocketLis
 
     private static final Logger log = LoggerFactory.getLogger(JettyWebSocketProcessor.class);
 
-//    private final List<WebSocketConnection> connections; // used by WebSocketConnection.broadcastMessage(String message)
+    private static List<WebSocketConnection> connections = new CopyOnWriteArrayList<>();
+
     private final WebSocketHandler handler;
 
+    private WebSocketContext context;
     private WebSocketConnection connection;
 
-    public JettyWebSocketProcessor(ServletUpgradeRequest req, ServletUpgradeResponse resp, Application application) {
-//        this.connections = new CopyOnWriteArrayList<>();
-
-        // TODO: make this outside ?!
-        // init path
-        String applicationPath = application.getRouter().getContextPath();
-        String requestUri = req.getRequestPath();
-        String path = applicationPath.isEmpty() ? requestUri : requestUri.substring(applicationPath.length());
-        if (StringUtils.isNullOrEmpty(path)) {
-            path = "/";
-        }
-
-        handler = application.getWebSocketHandler(path);
+    public JettyWebSocketProcessor(WebSocketHandler handler) {
+        this.handler = handler;
     }
 
     @Override
     public void onMessage(String message) {
-        handler.onMessage(connection, message);
+        handler.onMessage(context, message);
     }
 
     @Override
     public void onMessage(byte[] data, int offset, int length) {
-        handler.onMessage(connection, data, offset, length);
+        handler.onMessage(context, data, offset, length);
     }
 
     @Override
@@ -77,15 +67,13 @@ public class JettyWebSocketProcessor implements WebSocketProcessor, WebSocketLis
 
     @Override
     public void onClose(int closeCode, String message) {
-        // TODO
-//        connections.remove();
-        handler.onClose(connection, closeCode, message);
+        handler.onClose(context, closeCode, message);
+        connections.remove(connection);
     }
 
     @Override
     public void onError(Throwable t) {
-        // TODO
-        handler.onError(connection, t);
+        handler.onError(context, t);
     }
 
     @Override
@@ -105,23 +93,28 @@ public class JettyWebSocketProcessor implements WebSocketProcessor, WebSocketLis
 
     @Override
     public void onWebSocketConnect(Session session) {
-        connection = new JettyWebSocketConnection(session);
-        onConnect(connection);
+        connection = createWebSocketConnection(session);
+        connections.add(connection);
+        context = createWebSocketContext(connections, connection);
     }
 
     @Override
     public void onWebSocketError(Throwable cause) {
 
         if (cause instanceof SocketTimeoutException) {
-            handler.onTimeout(connection);
+            handler.onTimeout(context);
         } else {
             log.error("An error occurred when using WebSocket.", cause);
             onError(cause);
         }
     }
 
-    protected final void onConnect(WebSocketConnection connection) {
-//        connections.add(connection);
+    protected WebSocketConnection createWebSocketConnection(Session session) {
+        return new JettyWebSocketConnection(session);
+    }
+
+    protected WebSocketContext createWebSocketContext(List<WebSocketConnection> connections, WebSocketConnection connection) {
+        return new WebSocketContext(connections, connection);
     }
 
 }
