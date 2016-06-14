@@ -1,0 +1,6 @@
+CREATE TABLE IF NOT EXISTS session (
+    id VARCHAR2(32) NOT NULL,
+    time TIMESTAMP NOT NULL,
+    data CLOB NOT NULL,
+    PRIMARY KEY(id)
+);

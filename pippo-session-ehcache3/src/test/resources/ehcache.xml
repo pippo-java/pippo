@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ehcache:config
+    xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'
+    xmlns:ehcache="http://www.ehcache.org/v3"
+    xmlns:jcache="http://www.ehcache.org/v3/jsr107">
+    
+    <ehcache:cache alias="session">
+        <ehcache:key-type>java.lang.String</ehcache:key-type>
+        <ehcache:value-type>ro.pippo.session.SessionData</ehcache:value-type>
+        <ehcache:expiry>
+            <ehcache:ttl unit="seconds">1</ehcache:ttl>
+        </ehcache:expiry>
+        <ehcache:resources>
+            <ehcache:heap unit="MB">1</ehcache:heap>
+        </ehcache:resources>
+    </ehcache:cache>
+
+</ehcache:config>
