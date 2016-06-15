@@ -73,11 +73,7 @@ public class HazelcastSessionDataStorage implements SessionDataStorage {
 
     @Override
     public SessionData get(String sessionId) {
-        SessionData sessionData = sessions.get(sessionId);
-        if (sessionData == null) {
-            return null;
-        }
-        return sessionData;
+        return this.sessions.get(sessionId);
     }
 
     @Override

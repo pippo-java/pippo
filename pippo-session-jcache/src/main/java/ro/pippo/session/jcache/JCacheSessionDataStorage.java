@@ -90,16 +90,7 @@ public class JCacheSessionDataStorage implements SessionDataStorage {
 
     @Override
     public SessionData get(String sessionId) {
-        // For some implementations is less expensive first check
-        if (!this.sessions.containsKey(sessionId)) {
-            return null;
-        }
-        SessionData sessionData = this.sessions.get(sessionId);
-        // Double check
-        if (sessionData == null) {
-            return null;
-        }
-        return sessionData;
+        return this.sessions.get(sessionId);
     }
 
     @Override

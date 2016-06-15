@@ -54,14 +54,7 @@ public class EhcacheSessionDataStorage implements SessionDataStorage {
 
     @Override
     public SessionData get(String sessionId) {
-        if (!this.sessions.containsKey(sessionId)) {
-            return null;
-        }
-        SessionData sessionData = this.sessions.get(sessionId);
-        if (sessionData == null) {
-            return null;
-        }
-        return sessionData;
+        return this.sessions.get(sessionId);
     }
 
     @Override

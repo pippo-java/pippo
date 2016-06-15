@@ -67,11 +67,7 @@ public class InfinispanSessionDataStorage implements SessionDataStorage {
 
     @Override
     public SessionData get(String sessionId) {
-        SessionData sessionData = this.sessions.get(sessionId);
-        if (sessionData == null) {
-            return null;
-        }
-        return sessionData;
+        return this.sessions.get(sessionId);
     }
 
     @Override
