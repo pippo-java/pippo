@@ -70,15 +70,9 @@ public class EhcacheSessionDataStorage implements SessionDataStorage {
 
     @Override
     public SessionData get(String sessionId) {
-        if (!this.sessions.isKeyInCache(sessionId)) {
-            return null;
-        }
-        Element element = this.sessions.get(sessionId);
-        if (element == null) {
-            return null;
-        }
-        SessionData sessionData = (SessionData) element.getObjectValue();
-        return sessionData;
+        return this.sessions.isKeyInCache(sessionId)
+                ? (SessionData) this.sessions.get(sessionId).getObjectValue()
+                : null;
     }
 
     @Override
