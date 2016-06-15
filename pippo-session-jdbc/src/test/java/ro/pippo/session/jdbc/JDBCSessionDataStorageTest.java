@@ -46,7 +46,7 @@ public class JDBCSessionDataStorageTest {
 //            cpds.setDriverClass("org.h2.Driver");
 //        } catch (PropertyVetoException ex) {
 //        }
-//        cpds.setJdbcUrl("jdbc:h2:mem:test;INIT=runscript from 'src/test/java/create.sql'");
+//        cpds.setJdbcUrl("jdbc:h2:mem:test;INIT=runscript from 'src/test/resources/create.sql'");
 //        cpds.setUser("sa");
 //        cpds.setPassword("sa");
 //        dataSource = cpds;
@@ -57,7 +57,7 @@ public class JDBCSessionDataStorageTest {
     public static void setUpClass() {
         BasicDataSource bds = new BasicDataSource();
         bds.setDriverClassName("org.h2.Driver");
-        bds.setUrl("jdbc:h2:mem:test;INIT=runscript from 'src/test/java/create.sql'");
+        bds.setUrl("jdbc:h2:mem:test;INIT=runscript from 'src/test/resources/create.sql'");
         bds.setUsername("sa");
         bds.setPassword("sa");
         dataSource = bds;
