@@ -15,11 +15,14 @@
  */
 package ro.pippo.session.infinispan;
 
+import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 import org.infinispan.configuration.cache.Configuration;
 import org.infinispan.configuration.cache.ConfigurationBuilder;
 import org.infinispan.manager.DefaultCacheManager;
 import org.infinispan.manager.EmbeddedCacheManager;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import ro.pippo.core.PippoRuntimeException;
 
 /**
@@ -28,14 +31,47 @@ import ro.pippo.core.PippoRuntimeException;
  */
 public class InfinispanFactory {
 
+    private static final Logger log = LoggerFactory.getLogger(InfinispanFactory.class);
+    private static final String DEFAULT_CONFIG_FILE = "infinispan.xml";
+
     private InfinispanFactory() {
         throw new PippoRuntimeException("You can't make a instance of factory.");
     }
 
+    /**
+     * Create cache manager with custom idle time.
+     *
+     * @param idleTime idle time in seconds
+     * @return cache manager
+     */
     public static EmbeddedCacheManager create(long idleTime) {
         Configuration configuration = new ConfigurationBuilder()
                 .expiration().maxIdle(idleTime, TimeUnit.SECONDS)
                 .build();
         return new DefaultCacheManager(configuration);
+    }
+
+    /**
+     * Create cache manager with default config in "infinispan.xml" file.
+     *
+     * @return cache manager
+     */
+    public static EmbeddedCacheManager create() {
+        return create(DEFAULT_CONFIG_FILE);
+    }
+
+    /**
+     * Create cache manager with custom config file.
+     *
+     * @param file config file
+     * @return cache manager
+     */
+    public static EmbeddedCacheManager create(String file) {
+        try {
+            return new DefaultCacheManager(file);
+        } catch (IOException ex) {
+            log.error("", ex);
+            throw new PippoRuntimeException(ex);
+        }
     }
 }

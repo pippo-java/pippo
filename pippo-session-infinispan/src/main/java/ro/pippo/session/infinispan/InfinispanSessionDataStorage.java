@@ -16,6 +16,7 @@
 package ro.pippo.session.infinispan;
 
 import org.infinispan.Cache;
+import org.infinispan.manager.EmbeddedCacheManager;
 import ro.pippo.session.SessionData;
 import ro.pippo.session.SessionDataStorage;
 
@@ -29,21 +30,22 @@ public class InfinispanSessionDataStorage implements SessionDataStorage {
     private final Cache<String, SessionData> sessions;
 
     /**
-     * Manage session with the cache named "session".
+     * Manage session with the cache named "session" and CacheManager specified.
      *
-     * @see #InfinispanSessionDataStorage(java.lang.String)
+     * @param cacheManager cache manager
      */
-    public InfinispanSessionDataStorage() {
-        this(SESSION_NAME);
+    public InfinispanSessionDataStorage(EmbeddedCacheManager cacheManager) {
+        this(cacheManager, SESSION_NAME);
     }
 
     /**
-     * Manage session with the cache specified in the name.
+     * Manage session with the cache specified and CacheManager specified.
      *
-     * @param name name of cache
+     * @param cacheManager cache manager
+     * @param cacheName cache name
      */
-    public InfinispanSessionDataStorage(String name) {
-        this.sessions = InfinispanSingleton.getInstance().getCache(name);
+    public InfinispanSessionDataStorage(EmbeddedCacheManager cacheManager, String cacheName) {
+        this.sessions = cacheManager.getCache(cacheName);
     }
 
     /**

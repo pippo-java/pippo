@@ -15,13 +15,13 @@
  */
 package ro.pippo.session.infinispan;
 
+import org.infinispan.manager.EmbeddedCacheManager;
 import org.junit.AfterClass;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import ro.pippo.core.Application;
 import ro.pippo.session.SessionData;
 
 /**
@@ -30,22 +30,18 @@ import ro.pippo.session.SessionData;
  */
 public class InfinispanSessionDataStorageTest {
 
-    private static final String SESSION_NAME = "session";
     private static final String KEY = "KEY";
     private static final String VALUE = "VALUE";
-    private static Application application;
-    private static InfinispanInitializer initializer;
+    private static EmbeddedCacheManager cacheManager;
 
     @BeforeClass
     public static void setUpClass() {
-        application = new Application();
-        initializer = new InfinispanInitializer();
-        initializer.init(application);
+        cacheManager = InfinispanFactory.create();
     }
 
     @AfterClass
     public static void tearDownClass() {
-        initializer.destroy(application);
+        cacheManager.stop();
     }
 
     /**
@@ -54,7 +50,7 @@ public class InfinispanSessionDataStorageTest {
     @Test
     public void testCreate() {
         System.out.println("create");
-        InfinispanSessionDataStorage instance = new InfinispanSessionDataStorage();
+        InfinispanSessionDataStorage instance = new InfinispanSessionDataStorage(cacheManager);
         SessionData sessionData = instance.create();
         sessionData.setAttribute(KEY, VALUE);
         assertNotNull(sessionData);
@@ -69,16 +65,15 @@ public class InfinispanSessionDataStorageTest {
     @Test
     public void testSave() {
         System.out.println("save");
-        InfinispanSessionDataStorage instance = new InfinispanSessionDataStorage();
+        InfinispanSessionDataStorage instance = new InfinispanSessionDataStorage(cacheManager);
         SessionData sessionData = instance.create();
         String sessionId = sessionData.getId();
         sessionData.setAttribute(KEY, VALUE);
         instance.save(sessionData);
-        SessionData saved = InfinispanSingleton
-                .getInstance()
-                .<String, SessionData>getCache(SESSION_NAME)
-                .get(sessionId);
+        instance.save(sessionData);
+        SessionData saved = instance.get(sessionId);
         assertEquals(sessionData, saved);
+        assertEquals(sessionData.getAttribute(KEY), saved.getAttribute(KEY));
     }
 
     /**
@@ -87,7 +82,7 @@ public class InfinispanSessionDataStorageTest {
     @Test
     public void testGet() {
         System.out.println("get");
-        InfinispanSessionDataStorage instance = new InfinispanSessionDataStorage();
+        InfinispanSessionDataStorage instance = new InfinispanSessionDataStorage(cacheManager);
         SessionData sessionData = instance.create();
         String sessionId = sessionData.getId();
         sessionData.setAttribute(KEY, VALUE);
@@ -105,7 +100,7 @@ public class InfinispanSessionDataStorageTest {
     @Test
     public void testGetExpired() throws InterruptedException {
         System.out.println("get expired");
-        InfinispanSessionDataStorage instance = new InfinispanSessionDataStorage();
+        InfinispanSessionDataStorage instance = new InfinispanSessionDataStorage(cacheManager);
         SessionData sessionData = instance.create();
         String sessionId = sessionData.getId();
         sessionData.setAttribute(KEY, VALUE);
@@ -121,7 +116,7 @@ public class InfinispanSessionDataStorageTest {
     @Test
     public void testDelete() {
         System.out.println("delete");
-        InfinispanSessionDataStorage instance = new InfinispanSessionDataStorage();
+        InfinispanSessionDataStorage instance = new InfinispanSessionDataStorage(cacheManager);
         SessionData sessionData = instance.create();
         String sessionId = sessionData.getId();
         sessionData.setAttribute(KEY, VALUE);
