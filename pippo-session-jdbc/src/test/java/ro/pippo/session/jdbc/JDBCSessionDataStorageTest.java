@@ -28,7 +28,6 @@ import org.junit.Test;
 import ro.pippo.session.SessionData;
 
 /**
- *
  * @author Herman Barrantes
  */
 public class JDBCSessionDataStorageTest {
@@ -36,7 +35,6 @@ public class JDBCSessionDataStorageTest {
     private static final String KEY = "KEY";
     private static final String VALUE = "VALUE";
     private static BasicDataSource dataSource;
-
 
     // With C3P0
 //    @BeforeClass

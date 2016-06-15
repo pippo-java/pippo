@@ -24,7 +24,6 @@ import org.junit.Test;
 import ro.pippo.session.SessionData;
 
 /**
- *
  * @author Herman Barrantes
  */
 public class EhcacheSessionDataStorageTest {

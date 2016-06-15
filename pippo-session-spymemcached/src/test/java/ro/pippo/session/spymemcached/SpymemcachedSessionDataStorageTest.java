@@ -27,9 +27,7 @@ import ro.pippo.core.Application;
 import ro.pippo.session.SessionData;
 
 /**
- *
  * @author Herman Barrantes
- * @since 02/06/2016
  */
 @Ignore("You need run MemCached localy")
 public class SpymemcachedSessionDataStorageTest {
