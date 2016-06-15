@@ -33,14 +33,17 @@ Add the following code sniped in your application:
 ```java
 public class MyApplication extends Application {
 
+    private HazelcastInstance instance;
+
     @Override
     protected void onInit() {
+        this.instance = Hazelcast.newHazelcastInstance();
         // add routes here
     }
 
     @Override
     protected RequestResponseFactory createRequestResponseFactory() {
-        SessionDataStorage sessionDataStorage = new HazelcastSessionDataStorage(HazelcastSingleton.getInstance());
+        SessionDataStorage sessionDataStorage = new HazelcastSessionDataStorage(this.instance);
         SessionManager sessionManager = new SessionManager(sessionDataStorage);
 
         return new SessionRequestResponseFactory(this, sessionManager);
@@ -48,7 +51,7 @@ public class MyApplication extends Application {
 
     @Override
     protected void onDestroy() {
-        HazelcastSingleton.getInstance().shutdown();
+        this.instance.shutdown();
     }
 
 }

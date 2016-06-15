@@ -15,10 +15,13 @@
  */
 package ro.pippo.session.hazelcast;
 
+import com.hazelcast.core.Hazelcast;
+import com.hazelcast.core.HazelcastInstance;
 import org.junit.AfterClass;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import ro.pippo.session.SessionData;
 
@@ -31,18 +34,28 @@ public class HazelcastSessionDataStorageTest {
     private static final String SESSION_NAME = "session";
     private static final String KEY = "KEY";
     private static final String VALUE = "VALUE";
+    private static HazelcastInstance hazelcastInstance;
+    private static HazelcastInstance hazelcastInstance2;
+
+    @BeforeClass
+    public static void setUpClass() {
+        hazelcastInstance = Hazelcast.newHazelcastInstance();
+        hazelcastInstance2 = Hazelcast.newHazelcastInstance();
+    }
 
     @AfterClass
     public static void tearDownClass() {
-        HazelcastSingleton.getInstance().shutdown();
+        hazelcastInstance.shutdown();
+        hazelcastInstance2.shutdown();
     }
+
     /**
      * Test of create method, of class HazelcastSessionDataStorage.
      */
     @Test
     public void testCreate() {
         System.out.println("create");
-        HazelcastSessionDataStorage instance = new HazelcastSessionDataStorage(HazelcastSingleton.getInstance());
+        HazelcastSessionDataStorage instance = new HazelcastSessionDataStorage(hazelcastInstance);
         SessionData sessionData = instance.create();
         sessionData.setAttribute(KEY, VALUE);
         assertNotNull(sessionData);
@@ -57,13 +70,12 @@ public class HazelcastSessionDataStorageTest {
     @Test
     public void testSave() {
         System.out.println("save");
-        HazelcastSessionDataStorage instance = new HazelcastSessionDataStorage(HazelcastSingleton.getInstance());
+        HazelcastSessionDataStorage instance = new HazelcastSessionDataStorage(hazelcastInstance);
         SessionData sessionData = instance.create();
         String sessionId = sessionData.getId();
         sessionData.setAttribute(KEY, VALUE);
         instance.save(sessionData);
-        SessionData saved = HazelcastSingleton
-                .getInstance()
+        SessionData saved = hazelcastInstance2
                 .<String, SessionData>getMap(SESSION_NAME)
                 .get(sessionId);
         assertEquals(sessionData, saved);
@@ -75,7 +87,7 @@ public class HazelcastSessionDataStorageTest {
     @Test
     public void testGet() {
         System.out.println("get");
-        HazelcastSessionDataStorage instance = new HazelcastSessionDataStorage(HazelcastSingleton.getInstance());
+        HazelcastSessionDataStorage instance = new HazelcastSessionDataStorage(hazelcastInstance);
         SessionData sessionData = instance.create();
         String sessionId = sessionData.getId();
         sessionData.setAttribute(KEY, VALUE);
@@ -93,7 +105,7 @@ public class HazelcastSessionDataStorageTest {
     @Test
     public void testGetExpired() throws InterruptedException {
         System.out.println("get expired");
-        HazelcastSessionDataStorage instance = new HazelcastSessionDataStorage(HazelcastSingleton.getInstance());
+        HazelcastSessionDataStorage instance = new HazelcastSessionDataStorage(hazelcastInstance);
         SessionData sessionData = instance.create();
         String sessionId = sessionData.getId();
         sessionData.setAttribute(KEY, VALUE);
@@ -109,7 +121,7 @@ public class HazelcastSessionDataStorageTest {
     @Test
     public void testDelete() {
         System.out.println("delete");
-        HazelcastSessionDataStorage instance = new HazelcastSessionDataStorage(HazelcastSingleton.getInstance());
+        HazelcastSessionDataStorage instance = new HazelcastSessionDataStorage(hazelcastInstance);
         SessionData sessionData = instance.create();
         String sessionId = sessionData.getId();
         sessionData.setAttribute(KEY, VALUE);

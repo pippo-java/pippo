@@ -6,6 +6,12 @@
     <properties>
         <property name="hazelcast.logging.type">slf4j</property>
     </properties>
+    
+    <network>
+        <join>
+            <multicast enabled="true"/>
+        </join>
+    </network>
 
     <map name="session">
         <time-to-live-seconds>1</time-to-live-seconds>
