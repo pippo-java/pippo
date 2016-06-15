@@ -21,6 +21,7 @@ import ro.pippo.session.SessionData;
 import ro.pippo.session.SessionDataStorage;
 
 /**
+ * SessionDataStorage implementation with Infinispan.
  *
  * @author Herman Barrantes
  */

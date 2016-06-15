@@ -26,6 +26,7 @@ import org.slf4j.LoggerFactory;
 import ro.pippo.core.PippoRuntimeException;
 
 /**
+ * Utility to build the cache manager.
  *
  * @author Herman Barrantes
  */

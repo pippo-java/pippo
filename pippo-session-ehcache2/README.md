@@ -51,5 +51,10 @@ public class MyApplication extends Application {
 
         return new SessionRequestResponseFactory(this, sessionManager);
     }
+
+    @Override
+    protected void onDestroy() {
+        CacheManager.getInstance().shutdown();
+    }
 }
 ```

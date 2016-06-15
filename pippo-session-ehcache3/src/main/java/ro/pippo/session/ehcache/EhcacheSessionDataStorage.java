@@ -21,7 +21,7 @@ import ro.pippo.session.SessionData;
 import ro.pippo.session.SessionDataStorage;
 
 /**
- *
+ * SessionDataStorage implementation with Ehcache3.
  * @author Herman Barrantes
  */
 public class EhcacheSessionDataStorage implements SessionDataStorage {

@@ -20,9 +20,7 @@ import org.junit.AfterClass;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
-import org.junit.BeforeClass;
 import org.junit.Test;
-import ro.pippo.core.Application;
 import ro.pippo.session.SessionData;
 
 /**
@@ -34,19 +32,10 @@ public class EhcacheSessionDataStorageTest {
     private static final String SESSION_NAME = "session";
     private static final String KEY = "KEY";
     private static final String VALUE = "VALUE";
-    private static Application application;
-    private static EhcacheInitializer initializer;
-
-    @BeforeClass
-    public static void setUpClass() {
-        application = new Application();
-        initializer = new EhcacheInitializer();
-        initializer.init(application);
-    }
 
     @AfterClass
     public static void tearDownClass() {
-        initializer.destroy(application);
+        CacheManager.getInstance().shutdown();
     }
 
     /**
@@ -101,6 +90,7 @@ public class EhcacheSessionDataStorageTest {
 
     /**
      * Test of get method, of class EhcacheSessionDataStorage.
+     *
      * @throws java.lang.InterruptedException
      */
     @Test

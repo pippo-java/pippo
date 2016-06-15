@@ -23,6 +23,7 @@ import ro.pippo.core.Application;
 import ro.pippo.core.Initializer;
 
 /**
+ * Utility to build the cache manager.
  *
  * @author Herman Barrantes
  */

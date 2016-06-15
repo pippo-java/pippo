@@ -21,6 +21,7 @@ import ro.pippo.core.PippoRuntimeException;
 import ro.pippo.core.PippoSettings;
 
 /**
+ * Utility to build the client.
  *
  * @author Herman Barrantes
  */

@@ -29,17 +29,25 @@ Add the following code sniped in your application:
 ```java
 public class MyApplication extends Application {
 
+    private EmbeddedCacheManager cacheManager;
+
     @Override
     protected void onInit() {
+        this.cacheManager = InfinispanFactory.create();
         // add routes here
     }
 
     @Override
     protected RequestResponseFactory createRequestResponseFactory() {
-        SessionDataStorage sessionDataStorage = new InfinispanSessionDataStorage();
+        SessionDataStorage sessionDataStorage = new InfinispanSessionDataStorage(this.cacheManager);
         SessionManager sessionManager = new SessionManager(sessionDataStorage);
 
         return new SessionRequestResponseFactory(this, sessionManager);
+    }
+
+    @Override
+    protected void onDestroy() {
+        this.cacheManager.stop();
     }
 }
 ```

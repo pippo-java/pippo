@@ -23,6 +23,7 @@ import org.ehcache.xml.XmlConfiguration;
 import ro.pippo.core.PippoRuntimeException;
 
 /**
+ * Utility to build the cache manager.
  *
  * @author Herman Barrantes
  */

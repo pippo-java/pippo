@@ -30,6 +30,7 @@ import ro.pippo.session.SessionDataStorage;
 import ro.pippo.session.SessionDataTranscoder;
 
 /**
+ * SessionDataStorage implementation with JDBC.
  *
  * @author Herman Barrantes
  */

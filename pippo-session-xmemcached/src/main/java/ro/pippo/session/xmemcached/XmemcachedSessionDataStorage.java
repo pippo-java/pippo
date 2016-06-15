@@ -24,6 +24,7 @@ import ro.pippo.session.SessionData;
 import ro.pippo.session.SessionDataStorage;
 
 /**
+ * SessionDataStorage implementation with Xmemcached.
  *
  * @author Herman Barrantes
  */
