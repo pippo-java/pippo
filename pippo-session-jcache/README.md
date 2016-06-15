@@ -22,6 +22,12 @@ public class MyApplication extends Application {
 
         return new SessionRequestResponseFactory(this, sessionManager);
     }
+
+    @Override
+    protected void onDestroy() {
+        Caching.getCachingProvider().getCacheManager().close();
+    }
+
 }
 ```
 
