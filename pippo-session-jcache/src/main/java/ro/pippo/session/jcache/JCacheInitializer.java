@@ -29,7 +29,7 @@ import ro.pippo.core.Initializer;
 @MetaInfServices(Initializer.class)
 public class JCacheInitializer implements Initializer {
 
-    private static final Logger LOG = LoggerFactory.getLogger(JCacheInitializer.class);
+    private static final Logger log = LoggerFactory.getLogger(JCacheInitializer.class);
     private static final String JCACHE_INITIALIZER_ENABLED = "jcache.initializer.enabled";
     private boolean enabled = true;
 
@@ -38,7 +38,7 @@ public class JCacheInitializer implements Initializer {
         enabled = application.getPippoSettings().getBoolean(JCACHE_INITIALIZER_ENABLED, true);
         if (enabled) {
             Caching.getCachingProvider().getCacheManager();
-            LOG.debug("JCacheInitializer init");
+            log.debug("JCacheInitializer init");
         }
     }
 
@@ -46,7 +46,7 @@ public class JCacheInitializer implements Initializer {
     public void destroy(Application application) {
         if (enabled) {
             Caching.getCachingProvider().getCacheManager().close();
-            LOG.debug("JCacheInitializer destroy");
+            log.debug("JCacheInitializer destroy");
         }
     }
 

@@ -36,7 +36,7 @@ import ro.pippo.session.SessionDataTranscoder;
 public class JDBCSessionDataStorage implements SessionDataStorage {
 
     // Logger
-    private static final Logger LOG = LoggerFactory.getLogger(JDBCSessionDataStorage.class);
+    private static final Logger log = LoggerFactory.getLogger(JDBCSessionDataStorage.class);
     // CRUD Statements
     public static final String SELECT = "select data from session where id = ?";
     public static final String INSERT = "insert into session (id, time, data) values (?, ?, ?)";
@@ -112,7 +112,7 @@ public class JDBCSessionDataStorage implements SessionDataStorage {
                 return resultSet.getString(1);
             }
         } catch (SQLException ex) {
-            LOG.error("Error executing the statement", ex);
+            log.error("Error executing the statement", ex);
             throw new PippoRuntimeException(ex);
         } finally {
             close(resultSet);
@@ -133,7 +133,7 @@ public class JDBCSessionDataStorage implements SessionDataStorage {
             }
             return preparedStatement.executeUpdate();
         } catch (SQLException ex) {
-            LOG.error("Error executing the statement", ex);
+            log.error("Error executing the statement", ex);
             throw new PippoRuntimeException(ex);
         } finally {
             close(preparedStatement);
@@ -146,7 +146,7 @@ public class JDBCSessionDataStorage implements SessionDataStorage {
             try {
                 closeable.close();
             } catch (Exception ex) {
-                LOG.error("Error closing resource", ex);
+                log.error("Error closing resource", ex);
             }
         }
     }

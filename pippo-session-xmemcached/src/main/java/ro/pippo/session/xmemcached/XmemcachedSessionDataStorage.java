@@ -29,7 +29,7 @@ import ro.pippo.session.SessionDataStorage;
  */
 public class XmemcachedSessionDataStorage implements SessionDataStorage {
 
-    private static final Logger LOG = LoggerFactory.getLogger(XmemcachedSessionDataStorage.class);
+    private static final Logger log = LoggerFactory.getLogger(XmemcachedSessionDataStorage.class);
     private static final int IDLE_TIME = SessionData.DEFAULT_MAX_INACTIVE_INTERVAL_SECONDS;
     private final MemcachedClient sessions;
     private final int idleTime;
@@ -68,7 +68,7 @@ public class XmemcachedSessionDataStorage implements SessionDataStorage {
         try {
             this.sessions.set(sessionData.getId(), idleTime, sessionData);
         } catch (TimeoutException | InterruptedException | MemcachedException ex) {
-            LOG.error("An error occurred when saved SessionData.", ex);
+            log.error("An error occurred when saved SessionData.", ex);
         }
     }
 
@@ -78,7 +78,7 @@ public class XmemcachedSessionDataStorage implements SessionDataStorage {
         try {
             obj = this.sessions.get(sessionId);
         } catch (TimeoutException | InterruptedException | MemcachedException ex) {
-            LOG.error("An error occurred when get SessionData.", ex);
+            log.error("An error occurred when get SessionData.", ex);
             return null;
         }
         if (obj == null) {
@@ -93,7 +93,7 @@ public class XmemcachedSessionDataStorage implements SessionDataStorage {
         try {
             this.sessions.delete(sessionId);
         } catch (TimeoutException | InterruptedException | MemcachedException ex) {
-            LOG.error("An error occurred when deleted SessionData.", ex);
+            log.error("An error occurred when deleted SessionData.", ex);
         }
     }
 

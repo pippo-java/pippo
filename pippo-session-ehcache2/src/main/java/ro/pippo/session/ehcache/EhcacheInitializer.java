@@ -29,7 +29,7 @@ import ro.pippo.core.Initializer;
 @MetaInfServices(Initializer.class)
 public class EhcacheInitializer implements Initializer {
 
-    private static final Logger LOG = LoggerFactory.getLogger(EhcacheInitializer.class);
+    private static final Logger log = LoggerFactory.getLogger(EhcacheInitializer.class);
     private static final String EHCACHE_INITIALIZER_ENABLED = "ehcache.initializer.enabled";
     private boolean enabled = true;
 
@@ -38,7 +38,7 @@ public class EhcacheInitializer implements Initializer {
         enabled = application.getPippoSettings().getBoolean(EHCACHE_INITIALIZER_ENABLED, true);
         if (enabled) {
             CacheManager.getInstance();
-            LOG.debug("EhcacheInitializer init");
+            log.debug("EhcacheInitializer init");
         }
     }
 
@@ -48,7 +48,7 @@ public class EhcacheInitializer implements Initializer {
             CacheManager.ALL_CACHE_MANAGERS
                     .stream()
                     .forEach(cache -> cache.shutdown());
-            LOG.debug("EhcacheInitializer destroy");
+            log.debug("EhcacheInitializer destroy");
         }
     }
 
