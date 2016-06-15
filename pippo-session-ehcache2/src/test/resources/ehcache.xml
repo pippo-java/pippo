@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ehcache xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:noNamespaceSchemaLocation="ehcache.xsd"
+         updateCheck="true"
+         monitoring="autodetect"
+         dynamicConfig="true">
+
+    <!-- By default, Ehcache stored the cached files in temp folder. -->
+    <diskStore path="java.io.tmpdir" />
+    <cache name="session" 
+           maxEntriesLocalHeap="10"
+           maxEntriesLocalDisk="20" 
+           eternal="false" 
+           diskSpoolBufferSizeMB="20"
+           timeToIdleSeconds="1"
+           timeToLiveSeconds="0"
+           memoryStoreEvictionPolicy="LFU" 
+           transactionalMode="off">
+        <persistence strategy="localTempSwap" />
+    </cache>
+
+</ehcache>
