@@ -17,13 +17,10 @@ package ro.pippo.session.spymemcached;
 
 import net.spy.memcached.ConnectionFactoryBuilder;
 import net.spy.memcached.MemcachedClient;
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Before;
+import static org.junit.Assert.assertNotNull;
 import org.junit.BeforeClass;
-import org.junit.Test;
-import static org.junit.Assert.*;
 import org.junit.Ignore;
+import org.junit.Test;
 import ro.pippo.core.Application;
 
 /**
@@ -40,19 +37,7 @@ public class SpymemcachedFactoryTest {
     public static void setUpClass() {
         application = new Application();
     }
-
-    @AfterClass
-    public static void tearDownClass() {
-    }
-
-    @Before
-    public void setUp() {
-    }
-
-    @After
-    public void tearDown() {
-    }
-
+    
     /**
      * Test of create method, of class SpymemcachedUtil.
      */

@@ -15,12 +15,12 @@
  */
 package ro.pippo.session.infinispan;
 
-import org.junit.After;
 import org.junit.AfterClass;
-import org.junit.Before;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import static org.junit.Assert.*;
 import ro.pippo.core.Application;
 import ro.pippo.session.SessionData;
 
@@ -36,9 +36,6 @@ public class InfinispanSessionDataStorageTest {
     private static Application application;
     private static InfinispanInitializer initializer;
 
-    public InfinispanSessionDataStorageTest() {
-    }
-
     @BeforeClass
     public static void setUpClass() {
         application = new Application();
@@ -49,14 +46,6 @@ public class InfinispanSessionDataStorageTest {
     @AfterClass
     public static void tearDownClass() {
         initializer.destroy(application);
-    }
-
-    @Before
-    public void setUp() {
-    }
-
-    @After
-    public void tearDown() {
     }
 
     /**

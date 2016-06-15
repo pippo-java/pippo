@@ -16,12 +16,9 @@
 package ro.pippo.session.ehcache;
 
 import net.sf.ehcache.CacheManager;
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Before;
+import static org.junit.Assert.assertTrue;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import static org.junit.Assert.*;
 import ro.pippo.core.Application;
 
 /**
@@ -36,18 +33,6 @@ public class EhcacheInitializerTest {
     @BeforeClass
     public static void setUpClass() {
         application = new Application();
-    }
-    
-    @AfterClass
-    public static void tearDownClass() {
-    }
-    
-    @Before
-    public void setUp() {
-    }
-    
-    @After
-    public void tearDown() {
     }
 
     /**

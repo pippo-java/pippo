@@ -17,13 +17,13 @@ package ro.pippo.session.xmemcached;
 
 import java.io.IOException;
 import net.rubyeye.xmemcached.MemcachedClient;
-import org.junit.After;
 import org.junit.AfterClass;
-import org.junit.Before;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import org.junit.BeforeClass;
-import org.junit.Test;
-import static org.junit.Assert.*;
 import org.junit.Ignore;
+import org.junit.Test;
 import ro.pippo.core.Application;
 import ro.pippo.session.SessionData;
 
@@ -50,14 +50,6 @@ public class XmemcachedSessionDataStorageTest {
     @AfterClass
     public static void tearDownClass() throws IOException {
         client.shutdown();
-    }
-
-    @Before
-    public void setUp() {
-    }
-
-    @After
-    public void tearDown() {
     }
 
     /**

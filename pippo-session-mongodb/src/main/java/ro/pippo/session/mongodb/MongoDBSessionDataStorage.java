@@ -18,18 +18,18 @@ package ro.pippo.session.mongodb;
 import com.mongodb.MongoException;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
-import org.bson.Document;
-import ro.pippo.session.SessionData;
-import ro.pippo.session.SessionDataStorage;
 import static com.mongodb.client.model.Filters.eq;
+import com.mongodb.client.model.IndexOptions;
+import static com.mongodb.client.model.Projections.include;
+import com.mongodb.client.model.UpdateOptions;
 import static com.mongodb.client.model.Updates.combine;
 import static com.mongodb.client.model.Updates.set;
-import static com.mongodb.client.model.Projections.include;
-import com.mongodb.client.model.IndexOptions;
-import com.mongodb.client.model.UpdateOptions;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
+import org.bson.Document;
 import ro.pippo.session.SerializationSessionDataTranscoder;
+import ro.pippo.session.SessionData;
+import ro.pippo.session.SessionDataStorage;
 import ro.pippo.session.SessionDataTranscoder;
 
 /**

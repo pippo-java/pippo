@@ -19,13 +19,12 @@ import java.io.IOException;
 import net.rubyeye.xmemcached.CommandFactory;
 import net.rubyeye.xmemcached.MemcachedClient;
 import net.rubyeye.xmemcached.command.BinaryCommandFactory;
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Before;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 import org.junit.BeforeClass;
-import org.junit.Test;
-import static org.junit.Assert.*;
 import org.junit.Ignore;
+import org.junit.Test;
 import ro.pippo.core.Application;
 
 /**
@@ -41,18 +40,6 @@ public class XmemcachedFactoryTest {
     @BeforeClass
     public static void setUpClass() {
         application = new Application();
-    }
-
-    @AfterClass
-    public static void tearDownClass() {
-    }
-
-    @Before
-    public void setUp() {
-    }
-
-    @After
-    public void tearDown() {
     }
 
     /**

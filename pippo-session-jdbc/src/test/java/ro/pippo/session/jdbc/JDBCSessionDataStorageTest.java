@@ -18,16 +18,13 @@ package ro.pippo.session.jdbc;
 //import com.mchange.v2.c3p0.ComboPooledDataSource;
 //import java.beans.PropertyVetoException;
 import java.sql.SQLException;
-//import javax.naming.Context;
-//import javax.naming.InitialContext;
-//import javax.sql.DataSource;
 import org.apache.commons.dbcp2.BasicDataSource;
-import org.junit.After;
 import org.junit.AfterClass;
-import org.junit.Before;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import static org.junit.Assert.*;
 import ro.pippo.session.SessionData;
 
 /**
@@ -40,8 +37,6 @@ public class JDBCSessionDataStorageTest {
     private static final String VALUE = "VALUE";
     private static BasicDataSource dataSource;
 
-    public JDBCSessionDataStorageTest() {
-    }
 
     // With C3P0
 //    @BeforeClass
@@ -79,14 +74,6 @@ public class JDBCSessionDataStorageTest {
     @AfterClass
     public static void tearDownClass() throws SQLException {
         dataSource.close();
-    }
-
-    @Before
-    public void setUp() {
-    }
-
-    @After
-    public void tearDown() {
     }
 
     /**

@@ -15,12 +15,11 @@
  */
 package ro.pippo.session.hazelcast;
 
-import org.junit.After;
 import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import org.junit.Test;
-import static org.junit.Assert.*;
 import ro.pippo.session.SessionData;
 
 /**
@@ -33,23 +32,10 @@ public class HazelcastSessionDataStorageTest {
     private static final String KEY = "KEY";
     private static final String VALUE = "VALUE";
 
-    @BeforeClass
-    public static void setUpClass() {
-    }
-
     @AfterClass
     public static void tearDownClass() {
         HazelcastSingleton.getInstance().shutdown();
     }
-
-    @Before
-    public void setUp() {
-    }
-
-    @After
-    public void tearDown() {
-    }
-
     /**
      * Test of create method, of class HazelcastSessionDataStorage.
      */

@@ -16,12 +16,12 @@
 package ro.pippo.session.ehcache;
 
 import org.ehcache.CacheManager;
-import org.junit.After;
 import org.junit.AfterClass;
-import org.junit.Before;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import static org.junit.Assert.*;
 import ro.pippo.session.SessionData;
 
 /**
@@ -34,9 +34,6 @@ public class EhcacheSessionDataStorageTest {
     private static final String VALUE = "VALUE";
     private static CacheManager cacheManager;
 
-    public EhcacheSessionDataStorageTest() {
-    }
-
     @BeforeClass
     public static void setUpClass() {
         cacheManager = EhcacheFactory.create();
@@ -46,15 +43,7 @@ public class EhcacheSessionDataStorageTest {
     public static void tearDownClass() {
         cacheManager.close();
     }
-
-    @Before
-    public void setUp() {
-    }
-
-    @After
-    public void tearDown() {
-    }
-
+    
     /**
      * Test of create method, of class EhcacheSessionDataStorage.
      */
