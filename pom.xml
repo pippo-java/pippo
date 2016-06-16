@@ -162,48 +162,18 @@
     <modules>
         <module>pippo</module>
         <module>pippo-core</module>
-        <module>pippo-jetty</module>
-        <module>pippo-undertow</module>
-        <module>pippo-tjws</module>
-        <module>pippo-tomcat</module>
-        <module>pippo-freemarker</module>
-        <module>pippo-groovy</module>
-        <module>pippo-jade</module>
-        <module>pippo-pebble</module>
-        <module>pippo-trimou</module>
-        <module>pippo-spring</module>
-        <module>pippo-guice</module>
-        <module>pippo-weld</module>
-        <module>pippo-gson</module>
-        <module>pippo-fastjson</module>
-        <module>pippo-jackson</module>
-        <module>pippo-jaxb</module>
-        <module>pippo-xstream</module>
-        <module>pippo-snakeyaml</module>
-        <module>pippo-csv</module>
-        <module>pippo-metrics</module>
-        <module>pippo-metrics-ganglia</module>
-        <module>pippo-metrics-graphite</module>
-        <module>pippo-metrics-influxdb</module>
-        <module>pippo-metrics-librato</module>
-        <module>pippo-controller</module>
-        <module>pippo-session</module>
-        <module>pippo-session-cookie</module>
-        <module>pippo-session-ehcache2</module>
-        <module>pippo-session-ehcache3</module>
-        <module>pippo-session-hazelcast</module>
-        <module>pippo-session-infinispan</module>
-        <module>pippo-session-jcache</module>
-        <module>pippo-session-jdbc</module>
-        <module>pippo-session-jedis</module>
-        <module>pippo-session-mongodb</module>
-        <module>pippo-session-spymemcached</module>
-        <module>pippo-session-xmemcached</module>
         <module>maven-archetypes/quickstart</module>
-        <module>pippo-velocity</module>
+        
         <module>pippo-less4j</module>
         <module>pippo-sasscompiler</module>
-        <module>pippo-test</module>
+        
+        <module>pippo-webserver-parent</module>
+        <module>pippo-template-parent</module>
+        <module>pippo-content-type-parent</module>
+        <module>pippo-controller-parent</module>
+        <module>pippo-session-parent</module>
+        <module>pippo-metrics-parent</module>
+        <module>pippo-test-parent</module>
     </modules>
 
     <profiles>
