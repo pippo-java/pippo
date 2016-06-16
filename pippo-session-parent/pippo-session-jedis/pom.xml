@@ -4,28 +4,36 @@
 
     <parent>
         <groupId>ro.pippo</groupId>
-        <artifactId>pippo-parent</artifactId>
+        <artifactId>pippo-session-parent</artifactId>
         <version>0.9.0-SNAPSHOT</version>
     </parent>
-
+    
     <groupId>ro.pippo</groupId>
-    <artifactId>pippo-session-jdbc</artifactId>
+    <artifactId>pippo-session-jedis</artifactId>
     <version>0.9.0-SNAPSHOT</version>
     <packaging>jar</packaging>
 
-    <name>Pippo Session JDBC</name>
+    <name>Pippo Session Jedis</name>
     <url>http://maven.apache.org</url>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <jedis.version>2.8.1</jedis.version>
     </properties>
 
     <dependencies>
-        
         <dependency>
             <groupId>ro.pippo</groupId>
             <artifactId>pippo-session</artifactId>
             <version>${project.version}</version>
+        </dependency>
+        
+        <dependency>
+            <groupId>redis.clients</groupId>
+            <artifactId>jedis</artifactId>
+            <version>${jedis.version}</version>
+            <type>jar</type>
+            <scope>compile</scope>
         </dependency>
         
         <dependency>
@@ -49,27 +57,5 @@
             <version>${slf4j.version}</version>
             <scope>test</scope>
         </dependency>
-        
-        <dependency>
-            <groupId>com.h2database</groupId>
-            <artifactId>h2</artifactId>
-            <version>1.4.192</version>
-            <scope>test</scope>
-        </dependency>
-        
-        <dependency>
-            <groupId>com.mchange</groupId>
-            <artifactId>c3p0</artifactId>
-            <version>0.9.5.2</version>
-            <scope>test</scope>
-        </dependency>
-        
-        <dependency>
-            <groupId>org.apache.commons</groupId>
-            <artifactId>commons-dbcp2</artifactId>
-            <version>2.0</version>
-            <scope>test</scope>
-        </dependency>
-
     </dependencies>
 </project>

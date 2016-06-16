@@ -4,24 +4,25 @@
 
     <parent>
         <groupId>ro.pippo</groupId>
-        <artifactId>pippo-parent</artifactId>
+        <artifactId>pippo-session-parent</artifactId>
         <version>0.9.0-SNAPSHOT</version>
     </parent>
     
     <groupId>ro.pippo</groupId>
-    <artifactId>pippo-session-jedis</artifactId>
+    <artifactId>pippo-session-ehcache2</artifactId>
     <version>0.9.0-SNAPSHOT</version>
     <packaging>jar</packaging>
 
-    <name>Pippo Session Jedis</name>
+    <name>Pippo Session Ehcache2</name>
     <url>http://maven.apache.org</url>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <jedis.version>2.8.1</jedis.version>
+        <ehcache.version>2.10.2</ehcache.version>
     </properties>
 
     <dependencies>
+        
         <dependency>
             <groupId>ro.pippo</groupId>
             <artifactId>pippo-session</artifactId>
@@ -29,11 +30,9 @@
         </dependency>
         
         <dependency>
-            <groupId>redis.clients</groupId>
-            <artifactId>jedis</artifactId>
-            <version>${jedis.version}</version>
-            <type>jar</type>
-            <scope>compile</scope>
+            <groupId>net.sf.ehcache</groupId>
+            <artifactId>ehcache</artifactId>
+            <version>${ehcache.version}</version>
         </dependency>
         
         <dependency>
@@ -57,5 +56,6 @@
             <version>${slf4j.version}</version>
             <scope>test</scope>
         </dependency>
+        
     </dependencies>
 </project>

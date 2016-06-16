@@ -4,21 +4,21 @@
 
     <parent>
         <groupId>ro.pippo</groupId>
-        <artifactId>pippo-parent</artifactId>
+        <artifactId>pippo-session-parent</artifactId>
         <version>0.9.0-SNAPSHOT</version>
     </parent>
     
     <groupId>ro.pippo</groupId>
-    <artifactId>pippo-session-ehcache3</artifactId>
+    <artifactId>pippo-session-mongodb</artifactId>
     <version>0.9.0-SNAPSHOT</version>
     <packaging>jar</packaging>
 
-    <name>Pippo Session Ehcache3</name>
+    <name>Pippo Session MongoDB</name>
     <url>http://maven.apache.org</url>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <ehcache.version>3.0.1</ehcache.version>
+        <mongodb.version>3.2.2</mongodb.version>
     </properties>
 
     <dependencies>
@@ -30,9 +30,9 @@
         </dependency>
         
         <dependency>
-            <groupId>org.ehcache</groupId>
-            <artifactId>ehcache</artifactId>
-            <version>${ehcache.version}</version>
+            <groupId>org.mongodb</groupId>
+            <artifactId>mongo-java-driver</artifactId>
+            <version>${mongodb.version}</version>
         </dependency>
         
         <dependency>
@@ -56,6 +56,5 @@
             <version>${slf4j.version}</version>
             <scope>test</scope>
         </dependency>
-        
     </dependencies>
 </project>

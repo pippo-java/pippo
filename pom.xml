@@ -187,23 +187,12 @@
         <module>pippo-metrics-influxdb</module>
         <module>pippo-metrics-librato</module>
         <module>pippo-controller</module>
-        <module>pippo-session</module>
-        <module>pippo-session-cookie</module>
-        <module>pippo-session-ehcache2</module>
-        <module>pippo-session-ehcache3</module>
-        <module>pippo-session-hazelcast</module>
-        <module>pippo-session-infinispan</module>
-        <module>pippo-session-jcache</module>
-        <module>pippo-session-jdbc</module>
-        <module>pippo-session-jedis</module>
-        <module>pippo-session-mongodb</module>
-        <module>pippo-session-spymemcached</module>
-        <module>pippo-session-xmemcached</module>
         <module>maven-archetypes/quickstart</module>
         <module>pippo-velocity</module>
         <module>pippo-less4j</module>
         <module>pippo-sasscompiler</module>
         <module>pippo-test</module>
+        <module>pippo-session-parent</module>
     </modules>
 
     <profiles>

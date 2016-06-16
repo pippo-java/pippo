@@ -1,24 +1,24 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    
+
     <parent>
         <groupId>ro.pippo</groupId>
-        <artifactId>pippo-parent</artifactId>
+        <artifactId>pippo-session-parent</artifactId>
         <version>0.9.0-SNAPSHOT</version>
     </parent>
-
+    
     <groupId>ro.pippo</groupId>
-    <artifactId>pippo-session-xmemcached</artifactId>
+    <artifactId>pippo-session-ehcache3</artifactId>
     <version>0.9.0-SNAPSHOT</version>
     <packaging>jar</packaging>
 
-    <name>Pippo Session Xmemcached</name>
+    <name>Pippo Session Ehcache3</name>
     <url>http://maven.apache.org</url>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <xmemcached.version>2.0.0</xmemcached.version>
+        <ehcache.version>3.0.1</ehcache.version>
     </properties>
 
     <dependencies>
@@ -30,10 +30,10 @@
         </dependency>
         
         <dependency>
-            <groupId>com.googlecode.xmemcached</groupId>
-            <artifactId>xmemcached</artifactId>
-            <version>${xmemcached.version}</version>
-        </dependency> 
+            <groupId>org.ehcache</groupId>
+            <artifactId>ehcache</artifactId>
+            <version>${ehcache.version}</version>
+        </dependency>
         
         <dependency>
             <groupId>org.kohsuke.metainf-services</groupId>
