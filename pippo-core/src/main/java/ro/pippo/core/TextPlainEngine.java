@@ -16,6 +16,8 @@
 package ro.pippo.core;
 
 
+import java.nio.charset.StandardCharsets;
+
 /**
  * A text/plain engine based on toString()
  *
@@ -39,6 +41,16 @@ public class TextPlainEngine implements ContentTypeEngine {
 
     @Override
     public <T> T fromString(String content, Class<T> classOfT) {
+        if (String.class.equals(classOfT)) {
+            return (T) content;
+        } else if (CharSequence.class.equals(classOfT)) {
+            return (T) content;
+        } else if (char[].class.equals(classOfT)) {
+            return (T) content.toCharArray();
+        } else if (byte[].class.equals(classOfT)) {
+            return (T) content.getBytes(StandardCharsets.UTF_8);
+        }
+
         throw new PippoRuntimeException("Sorry, can not transform '{}' content to '{}'", getContentType(),
             classOfT.getName());
     }
