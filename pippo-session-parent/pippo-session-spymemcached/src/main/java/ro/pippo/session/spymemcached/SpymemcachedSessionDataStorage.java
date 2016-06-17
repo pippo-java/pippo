@@ -69,7 +69,6 @@ public class SpymemcachedSessionDataStorage implements SessionDataStorage {
         if (obj == null) {
             return null;
         }
-        this.sessions.touch(sessionId, idleTime);
         SessionData sessionData = (SessionData) obj;
         return sessionData;
     }

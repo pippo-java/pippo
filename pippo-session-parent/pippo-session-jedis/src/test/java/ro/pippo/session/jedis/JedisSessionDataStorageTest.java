@@ -13,63 +13,47 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package ro.pippo.session.spymemcached;
+package ro.pippo.session.jedis;
 
-import de.flapdoodle.embed.memcached.MemcachedExecutable;
-import de.flapdoodle.embed.memcached.MemcachedProcess;
-import de.flapdoodle.embed.memcached.MemcachedStarter;
-import de.flapdoodle.embed.memcached.config.MemcachedConfig;
-import de.flapdoodle.embed.memcached.distribution.Version;
 import java.io.IOException;
-import java.net.InetSocketAddress;
-import net.spy.memcached.MemcachedClient;
 import org.junit.AfterClass;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
+import static org.junit.Assert.*;
+import redis.clients.jedis.JedisPool;
+import redis.embedded.RedisServer;
 import ro.pippo.session.SessionData;
 
 /**
  * @author Herman Barrantes
  */
-@Ignore("Too slow")
-public class SpymemcachedSessionDataStorageTest {
+public class JedisSessionDataStorageTest {
 
     private static final String KEY = "KEY";
     private static final String VALUE = "VALUE";
-    private static final int IDLE_TIME = 1;
-    private static final String HOST = "localhost";
-    private static final Integer PORT = 11211;
-    private static MemcachedExecutable memcachedExe;
-    private static MemcachedProcess memcached;
-    private static MemcachedClient client;
+    private static RedisServer redisServer;
+    private static JedisPool jedisPool;
 
     @BeforeClass
     public static void setUpClass() throws IOException {
-        MemcachedStarter runtime = MemcachedStarter.getDefaultInstance();
-        memcachedExe = runtime.prepare(
-                new MemcachedConfig(Version.Main.PRODUCTION, PORT));
-        memcached = memcachedExe.start();
-        client = new MemcachedClient(new InetSocketAddress(HOST, PORT));
+        redisServer = new RedisServer();
+        redisServer.start();
+        jedisPool = new JedisPool();
     }
 
     @AfterClass
     public static void tearDownClass() {
-        client.shutdown();
-        memcached.stop();
-        memcachedExe.stop();
+        jedisPool.destroy();
+        redisServer.stop();
     }
 
     /**
-     * Test of create method, of class SpymemcachedSessionDataStorage.
+     * Test of create method, of class JedisSessionDataStorage.
      */
     @Test
     public void testCreate() {
         System.out.println("create");
-        SpymemcachedSessionDataStorage instance = new SpymemcachedSessionDataStorage(client, IDLE_TIME);
+        JedisSessionDataStorage instance = new JedisSessionDataStorage(jedisPool);
         SessionData sessionData = instance.create();
         sessionData.setAttribute(KEY, VALUE);
         assertNotNull(sessionData);
@@ -79,12 +63,12 @@ public class SpymemcachedSessionDataStorageTest {
     }
 
     /**
-     * Test of save method, of class SpymemcachedSessionDataStorage.
+     * Test of save method, of class JedisSessionDataStorage.
      */
     @Test
     public void testSave() {
         System.out.println("save");
-        SpymemcachedSessionDataStorage instance = new SpymemcachedSessionDataStorage(client, IDLE_TIME);
+        JedisSessionDataStorage instance = new JedisSessionDataStorage(jedisPool);
         SessionData sessionData = instance.create();
         String sessionId = sessionData.getId();
         sessionData.setAttribute(KEY, VALUE);
@@ -95,12 +79,12 @@ public class SpymemcachedSessionDataStorageTest {
     }
 
     /**
-     * Test of get method, of class SpymemcachedSessionDataStorage.
+     * Test of get method, of class JedisSessionDataStorage.
      */
     @Test
     public void testGet() {
         System.out.println("get");
-        SpymemcachedSessionDataStorage instance = new SpymemcachedSessionDataStorage(client, IDLE_TIME);
+        JedisSessionDataStorage instance = new JedisSessionDataStorage(jedisPool);
         SessionData sessionData = instance.create();
         String sessionId = sessionData.getId();
         sessionData.setAttribute(KEY, VALUE);
@@ -111,14 +95,12 @@ public class SpymemcachedSessionDataStorageTest {
     }
 
     /**
-     * Test of get method, of class SpymemcachedSessionDataStorage.
-     *
-     * @throws java.lang.InterruptedException
+     * Test of get method, of class JedisSessionDataStorage.
      */
     @Test
     public void testGetExpired() throws InterruptedException {
         System.out.println("get expired");
-        SpymemcachedSessionDataStorage instance = new SpymemcachedSessionDataStorage(client, IDLE_TIME);
+        JedisSessionDataStorage instance = new JedisSessionDataStorage(jedisPool, 1);
         SessionData sessionData = instance.create();
         String sessionId = sessionData.getId();
         sessionData.setAttribute(KEY, VALUE);
@@ -129,12 +111,12 @@ public class SpymemcachedSessionDataStorageTest {
     }
 
     /**
-     * Test of delete method, of class SpymemcachedSessionDataStorage.
+     * Test of delete method, of class JedisSessionDataStorage.
      */
     @Test
     public void testDelete() {
         System.out.println("delete");
-        SpymemcachedSessionDataStorage instance = new SpymemcachedSessionDataStorage(client, IDLE_TIME);
+        JedisSessionDataStorage instance = new JedisSessionDataStorage(jedisPool);
         SessionData sessionData = instance.create();
         String sessionId = sessionData.getId();
         sessionData.setAttribute(KEY, VALUE);
