@@ -3,7 +3,7 @@
 
     <parent>
         <groupId>ro.pippo</groupId>
-        <artifactId>pippo-parent</artifactId>
+        <artifactId>pippo-session-parent</artifactId>
         <version>0.9.0-SNAPSHOT</version>
     </parent>
 

@@ -1,24 +1,24 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    
+
     <parent>
         <groupId>ro.pippo</groupId>
-        <artifactId>pippo-parent</artifactId>
+        <artifactId>pippo-session-parent</artifactId>
         <version>0.9.0-SNAPSHOT</version>
     </parent>
-
+    
     <groupId>ro.pippo</groupId>
-    <artifactId>pippo-session-spymemcached</artifactId>
+    <artifactId>pippo-session-infinispan</artifactId>
     <version>0.9.0-SNAPSHOT</version>
     <packaging>jar</packaging>
 
-    <name>Pippo Session Spymemcached</name>
+    <name>Pippo Session Infinispan</name>
     <url>http://maven.apache.org</url>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <spymemcached.version>2.12.1</spymemcached.version>
+        <infinispan.version>8.2.2.Final</infinispan.version>
     </properties>
 
     <dependencies>
@@ -30,9 +30,9 @@
         </dependency>
         
         <dependency>
-            <groupId>net.spy</groupId>
-            <artifactId>spymemcached</artifactId>
-            <version>${spymemcached.version}</version>
+            <groupId>org.infinispan</groupId>
+            <artifactId>infinispan-core</artifactId>
+            <version>${infinispan.version}</version>
         </dependency>
         
         <dependency>

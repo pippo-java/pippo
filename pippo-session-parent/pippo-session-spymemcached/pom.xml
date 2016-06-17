@@ -1,24 +1,24 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-
+    
     <parent>
         <groupId>ro.pippo</groupId>
-        <artifactId>pippo-parent</artifactId>
+        <artifactId>pippo-session-parent</artifactId>
         <version>0.9.0-SNAPSHOT</version>
     </parent>
-    
+
     <groupId>ro.pippo</groupId>
-    <artifactId>pippo-session-mongodb</artifactId>
+    <artifactId>pippo-session-spymemcached</artifactId>
     <version>0.9.0-SNAPSHOT</version>
     <packaging>jar</packaging>
 
-    <name>Pippo Session MongoDB</name>
+    <name>Pippo Session Spymemcached</name>
     <url>http://maven.apache.org</url>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <mongodb.version>3.2.2</mongodb.version>
+        <spymemcached.version>2.12.1</spymemcached.version>
     </properties>
 
     <dependencies>
@@ -30,9 +30,9 @@
         </dependency>
         
         <dependency>
-            <groupId>org.mongodb</groupId>
-            <artifactId>mongo-java-driver</artifactId>
-            <version>${mongodb.version}</version>
+            <groupId>net.spy</groupId>
+            <artifactId>spymemcached</artifactId>
+            <version>${spymemcached.version}</version>
         </dependency>
         
         <dependency>
@@ -56,5 +56,6 @@
             <version>${slf4j.version}</version>
             <scope>test</scope>
         </dependency>
+        
     </dependencies>
 </project>

@@ -4,20 +4,21 @@
 
     <parent>
         <groupId>ro.pippo</groupId>
-        <artifactId>pippo-parent</artifactId>
+        <artifactId>pippo-session-parent</artifactId>
         <version>0.9.0-SNAPSHOT</version>
     </parent>
-
+    
     <groupId>ro.pippo</groupId>
-    <artifactId>pippo-session-jcache</artifactId>
+    <artifactId>pippo-session-hazelcast</artifactId>
     <version>0.9.0-SNAPSHOT</version>
     <packaging>jar</packaging>
 
-    <name>Pippo Session JCache</name>
+    <name>Pippo Session Hazelcast</name>
     <url>http://maven.apache.org</url>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <hazelcast.version>3.6.3</hazelcast.version>
     </properties>
 
     <dependencies>
@@ -29,9 +30,9 @@
         </dependency>
         
         <dependency>
-            <groupId>javax.cache</groupId>
-            <artifactId>cache-api</artifactId>
-            <version>1.0.0</version>
+            <groupId>com.hazelcast</groupId>
+            <artifactId>hazelcast</artifactId>
+            <version>${hazelcast.version}</version>
         </dependency>
         
         <dependency>
@@ -55,6 +56,5 @@
             <version>${slf4j.version}</version>
             <scope>test</scope>
         </dependency>
-        
     </dependencies>
 </project>
