@@ -181,11 +181,6 @@
         <module>pippo-xstream</module>
         <module>pippo-snakeyaml</module>
         <module>pippo-csv</module>
-        <module>pippo-metrics</module>
-        <module>pippo-metrics-ganglia</module>
-        <module>pippo-metrics-graphite</module>
-        <module>pippo-metrics-influxdb</module>
-        <module>pippo-metrics-librato</module>
         <module>pippo-controller</module>
         <module>maven-archetypes/quickstart</module>
         <module>pippo-velocity</module>
@@ -193,6 +188,7 @@
         <module>pippo-sasscompiler</module>
         <module>pippo-test</module>
         <module>pippo-session-parent</module>
+        <module>pippo-metrics-parent</module>
     </modules>
 
     <profiles>
