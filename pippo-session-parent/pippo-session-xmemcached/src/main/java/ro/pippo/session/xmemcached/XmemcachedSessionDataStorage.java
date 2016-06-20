@@ -82,11 +82,7 @@ public class XmemcachedSessionDataStorage implements SessionDataStorage {
             log.error("An error occurred when get SessionData.", ex);
             return null;
         }
-        if (obj == null) {
-            return null;
-        }
-        SessionData sessionData = (SessionData) obj;
-        return sessionData;
+        return obj == null ? null : (SessionData) obj;
     }
 
     @Override

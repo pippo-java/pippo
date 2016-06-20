@@ -15,39 +15,51 @@
  */
 package ro.pippo.session.xmemcached;
 
+import de.flapdoodle.embed.memcached.MemcachedExecutable;
+import de.flapdoodle.embed.memcached.MemcachedProcess;
+import de.flapdoodle.embed.memcached.MemcachedStarter;
+import de.flapdoodle.embed.memcached.config.MemcachedConfig;
+import de.flapdoodle.embed.memcached.distribution.Version;
 import java.io.IOException;
+import java.net.InetSocketAddress;
 import net.rubyeye.xmemcached.MemcachedClient;
+import net.rubyeye.xmemcached.XMemcachedClient;
 import org.junit.AfterClass;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
-import ro.pippo.core.Application;
 import ro.pippo.session.SessionData;
 
 /**
  * @author Herman Barrantes
  */
-@Ignore("You need run MemCached localy")
 public class XmemcachedSessionDataStorageTest {
 
     private static final String KEY = "KEY";
     private static final String VALUE = "VALUE";
     private static final int IDLE_TIME = 1;
-    private static Application application;
+    private static final String HOST = "localhost";
+    private static final Integer PORT = 11211;
+    private static MemcachedExecutable memcachedExe;
+    private static MemcachedProcess memcached;
     private static MemcachedClient client;
 
     @BeforeClass
-    public static void setUpClass() {
-        application = new Application();
-        client = XmemcachedFactory.create(application.getPippoSettings());
+    public static void setUpClass() throws IOException {
+        MemcachedStarter runtime = MemcachedStarter.getDefaultInstance();
+        memcachedExe = runtime.prepare(
+                new MemcachedConfig(Version.Main.PRODUCTION, PORT));
+        memcached = memcachedExe.start();
+        client = new XMemcachedClient(new InetSocketAddress(HOST, PORT));
     }
 
     @AfterClass
     public static void tearDownClass() throws IOException {
         client.shutdown();
+        memcached.stop();
+        memcachedExe.stop();
     }
 
     /**
@@ -99,6 +111,7 @@ public class XmemcachedSessionDataStorageTest {
 
     /**
      * Test of get method, of class XmemcachedSessionDataStorage.
+     *
      * @throws java.lang.InterruptedException
      */
     @Test

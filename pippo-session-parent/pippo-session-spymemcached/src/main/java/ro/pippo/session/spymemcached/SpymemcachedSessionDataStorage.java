@@ -66,12 +66,7 @@ public class SpymemcachedSessionDataStorage implements SessionDataStorage {
     @Override
     public SessionData get(String sessionId) {
         Object obj = this.sessions.get(sessionId);
-        if (obj == null) {
-            return null;
-        }
-        this.sessions.touch(sessionId, idleTime);
-        SessionData sessionData = (SessionData) obj;
-        return sessionData;
+        return obj == null ? null : (SessionData) obj;
     }
 
     @Override

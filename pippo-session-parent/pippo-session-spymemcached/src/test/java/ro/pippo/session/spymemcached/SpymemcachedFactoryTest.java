@@ -15,27 +15,46 @@
  */
 package ro.pippo.session.spymemcached;
 
+import de.flapdoodle.embed.memcached.MemcachedExecutable;
+import de.flapdoodle.embed.memcached.MemcachedProcess;
+import de.flapdoodle.embed.memcached.MemcachedStarter;
+import de.flapdoodle.embed.memcached.config.MemcachedConfig;
+import de.flapdoodle.embed.memcached.distribution.Version;
+import java.io.IOException;
 import net.spy.memcached.ConnectionFactoryBuilder;
 import net.spy.memcached.MemcachedClient;
+import org.junit.AfterClass;
 import static org.junit.Assert.assertNotNull;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 import ro.pippo.core.Application;
 
 /**
  * @author Herman Barrantes
  */
-@Ignore("You need run MemCached localy")
 public class SpymemcachedFactoryTest {
 
+    private static final String HOST = "localhost:11211";
+    private static final Integer PORT = 11211;
     private static Application application;
+    private static MemcachedExecutable memcachedExe;
+    private static MemcachedProcess memcached;
 
     @BeforeClass
-    public static void setUpClass() {
+    public static void setUpClass() throws IOException {
         application = new Application();
+        MemcachedStarter runtime = MemcachedStarter.getDefaultInstance();
+        memcachedExe = runtime.prepare(
+                new MemcachedConfig(Version.Main.PRODUCTION, PORT));
+        memcached = memcachedExe.start();
     }
-    
+
+    @AfterClass
+    public static void tearDownClass() {
+        memcached.stop();
+        memcachedExe.stop();
+    }
+
     /**
      * Test of create method, of class SpymemcachedUtil.
      */
@@ -53,12 +72,11 @@ public class SpymemcachedFactoryTest {
     @Test
     public void testCreate_5args() {
         System.out.println("create");
-        String hosts = "localhost:11211";
         ConnectionFactoryBuilder.Protocol protocol = ConnectionFactoryBuilder.Protocol.BINARY;
         String user = "";
         String pass = "";
         String[] authMechanisms = new String[]{"PLAIN"};
-        MemcachedClient result = SpymemcachedFactory.create(hosts, protocol, user, pass, authMechanisms);
+        MemcachedClient result = SpymemcachedFactory.create(HOST, protocol, user, pass, authMechanisms);
         assertNotNull(result);
         result.shutdown();
     }
