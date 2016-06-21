@@ -17,25 +17,19 @@ package ro.pippo.core;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import ro.pippo.core.route.ClasspathResourceHandler;
 import ro.pippo.core.route.DefaultRouter;
-import ro.pippo.core.route.FileResourceHandler;
-import ro.pippo.core.route.PublicResourceHandler;
-import ro.pippo.core.route.ResourceHandler;
 import ro.pippo.core.route.Route;
+import ro.pippo.core.route.Routing;
 import ro.pippo.core.route.RouteContext;
 import ro.pippo.core.route.RouteDispatcher;
 import ro.pippo.core.route.RouteGroup;
-import ro.pippo.core.route.RouteHandler;
 import ro.pippo.core.route.RoutePostDispatchListenerList;
 import ro.pippo.core.route.RoutePreDispatchListenerList;
 import ro.pippo.core.route.Router;
-import ro.pippo.core.route.WebjarsResourceHandler;
 import ro.pippo.core.util.HttpCacheToolkit;
 import ro.pippo.core.util.MimeTypes;
 import ro.pippo.core.util.ServiceLocator;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -48,7 +42,7 @@ import java.util.Map;
  *
  * @author Decebal Suiu
  */
-public class Application {
+public class Application implements Routing {
 
     private static final Logger log = LoggerFactory.getLogger(Application.class);
 
@@ -216,122 +210,14 @@ public class Application {
         this.router = router;
     }
 
-    public Route GET(String uriPattern, RouteHandler routeHandler) {
-        if (routeHandler instanceof ResourceHandler) {
-            throw new PippoRuntimeException("Please use 'addResourceRoute()'");
-        }
-
-        Route route = Route.GET(uriPattern, routeHandler);
-        addRoute(route);
-
-        return route;
-    }
-
-    public Route POST(String uriPattern, RouteHandler routeHandler) {
-        Route route = Route.POST(uriPattern, routeHandler);
-        addRoute(route);
-
-        return route;
-    }
-
-    public Route DELETE(String uriPattern, RouteHandler routeHandler) {
-        Route route = Route.DELETE(uriPattern, routeHandler);
-        addRoute(route);
-
-        return route;
-    }
-
-    public Route HEAD(String uriPattern, RouteHandler routeHandler) {
-        Route route = Route.HEAD(uriPattern, routeHandler);
-        addRoute(route);
-
-        return route;
-    }
-
-    public Route PUT(String uriPattern, RouteHandler routeHandler) {
-        Route route = Route.PUT(uriPattern, routeHandler);
-        addRoute(route);
-
-        return route;
-    }
-
-    public Route PATCH(String uriPattern, RouteHandler routeHandler) {
-        Route route = Route.PATCH(uriPattern, routeHandler);
-        addRoute(route);
-
-        return route;
-    }
-
-    public Route ALL(String uriPattern, RouteHandler routeHandler) {
-        Route route = Route.ALL(uriPattern, routeHandler);
-        addRoute(route);
-
-        return route;
-    }
-
+    @Override
     public void addRoute(Route route) {
         getRouter().addRoute(route);
     }
 
+    @Override
     public void addRouteGroup(RouteGroup routeGroup) {
         getRouter().addRouteGroup(routeGroup);
-    }
-
-    /**
-     * It's a shortcut for {@link #addPublicResourceRoute(String)} with parameter <code>"/public"</code>.
-     */
-    public Route addPublicResourceRoute() {
-        return addPublicResourceRoute("/public");
-    }
-
-    /**
-     * Add a route that serves resources from the "public" directory within your classpath.
-     */
-    public Route addPublicResourceRoute(String urlPath) {
-        return addResourceRoute(new PublicResourceHandler(urlPath));
-    }
-
-    /**
-     * Add a route that serves resources from a directory(file system).
-     */
-    public Route addFileResourceRoute(String urlPath, File directory) {
-        return addResourceRoute(new FileResourceHandler(urlPath, directory));
-    }
-
-    public Route addFileResourceRoute(String urlPath, String directory) {
-        return addResourceRoute(new FileResourceHandler(urlPath, directory));
-    }
-
-    public Route addClasspathResourceRoute(String urlPath, Class<?> resourceClass) {
-        return addResourceRoute(new ClasspathResourceHandler(urlPath, resourceClass.getName().replace(".", "/")));
-    }
-
-    /**
-     * Add a route that serves resources from classpath.
-     */
-    public Route addClasspathResourceRoute(String urlPath, String resourceBasePath) {
-        return addResourceRoute(new ClasspathResourceHandler(urlPath, resourceBasePath));
-    }
-
-    /**
-     * It's a shortcut for {@link #addWebjarsResourceRoute(String)} with parameter <code>"/webjars"</code>.
-     */
-    public Route addWebjarsResourceRoute() {
-        return addWebjarsResourceRoute("/webjars");
-    }
-
-    /**
-     * Add a route that serves webjars (http://www.webjars.org/) resources.
-     */
-    public Route addWebjarsResourceRoute(String urlPath) {
-        return addResourceRoute(new WebjarsResourceHandler(urlPath));
-    }
-
-    public Route addResourceRoute(ResourceHandler resourceHandler) {
-        Route route = Route.GET(resourceHandler.getUriPattern(), resourceHandler);
-        addRoute(route);
-
-        return route;
     }
 
     public ErrorHandler getErrorHandler() {
