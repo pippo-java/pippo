@@ -17,11 +17,11 @@ package ro.pippo.session.hazelcast;
 
 import com.hazelcast.core.Hazelcast;
 import com.hazelcast.core.HazelcastInstance;
-import org.junit.AfterClass;
+import org.junit.After;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
-import org.junit.BeforeClass;
+import org.junit.Before;
 import org.junit.Test;
 import ro.pippo.session.SessionData;
 
@@ -33,19 +33,16 @@ public class HazelcastSessionDataStorageTest {
     private static final String SESSION_NAME = "session";
     private static final String KEY = "KEY";
     private static final String VALUE = "VALUE";
-    private static HazelcastInstance hazelcastInstance;
-    private static HazelcastInstance hazelcastInstance2;
+    private HazelcastInstance hazelcastInstance;
 
-    @BeforeClass
-    public static void setUpClass() {
+    @Before
+    public void setUpClass() {
         hazelcastInstance = Hazelcast.newHazelcastInstance();
-        hazelcastInstance2 = Hazelcast.newHazelcastInstance();
     }
 
-    @AfterClass
-    public static void tearDownClass() {
+    @After
+    public void tearDownClass() {
         hazelcastInstance.shutdown();
-        hazelcastInstance2.shutdown();
     }
 
     /**
@@ -68,6 +65,7 @@ public class HazelcastSessionDataStorageTest {
      */
     @Test
     public void testSave() {
+        HazelcastInstance hazelcastInstance2 = Hazelcast.newHazelcastInstance();
         System.out.println("save");
         HazelcastSessionDataStorage instance = new HazelcastSessionDataStorage(hazelcastInstance);
         SessionData sessionData = instance.create();
@@ -78,6 +76,7 @@ public class HazelcastSessionDataStorageTest {
                 .<String, SessionData>getMap(SESSION_NAME)
                 .get(sessionId);
         assertEquals(sessionData, saved);
+        hazelcastInstance2.shutdown();
     }
 
     /**
