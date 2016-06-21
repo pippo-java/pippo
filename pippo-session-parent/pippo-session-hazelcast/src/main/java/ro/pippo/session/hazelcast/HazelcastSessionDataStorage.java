@@ -69,7 +69,7 @@ public class HazelcastSessionDataStorage implements SessionDataStorage {
 
     @Override
     public void save(SessionData sessionData) {
-        this.sessions.set(sessionData.getId(), sessionData);
+        this.sessions.put(sessionData.getId(), sessionData);
     }
 
     @Override
@@ -79,6 +79,6 @@ public class HazelcastSessionDataStorage implements SessionDataStorage {
 
     @Override
     public void delete(String sessionId) {
-        this.sessions.delete(sessionId);
+        this.sessions.remove(sessionId);
     }
 }
