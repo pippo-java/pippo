@@ -36,12 +36,12 @@ public class HazelcastSessionDataStorageTest {
     private HazelcastInstance hazelcastInstance;
 
     @Before
-    public void setUpClass() {
+    public void setUp() {
         hazelcastInstance = Hazelcast.newHazelcastInstance();
     }
 
     @After
-    public void tearDownClass() {
+    public void tearDown() {
         hazelcastInstance.shutdown();
     }
 
