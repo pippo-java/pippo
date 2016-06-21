@@ -166,11 +166,6 @@
         <module>pippo-undertow</module>
         <module>pippo-tjws</module>
         <module>pippo-tomcat</module>
-        <module>pippo-freemarker</module>
-        <module>pippo-groovy</module>
-        <module>pippo-jade</module>
-        <module>pippo-pebble</module>
-        <module>pippo-trimou</module>
         <module>pippo-spring</module>
         <module>pippo-guice</module>
         <module>pippo-weld</module>
@@ -183,13 +178,13 @@
         <module>pippo-csv</module>
         <module>pippo-controller</module>
         <module>maven-archetypes/quickstart</module>
-        <module>pippo-velocity</module>
         <module>pippo-less4j</module>
         <module>pippo-sasscompiler</module>
         <module>pippo-test</module>
         <module>pippo-session-parent</module>
         <module>pippo-metrics-parent</module>
-    </modules>
+    <module>pippo-template-parent</module>
+  </modules>
 
     <profiles>
         <profile>
