@@ -75,14 +75,12 @@ public class XmemcachedSessionDataStorage implements SessionDataStorage {
 
     @Override
     public SessionData get(String sessionId) {
-        SessionData sessionData;
         try {
-            sessionData = this.sessions.get(sessionId);
+            return this.sessions.get(sessionId);
         } catch (TimeoutException | InterruptedException | MemcachedException ex) {
             log.error("An error occurred when get SessionData.", ex);
             return null;
         }
-        return sessionData;
     }
 
     @Override
