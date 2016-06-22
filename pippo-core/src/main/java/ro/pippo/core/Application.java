@@ -34,6 +34,7 @@ import ro.pippo.core.route.WebjarsResourceHandler;
 import ro.pippo.core.util.HttpCacheToolkit;
 import ro.pippo.core.util.MimeTypes;
 import ro.pippo.core.util.ServiceLocator;
+import ro.pippo.core.websocket.WebSocketHandler;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -73,6 +74,8 @@ public class Application {
 
     private Map<String, Object> locals;
 
+    private Map<String, WebSocketHandler> webSocketHandlers;
+
     public Application() {
         this(new PippoSettings(RuntimeMode.getCurrent()));
     }
@@ -85,6 +88,7 @@ public class Application {
         this.httpCacheToolkit = new HttpCacheToolkit(settings);
         this.engines = new ContentTypeEngines();
         this.initializers = new ArrayList<>();
+        this.webSocketHandlers = new HashMap<>();
 
         registerContentTypeEngine(TextPlainEngine.class);
     }
@@ -275,6 +279,14 @@ public class Application {
 
     public void addRouteGroup(RouteGroup routeGroup) {
         getRouter().addRouteGroup(routeGroup);
+    }
+
+    public void addWebSocket(String path, WebSocketHandler webSocketHandler) {
+        webSocketHandlers.put(path, webSocketHandler);
+    }
+
+    public WebSocketHandler getWebSocketHandler(String path) {
+        return webSocketHandlers.get(path);
     }
 
     /**

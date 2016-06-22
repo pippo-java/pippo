@@ -91,14 +91,7 @@ public class Pippo {
      */
     public static Pippo send(final String text) {
         Pippo pippo = new Pippo();
-        pippo.getApplication().GET("/", new RouteHandler() {
-
-            @Override
-            public void handle(RouteContext routeContext) {
-                routeContext.send(text);
-            }
-
-        });
+        pippo.getApplication().GET("/", (routeContext) -> routeContext.send(text));
         pippo.start();
 
         return pippo;
