@@ -75,6 +75,10 @@ public class ControllerApplication extends Application {
         return ALL(uriPattern, createRouteHandler(controllerClass, methodName));
     }
 
+    public ControllerRouteGroup newRouteGroup(String uriPattern, Class<? extends Controller> controllerClass) {
+        return new ControllerRouteGroup(uriPattern, controllerClass, this);
+    }
+
     public ControllerHandlerFactory getControllerHandlerFactory() {
         if (controllerHandlerFactory == null) {
             ControllerHandlerFactory factory = ServiceLocator.locate(ControllerHandlerFactory.class);
