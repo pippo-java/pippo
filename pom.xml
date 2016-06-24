@@ -162,10 +162,6 @@
     <modules>
         <module>pippo</module>
         <module>pippo-core</module>
-        <module>pippo-jetty</module>
-        <module>pippo-undertow</module>
-        <module>pippo-tjws</module>
-        <module>pippo-tomcat</module>
         <module>pippo-spring</module>
         <module>pippo-guice</module>
         <module>pippo-weld</module>
@@ -178,6 +174,7 @@
         <module>pippo-metrics-parent</module>
         <module>pippo-template-parent</module>
         <module>pippo-content-type-parent</module>
+        <module>pippo-server-parent</module>
     </modules>
 
     <profiles>
