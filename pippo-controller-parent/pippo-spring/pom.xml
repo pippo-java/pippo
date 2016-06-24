@@ -3,7 +3,7 @@
 
     <parent>
         <groupId>ro.pippo</groupId>
-        <artifactId>pippo-parent</artifactId>
+        <artifactId>pippo-controller-parent</artifactId>
         <version>0.9.0-SNAPSHOT</version>
     </parent>
 
@@ -14,7 +14,7 @@
     <name>Pippo Spring</name>
     <description>Integration with Spring Framework</description>
 
-	<properties>
+    <properties>
         <spring.version>4.1.1.RELEASE</spring.version>
     </properties>
 
@@ -36,6 +36,6 @@
             <artifactId>javax.inject</artifactId>
             <version>1</version>
         </dependency>
-	</dependencies>
+    </dependencies>
 
 </project>

@@ -162,10 +162,6 @@
     <modules>
         <module>pippo</module>
         <module>pippo-core</module>
-        <module>pippo-spring</module>
-        <module>pippo-guice</module>
-        <module>pippo-weld</module>
-        <module>pippo-controller</module>
         <module>maven-archetypes/quickstart</module>
         <module>pippo-less4j</module>
         <module>pippo-sasscompiler</module>
@@ -175,6 +171,7 @@
         <module>pippo-template-parent</module>
         <module>pippo-content-type-parent</module>
         <module>pippo-server-parent</module>
+        <module>pippo-controller-parent</module>
     </modules>
 
     <profiles>
