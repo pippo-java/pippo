@@ -7,7 +7,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 #### Fixed
 
 #### Changed
-- Upgrade [pippo-undertow] to Undertow 1.3.21
+- Upgrade [pippo-undertow] to Undertow 1.3.23
 - Use `org.kohsuke.metainf-services:meta-services` annotation processor to automatically generate all META-INF/services files
 - [pippo-csv] now properly collects all fields in a class hierarchy when deserializing objects
 - [pippo-test] Automatically initialize RestAssurred with Pippo ContentType engines
@@ -22,6 +22,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 - Upgrade [pippo-jade] to Jade 1.1.4
 - Upgrade [pippo-pebble] to Pebble 2.2.1
 - Make `chunked` transfer-encoding optional, not the default
+- Make the text/plain content type engine handle returning reasonable types like String, CharSequence, char[], and byte[]
 
 #### Added
 - [#245]: Route groups

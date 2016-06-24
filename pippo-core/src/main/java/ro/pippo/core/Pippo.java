@@ -15,17 +15,17 @@
  */
 package ro.pippo.core;
 
-import ro.pippo.core.route.RouteContext;
-import ro.pippo.core.route.RouteHandler;
-import ro.pippo.core.util.ServiceLocator;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import ro.pippo.core.route.Route;
+import ro.pippo.core.route.Routing;
+import ro.pippo.core.route.RouteGroup;
+import ro.pippo.core.util.ServiceLocator;
 
 /**
  * @author Decebal Suiu
  */
-public class Pippo {
+public class Pippo implements Routing {
 
     private static final Logger log = LoggerFactory.getLogger(Pippo.class);
 
@@ -83,6 +83,16 @@ public class Pippo {
         }
     }
 
+    @Override
+    public void addRoute(Route route) {
+        getApplication().addRoute(route);
+    }
+
+    @Override
+    public void addRouteGroup(RouteGroup routeGroup) {
+        getApplication().addRouteGroup(routeGroup);
+    }
+
     /**
      * Create a pippo instance, add a route on "/" that responds with a message.
      *
@@ -91,14 +101,7 @@ public class Pippo {
      */
     public static Pippo send(final String text) {
         Pippo pippo = new Pippo();
-        pippo.getApplication().GET("/", new RouteHandler() {
-
-            @Override
-            public void handle(RouteContext routeContext) {
-                routeContext.send(text);
-            }
-
-        });
+        pippo.GET("/", (routeContext) -> routeContext.send(text));
         pippo.start();
 
         return pippo;
