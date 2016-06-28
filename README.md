@@ -27,7 +27,7 @@ public class BasicApplication extends Application {
         GET("/", (routeContext) -> routeContext.send("Hello World"));
 
 		// send a file as response
-        GET("/file", (routeContext) -> routeContext.send(new File("pom.xml"));
+        GET("/file", (routeContext) -> routeContext.send(new File("pom.xml")));
 
         // send a json as response
         GET("/json", (routeContext) -> {
