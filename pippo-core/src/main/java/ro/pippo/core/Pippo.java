@@ -18,8 +18,8 @@ package ro.pippo.core;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ro.pippo.core.route.Route;
-import ro.pippo.core.route.Routing;
 import ro.pippo.core.route.RouteGroup;
+import ro.pippo.core.route.Routing;
 import ro.pippo.core.util.ServiceLocator;
 
 /**
@@ -72,13 +72,14 @@ public class Pippo implements Routing {
 
     public void start() {
         if (getServer() != null) {
-            log.debug("Server '{}'", server);
+            log.debug("Start server '{}'", server);
             server.start();
         }
     }
 
     public void stop() {
         if (server != null) {
+            log.debug("Stop server '{}'", server);
             server.stop();
         }
     }
