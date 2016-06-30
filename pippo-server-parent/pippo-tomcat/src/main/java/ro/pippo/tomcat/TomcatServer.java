@@ -26,13 +26,15 @@ import org.slf4j.LoggerFactory;
 import ro.pippo.core.AbstractWebServer;
 import ro.pippo.core.Application;
 import ro.pippo.core.PippoFilter;
-
 import ro.pippo.core.PippoRuntimeException;
 import ro.pippo.core.PippoServlet;
 import ro.pippo.core.WebServer;
 import ro.pippo.core.util.StringUtils;
 
 import java.io.File;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 /**
  * @author Daniel Jipa
@@ -45,6 +47,31 @@ public class TomcatServer extends AbstractWebServer<TomcatSettings> {
     private Application application;
     private Tomcat tomcat;
 
+    private final ExecutorService executor = Executors.newSingleThreadExecutor();
+    private final CountDownLatch startLatch = new CountDownLatch(1);
+
+    @Override
+    public void start() {
+        executor.submit(this::internalStart);
+        try {
+            startLatch.await();
+        } catch (InterruptedException e) {
+            log.info(e.getMessage());
+        }
+    }
+
+    @Override
+    public void stop() {
+        if (tomcat != null) {
+            try {
+                tomcat.stop();
+                executor.shutdownNow();
+            } catch (Exception e) {
+                throw new PippoRuntimeException(e, "Cannot stop Tomcat Server");
+            }
+        }
+    }
+
     @Override
     public void setPippoFilter(PippoFilter pippoFilter) {
         super.setPippoFilter(pippoFilter);
@@ -53,7 +80,11 @@ public class TomcatServer extends AbstractWebServer<TomcatSettings> {
     }
 
     @Override
-    public void start() {
+    protected TomcatSettings createDefaultSettings() {
+        return new TomcatSettings(pippoSettings);
+    }
+
+    protected void internalStart() {
         if (StringUtils.isNullOrEmpty(pippoFilterPath)) {
             pippoFilterPath = "/*";
         }
@@ -89,9 +120,9 @@ public class TomcatServer extends AbstractWebServer<TomcatSettings> {
         } catch (LifecycleException e) {
             throw new PippoRuntimeException(e);
         }
-        if (!pippoSettings.isTest()) {
-            tomcat.getServer().await();
-        }
+
+        startLatch.countDown();
+        tomcat.getServer().await();
     }
 
     private void enablePlainConnector(Tomcat tomcat) {
@@ -119,22 +150,6 @@ public class TomcatServer extends AbstractWebServer<TomcatSettings> {
         connector.setAttribute("maxThreads", getSettings().getMaxConnections());
         connector.setAttribute("protocol", "org.apache.coyote.http11.Http11AprProtocol");
         connector.setAttribute("SSLEnabled", true);
-    }
-
-    @Override
-    public void stop() {
-        if (tomcat != null) {
-            try {
-                tomcat.stop();
-            } catch (Exception e) {
-                throw new PippoRuntimeException(e, "Cannot stop Tomcat Server");
-            }
-        }
-    }
-
-    @Override
-    protected TomcatSettings createDefaultSettings() {
-        return new TomcatSettings(pippoSettings);
     }
 
 }

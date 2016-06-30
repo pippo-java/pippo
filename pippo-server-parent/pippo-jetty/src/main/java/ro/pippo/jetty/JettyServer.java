@@ -38,6 +38,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.EnumSet;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -50,8 +53,37 @@ public class JettyServer extends AbstractWebServer<JettySettings> {
 
     private Server server;
 
+    private final ExecutorService executor = Executors.newSingleThreadExecutor();
+    private final CountDownLatch  startLatch = new CountDownLatch(1);
+
     @Override
     public void start() {
+        executor.submit(this::internalStart);
+        try {
+            startLatch.await();
+        } catch (InterruptedException e) {
+            log.info(e.getMessage());
+        }
+    }
+
+    @Override
+    public void stop() {
+        if (server != null) {
+            try {
+                server.stop();
+                executor.shutdownNow();
+            } catch (Exception e) {
+                throw new PippoRuntimeException(e, "Cannot stop Jetty Server");
+            }
+        }
+    }
+
+    @Override
+    protected JettySettings createDefaultSettings() {
+        return new JettySettings(pippoSettings);
+    }
+
+    protected void internalStart() {
         server = createServer();
 
         ServerConnector serverConnector = createServerConnector(server);
@@ -70,29 +102,13 @@ public class JettyServer extends AbstractWebServer<JettySettings> {
         try {
             String version = server.getClass().getPackage().getImplementationVersion();
             log.info("Starting Jetty Server {} on port {}", version, getSettings().getPort());
+
             server.start();
-            if (!pippoSettings.isTest()) {
-                server.join();
-            }
+            startLatch.countDown();
+            server.join();
         } catch (Exception e) {
             throw new PippoRuntimeException(e);
         }
-    }
-
-    @Override
-    public void stop() {
-        if (server != null) {
-            try {
-                server.stop();
-            } catch (Exception e) {
-                throw new PippoRuntimeException(e, "Cannot stop Jetty Server");
-            }
-        }
-    }
-
-    @Override
-    protected JettySettings createDefaultSettings() {
-        return new JettySettings(pippoSettings);
     }
 
     protected Server createServer() {
