@@ -55,11 +55,11 @@ public class JedisSessionDataStorageTest {
         System.out.println("create");
         JedisSessionDataStorage instance = new JedisSessionDataStorage(jedisPool);
         SessionData sessionData = instance.create();
-        sessionData.setAttribute(KEY, VALUE);
+        sessionData.put(KEY, VALUE);
         assertNotNull(sessionData);
         assertNotNull(sessionData.getId());
         assertNotNull(sessionData.getCreationTime());
-        assertEquals(sessionData.getAttribute(KEY), VALUE);
+        assertEquals(sessionData.get(KEY), VALUE);
     }
 
     /**
@@ -71,11 +71,13 @@ public class JedisSessionDataStorageTest {
         JedisSessionDataStorage instance = new JedisSessionDataStorage(jedisPool);
         SessionData sessionData = instance.create();
         String sessionId = sessionData.getId();
-        sessionData.setAttribute(KEY, VALUE);
+        sessionData.put(KEY, VALUE);
         instance.save(sessionData);
         SessionData saved = instance.get(sessionId);
         assertEquals(sessionData, saved);
-        assertEquals(sessionData.getAttribute(KEY), saved.getAttribute(KEY));
+        String value1 = sessionData.get(KEY);
+        String value2 = saved.get(KEY);
+        assertEquals(value1, value2);
     }
 
     /**
@@ -87,11 +89,13 @@ public class JedisSessionDataStorageTest {
         JedisSessionDataStorage instance = new JedisSessionDataStorage(jedisPool);
         SessionData sessionData = instance.create();
         String sessionId = sessionData.getId();
-        sessionData.setAttribute(KEY, VALUE);
+        sessionData.put(KEY, VALUE);
         instance.save(sessionData);
         SessionData saved = instance.get(sessionId);
         assertEquals(sessionData, saved);
-        assertEquals(sessionData.getAttribute(KEY), saved.getAttribute(KEY));
+        String value1 = sessionData.get(KEY);
+        String value2 = saved.get(KEY);
+        assertEquals(value1, value2);
     }
 
     /**
@@ -103,7 +107,7 @@ public class JedisSessionDataStorageTest {
         JedisSessionDataStorage instance = new JedisSessionDataStorage(jedisPool, 1);
         SessionData sessionData = instance.create();
         String sessionId = sessionData.getId();
-        sessionData.setAttribute(KEY, VALUE);
+        sessionData.put(KEY, VALUE);
         instance.save(sessionData);
         Thread.sleep(2000L); // 2seconds
         SessionData deleted = instance.get(sessionId);
@@ -119,7 +123,7 @@ public class JedisSessionDataStorageTest {
         JedisSessionDataStorage instance = new JedisSessionDataStorage(jedisPool);
         SessionData sessionData = instance.create();
         String sessionId = sessionData.getId();
-        sessionData.setAttribute(KEY, VALUE);
+        sessionData.put(KEY, VALUE);
         instance.save(sessionData);
         instance.delete(sessionId);
         SessionData deleted = instance.get(sessionId);

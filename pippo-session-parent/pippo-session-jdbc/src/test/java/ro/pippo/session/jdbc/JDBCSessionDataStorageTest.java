@@ -49,7 +49,7 @@ public class JDBCSessionDataStorageTest {
 //        cpds.setPassword("sa");
 //        dataSource = cpds;
 //    }
-    
+
     // With DBCP2
     @BeforeClass
     public static void setUpClass() {
@@ -60,7 +60,7 @@ public class JDBCSessionDataStorageTest {
         bds.setPassword("sa");
         dataSource = bds;
     }
-    
+
     // With JNDI
 //    @BeforeClass
 //    public static void setUpClass() {
@@ -82,11 +82,11 @@ public class JDBCSessionDataStorageTest {
         System.out.println("create");
         JDBCSessionDataStorage instance = new JDBCSessionDataStorage(dataSource);
         SessionData sessionData = instance.create();
-        sessionData.setAttribute(KEY, VALUE);
+        sessionData.put(KEY, VALUE);
         assertNotNull(sessionData);
         assertNotNull(sessionData.getId());
         assertNotNull(sessionData.getCreationTime());
-        assertEquals(sessionData.getAttribute(KEY), VALUE);
+        assertEquals(sessionData.get(KEY), VALUE);
     }
 
     /**
@@ -98,11 +98,13 @@ public class JDBCSessionDataStorageTest {
         JDBCSessionDataStorage instance = new JDBCSessionDataStorage(dataSource);
         SessionData sessionData = instance.create();
         String sessionId = sessionData.getId();
-        sessionData.setAttribute(KEY, VALUE);
+        sessionData.put(KEY, VALUE);
         instance.save(sessionData);
         SessionData saved = instance.get(sessionId);
         assertEquals(sessionData, saved);
-        assertEquals(sessionData.getAttribute(KEY), saved.getAttribute(KEY));
+        String value1 = sessionData.get(KEY);
+        String value2 = saved.get(KEY);
+        assertEquals(value1, value2);
     }
 
     /**
@@ -114,11 +116,13 @@ public class JDBCSessionDataStorageTest {
         JDBCSessionDataStorage instance = new JDBCSessionDataStorage(dataSource);
         SessionData sessionData = instance.create();
         String sessionId = sessionData.getId();
-        sessionData.setAttribute(KEY, VALUE);
+        sessionData.put(KEY, VALUE);
         instance.save(sessionData);
         SessionData saved = instance.get(sessionId);
         assertEquals(sessionData, saved);
-        assertEquals(sessionData.getAttribute(KEY), saved.getAttribute(KEY));
+        String value1 = sessionData.get(KEY);
+        String value2 = saved.get(KEY);
+        assertEquals(value1, value2);
     }
 
     /**
@@ -130,7 +134,7 @@ public class JDBCSessionDataStorageTest {
         JDBCSessionDataStorage instance = new JDBCSessionDataStorage(dataSource);
         SessionData sessionData = instance.create();
         String sessionId = sessionData.getId();
-        sessionData.setAttribute(KEY, VALUE);
+        sessionData.put(KEY, VALUE);
         instance.save(sessionData);
         instance.delete(sessionId);
         SessionData deleted = instance.get(sessionId);

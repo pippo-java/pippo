@@ -88,7 +88,7 @@ class PippoHttpSession implements HttpSession {
     public Object getAttribute(String name) {
         checkInvalidated();
 
-        return sessionData.getAttribute(name);
+        return sessionData.get(name);
     }
 
     @Override
@@ -102,7 +102,7 @@ class PippoHttpSession implements HttpSession {
     public Enumeration<String> getAttributeNames() {
         checkInvalidated();
 
-        return Collections.enumeration(sessionData.getAttributeNames());
+        return Collections.enumeration(sessionData.getNames());
     }
 
     @Override
@@ -111,14 +111,14 @@ class PippoHttpSession implements HttpSession {
     public String[] getValueNames() {
         checkInvalidated();
 
-        return sessionData.getAttributeNames().toArray(new String[0]);
+        return sessionData.getNames().toArray(new String[0]);
     }
 
     @Override
     public void setAttribute(String name, Object value) {
         checkInvalidated();
 
-        sessionData.setAttribute(name, value);
+        sessionData.put(name, value);
     }
 
     @Override
@@ -132,7 +132,7 @@ class PippoHttpSession implements HttpSession {
     public void removeAttribute(String name) {
         checkInvalidated();
 
-        sessionData.removeAttribute(name);
+        sessionData.remove(name);
     }
 
     @Override
@@ -178,9 +178,7 @@ class PippoHttpSession implements HttpSession {
 
         PippoHttpSession that = (PippoHttpSession) o;
 
-        if (!sessionData.equals(that.sessionData)) return false;
-
-        return true;
+        return sessionData.equals(that.sessionData);
     }
 
     @Override

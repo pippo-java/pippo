@@ -72,11 +72,13 @@ public class MongoDBSessionDataStorageTest {
         MongoDBSessionDataStorage instance = new MongoDBSessionDataStorage(mongoClient.getDatabase(DATABASE_NAME));
         SessionData sessionData = instance.create();
         String sessionId = sessionData.getId();
-        sessionData.setAttribute(KEY, VALUE);
+        sessionData.put(KEY, VALUE);
         instance.save(sessionData);
         SessionData saved = instance.get(sessionId);
         assertEquals(sessionData, saved);
-        assertEquals(sessionData.getAttribute(KEY), saved.getAttribute(KEY));
+        String value1 = sessionData.get(KEY);
+        String value2 = saved.get(KEY);
+        assertEquals(value1, value2);
     }
 
     /**
@@ -88,11 +90,13 @@ public class MongoDBSessionDataStorageTest {
         MongoDBSessionDataStorage instance = new MongoDBSessionDataStorage(mongoClient.getDatabase(DATABASE_NAME));
         SessionData sessionData = instance.create();
         String sessionId = sessionData.getId();
-        sessionData.setAttribute(KEY, VALUE);
+        sessionData.put(KEY, VALUE);
         instance.save(sessionData);
         SessionData saved = instance.get(sessionId);
         assertEquals(sessionData, saved);
-        assertEquals(sessionData.getAttribute(KEY), saved.getAttribute(KEY));
+        String value1 = sessionData.get(KEY);
+        String value2 = saved.get(KEY);
+        assertEquals(value1, value2);
     }
 
     /**
@@ -104,11 +108,13 @@ public class MongoDBSessionDataStorageTest {
         MongoDBSessionDataStorage instance = new MongoDBSessionDataStorage(mongoClient.getDatabase(DATABASE_NAME));
         SessionData sessionData = instance.create();
         String sessionId = sessionData.getId();
-        sessionData.setAttribute(KEY, VALUE);
+        sessionData.put(KEY, VALUE);
         instance.save(sessionData);
         SessionData saved = instance.get(sessionId);
         assertEquals(sessionData, saved);
-        assertEquals(sessionData.getAttribute(KEY), saved.getAttribute(KEY));
+        String value1 = sessionData.get(KEY);
+        String value2 = saved.get(KEY);
+        assertEquals(value1, value2);
     }
 
     /**
@@ -120,7 +126,7 @@ public class MongoDBSessionDataStorageTest {
         MongoDBSessionDataStorage instance = new MongoDBSessionDataStorage(mongoClient.getDatabase(DATABASE_NAME));
         SessionData sessionData = instance.create();
         String sessionId = sessionData.getId();
-        sessionData.setAttribute(KEY, VALUE);
+        sessionData.put(KEY, VALUE);
         instance.save(sessionData);
         instance.delete(sessionId);
         SessionData deleted = instance.get(sessionId);

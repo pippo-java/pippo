@@ -50,24 +50,28 @@ public class SessionData implements Serializable {
         return id;
     }
 
-    public Object getAttribute(String name) {
-        return attributes.get(name);
+    @SuppressWarnings("unchecked")
+    public <T> T get(String name) {
+        return (T) attributes.get(name);
     }
 
-    public Set<String> getAttributeNames() {
+    public Set<String> getNames() {
         return attributes.keySet();
     }
 
-    public void setAttribute(String name, Object value) {
+    public void put(String name, Object value) {
         if (value == null) {
-            removeAttribute(name);
+            remove(name);
         } else {
             attributes.put(name, value);
         }
     }
 
-    public void removeAttribute(String name) {
+    public <T> T remove(String name) {
+        T t = get(name);
         attributes.remove(name);
+
+        return t;
     }
 
     public long getCreationTime() {
@@ -113,9 +117,7 @@ public class SessionData implements Serializable {
 
         SessionData that = (SessionData) o;
 
-        if (!id.equals(that.id)) return false;
-
-        return true;
+        return id.equals(that.id);
     }
 
     @Override
