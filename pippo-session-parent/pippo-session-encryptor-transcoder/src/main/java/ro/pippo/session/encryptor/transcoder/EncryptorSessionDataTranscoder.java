@@ -19,28 +19,39 @@ import ro.pippo.core.PippoRuntimeException;
 import ro.pippo.core.util.CryptoUtils;
 import ro.pippo.session.SerializationSessionDataTranscoder;
 import ro.pippo.session.SessionData;
+import ro.pippo.session.SessionDataTranscoder;
 
 /**
  * @author Herman Barrantes
  */
-public class EncryptorSessionDataTranscoder extends SerializationSessionDataTranscoder {
+public class EncryptorSessionDataTranscoder implements SessionDataTranscoder {
 
     private static final String CHECKSUM_KEY = "_cs";
     private final String secretKey;
     private final String hmacSHA1Key;
     private final Encryptor encryptor;
+    private final SessionDataTranscoder transcoder;
 
     public EncryptorSessionDataTranscoder(String secretKey) {
-        this(secretKey, secretKey, new DefaultEncryptor());
+        this(secretKey, secretKey, new SerializationSessionDataTranscoder(), new DefaultEncryptor());
     }
 
     public EncryptorSessionDataTranscoder(String secretKey, String hmacSHA1Key) {
-        this(secretKey, hmacSHA1Key, new DefaultEncryptor());
+        this(secretKey, hmacSHA1Key, new SerializationSessionDataTranscoder(), new DefaultEncryptor());
     }
 
-    public EncryptorSessionDataTranscoder(String secretKey, String hmacSHA1Key, Encryptor encryptor) {
+    public EncryptorSessionDataTranscoder(String secretKey, Encryptor encryptor) {
+        this(secretKey, secretKey, new SerializationSessionDataTranscoder(), encryptor);
+    }
+
+    public EncryptorSessionDataTranscoder(String secretKey, SessionDataTranscoder transcoder) {
+        this(secretKey, secretKey, transcoder, new DefaultEncryptor());
+    }
+
+    public EncryptorSessionDataTranscoder(String secretKey, String hmacSHA1Key, SessionDataTranscoder transcoder, Encryptor encryptor) {
         this.secretKey = secretKey;
         this.hmacSHA1Key = hmacSHA1Key;
+        this.transcoder = transcoder;
         this.encryptor = encryptor;
     }
 
@@ -49,7 +60,7 @@ public class EncryptorSessionDataTranscoder extends SerializationSessionDataTran
         try {
             String checksum = checksumSessionData(sessionData);
             sessionData.put(CHECKSUM_KEY, checksum);
-            String data = super.encode(sessionData);
+            String data = transcoder.encode(sessionData);
             return encryptor.encrypt(data, secretKey);
         } catch (Exception ex) {
             throw new PippoRuntimeException(ex);
@@ -60,7 +71,7 @@ public class EncryptorSessionDataTranscoder extends SerializationSessionDataTran
     public SessionData decode(String data) {
         try {
             data = encryptor.decrypt(data, secretKey);
-            SessionData sessionData = super.decode(data);
+            SessionData sessionData = transcoder.decode(data);
             if (isValidSessionData(sessionData)) {
                 return sessionData;
             } else {
@@ -72,7 +83,7 @@ public class EncryptorSessionDataTranscoder extends SerializationSessionDataTran
     }
 
     protected String checksumSessionData(SessionData sessionData) {
-        String data = super.encode(sessionData);
+        String data = transcoder.encode(sessionData);
         return CryptoUtils.getHmacSHA1(data, hmacSHA1Key);
     }
 
