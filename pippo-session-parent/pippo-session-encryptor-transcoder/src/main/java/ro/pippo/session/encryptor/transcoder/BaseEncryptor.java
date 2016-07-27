@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package ro.pippo.session.cookie;
+package ro.pippo.session.encryptor.transcoder;
 
 import javax.crypto.Cipher;
 import javax.crypto.spec.SecretKeySpec;
@@ -26,7 +26,7 @@ import java.util.Base64;
  */
 public class BaseEncryptor implements Encryptor {
 
-    private String algorithm;
+    private final String algorithm;
 
     public BaseEncryptor(String algorithm) {
         this.algorithm = algorithm;

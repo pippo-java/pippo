@@ -28,5 +28,6 @@
         <module>pippo-session-mongodb</module>
         <module>pippo-session-spymemcached</module>
         <module>pippo-session-xmemcached</module>
+        <module>pippo-session-encryptor-transcoder</module>
     </modules>
 </project>

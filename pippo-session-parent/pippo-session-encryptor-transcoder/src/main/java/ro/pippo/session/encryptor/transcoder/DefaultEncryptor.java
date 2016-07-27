@@ -13,21 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package ro.pippo.session.cookie;
+package ro.pippo.session.encryptor.transcoder;
 
 /**
+ * Encryptor based on "AES" algorithm.
+ *
  * @author Decebal Suiu
  */
-public interface Encryptor {
+public class DefaultEncryptor extends BaseEncryptor {
 
-    /**
-     * Encrypt a clear text String.
-     */
-    String encrypt(String data, String key) throws Exception;
-
-    /**
-     * Decrypt an encrypted String.
-     */
-    String decrypt(String data, String key) throws Exception;
+    public DefaultEncryptor() {
+        super("AES");
+    }
 
 }
