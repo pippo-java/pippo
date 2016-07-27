@@ -45,11 +45,11 @@ public class EhcacheSessionDataStorageTest {
         System.out.println("create");
         EhcacheSessionDataStorage instance = new EhcacheSessionDataStorage();
         SessionData sessionData = instance.create();
-        sessionData.setAttribute(KEY, VALUE);
+        sessionData.put(KEY, VALUE);
         assertNotNull(sessionData);
         assertNotNull(sessionData.getId());
         assertNotNull(sessionData.getCreationTime());
-        assertEquals(sessionData.getAttribute(KEY), VALUE);
+        assertEquals(sessionData.get(KEY), VALUE);
     }
 
     /**
@@ -61,7 +61,7 @@ public class EhcacheSessionDataStorageTest {
         EhcacheSessionDataStorage instance = new EhcacheSessionDataStorage();
         SessionData sessionData = instance.create();
         String sessionId = sessionData.getId();
-        sessionData.setAttribute(KEY, VALUE);
+        sessionData.put(KEY, VALUE);
         instance.save(sessionData);
         SessionData saved = (SessionData) CacheManager
                 .getInstance()
@@ -80,11 +80,13 @@ public class EhcacheSessionDataStorageTest {
         EhcacheSessionDataStorage instance = new EhcacheSessionDataStorage();
         SessionData sessionData = instance.create();
         String sessionId = sessionData.getId();
-        sessionData.setAttribute(KEY, VALUE);
+        sessionData.put(KEY, VALUE);
         instance.save(sessionData);
         SessionData saved = instance.get(sessionId);
         assertEquals(sessionData, saved);
-        assertEquals(sessionData.getAttribute(KEY), saved.getAttribute(KEY));
+        String value1 = sessionData.get(KEY);
+        String value2 = saved.get(KEY);
+        assertEquals(value1, value2);
     }
 
     /**
@@ -98,7 +100,7 @@ public class EhcacheSessionDataStorageTest {
         EhcacheSessionDataStorage instance = new EhcacheSessionDataStorage();
         SessionData sessionData = instance.create();
         String sessionId = sessionData.getId();
-        sessionData.setAttribute(KEY, VALUE);
+        sessionData.put(KEY, VALUE);
         instance.save(sessionData);
         Thread.sleep(2000L); // 2seconds
         SessionData deleted = instance.get(sessionId);
@@ -114,7 +116,7 @@ public class EhcacheSessionDataStorageTest {
         EhcacheSessionDataStorage instance = new EhcacheSessionDataStorage();
         SessionData sessionData = instance.create();
         String sessionId = sessionData.getId();
-        sessionData.setAttribute(KEY, VALUE);
+        sessionData.put(KEY, VALUE);
         instance.save(sessionData);
         instance.delete(sessionId);
         SessionData deleted = instance.get(sessionId);

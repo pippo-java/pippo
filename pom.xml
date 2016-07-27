@@ -163,8 +163,6 @@
         <module>pippo</module>
         <module>pippo-core</module>
         <module>maven-archetypes/quickstart</module>
-        <module>pippo-less4j</module>
-        <module>pippo-sasscompiler</module>
         <module>pippo-test</module>
         <module>pippo-session-parent</module>
         <module>pippo-metrics-parent</module>
@@ -172,6 +170,7 @@
         <module>pippo-content-type-parent</module>
         <module>pippo-server-parent</module>
         <module>pippo-controller-parent</module>
+        <module>pippo-css-parent</module>
     </modules>
 
     <profiles>

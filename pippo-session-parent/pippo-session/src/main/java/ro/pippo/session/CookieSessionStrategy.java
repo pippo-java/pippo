@@ -26,30 +26,23 @@ import javax.servlet.http.HttpServletResponse;
  */
 public class CookieSessionStrategy implements SessionStrategy {
 
-    public static final String SESSION_ID_COOKIE_NAME = "SESSIONID";
+    private static final String SESSION_ID_COOKIE_NAME = "SESSIONID";
 
     @Override
     public String getRequestedSessionId(HttpServletRequest request) {
-//        System.out.println("### CookieSessionStrategy.getRequestedSessionId");
         Cookie cookie = getSessionIdCookie(request);
-//        System.out.println("cookie = " + cookie);
-
         return (cookie != null) ? cookie.getValue() : null;
     }
 
     @Override
     public void onNewSession(HttpServletRequest request, HttpServletResponse response, SessionData sessionData) {
-//        System.out.println("CookieSessionStrategy.onNewSession");
         String sessionId = sessionData.getId();
-//        System.out.println("sessionId = " + sessionId);
         Cookie cookie = createSessionIdCookie(request, sessionId);
-//        System.out.println("cookie = " + cookie);
         response.addCookie(cookie);
     }
 
     @Override
     public void onInvalidatedSession(HttpServletRequest request, HttpServletResponse response) {
-//        System.out.println("CookieSessionStrategy.onInvalidatedSession");
         Cookie cookie = createSessionIdCookie(request, "");
         cookie.setMaxAge(0);
         response.addCookie(cookie);

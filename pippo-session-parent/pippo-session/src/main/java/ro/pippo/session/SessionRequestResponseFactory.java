@@ -22,7 +22,6 @@ import ro.pippo.core.Response;
 import ro.pippo.core.ResponseFinalizeListener;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 /**
  * @author Decebal Suiu
@@ -50,11 +49,6 @@ public class SessionRequestResponseFactory extends RequestResponseFactory {
         });
 
         return super.createRequest(sessionHttpServletRequest, response);
-    }
-
-    @Override
-    public Response createResponse(HttpServletResponse httpServletResponse) {
-        return super.createResponse(httpServletResponse);
     }
 
 }

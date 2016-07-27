@@ -31,24 +31,17 @@ public class MemorySessionDataStorage implements SessionDataStorage {
 
     @Override
     public SessionData create() {
-//        System.out.println("MemorySessionDataStorage.create");
-//        System.out.println("sessions.size() = " + sessions.size());
         return new SessionData();
     }
 
     @Override
     public void save(SessionData sessionData) {
-//        System.out.println("MemorySessionDataStorage.save");
-//        System.out.println("sessionData = " + sessionData);
         sessions.put(sessionData.getId(), sessionData);
     }
 
     @Override
     public SessionData get(String sessionId) {
-//        System.out.println("MemorySessionDataStorage.get");
-//        System.out.println("sessionId = " + sessionId);
         SessionData sessionData = sessions.get(sessionId);
-//        System.out.println("sessionData = " + sessionData);
         if (sessionData == null) {
             return null;
         }
@@ -66,7 +59,6 @@ public class MemorySessionDataStorage implements SessionDataStorage {
 
     @Override
     public void delete(String sessionId) {
-//        System.out.println("MemorySessionDataStorage.delete");
         sessions.remove(sessionId);
     }
 
