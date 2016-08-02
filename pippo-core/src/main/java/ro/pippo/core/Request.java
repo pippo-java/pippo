@@ -154,7 +154,7 @@ public final class Request {
                     if (!arrays.containsKey(base)) {
                         // use an ordered map because we can not rely on parameter
                         // order from the servlet container nor from the request
-                        arrays.put(base, new TreeMap<Integer, String>());
+                        arrays.put(base, new TreeMap<>());
                     }
 
                     Map<Integer, String> map = arrays.get(base);
