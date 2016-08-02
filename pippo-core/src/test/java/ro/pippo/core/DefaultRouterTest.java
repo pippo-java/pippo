@@ -26,7 +26,6 @@ import ro.pippo.core.route.RouteGroup;
 import ro.pippo.core.route.RouteHandler;
 import ro.pippo.core.route.RouteMatch;
 import ro.pippo.core.route.WebjarsResourceHandler;
-import ro.pippo.core.util.PathRegexBuilder;
 
 import java.util.HashMap;
 import java.util.List;
@@ -701,6 +700,14 @@ public class DefaultRouterTest {
         assertEquals(1, matches.size());
     }
 
+    @Test
+    public void testUnderlineInPathParameter() throws Exception {
+        router.addRoute(Route.GET("/{user_id}", emptyRouteHandler));
+
+        List<RouteMatch> matches = router.findRoutes(HttpConstants.Method.GET, "/123");
+        assertEquals(1, matches.size());
+    }
+
     private class UserGroup extends RouteGroup {
 
         public UserGroup() {
@@ -709,14 +716,6 @@ public class DefaultRouterTest {
             GET(emptyRouteHandler);
         }
 
-    }
-
-    @Test
-    public void testUnderlineInPathParameter() throws Exception {
-        router.addRoute(Route.GET("/{user_id}", emptyRouteHandler));
-
-        List<RouteMatch> matches = router.findRoutes(HttpConstants.Method.GET, "/123");
-        assertEquals(1, matches.size());
     }
 
 }

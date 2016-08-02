@@ -25,6 +25,7 @@ public class EmptyRouteHandler implements RouteHandler {
 
     @Override
     public void handle(RouteContext routeContext) {
+        // do nothing
     }
 
 }
