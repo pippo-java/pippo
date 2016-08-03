@@ -23,6 +23,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 - Upgrade [pippo-pebble] to Pebble 2.2.2
 - Make `chunked` transfer-encoding optional, not the default
 - Make the text/plain content type engine handle returning reasonable types like String, CharSequence, char[], and byte[]
+- Reduce the DirectoryHandler logging noise caused by connection resets, broken pipes, and connection timeouts by not logging the IOException stacktrace
 
 #### Added
 - [#245]: Route groups
