@@ -93,7 +93,7 @@ public class PebbleTemplateEngine implements TemplateEngine {
 
         if (pippoSettings.isDev()) {
             // do not cache templates in dev mode
-            builder.templateCache(null);
+            builder.cacheActive(false);
             builder.extension(new DebugExtension());
         }
 
