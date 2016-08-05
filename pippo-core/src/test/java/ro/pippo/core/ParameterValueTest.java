@@ -15,8 +15,6 @@
  */
 package ro.pippo.core;
 
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -42,14 +40,6 @@ public class ParameterValueTest {
 
     @Rule
     public ExpectedException thrown = ExpectedException.none();
-
-    @Before
-    public void before() {
-    }
-
-    @After
-    public void after() {
-    }
 
     @Test
     public void testBooleans() throws Exception {
@@ -153,6 +143,7 @@ public class ParameterValueTest {
 
     @Test
     public void testString() throws Exception {
+        assertEquals("métier", new ParameterValue("métier").toString());
         assertEquals("fred", new ParameterValue("fred").toString());
         assertEquals("fred", new ParameterValue("fred", "wilma", "barney").toString());
         assertArrayEquals(new String[]{"fred", "wilma", "barney"}, new ParameterValue("fred", "wilma", "barney").to(String[].class));
@@ -193,7 +184,6 @@ public class ParameterValueTest {
         assertEquals(Timestamp.valueOf("2014-12-25 13:45:20"), new ParameterValue("2014-12-25 13:45:20", "2014-12-25 8:45:35", "2014-12-25 20:45:07").toSqlTimestamp());
         assertArrayEquals(new Timestamp[]{Timestamp.valueOf("2014-12-25 13:45:20"), Timestamp.valueOf("2014-12-25 8:45:35"), Timestamp.valueOf("2014-12-25 20:45:07")}, new ParameterValue("2014-12-25 13:45:20", "2014-12-25 8:45:35", "2014-12-25 20:45:07").to(Timestamp[].class));
     }
-
 
     @Test
     public void testStringList() throws Exception {
@@ -304,10 +294,9 @@ public class ParameterValueTest {
         assertEquals(Alphabet.B, new ParameterValue("1").toEnum(Alphabet.class, null, false));
         assertEquals(Alphabet.A, new ParameterValue("0").toEnum(Alphabet.class, null, false));
         assertEquals(Alphabet.D, new ParameterValue("3").toEnum(Alphabet.class, null, false));
-
     }
 
-    public static enum Alphabet {
+    private enum Alphabet {
         A, B, C, D, E, F, G
     }
 

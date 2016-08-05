@@ -32,7 +32,7 @@ the specific language governing permissions and limitations under the License. -
         <dependency>
             <groupId>com.mitchellbosecke</groupId>
             <artifactId>pebble</artifactId>
-            <version>2.2.1</version>
+            <version>2.2.2</version>
         </dependency>
 
         <dependency>

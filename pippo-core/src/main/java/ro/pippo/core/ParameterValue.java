@@ -377,7 +377,7 @@ public class ParameterValue implements Serializable {
             Class<?> componentType = classOfT.getComponentType();
             Object array;
             // cheat by not instantiating a ParameterValue for every value
-            ParameterValue parameterValue = new ParameterValue(new String[]{"PLACEHOLDER"});
+            ParameterValue parameterValue = new ParameterValue("PLACEHOLDER");
             if (values.length == 1) {
                 // split a single-value list into an array
                 String tmp = values[0];
@@ -429,7 +429,7 @@ public class ParameterValue implements Serializable {
             X collection = (X) constructor.newInstance();
 
             // cheat by not instantiating a ParameterValue for every value
-            ParameterValue parameterValue = new ParameterValue(new String[]{"PLACEHOLDER"});
+            ParameterValue parameterValue = new ParameterValue("PLACEHOLDER");
 
             List<String> list;
             if (values.length == 1) {

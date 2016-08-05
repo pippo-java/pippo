@@ -7,7 +7,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 #### Fixed
 
 #### Changed
-- Upgrade [pippo-undertow] to Undertow 1.3.23
+- Upgrade [pippo-undertow] to Undertow 1.3.24
 - Use `org.kohsuke.metainf-services:meta-services` annotation processor to automatically generate all META-INF/services files
 - [pippo-csv] now properly collects all fields in a class hierarchy when deserializing objects
 - [pippo-test] Automatically initialize RestAssurred with Pippo ContentType engines
@@ -20,9 +20,10 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 - Upgrade [pippo-jetty] to Jetty 9.3.8
 - Upgrade [pippo-tomcat] to Tomcat 8.0.33
 - Upgrade [pippo-jade] to Jade 1.1.4
-- Upgrade [pippo-pebble] to Pebble 2.2.1
+- Upgrade [pippo-pebble] to Pebble 2.2.2
 - Make `chunked` transfer-encoding optional, not the default
 - Make the text/plain content type engine handle returning reasonable types like String, CharSequence, char[], and byte[]
+- Reduce the DirectoryHandler logging noise caused by connection resets, broken pipes, and connection timeouts by not logging the IOException stacktrace
 
 #### Added
 - [#245]: Route groups

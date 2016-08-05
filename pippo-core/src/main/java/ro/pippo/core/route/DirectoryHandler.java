@@ -259,6 +259,14 @@ public class DirectoryHandler implements RouteHandler {
             } else {
                 sendResource(resourceUrl, routeContext);
             }
+        } catch (IOException e) {
+            String message = e.getMessage();
+            if (!StringUtils.isNullOrEmpty(message)) {
+                log.warn("Error sending resource {} to {}: {}",
+                    resourceUrl, routeContext.getRequest().getClientIp(), message);
+            } else {
+                throw new PippoRuntimeException(e, "Failed to stream resource {}", resourceUrl);
+            }
         } catch (Exception e) {
             throw new PippoRuntimeException(e, "Failed to stream resource {}", resourceUrl);
         }
