@@ -13,13 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package ro.pippo.session.encryptor.transcoder;
+package ro.pippo.session;
 
 import ro.pippo.core.PippoRuntimeException;
 import ro.pippo.core.util.CryptoUtils;
-import ro.pippo.session.SerializationSessionDataTranscoder;
-import ro.pippo.session.SessionData;
-import ro.pippo.session.SessionDataTranscoder;
 
 /**
  * @author Herman Barrantes
@@ -32,27 +29,62 @@ public class EncryptorSessionDataTranscoder implements SessionDataTranscoder {
     private final Encryptor encryptor;
     private final SessionDataTranscoder transcoder;
 
-    public EncryptorSessionDataTranscoder(String secretKey) {
-        this(secretKey, secretKey, new SerializationSessionDataTranscoder(), new DefaultEncryptor());
-    }
-
-    public EncryptorSessionDataTranscoder(String secretKey, String hmacSHA1Key) {
-        this(secretKey, hmacSHA1Key, new SerializationSessionDataTranscoder(), new DefaultEncryptor());
-    }
-
-    public EncryptorSessionDataTranscoder(String secretKey, Encryptor encryptor) {
-        this(secretKey, secretKey, new SerializationSessionDataTranscoder(), encryptor);
-    }
-
-    public EncryptorSessionDataTranscoder(String secretKey, SessionDataTranscoder transcoder) {
-        this(secretKey, secretKey, transcoder, new DefaultEncryptor());
-    }
-
     public EncryptorSessionDataTranscoder(String secretKey, String hmacSHA1Key, SessionDataTranscoder transcoder, Encryptor encryptor) {
         this.secretKey = secretKey;
         this.hmacSHA1Key = hmacSHA1Key;
         this.transcoder = transcoder;
         this.encryptor = encryptor;
+    }
+
+    public static Builder builder() {
+        return new Builder();
+    }
+
+    public static class Builder {
+
+        private String secretKey;
+        private String hmacSHA1Key;
+        private Encryptor encryptor;
+        private SessionDataTranscoder transcoder;
+
+        Builder() {
+        }
+
+        public Builder secretKey(String secretKey) {
+            this.secretKey = secretKey;
+            return this;
+        }
+
+        public Builder hmacSHA1Key(String hmacSHA1Key) {
+            this.hmacSHA1Key = hmacSHA1Key;
+            return this;
+        }
+
+        public Builder encryptor(Encryptor encryptor) {
+            this.encryptor = encryptor;
+            return this;
+        }
+
+        public Builder transcoder(SessionDataTranscoder transcoder) {
+            this.transcoder = transcoder;
+            return this;
+        }
+
+        public EncryptorSessionDataTranscoder build() {
+            if (secretKey == null) {
+                throw new PippoRuntimeException("secretKey is required");
+            }
+            if (hmacSHA1Key == null) {
+                hmacSHA1Key = secretKey;
+            }
+            if (encryptor == null) {
+                encryptor = new DefaultEncryptor();
+            }
+            if (transcoder == null) {
+                transcoder = new SerializationSessionDataTranscoder();
+            }
+            return new EncryptorSessionDataTranscoder(secretKey, hmacSHA1Key, transcoder, encryptor);
+        }
     }
 
     @Override
