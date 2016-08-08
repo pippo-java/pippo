@@ -21,7 +21,7 @@ import ro.pippo.core.util.CryptoUtils;
 /**
  * @author Herman Barrantes
  */
-public class EncryptorSessionDataTranscoder implements SessionDataTranscoder {
+public class EncryptedSessionDataTranscoder implements SessionDataTranscoder {
 
     private static final String CHECKSUM_KEY = "_cs";
     private final String secretKey;
@@ -29,15 +29,11 @@ public class EncryptorSessionDataTranscoder implements SessionDataTranscoder {
     private final Encryptor encryptor;
     private final SessionDataTranscoder transcoder;
 
-    public EncryptorSessionDataTranscoder(String secretKey, String hmacSHA1Key, SessionDataTranscoder transcoder, Encryptor encryptor) {
+    public EncryptedSessionDataTranscoder(String secretKey, String hmacSHA1Key, SessionDataTranscoder transcoder, Encryptor encryptor) {
         this.secretKey = secretKey;
         this.hmacSHA1Key = hmacSHA1Key;
         this.transcoder = transcoder;
         this.encryptor = encryptor;
-    }
-
-    public static Builder builder() {
-        return new Builder();
     }
 
     public static class Builder {
@@ -46,9 +42,6 @@ public class EncryptorSessionDataTranscoder implements SessionDataTranscoder {
         private String hmacSHA1Key;
         private Encryptor encryptor;
         private SessionDataTranscoder transcoder;
-
-        Builder() {
-        }
 
         public Builder secretKey(String secretKey) {
             this.secretKey = secretKey;
@@ -70,7 +63,7 @@ public class EncryptorSessionDataTranscoder implements SessionDataTranscoder {
             return this;
         }
 
-        public EncryptorSessionDataTranscoder build() {
+        public EncryptedSessionDataTranscoder build() {
             if (secretKey == null) {
                 throw new PippoRuntimeException("secretKey is required");
             }
@@ -83,7 +76,7 @@ public class EncryptorSessionDataTranscoder implements SessionDataTranscoder {
             if (transcoder == null) {
                 transcoder = new SerializationSessionDataTranscoder();
             }
-            return new EncryptorSessionDataTranscoder(secretKey, hmacSHA1Key, transcoder, encryptor);
+            return new EncryptedSessionDataTranscoder(secretKey, hmacSHA1Key, transcoder, encryptor);
         }
     }
 
