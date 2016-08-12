@@ -24,16 +24,55 @@ import ro.pippo.core.util.CryptoUtils;
 public class EncryptedSessionDataTranscoder implements SessionDataTranscoder {
 
     private static final String CHECKSUM_KEY = "_cs";
+
     private final String secretKey;
     private final String hmacSHA1Key;
     private final Encryptor encryptor;
     private final SessionDataTranscoder transcoder;
 
-    public EncryptedSessionDataTranscoder(String secretKey, String hmacSHA1Key, SessionDataTranscoder transcoder, Encryptor encryptor) {
+    private EncryptedSessionDataTranscoder(String secretKey, String hmacSHA1Key, SessionDataTranscoder transcoder, Encryptor encryptor) {
         this.secretKey = secretKey;
         this.hmacSHA1Key = hmacSHA1Key;
         this.transcoder = transcoder;
         this.encryptor = encryptor;
+    }
+
+    @Override
+    public String encode(SessionData sessionData) {
+        try {
+            String checksum = checksumSessionData(sessionData);
+            sessionData.put(CHECKSUM_KEY, checksum);
+            String data = transcoder.encode(sessionData);
+
+            return encryptor.encrypt(data, secretKey);
+        } catch (Exception ex) {
+            throw new PippoRuntimeException(ex);
+        }
+    }
+
+    @Override
+    public SessionData decode(String data) {
+        try {
+            data = encryptor.decrypt(data, secretKey);
+            SessionData sessionData = transcoder.decode(data);
+
+            return isValidSessionData(sessionData) ? sessionData : null;
+        } catch (Exception ex) {
+            throw new PippoRuntimeException(ex);
+        }
+    }
+
+    protected String checksumSessionData(SessionData sessionData) {
+        String data = transcoder.encode(sessionData);
+
+        return CryptoUtils.getHmacSHA1(data, hmacSHA1Key);
+    }
+
+    protected boolean isValidSessionData(SessionData sessionData) {
+        String checksum = sessionData.get(CHECKSUM_KEY);
+        sessionData.remove(CHECKSUM_KEY);
+
+        return checksum.equals(checksumSessionData(sessionData));
     }
 
     public static class Builder {
@@ -67,55 +106,22 @@ public class EncryptedSessionDataTranscoder implements SessionDataTranscoder {
             if (secretKey == null) {
                 throw new PippoRuntimeException("secretKey is required");
             }
+
             if (hmacSHA1Key == null) {
                 hmacSHA1Key = secretKey;
             }
+
             if (encryptor == null) {
                 encryptor = new DefaultEncryptor();
             }
+
             if (transcoder == null) {
                 transcoder = new SerializationSessionDataTranscoder();
             }
+
             return new EncryptedSessionDataTranscoder(secretKey, hmacSHA1Key, transcoder, encryptor);
         }
-    }
 
-    @Override
-    public String encode(SessionData sessionData) {
-        try {
-            String checksum = checksumSessionData(sessionData);
-            sessionData.put(CHECKSUM_KEY, checksum);
-            String data = transcoder.encode(sessionData);
-            return encryptor.encrypt(data, secretKey);
-        } catch (Exception ex) {
-            throw new PippoRuntimeException(ex);
-        }
-    }
-
-    @Override
-    public SessionData decode(String data) {
-        try {
-            data = encryptor.decrypt(data, secretKey);
-            SessionData sessionData = transcoder.decode(data);
-            if (isValidSessionData(sessionData)) {
-                return sessionData;
-            } else {
-                return null;
-            }
-        } catch (Exception ex) {
-            throw new PippoRuntimeException(ex);
-        }
-    }
-
-    protected String checksumSessionData(SessionData sessionData) {
-        String data = transcoder.encode(sessionData);
-        return CryptoUtils.getHmacSHA1(data, hmacSHA1Key);
-    }
-
-    protected boolean isValidSessionData(SessionData sessionData) {
-        String checksum = sessionData.get(CHECKSUM_KEY);
-        sessionData.remove(CHECKSUM_KEY);
-        return checksum.equals(checksumSessionData(sessionData));
     }
 
 }
