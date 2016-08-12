@@ -24,13 +24,13 @@ public interface WebServer<T extends WebServerSettings> {
 
     PippoFilter getPippoFilter();
 
-    void setPippoFilter(PippoFilter pippoFilter);
+    WebServer setPippoFilter(PippoFilter pippoFilter);
 
     String getPippoFilterPath();
 
-    void setPippoFilterPath(String pippoFilterPath);
+    WebServer setPippoFilterPath(String pippoFilterPath);
 
-    void init(PippoSettings pippoSettings);
+    WebServer init(PippoSettings pippoSettings);
 
     void start();
 

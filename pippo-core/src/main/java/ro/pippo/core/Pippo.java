@@ -31,6 +31,8 @@ public class Pippo implements Routing {
 
     private Application application;
     private WebServer server;
+    private volatile boolean running;
+    private volatile boolean initialized;
 
     public Pippo() {
         this(new Application());
@@ -60,28 +62,43 @@ public class Pippo implements Routing {
             if (server == null) {
                 throw new PippoRuntimeException("Cannot find a WebServer");
             }
-
-            PippoFilter pippoFilter = createPippoFilter(application);
-            server.setPippoFilter(pippoFilter);
-
-            server.init(application.getPippoSettings());
         }
 
         return server;
     }
 
+    public Pippo setServer(WebServer server) {
+        this.server = server;
+
+        return this;
+    }
+
     public void start() {
-        if (getServer() != null) {
-            log.debug("Start server '{}'", server);
-            server.start();
+        if (running) {
+            log.warn("Server is already started ");
+            return;
         }
+
+        log.debug("Start server '{}'", server);
+        if (!initialized) {
+            PippoFilter pippoFilter = createPippoFilter(application);
+            getServer().setPippoFilter(pippoFilter).init(application.getPippoSettings());
+
+            initialized = true;
+        }
+        server.start();
+        running = true;
     }
 
     public void stop() {
-        if (server != null) {
-            log.debug("Stop server '{}'", server);
-            server.stop();
+        if (!running) {
+            log.warn("Server is not started");
+            return;
         }
+
+        log.debug("Stop server '{}'", server);
+        server.stop();
+        running = false;
     }
 
     @Override

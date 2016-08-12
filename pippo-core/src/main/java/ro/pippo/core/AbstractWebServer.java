@@ -43,8 +43,10 @@ public abstract class AbstractWebServer<T extends WebServerSettings> implements 
     }
 
     @Override
-    public void setPippoFilter(PippoFilter pippoFilter) {
+    public WebServer setPippoFilter(PippoFilter pippoFilter) {
         this.pippoFilter = pippoFilter;
+
+        return this;
     }
 
     @Override
@@ -53,13 +55,17 @@ public abstract class AbstractWebServer<T extends WebServerSettings> implements 
     }
 
     @Override
-    public void setPippoFilterPath(String pippoFilterPath) {
+    public WebServer setPippoFilterPath(String pippoFilterPath) {
         this.pippoFilterPath = pippoFilterPath;
+
+        return this;
     }
 
     @Override
-    public void init(PippoSettings pippoSettings) {
+    public WebServer init(PippoSettings pippoSettings) {
         this.pippoSettings = pippoSettings;
+
+        return this;
     }
 
 }

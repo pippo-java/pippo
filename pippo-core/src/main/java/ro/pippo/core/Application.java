@@ -160,9 +160,9 @@ public class Application implements Routing {
             log.debug("Template engine already registered, ignoring '{}'", engineClass.getName());
             return;
         }
-        TemplateEngine engine = null;
+
         try {
-            engine = engineClass.newInstance();
+            TemplateEngine engine = engineClass.newInstance();
             setTemplateEngine(engine);
         } catch (Exception e) {
             throw new PippoRuntimeException(e, "Failed to instantiate '{}'", engineClass.getName());
