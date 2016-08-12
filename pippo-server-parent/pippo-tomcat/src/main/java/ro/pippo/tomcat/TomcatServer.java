@@ -77,6 +77,8 @@ public class TomcatServer extends AbstractWebServer<TomcatSettings> {
         super.setPippoFilter(pippoFilter);
 
         application = pippoFilter.getApplication();
+
+        return this;
     }
 
     @Override

@@ -62,6 +62,8 @@ public class TjwsServer extends AbstractWebServer<WebServerSettings> {
     @Override
     public WebServer setPippoFilter(PippoFilter pippoFilter) {
         this.application = pippoFilter.getApplication();
+
+        return this;
     }
 
     @Override
