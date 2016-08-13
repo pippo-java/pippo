@@ -113,10 +113,13 @@ public class UndertowServer extends AbstractWebServer<UndertowSettings> {
         if (getSettings().getBufferSize() > 0) {
             builder.setBufferSize(getSettings().getBufferSize());
         }
+        // method builder.setBuffersPerRegion is deprecated
+        /*
         if (getSettings().getBuffersPerRegion() > 0) {
             builder.setBuffersPerRegion(getSettings().getBuffersPerRegion());
         }
-        if (getSettings().getDirectBuffers() == true) {
+        */
+        if (getSettings().getDirectBuffers()) {
             builder.setDirectBuffers(getSettings().getDirectBuffers());
         }
         if (getSettings().getIoThreads() > 0) {
@@ -131,7 +134,7 @@ public class UndertowServer extends AbstractWebServer<UndertowSettings> {
             builder.addHttpListener(getSettings().getPort(), getSettings().getHost());
         } else {
             // HTTPS
-            builder.setServerOption(UndertowOptions.ENABLE_SPDY, true);
+            builder.setServerOption(UndertowOptions.ENABLE_HTTP2, true);
             try {
                 KeyStore keyStore = loadKeyStore(getSettings().getKeystoreFile(), getSettings().getKeystorePassword());
                 KeyStore trustStore = loadKeyStore(getSettings().getTruststoreFile(), getSettings().getTruststorePassword());
