@@ -22,6 +22,7 @@ import org.trimou.Mustache;
 import org.trimou.engine.MustacheEngine;
 import org.trimou.engine.MustacheEngineBuilder;
 import org.trimou.engine.config.EngineConfigurationKey;
+import org.trimou.engine.locator.ClassPathTemplateLocator;
 import org.trimou.handlebars.HelpersBuilder;
 import org.trimou.handlebars.i18n.DateTimeFormatHelper;
 import org.trimou.minify.Minify;
@@ -80,7 +81,8 @@ public class TrimouTemplateEngine implements TemplateEngine {
             pathPrefix = TemplateEngine.DEFAULT_PATH_PREFIX;
         }
         pathPrefix = StringUtils.removeStart(pathPrefix, "/");
-        builder.addTemplateLocator(new PippoTemplateLocator(10, pathPrefix));
+//        builder.addTemplateLocator(new PippoTemplateLocator(10, pathPrefix));
+        builder.addTemplateLocator(new ClassPathTemplateLocator(10, pathPrefix, MUSTACHE));
 
         if (pippoSettings.isDev()) {
             // enable debug mode

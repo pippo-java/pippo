@@ -42,10 +42,12 @@ import ro.pippo.core.util.ClasspathUtils;
  *
  */
 class PippoTemplateLocator extends FilePathTemplateLocator {
+
     private final Logger log = LoggerFactory.getLogger(PippoTemplateLocator.class);
 
     public PippoTemplateLocator(int priority, String rootPath) {
         super(priority, rootPath, TrimouTemplateEngine.MUSTACHE);
+
         checkRootDir();
     }
 
@@ -54,17 +56,18 @@ class PippoTemplateLocator extends FilePathTemplateLocator {
         if (getRootPath() == null) {
             return Collections.emptySet();
         }
+
         return super.getAllIdentifiers();
     }
 
     @Override
     public Reader locateRealPath(String realPath) {
-
         String name = getRootPath() != null ? getRootPath() + addSuffix(realPath) : addSuffix(realPath);
         URL url = ClasspathUtils.locateOnClasspath(name);
         if (url == null) {
             return null;
         }
+
         log.debug("Template located: {}", getRootPath() + realPath);
         try {
             InputStream in = url.openStream();
@@ -76,23 +79,21 @@ class PippoTemplateLocator extends FilePathTemplateLocator {
 
     @Override
     protected File getRootDir() {
-
         if (getRootPath() == null) {
             return null;
         }
 
         try {
-
             URL url = ClasspathUtils.locateOnClasspath(getRootPath());
-
             if (url == null) {
                 throw new MustacheException(MustacheProblem.TEMPLATE_LOCATOR_INVALID_CONFIGURATION,
                         "Root path resource not found: %s", getRootPath());
             }
-            return new File(URLDecoder.decode(url.getFile(), PippoConstants.UTF8));
 
+            return new File(URLDecoder.decode(url.getFile(), PippoConstants.UTF8));
         } catch (UnsupportedEncodingException e) {
             throw new MustacheException(MustacheProblem.TEMPLATE_LOCATOR_INVALID_CONFIGURATION, e);
         }
     }
+
 }
