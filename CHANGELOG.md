@@ -5,6 +5,11 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 ### [Unreleased][unreleased]
 
 #### Fixed
+- [#262]: Errors Configuring Underlying Tomcat Server to use HTTPS without Client Auth
+- [#265]: JettyServer attempts to use keystore password as truststore file path
+- [#293]: JettyServer.start() blocks due to Jetty server.join()
+- [#305]: Trimou TEMPLATE_LOCATOR_INVALID_CONFIGURATION running fat jar
+- [#306]: Length issues with unicode characters
 
 #### Changed
 - Upgrade [pippo-undertow] to Undertow 1.3.24
@@ -12,7 +17,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 - [pippo-csv] now properly collects all fields in a class hierarchy when deserializing objects
 - [pippo-test] Automatically initialize RestAssurred with Pippo ContentType engines
 - Upgrade [pippo-trimou] to Trimou 1.8.4
-- Upgrade [pippo-xstream] to XStream 1.4.9
+- Upgrade [pippo-xstream] to XStream 1.4.
 - Upgrade [pippo-snakeyaml] to SnakeYaml 1.17
 - Upgrade [pippo-fastjson] to FastJSON 1.2.8
 - Upgrade [pippo-groovy] to Groovy 2.4.6
@@ -27,6 +32,8 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 #### Added
 - [#245]: Route groups
+- [#258]: Optional logo display in PippoFilter
+- [#299]: Encrypted/signed cookie based session
 
 #### Removed
 
@@ -248,6 +255,13 @@ Initial release.
 [0.3.0]: https://github.com/decebals/pippo/compare/pippo-parent-0.2.0...pippo-parent-0.3.0
 [0.2.0]: https://github.com/decebals/pippo/compare/pippo-parent-0.1.0...pippo-parent-0.2.0
 
+[#306]: https://github.com/decebals/pippo/issues/306
+[#305]: https://github.com/decebals/pippo/issues/305
+[#299]: https://github.com/decebals/pippo/issues/299
+[#293]: https://github.com/decebals/pippo/issues/293
+[#265]: https://github.com/decebals/pippo/issues/265
+[#262]: https://github.com/decebals/pippo/issues/262
+[#258]: https://github.com/decebals/pippo/issues/258
 [#245]: https://github.com/decebals/pippo/issues/245
 [#241]: https://github.com/decebals/pippo/issues/241
 [#234]: https://github.com/decebals/pippo/issues/234
