@@ -5,6 +5,16 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 ### [Unreleased][unreleased]
 
 #### Fixed
+
+#### Changed
+
+#### Added
+
+#### Removed
+
+### [0.9.0] - 2016-08-27
+
+#### Fixed
 - [#262]: Errors Configuring Underlying Tomcat Server to use HTTPS without Client Auth
 - [#265]: JettyServer attempts to use keystore password as truststore file path
 - [#293]: JettyServer.start() blocks due to Jetty server.join()
@@ -29,10 +39,12 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 - Make `chunked` transfer-encoding optional, not the default
 - Make the text/plain content type engine handle returning reasonable types like String, CharSequence, char[], and byte[]
 - Reduce the DirectoryHandler logging noise caused by connection resets, broken pipes, and connection timeouts by not logging the IOException stacktrace
+- Restructuring of the hierarchy of modules
 
 #### Added
 - [#245]: Route groups
 - [#258]: Optional logo display in PippoFilter
+- [#288]: Extract addRoute, GET, POST, ... methods in Routing interface
 - [#299]: Encrypted/signed cookie based session
 
 #### Removed
@@ -244,7 +256,8 @@ Initial release.
 - Added [pippo-freemarker]
 - Added [pippo-jetty]
 
-[unreleased]: https://github.com/decebals/pippo/compare/release-0.8.0...HEAD
+[unreleased]: https://github.com/decebals/pippo/compare/release-0.9.0...HEAD
+[0.9.0]: https://github.com/decebals/pippo/compare/release-0.8.0...release-0.9.0
 [0.8.0]: https://github.com/decebals/pippo/compare/release-0.7.0...release-0.8.0
 [0.7.0]: https://github.com/decebals/pippo/compare/release-0.6.0...release-0.7.0
 [0.6.0]: https://github.com/decebals/pippo/compare/release-0.5.0...release-0.6.0
@@ -259,6 +272,7 @@ Initial release.
 [#305]: https://github.com/decebals/pippo/issues/305
 [#299]: https://github.com/decebals/pippo/issues/299
 [#293]: https://github.com/decebals/pippo/issues/293
+[#288]: https://github.com/decebals/pippo/issues/288
 [#265]: https://github.com/decebals/pippo/issues/265
 [#262]: https://github.com/decebals/pippo/issues/262
 [#258]: https://github.com/decebals/pippo/issues/258
