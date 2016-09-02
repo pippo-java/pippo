@@ -47,7 +47,7 @@ import java.util.Map;
  *
  * @author James Moger
  */
-@MetaInfServices(TemplateEngine.class)
+@MetaInfServices
 public class PebbleTemplateEngine implements TemplateEngine {
 
     private final Logger log = LoggerFactory.getLogger(PebbleTemplateEngine.class);

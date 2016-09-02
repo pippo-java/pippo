@@ -27,7 +27,7 @@ import com.thoughtworks.xstream.XStream;
  *
  * @author James Moger
  */
-@MetaInfServices(ContentTypeEngine.class)
+@MetaInfServices
 public class XstreamEngine implements ContentTypeEngine {
 
 	@Override

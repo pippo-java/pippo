@@ -24,7 +24,7 @@ import ro.pippo.core.util.ClasspathUtils;
 /**
  * @author James Moger
  */
-@MetaInfServices(Initializer.class)
+@MetaInfServices
 public class JacksonInitializer implements Initializer {
 
     @Override

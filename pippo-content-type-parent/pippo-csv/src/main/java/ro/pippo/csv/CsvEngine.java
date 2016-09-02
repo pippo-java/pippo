@@ -47,7 +47,7 @@ import java.util.Set;
 /**
  * @author James Moger
  */
-@MetaInfServices(ContentTypeEngine.class)
+@MetaInfServices
 public class CsvEngine implements ContentTypeEngine {
 
     public final static String TEXT_CSV = "text/csv";

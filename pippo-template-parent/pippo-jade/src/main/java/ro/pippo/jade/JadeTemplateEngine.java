@@ -42,7 +42,7 @@ import de.neuland.jade4j.template.TemplateLoader;
 /**
  * @author Decebal Suiu
  */
-@MetaInfServices(TemplateEngine.class)
+@MetaInfServices
 public class JadeTemplateEngine implements TemplateEngine {
 
     private Languages languages;

@@ -25,7 +25,7 @@ import ro.pippo.core.Initializer;
 /**
  * @author James Moger
  */
-@MetaInfServices(Initializer.class)
+@MetaInfServices
 public class TrimouInitializer implements Initializer {
 
     private static final Logger log = LoggerFactory.getLogger(TrimouInitializer.class);

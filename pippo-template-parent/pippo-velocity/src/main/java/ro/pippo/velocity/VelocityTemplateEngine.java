@@ -41,7 +41,7 @@ import java.util.Properties;
 /**
  * @author Decebal Suiu
  */
-@MetaInfServices(TemplateEngine.class)
+@MetaInfServices
 public class VelocityTemplateEngine implements TemplateEngine {
 
     public static final String VM = "vm";

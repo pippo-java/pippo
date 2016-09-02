@@ -42,7 +42,7 @@ import java.util.Locale;
  *
  * @author James Moger
  */
-@MetaInfServices(ContentTypeEngine.class)
+@MetaInfServices
 public class GsonEngine implements ContentTypeEngine {
 
     @Override

@@ -42,7 +42,7 @@ import ro.pippo.core.util.StringUtils;
  *
  * @author James Moger
  */
-@MetaInfServices(TemplateEngine.class)
+@MetaInfServices
 public class GroovyTemplateEngine implements TemplateEngine {
 
     private static final Logger log = LoggerFactory.getLogger(GroovyTemplateEngine.class);

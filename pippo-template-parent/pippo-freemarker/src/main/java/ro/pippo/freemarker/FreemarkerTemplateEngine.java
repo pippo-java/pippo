@@ -37,7 +37,7 @@ import freemarker.template.Template;
 /**
  * @author Decebal Suiu
  */
-@MetaInfServices(TemplateEngine.class)
+@MetaInfServices
 public class FreemarkerTemplateEngine implements TemplateEngine {
 
     public static final String FTL = "ftl";

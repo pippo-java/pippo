@@ -47,7 +47,7 @@ import java.util.Map;
  *
  * @author James Moger
  */
-@MetaInfServices(RouteContextFactory.class)
+@MetaInfServices
 public class PippoMetrics implements RouteContextFactory<MetricsRouteContext> {
 
     private static final Logger log = LoggerFactory.getLogger(PippoMetrics.class);

@@ -34,7 +34,7 @@ import com.librato.metrics.LibratoReporter;
  * @author James Moger
  *
  */
-@MetaInfServices(MetricsReporter.class)
+@MetaInfServices
 public class Reporter implements MetricsReporter {
 
 	private final Logger log = LoggerFactory.getLogger(Reporter.class);

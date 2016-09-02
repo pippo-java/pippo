@@ -33,7 +33,7 @@ import java.io.StringWriter;
  *
  * @author James Moger
  */
-@MetaInfServices(ContentTypeEngine.class)
+@MetaInfServices
 public class JaxbEngine implements ContentTypeEngine {
 
     boolean prettyPrint;

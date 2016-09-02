@@ -45,7 +45,7 @@ import java.util.Map;
  *
  * @author James Moger
  */
-@MetaInfServices(TemplateEngine.class)
+@MetaInfServices
 public class TrimouTemplateEngine implements TemplateEngine {
 
     private static final Logger log = LoggerFactory.getLogger(TrimouTemplateEngine.class);
