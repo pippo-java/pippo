@@ -81,7 +81,6 @@ public class TrimouTemplateEngine implements TemplateEngine {
             pathPrefix = TemplateEngine.DEFAULT_PATH_PREFIX;
         }
         pathPrefix = StringUtils.removeStart(pathPrefix, "/");
-//        builder.addTemplateLocator(new PippoTemplateLocator(10, pathPrefix));
         builder.addTemplateLocator(new ClassPathTemplateLocator(10, pathPrefix, MUSTACHE));
 
         if (pippoSettings.isDev()) {
