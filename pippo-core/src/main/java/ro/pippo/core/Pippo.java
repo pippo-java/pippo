@@ -84,6 +84,7 @@ public class Pippo implements Routing {
             return;
         }
 
+        WebServer server = getServer();
         log.debug("Start server '{}'", server);
         server.start();
         running = true;
@@ -95,6 +96,7 @@ public class Pippo implements Routing {
             return;
         }
 
+        WebServer server = getServer();
         log.debug("Stop server '{}'", server);
         server.stop();
         running = false;
