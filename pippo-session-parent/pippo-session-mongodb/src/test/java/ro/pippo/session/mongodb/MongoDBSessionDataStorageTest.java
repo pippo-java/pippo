@@ -39,21 +39,21 @@ public class MongoDBSessionDataStorageTest {
     private static final String VALUE = "VALUE";
     private static final String DATABASE_NAME = "embedded";
     private static final String HOST = "localhost";
-    private static final Integer PORT = 27017;
     private static MongodExecutable mongodExe;
     private static MongodProcess mongod;
     private static MongoClient mongoClient;
 
     @BeforeClass
     public static void setUpClass() throws IOException {
+        Integer port = Network.getFreeServerPort();
         MongodStarter starter = MongodStarter.getDefaultInstance();
         mongodExe = starter.prepare(
                 new MongodConfigBuilder()
                 .version(Version.Main.PRODUCTION)
-                .net(new Net(PORT, Network.localhostIsIPv6()))
+                .net(new Net(port, Network.localhostIsIPv6()))
                 .build());
         mongod = mongodExe.start();
-        mongoClient = new MongoClient(HOST, PORT);
+        mongoClient = new MongoClient(HOST, port);
     }
 
     @AfterClass
