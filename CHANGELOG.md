@@ -12,6 +12,22 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 #### Removed
 
+### [0.9.1] - 2016-08-27
+
+#### Fixed
+- Fix stupid NPE in Pippo.start
+- [#308]: Fix NPE when Working with PippoTest
+- [#310]: `MongoDBSessionDataStorageTest` is failing
+
+#### Changed
+- Refine the use of `@MetaInfServices` when it's possible (remove annotation's parameter in some cases)
+
+#### Added
+- [#309]: Expose the values attribute of `ParameterValue` via `getValues:String[]`
+
+#### Removed
+- Remove unused class `PippoTemplateLocator` from `pippo-trimou`
+
 ### [0.9.0] - 2016-08-27
 
 #### Fixed
@@ -256,7 +272,8 @@ Initial release.
 - Added [pippo-freemarker]
 - Added [pippo-jetty]
 
-[unreleased]: https://github.com/decebals/pippo/compare/release-0.9.0...HEAD
+[unreleased]: https://github.com/decebals/pippo/compare/release-0.9.1...HEAD
+[0.9.1]: https://github.com/decebals/pippo/compare/release-0.9.0...release-0.9.1
 [0.9.0]: https://github.com/decebals/pippo/compare/release-0.8.0...release-0.9.0
 [0.8.0]: https://github.com/decebals/pippo/compare/release-0.7.0...release-0.8.0
 [0.7.0]: https://github.com/decebals/pippo/compare/release-0.6.0...release-0.7.0
@@ -268,6 +285,9 @@ Initial release.
 [0.3.0]: https://github.com/decebals/pippo/compare/pippo-parent-0.2.0...pippo-parent-0.3.0
 [0.2.0]: https://github.com/decebals/pippo/compare/pippo-parent-0.1.0...pippo-parent-0.2.0
 
+[#310]: https://github.com/decebals/pippo/issues/310
+[#309]: https://github.com/decebals/pippo/issues/309
+[#308]: https://github.com/decebals/pippo/issues/308
 [#306]: https://github.com/decebals/pippo/issues/306
 [#305]: https://github.com/decebals/pippo/issues/305
 [#299]: https://github.com/decebals/pippo/issues/299
