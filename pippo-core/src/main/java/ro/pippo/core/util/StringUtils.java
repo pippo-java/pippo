@@ -197,6 +197,7 @@ public class StringUtils {
      */
     public static String format(String str, Object... args) {
         str = str.replaceAll("\\{\\}", "%s");
+
         return String.format(str, args);
     }
 
@@ -211,6 +212,7 @@ public class StringUtils {
         if (index > -1) {
             return value.substring(index + 1);
         }
+
         return "";
     }
 
@@ -226,12 +228,8 @@ public class StringUtils {
         if (index > -1) {
             return input.substring(0, index);
         }
-        return input;
-    }
 
-    public static String concatUriPattern(String prefix, String uriPattern) {
-        uriPattern = addStart(addStart(uriPattern, "/"), prefix);
-        return "/".equals(uriPattern) ? uriPattern : StringUtils.removeEnd(uriPattern, "/");
+        return input;
     }
 
 }

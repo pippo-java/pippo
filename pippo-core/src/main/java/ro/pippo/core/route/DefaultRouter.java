@@ -196,13 +196,29 @@ public class DefaultRouter implements Router {
 
     @Override
     public void addRouteGroup(RouteGroup routeGroup) {
-        routeGroup.getRoutes().forEach(this::addRoute);
+        // add routes of group
+        routeGroup.getRoutes().forEach(route -> {
+            String uriPattern = routeGroup.getUriPattern();
+            RouteGroup parent = routeGroup.getParent();
+            while (parent != null) {
+                uriPattern = concatUriPattern(parent.getUriPattern(), uriPattern);
+                parent = parent.getParent();
+            }
+            route.setAbsoluteUriPattern(concatUriPattern(uriPattern, route.getUriPattern()));
+
+            addRoute(route);
+        });
+
+        // add children of group
         routeGroup.getChildren().forEach(this::addRouteGroup);
     }
 
     @Override
     public void removeRouteGroup(RouteGroup routeGroup) {
+        // remove routes of group
         routeGroup.getRoutes().forEach(this::removeRoute);
+
+        // remove children of group
         routeGroup.getChildren().forEach(this::removeRouteGroup);
     }
 
@@ -284,7 +300,7 @@ public class DefaultRouter implements Router {
         PatternBinding binding = new PatternBinding(pattern, route, parameterNames);
         String requestMethod = route.getRequestMethod();
         if (!bindingsCache.containsKey(requestMethod)) {
-            bindingsCache.put(requestMethod, new ArrayList<PatternBinding>());
+            bindingsCache.put(requestMethod, new ArrayList<>());
         }
         bindingsCache.get(requestMethod).add(binding);
     }
@@ -492,6 +508,12 @@ public class DefaultRouter implements Router {
         }
 
         return uri;
+    }
+
+    private String concatUriPattern(String prefix, String uriPattern) {
+        uriPattern = StringUtils.addStart(StringUtils.addStart(uriPattern, "/"), prefix);
+
+        return "/".equals(uriPattern) ? uriPattern : StringUtils.removeEnd(uriPattern, "/");
     }
 
     private class PatternBinding {
