@@ -17,7 +17,6 @@ package ro.pippo.core.route;
 
 import ro.pippo.core.HttpConstants;
 import ro.pippo.core.PippoRuntimeException;
-import ro.pippo.core.util.StringUtils;
 
 /**
  * @author Decebal Suiu
@@ -153,13 +152,13 @@ public class Route {
         this.name = name;
     }
 
-    void setGroupUriPattern(String groupUriPattern) {
-        if (absoluteUriPattern != null) {
+    void setAbsoluteUriPattern(String absoluteUriPattern) {
+        if (this.absoluteUriPattern != null) {
             // when group1.addRoute(route); group2.addRoute(route);
             throw new PippoRuntimeException("This route is already in a group");
         }
 
-        absoluteUriPattern = StringUtils.concatUriPattern(groupUriPattern, this.uriPattern);
+        this.absoluteUriPattern = absoluteUriPattern;
     }
 
     @Override
@@ -173,14 +172,8 @@ public class Route {
 
         Route route = (Route) o;
 
-        if (!requestMethod.equals(route.requestMethod)) {
-            return false;
-        }
-        if (!getUriPattern().equals(route.getUriPattern())) {
-            return false;
-        }
+        return requestMethod.equals(route.requestMethod) && getUriPattern().equals(route.getUriPattern());
 
-        return true;
     }
 
     @Override

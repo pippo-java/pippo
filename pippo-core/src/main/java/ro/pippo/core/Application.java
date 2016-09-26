@@ -18,6 +18,7 @@ package ro.pippo.core;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ro.pippo.core.route.DefaultRouter;
+import ro.pippo.core.route.ResourceRouting;
 import ro.pippo.core.route.Route;
 import ro.pippo.core.route.Routing;
 import ro.pippo.core.route.RouteContext;
@@ -42,7 +43,7 @@ import java.util.Map;
  *
  * @author Decebal Suiu
  */
-public class Application implements Routing {
+public class Application implements ResourceRouting {
 
     private static final Logger log = LoggerFactory.getLogger(Application.class);
 

@@ -17,15 +17,15 @@ package ro.pippo.core;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import ro.pippo.core.route.ResourceRouting;
 import ro.pippo.core.route.Route;
 import ro.pippo.core.route.RouteGroup;
-import ro.pippo.core.route.Routing;
 import ro.pippo.core.util.ServiceLocator;
 
 /**
  * @author Decebal Suiu
  */
-public class Pippo implements Routing {
+public class Pippo implements ResourceRouting {
 
     private static final Logger log = LoggerFactory.getLogger(Pippo.class);
 

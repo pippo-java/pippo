@@ -647,17 +647,6 @@ public class DefaultRouterTest {
     }
 
     @Test
-    public void testAddRouteWithGroup() {
-        RouteGroup group = new RouteGroup("/users");
-        Route route = group.GET("{id}", emptyRouteHandler);
-
-        router.addRoute(route);
-
-        List<RouteMatch> matches = router.findRoutes(HttpConstants.Method.GET, "/users/1");
-        assertEquals(1, matches.size());
-    }
-
-    @Test
     public void testGroupAddRoute() {
         RouteGroup group = new RouteGroup("/users");
         Route route = Route.GET("{id}", emptyRouteHandler);
@@ -673,12 +662,55 @@ public class DefaultRouterTest {
     public void testNestGroup() {
         RouteGroup group = new RouteGroup("/users");
         RouteGroup child = new RouteGroup(group, "{id}");
-        Route route = Route.POST("like", emptyRouteHandler);
-        child.addRoute(route);
+        child.POST("like", emptyRouteHandler);
+        child.addRoute(Route.GET("help", emptyRouteHandler));
 
         router.addRouteGroup(group);
 
         List<RouteMatch> matches = router.findRoutes(HttpConstants.Method.POST, "/users/1/like");
+        assertEquals(1, matches.size());
+
+        matches = router.findRoutes(HttpConstants.Method.GET, "/users/2/help");
+        assertEquals(1, matches.size());
+    }
+
+    @Test
+    public void testNestGroupWithCRUD() {
+        RouteGroup admin = new RouteGroup("/admin");
+        admin.GET("login", emptyRouteHandler);
+        admin.GET("logout", emptyRouteHandler);
+
+//        RouteGroup users = new RouteGroup(admin, "users");
+        RouteGroup users = new RouteGroup("users");
+        users.GET("{id}", emptyRouteHandler); // retrieves (all or a specific user)
+        users.PUT("{id}", emptyRouteHandler); // update a specific user
+        users.POST("", emptyRouteHandler); // create a new user
+        users.DELETE("/{id}", emptyRouteHandler); // delete a specific user
+        admin.addRouteGroup(users);
+
+        router.addRouteGroup(admin);
+
+        List<RouteMatch> matches = router.findRoutes(HttpConstants.Method.GET, "/admin/login");
+        assertEquals(1, matches.size());
+
+        matches = router.findRoutes(HttpConstants.Method.GET, "/admin/logout");
+        assertEquals(1, matches.size());
+
+        /*
+        matches = router.findRoutes(HttpConstants.Method.GET, "/admin/users");
+        assertEquals(1, matches.size());
+        */
+
+        matches = router.findRoutes(HttpConstants.Method.GET, "/admin/users/1");
+        assertEquals(1, matches.size());
+
+        matches = router.findRoutes(HttpConstants.Method.PUT, "/admin/users/2");
+        assertEquals(1, matches.size());
+
+        matches = router.findRoutes(HttpConstants.Method.POST, "/admin/users");
+        assertEquals(1, matches.size());
+
+        matches = router.findRoutes(HttpConstants.Method.DELETE, "/admin/users/3");
         assertEquals(1, matches.size());
     }
 
@@ -713,7 +745,7 @@ public class DefaultRouterTest {
         public UserGroup() {
             super("/users");
 
-            GET(emptyRouteHandler);
+            GET("", emptyRouteHandler);
         }
 
     }
