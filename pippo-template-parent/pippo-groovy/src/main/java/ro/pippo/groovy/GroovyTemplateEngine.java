@@ -48,13 +48,14 @@ public class GroovyTemplateEngine implements TemplateEngine {
     private static final Logger log = LoggerFactory.getLogger(GroovyTemplateEngine.class);
 
     public static final String GROOVY = "groovy";
-    public static final String FILE_SUFFIX = "." + GROOVY;
 
     private Languages languages;
     private Messages messages;
     private Router router;
 
     private MarkupTemplateEngine engine;
+
+    private String extension = GROOVY;
 
     @Override
     public void init(Application application) {
@@ -110,7 +111,7 @@ public class GroovyTemplateEngine implements TemplateEngine {
     @Override
     public void renderResource(String templateName, Map<String, Object> model, Writer writer) {
         if (templateName.indexOf('.') == -1) {
-            templateName += FILE_SUFFIX;
+            templateName += "." + extension;
         }
 
         Template groovyTemplate;
@@ -129,6 +130,11 @@ public class GroovyTemplateEngine implements TemplateEngine {
             log.error("Error processing Groovy template {} ", templateName, e);
             throw new PippoRuntimeException(e);
         }
+    }
+
+    @Override
+    public void setFileExtension(String extension) {
+        this.extension = extension;
     }
 
     protected void init(Application application, TemplateConfiguration configuration) {

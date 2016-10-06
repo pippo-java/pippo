@@ -41,7 +41,6 @@ import freemarker.template.Template;
 public class FreemarkerTemplateEngine implements TemplateEngine {
 
     public static final String FTL = "ftl";
-    public static final String FILE_SUFFIX = "." + FTL;
 
     private Languages languages;
     private Messages messages;
@@ -49,6 +48,8 @@ public class FreemarkerTemplateEngine implements TemplateEngine {
     private WebjarsAtMethod webjarResourcesMethod;
     private PublicAtMethod publicResourcesMethod;
     private Configuration configuration;
+
+    private String extension = FTL;
 
     static {
         try {
@@ -153,13 +154,18 @@ public class FreemarkerTemplateEngine implements TemplateEngine {
 
         try {
             if (templateName.indexOf('.') == -1) {
-                templateName += FILE_SUFFIX;
+                templateName += "." + extension;
             }
             Template template = configuration.getTemplate(templateName, locale);
             template.process(model, writer);
         } catch (Exception e) {
             throw new PippoRuntimeException(e);
         }
+    }
+
+    @Override
+    public void setFileExtension(String extension) {
+        this.extension = extension;
     }
 
     protected void init(Application application, Configuration configuration) {

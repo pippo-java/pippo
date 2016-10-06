@@ -15,15 +15,11 @@
  */
 package ro.pippo.jade;
 
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.Reader;
-import java.io.StringReader;
-import java.io.Writer;
-import java.util.Locale;
-import java.util.Map;
-
+import de.neuland.jade4j.Jade4J.Mode;
+import de.neuland.jade4j.JadeConfiguration;
+import de.neuland.jade4j.template.JadeTemplate;
 import de.neuland.jade4j.template.ReaderTemplateLoader;
+import de.neuland.jade4j.template.TemplateLoader;
 import org.kohsuke.MetaInfServices;
 import ro.pippo.core.Application;
 import ro.pippo.core.Languages;
@@ -34,10 +30,14 @@ import ro.pippo.core.PippoSettings;
 import ro.pippo.core.TemplateEngine;
 import ro.pippo.core.route.Router;
 import ro.pippo.core.util.StringUtils;
-import de.neuland.jade4j.Jade4J.Mode;
-import de.neuland.jade4j.JadeConfiguration;
-import de.neuland.jade4j.template.JadeTemplate;
-import de.neuland.jade4j.template.TemplateLoader;
+
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.Reader;
+import java.io.StringReader;
+import java.io.Writer;
+import java.util.Locale;
+import java.util.Map;
 
 /**
  * @author Decebal Suiu
@@ -45,10 +45,14 @@ import de.neuland.jade4j.template.TemplateLoader;
 @MetaInfServices
 public class JadeTemplateEngine implements TemplateEngine {
 
+    public static final String JADE = "jade";
+
     private Languages languages;
     private Messages messages;
     private Router router;
     private JadeConfiguration configuration;
+
+    private String extension = JADE;
 
     @Override
     public void init(Application application) {
@@ -134,12 +138,15 @@ public class JadeTemplateEngine implements TemplateEngine {
         }
     }
 
+    @Override
+    public void setFileExtension(String extension) {
+        this.extension = extension;
+    }
+
     protected void init(Application application, JadeConfiguration configuration) {
     }
 
-    private static class ClassTemplateLoader implements TemplateLoader {
-
-        private static final String SUFFIX = ".jade";
+    private class ClassTemplateLoader implements TemplateLoader {
 
         private Class<?> clazz;
         private String pathPrefix;
@@ -163,8 +170,8 @@ public class JadeTemplateEngine implements TemplateEngine {
 
         @Override
         public Reader getReader(String name) throws IOException {
-            if (!name.endsWith(SUFFIX)) {
-                name += SUFFIX;
+            if (name.indexOf('.') == -1) {
+                name += "." + extension;
             }
 
             String fullPath = pathPrefix + name;

@@ -44,4 +44,6 @@ public interface TemplateEngine {
 
     void renderResource(String templateName, Map<String, Object> model, Writer writer);
 
+    void setFileExtension(String extension);
+
 }

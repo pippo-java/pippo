@@ -51,11 +51,12 @@ public class TrimouTemplateEngine implements TemplateEngine {
     private static final Logger log = LoggerFactory.getLogger(TrimouTemplateEngine.class);
 
     public static final String MUSTACHE = "mustache";
-    public static final String FILE_SUFFIX = "." + MUSTACHE;
 
     private Languages languages;
     private ThreadLocalLocaleSupport localeSupport;
     private MustacheEngine engine;
+
+    private String extension = MUSTACHE;
 
     @Override
     public void init(Application application) {
@@ -147,7 +148,7 @@ public class TrimouTemplateEngine implements TemplateEngine {
 
             localeSupport.setCurrentLocale(locale);
 
-            templateName = StringUtils.removeEnd(templateName, FILE_SUFFIX);
+            templateName = StringUtils.removeEnd(templateName, "." + extension);
 
             if (locale != null) {
                 // try the complete Locale
@@ -179,11 +180,16 @@ public class TrimouTemplateEngine implements TemplateEngine {
         }
     }
 
+    @Override
+    public void setFileExtension(String extension) {
+        this.extension = extension;
+    }
+
     protected void init(Application application, MustacheEngineBuilder builder) {
     }
 
     private String getLocalizedTemplateName(String templateName, String localePart) {
-        return StringUtils.removeEnd(templateName, FILE_SUFFIX) + "_" + localePart;
+        return StringUtils.removeEnd(templateName, "." + extension) + "_" + localePart;
     }
 
 }
