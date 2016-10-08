@@ -145,13 +145,13 @@ public class DefaultErrorHandler implements ErrorHandler {
 
     protected void renderHtml(int statusCode, RouteContext routeContext) {
         if (application.getTemplateEngine() == null) {
-            renderDirectly(routeContext);
+            renderDirectly(statusCode, routeContext);
         } else {
             String template = getTemplateForStatusCode(statusCode);
             if (template == null) {
                 log.debug("There is no {} template for status code '{}'", application.getTemplateEngine().getClass()
                     .getSimpleName(), statusCode);
-                renderDirectly(routeContext);
+                renderDirectly(statusCode, routeContext);
             } else {
                 try {
                     Error error = prepareError(statusCode, routeContext);
@@ -206,29 +206,33 @@ public class DefaultErrorHandler implements ErrorHandler {
      *
      * @param routeContext
      */
-    protected void renderDirectly(RouteContext routeContext) {
-        StringBuilder content = new StringBuilder();
-        content.append("<html><body>");
-        content.append("<div>");
-        content.append("Cannot find a route for '");
-        content.append(routeContext.getRequestMethod());
-        content.append(" ");
-        content.append(routeContext.getRequestUri());
-        content.append("'</div>");
-        content.append("<div>Available routes:</div>");
-        content.append("<ul style=\" list-style-type: none; margin: 0; \">");
-        List<Route> routes = application.getRouter().getRoutes();
-        for (Route route : routes) {
-            content.append("<li>");
-            content.append(route.getRequestMethod());
+    protected void renderDirectly(int statusCode, RouteContext routeContext) {
+        if (statusCode == HttpConstants.StatusCode.NOT_FOUND && !application.getPippoSettings().isProd()) {
+            StringBuilder content = new StringBuilder();
+            content.append("<html><body>");
+            content.append("<div>");
+            content.append("Cannot find a route for '");
+            content.append(routeContext.getRequestMethod());
             content.append(" ");
-            content.append(route.getUriPattern());
-            content.append("</li>");
-        }
-        content.append("</ul>");
-        content.append("</body></html>");
+            content.append(routeContext.getRequestUri());
+            content.append("'</div>");
+            content.append("<div>Available routes:</div>");
+            content.append("<ul style=\" list-style-type: none; margin: 0; \">");
+            List<Route> routes = application.getRouter().getRoutes();
+            for (Route route : routes) {
+                content.append("<li>");
+                content.append(route.getRequestMethod());
+                content.append(" ");
+                content.append(route.getUriPattern());
+                content.append("</li>");
+            }
+            content.append("</ul>");
+            content.append("</body></html>");
 
-        routeContext.send(content);
+            routeContext.send(content);
+        } else {
+            routeContext.getResponse().commit();
+        }
     }
 
     /**
