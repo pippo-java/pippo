@@ -300,6 +300,14 @@ public class Application implements ResourceRouting {
         return locals;
     }
 
+    /**
+     * Returns not null only in the context of the web layer (on a HTTP request).
+     * It cannot be useful in a service (server side business layer).
+     * For example if want to have access to PippoSettings from a service you must to inject PippoSettings
+     * in that service and not to use Application.get().getPippoSettings().
+     *
+     * @return The application instance or null
+     */
     public static Application get() {
         RouteContext routeContext = RouteDispatcher.getRouteContext();
 
