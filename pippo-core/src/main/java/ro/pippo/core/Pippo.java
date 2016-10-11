@@ -68,6 +68,51 @@ public class Pippo implements ResourceRouting {
         return server;
     }
 
+    /**
+     * Entry point for a custom WebServer.
+     * The idea is to create a custom WebServer if you want to override some aspects (method) of that server or
+     * if you want free access to the servlet container (Jetty, Tomcat, ...).
+     *
+     * <p>
+     * Show below the code for a <@code>JettyServer</@code> with persistent sessions.
+     * </p>
+     *
+     * <pre>
+     * <@code>
+     * public class MyJettyServer extends JettyServer {
+     *
+     *     @Override
+     *     protected ServletContextHandler createPippoHandler() {
+     *         ServletContextHandler handler = super.createPippoHandler();
+     *
+     *         // set session manager with persistence
+     *         HashSessionManager sessionManager = new HashSessionManager();
+     *         try {
+     *             sessionManager.setStoreDirectory(new File("sessions-storage"));
+     *         } catch (IOException e) {
+     *             throw new PippoRuntimeException(e);
+     *         }
+     *         sessionManager.setLazyLoad(true); // other possible option
+     *         handler.setSessionHandler(new SessionHandler(sessionManager));
+     *
+     *         return handler;
+     *     }
+     *
+     * }
+     *
+     * public class Main {
+     *
+     *     public static void main(String[] args) {
+     *         new Pippo(new MyApplication()).setServer(new MyJettyServer()).start();
+     *     }
+     *
+     * }
+     * </@code>
+     * </pre>
+     *
+     * @param server
+     * @return
+     */
     public Pippo setServer(WebServer server) {
         this.server = server;
 
