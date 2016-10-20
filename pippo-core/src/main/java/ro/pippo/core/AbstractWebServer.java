@@ -56,6 +56,8 @@ public abstract class AbstractWebServer<T extends WebServerSettings> implements 
 
     @Override
     public WebServer setPippoFilterPath(String pippoFilterPath) {
+        PippoFilter.validateFilterUrlPattern(pippoFilterPath);
+
         this.pippoFilterPath = pippoFilterPath;
 
         return this;

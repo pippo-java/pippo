@@ -28,6 +28,13 @@ public interface WebServer<T extends WebServerSettings> {
 
     String getPippoFilterPath();
 
+    /**
+     * The <code>pippoFilterPath</code> must start with <code>"/"</code> and end with <code>"/*"</code>.
+     * For example: <code>/*, /app/*</code>
+     *
+     * @param pippoFilterPath
+     * @return
+     */
     WebServer setPippoFilterPath(String pippoFilterPath);
 
     WebServer init(PippoSettings pippoSettings);

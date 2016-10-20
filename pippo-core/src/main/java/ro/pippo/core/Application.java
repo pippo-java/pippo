@@ -20,7 +20,6 @@ import org.slf4j.LoggerFactory;
 import ro.pippo.core.route.DefaultRouter;
 import ro.pippo.core.route.ResourceRouting;
 import ro.pippo.core.route.Route;
-import ro.pippo.core.route.Routing;
 import ro.pippo.core.route.RouteContext;
 import ro.pippo.core.route.RouteDispatcher;
 import ro.pippo.core.route.RouteGroup;
@@ -31,6 +30,7 @@ import ro.pippo.core.util.HttpCacheToolkit;
 import ro.pippo.core.util.MimeTypes;
 import ro.pippo.core.util.ServiceLocator;
 
+import javax.servlet.ServletContext;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -57,6 +57,7 @@ public class Application implements ResourceRouting {
     protected Router router;
     private ErrorHandler errorHandler;
     private RequestResponseFactory requestResponseFactory;
+    private ServletContext servletContext;
 
     private List<Initializer> initializers;
 
@@ -298,6 +299,21 @@ public class Application implements ResourceRouting {
         }
 
         return locals;
+    }
+
+    /**
+     * Returns the servlet context for this application.
+     * The servlet context is available after instantiation, so DON'T use this method in constructor
+     * because it returns null.
+     *
+     * @return The servlet context or null
+     */
+    public ServletContext getServletContext() {
+        return servletContext;
+    }
+
+    void setServletContext(ServletContext servletContext) {
+        this.servletContext = servletContext;
     }
 
     /**
