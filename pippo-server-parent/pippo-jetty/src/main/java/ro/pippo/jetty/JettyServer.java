@@ -27,8 +27,10 @@ import org.kohsuke.MetaInfServices;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ro.pippo.core.AbstractWebServer;
+import ro.pippo.core.Application;
 import ro.pippo.core.HttpConstants;
 import ro.pippo.core.PippoRuntimeException;
+import ro.pippo.core.PippoServletContextListener;
 import ro.pippo.core.WebServer;
 
 import javax.servlet.DispatcherType;
@@ -150,12 +152,28 @@ public class JettyServer extends AbstractWebServer<JettySettings> {
     }
 
     protected ServletContextHandler createPippoHandler() {
-        String location = pippoFilter.getApplication().getUploadLocation();
-        long maxFileSize = pippoFilter.getApplication().getMaximumUploadSize();
-        MultipartConfigElement multipartConfig = new MultipartConfigElement(location, maxFileSize, -1L, 0);
+        MultipartConfigElement multipartConfig = createMultipartConfigElement();
         ServletContextHandler handler = new PippoHandler(ServletContextHandler.SESSIONS, multipartConfig);
         handler.setContextPath(getSettings().getContextPath());
 
+        // add pippo filter
+        addPippoFilter(handler);
+
+        // add initializers
+        handler.addEventListener(new PippoServletContextListener());
+
+        return handler;
+    }
+
+    private MultipartConfigElement createMultipartConfigElement() {
+        Application application = pippoFilter.getApplication();
+        String location = application.getUploadLocation();
+        long maxFileSize = application.getMaximumUploadSize();
+
+        return new MultipartConfigElement(location, maxFileSize, -1L, 0);
+    }
+
+    private void addPippoFilter(ServletContextHandler handler) {
         if (pippoFilterPath == null) {
             pippoFilterPath = "/*"; // default value
         }
@@ -165,8 +183,6 @@ public class JettyServer extends AbstractWebServer<JettySettings> {
         FilterHolder pippoFilterHolder = new FilterHolder(pippoFilter);
         handler.addFilter(pippoFilterHolder, pippoFilterPath, dispatches);
         log.debug("Using pippo filter for path '{}'", pippoFilterPath);
-
-        return handler;
     }
 
     /**
