@@ -22,6 +22,7 @@ import ro.pippo.core.util.PippoUtils;
 import ro.pippo.core.util.StringUtils;
 
 import javax.servlet.ServletConfig;
+import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
@@ -81,7 +82,10 @@ public class PippoServlet extends HttpServlet {
             log.debug("Created application '{}'", application);
         }
 
-        String contextPath = StringUtils.addStart(servletConfig.getServletContext().getContextPath(), "/");
+        ServletContext servletContext = servletConfig.getServletContext();
+        application.setServletContext(servletContext);
+
+        String contextPath = StringUtils.addStart(servletContext.getContextPath(), "/");
         application.getRouter().setContextPath(contextPath);
         log.debug("Serving application on context path '{}'", contextPath);
 

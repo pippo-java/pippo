@@ -25,6 +25,7 @@ import javax.servlet.Filter;
 import javax.servlet.FilterChain;
 import javax.servlet.FilterConfig;
 import javax.servlet.FilterRegistration;
+import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
@@ -77,8 +78,11 @@ public class PippoFilter implements Filter {
             log.debug("Created application '{}'", application);
         }
 
+        ServletContext servletContext = filterConfig.getServletContext();
+        application.setServletContext(servletContext);
+
         try {
-            String contextPath = StringUtils.addStart(filterConfig.getServletContext().getContextPath(), "/");
+            String contextPath = StringUtils.addStart(servletContext.getContextPath(), "/");
             application.getRouter().setContextPath(contextPath);
 
             if (filterPath == null) {
@@ -189,18 +193,8 @@ public class PippoFilter implements Filter {
     private void initFilterPathFromConfig(FilterConfig filterConfig) {
         String filterMapping = filterConfig.getInitParameter(FILTER_MAPPING_PARAM);
         if (filterMapping != null) {
-            if (filterMapping.equals("/*")) {
-                filterMapping = "";
-            } else if (!filterMapping.startsWith("/") || !filterMapping.endsWith("/*")) {
-                throw new PippoRuntimeException("Your {} must start with \"/\" and end with \"/*\". It is: ",
-                    FILTER_MAPPING_PARAM, filterMapping);
-            } else {
-                // remove leading "/" and trailing "*"
-                filterMapping = filterMapping.substring(1, filterMapping.length() - 1);
-            }
+            initFilterPath(filterMapping);
         }
-
-        filterPath = filterMapping;
     }
 
     private void initFilterPathFromWebXml(FilterConfig filterConfig) {
@@ -215,8 +209,14 @@ public class PippoFilter implements Filter {
 
         if (size == 1) {
             String urlPattern = mappings.iterator().next();
-            filterPath = urlPattern.substring(1, urlPattern.length() - 1);
+            initFilterPath(urlPattern);
         }
+    }
+
+    private void initFilterPath(String urlPattern) {
+        validateFilterUrlPattern(urlPattern);
+        // remove leading "/" and trailing "*"
+        filterPath = urlPattern.substring(1, urlPattern.length() - 1);
     }
 
     private void createApplication(FilterConfig filterConfig) throws ServletException {
@@ -232,6 +232,13 @@ public class PippoFilter implements Filter {
         } catch (Exception e) {
             log.error("Cannot create application with className '{}'", applicationClassName, e);
             throw new ServletException(e);
+        }
+    }
+
+    static void validateFilterUrlPattern(String urlPattern) {
+        if (!urlPattern.startsWith("/") || !urlPattern.endsWith("/*")) {
+            throw new PippoRuntimeException("Your '{}' must start with '{}' and end with '{}'. It's '{}'",
+                FILTER_MAPPING_PARAM, "/", "/*", urlPattern);
         }
     }
 

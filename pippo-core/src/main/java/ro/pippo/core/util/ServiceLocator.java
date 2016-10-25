@@ -41,7 +41,7 @@ public class ServiceLocator {
         log.debug("Locate service '{}' using ServiceLoader", service.getName());
         ServiceLoader<T> loader = ServiceLoader.load(service, service.getClassLoader());
 
-        final List<T> services = new ArrayList<T>();
+        final List<T> services = new ArrayList<>();
         for (T item : loader) {
             log.debug("Found '{}'", item.getClass().getName());
             services.add(item);
