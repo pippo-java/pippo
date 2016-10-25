@@ -176,6 +176,9 @@ public class UndertowServer extends AbstractWebServer<UndertowSettings> {
         // add initializers
         info.addListener(new ListenerInfo(PippoServletContextListener.class));
 
+        // add listeners
+        listeners.forEach(listener -> info.addListener(new ListenerInfo(listener)));
+
         ServletInfo defaultServlet = new ServletInfo("DefaultServlet", DefaultServlet.class);
         defaultServlet.addMapping("/");
 

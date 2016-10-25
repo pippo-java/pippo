@@ -15,6 +15,8 @@
  */
 package ro.pippo.core;
 
+import javax.servlet.ServletContextListener;
+
 /**
  * @author Decebal Suiu
  */
@@ -24,7 +26,7 @@ public interface WebServer<T extends WebServerSettings> {
 
     PippoFilter getPippoFilter();
 
-    WebServer setPippoFilter(PippoFilter pippoFilter);
+    WebServer<T> setPippoFilter(PippoFilter pippoFilter);
 
     String getPippoFilterPath();
 
@@ -35,12 +37,21 @@ public interface WebServer<T extends WebServerSettings> {
      * @param pippoFilterPath
      * @return
      */
-    WebServer setPippoFilterPath(String pippoFilterPath);
+    WebServer<T> setPippoFilterPath(String pippoFilterPath);
 
-    WebServer init(PippoSettings pippoSettings);
+    WebServer<T> init(PippoSettings pippoSettings);
 
     void start();
 
     void stop();
+
+    /**
+     * Add a {@link ServletContextListener} programmatically.
+     * The preferred approach is to use {@link WebServerInitializer}.
+     *
+     * @param listener
+     * @return
+     */
+    WebServer addListener(Class<? extends ServletContextListener> listener);
 
 }

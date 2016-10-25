@@ -46,6 +46,8 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
 /**
+ * Must have a zero-argument constructor so that they can be instantiated during loading.
+ *
  * @author Decebal Suiu
  */
 @MetaInfServices(WebServer.class)
@@ -55,8 +57,15 @@ public class JettyServer extends AbstractWebServer<JettySettings> {
 
     private Server server;
 
-    private final ExecutorService executor = Executors.newSingleThreadExecutor();
-    private final CountDownLatch  startLatch = new CountDownLatch(1);
+    private final ExecutorService executor;
+    private final CountDownLatch  startLatch;
+
+    public JettyServer() {
+        super();
+
+        executor = Executors.newSingleThreadExecutor();
+        startLatch = new CountDownLatch(1);
+    }
 
     @Override
     public void start() {
@@ -161,6 +170,15 @@ public class JettyServer extends AbstractWebServer<JettySettings> {
 
         // add initializers
         handler.addEventListener(new PippoServletContextListener());
+
+        // all listeners
+        listeners.forEach(listener -> {
+            try {
+                handler.addEventListener(listener.newInstance());
+            } catch (InstantiationException | IllegalAccessException e) {
+                throw new PippoRuntimeException(e);
+            }
+        });
 
         return handler;
     }

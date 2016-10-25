@@ -119,6 +119,9 @@ public class TomcatServer extends AbstractWebServer<TomcatSettings> {
         // add initializers
         context.addApplicationListener(PippoServletContextListener.class.getName());
 
+        // add listeners
+        listeners.forEach(listener -> context.addApplicationListener(listener.getName()));
+
         try {
             String version = tomcat.getClass().getPackage().getImplementationVersion();
             log.info("Starting Tomcat Server {} on port {}", version, getSettings().getPort());

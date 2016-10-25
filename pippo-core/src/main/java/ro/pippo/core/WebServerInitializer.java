@@ -25,8 +25,20 @@ import javax.servlet.ServletContext;
  */
 public interface WebServerInitializer {
 
+    /**
+     * This will be invoked before any of the filters and servlets are initialized.
+     * It acquires the reference to {@code ServletContext} and makes use of the methods addServlet(),
+     * addMapping(), setInitParameters() and addFilter() for dynamically adding web components.
+     *
+     * @param servletContext
+     */
     void init(ServletContext servletContext);
 
+    /**
+     * This will be invoked after all the servlets and filters have been destroyed.
+     *
+     * @param servletContext
+     */
     void destroy(ServletContext servletContext);
 
 }
