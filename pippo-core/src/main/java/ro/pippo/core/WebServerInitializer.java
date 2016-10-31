@@ -20,6 +20,8 @@ import javax.servlet.ServletContext;
 /**
  * Interface to be implemented in Servlet 3.0+ environments in order to configure the
  * {@link ServletContext} programmatically.
+ * This interface is used by {@link PippoServletContextListener} so DON'T forget to annotate the
+ * implementations with {@code @MetaInfServices}.
  *
  * @author Decebal Suiu
  */

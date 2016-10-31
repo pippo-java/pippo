@@ -170,6 +170,9 @@ public class UndertowServer extends AbstractWebServer<UndertowSettings> {
         info.setContextPath(getSettings().getContextPath());
         info.setIgnoreFlush(true);
 
+        // inject application as context attribute
+        info.addServletContextAttribute(PIPPO_APPLICATION, pippoFilter.getApplication());
+
         // add pippo filter
         addPippoFilter(info);
 
