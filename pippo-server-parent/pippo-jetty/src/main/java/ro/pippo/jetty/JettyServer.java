@@ -165,6 +165,9 @@ public class JettyServer extends AbstractWebServer<JettySettings> {
         ServletContextHandler handler = new PippoHandler(ServletContextHandler.SESSIONS, multipartConfig);
         handler.setContextPath(getSettings().getContextPath());
 
+        // inject application as context attribute
+        handler.setAttribute(PIPPO_APPLICATION, pippoFilter.getApplication());
+
         // add pippo filter
         addPippoFilter(handler);
 

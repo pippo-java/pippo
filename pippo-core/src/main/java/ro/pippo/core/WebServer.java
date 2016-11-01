@@ -22,6 +22,55 @@ import javax.servlet.ServletContextListener;
  */
 public interface WebServer<T extends WebServerSettings> {
 
+    /**
+     * Attribute name used to retrieve the application instance from a {@link javax.servlet.ServletContext}.
+     * See {@link WebServerInitializer} and {@link ServletContextListener}.
+     *
+     * <pre>
+     * {@code
+     * MyApplication application = (MyApplication) servletContext.getAttribute(PIPPO_APPLICATION);
+     * }
+     * </pre>
+     *
+     * A possible scenario: I want to add support for Jersey in my application.
+     * <pre>
+     * {@code
+     *
+     * public class MyApplication extends Application {
+     *
+     *     public ResourceConfig getResourceConfig() {
+     *         return new ResourceConfig(MyResource.class);
+     *     }
+     *
+     *     // other possible methods
+     *
+     * }
+     *
+     * @MetaInfServices
+     * public class JerseyInitializer implements WebServerInitializer {
+     *
+     *     @Override
+     *     public void init(ServletContext servletContext) {
+     *         // get the resourceConfig via application
+     *         MyApplication application = (MyApplication) servletContext.getAttribute(PIPPO_APPLICATION);
+     *         ResourceConfig resourceConfig = application.getResourceConfig();
+     *
+     *         // add jersey filter
+     *         ServletRegistration.Dynamic jerseyServlet = servletContext.addServlet("jersey", new ServletContainer(resourceConfig));
+     *         jerseyServlet.setLoadOnStartup(1);
+     *         jerseyServlet.addMapping("/api/*");
+     *     }
+     *
+     *     @Override
+     *     public void destroy(ServletContext servletContext) {
+     *         // do nothing for now
+     *     }
+     *
+     * }
+     * </pre>
+     */
+    public static final String PIPPO_APPLICATION = "PIPPO_APPLICATION";
+
     T getSettings();
 
     PippoFilter getPippoFilter();

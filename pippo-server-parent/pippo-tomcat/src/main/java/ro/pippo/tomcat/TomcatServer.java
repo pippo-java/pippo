@@ -116,6 +116,9 @@ public class TomcatServer extends AbstractWebServer<TomcatSettings> {
         context.addChild(wrapper);
         context.addServletMapping(pippoFilterPath, name);
 
+        // inject application as context attribute
+        context.getServletContext().setAttribute(PIPPO_APPLICATION, application);
+
         // add initializers
         context.addApplicationListener(PippoServletContextListener.class.getName());
 
