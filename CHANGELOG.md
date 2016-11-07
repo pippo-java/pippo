@@ -5,6 +5,16 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 ### [Unreleased][unreleased]
 
 #### Fixed
+
+#### Changed
+
+#### Added
+
+#### Removed
+
+### [0.10.0] - 2016-11-07
+
+#### Fixed
 - [#318]: Non-debug error handler
 
 #### Changed
@@ -278,7 +288,8 @@ Initial release.
 - Added [pippo-freemarker]
 - Added [pippo-jetty]
 
-[unreleased]: https://github.com/decebals/pippo/compare/release-0.9.1...HEAD
+[unreleased]: https://github.com/decebals/pippo/compare/release-0.10.0...HEAD
+[0.10.0]: https://github.com/decebals/pippo/compare/release-0.9.1...release-0.10.0
 [0.9.1]: https://github.com/decebals/pippo/compare/release-0.9.0...release-0.9.1
 [0.9.0]: https://github.com/decebals/pippo/compare/release-0.8.0...release-0.9.0
 [0.8.0]: https://github.com/decebals/pippo/compare/release-0.7.0...release-0.8.0
