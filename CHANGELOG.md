@@ -5,10 +5,16 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 ### [Unreleased][unreleased]
 
 #### Fixed
+- [#318]: Non-debug error handler
 
 #### Changed
+- [#315]: Improve the route group concept
 
 #### Added
+- [#317]: Add `setFileExtension` method to `TemplateEngine`
+- [#321]: Add possibility to register filter, servlet, listener
+- [#323]: Inject `Application` instance in `ServletContext`
+- [#326]: Add `SingletonControllerFactory`
 
 #### Removed
 
@@ -285,6 +291,12 @@ Initial release.
 [0.3.0]: https://github.com/decebals/pippo/compare/pippo-parent-0.2.0...pippo-parent-0.3.0
 [0.2.0]: https://github.com/decebals/pippo/compare/pippo-parent-0.1.0...pippo-parent-0.2.0
 
+[#326]: https://github.com/decebals/pippo/issues/326
+[#323]: https://github.com/decebals/pippo/issues/323
+[#321]: https://github.com/decebals/pippo/issues/321
+[#318]: https://github.com/decebals/pippo/issues/318
+[#317]: https://github.com/decebals/pippo/issues/317
+[#315]: https://github.com/decebals/pippo/issues/315
 [#310]: https://github.com/decebals/pippo/issues/310
 [#309]: https://github.com/decebals/pippo/issues/309
 [#308]: https://github.com/decebals/pippo/issues/308
