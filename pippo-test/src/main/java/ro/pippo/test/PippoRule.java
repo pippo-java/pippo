@@ -34,8 +34,7 @@ import ro.pippo.core.PippoRuntimeException;
  */
 public class PippoRule implements TestRule {
 
-    protected final Application application;
-    protected final Integer port;
+    private final Pippo pippo;
 
     /**
      * This constructor dynamically allocates a free port.
@@ -45,27 +44,60 @@ public class PippoRule implements TestRule {
     }
 
     public PippoRule(Application application, Integer port) {
-        this.application = application;
-        this.port = port;
+        this(new Pippo(application), port);
+    }
+
+    public PippoRule(Pippo pippo) {
+        this(pippo, AvailablePortFinder.findAvailablePort());
+    }
+
+    public PippoRule(Pippo pippo, Integer port) {
+        this.pippo = pippo;
+
+        pippo.getServer().getSettings().port(port);
+    }
+
+    /**
+     * Useful in case that you want to mock some services via setters.
+     */
+    public Application getApplication() {
+        return pippo.getApplication();
     }
 
     @Override
     public Statement apply(Statement statement, Description description) {
-        return decorateStatement(statement);
+        // decorate statement
+        return new Statement() {
+
+            @Override
+            public void evaluate() throws Throwable {
+                startPippo(pippo);
+
+                try {
+                    statement.evaluate();
+                } finally {
+                    stopPippo(pippo);
+                }
+            }
+
+        };
     }
 
-    protected Pippo createPippo() {
-        Pippo pippo = new Pippo(application);
-        pippo.getServer().getSettings().port(port);
-
-        return pippo;
-    }
-
-    protected void startPippo(final Pippo pippo) {
+    protected void startPippo(Pippo pippo) {
         pippo.start();
+        initRestAssured();
+    }
 
-        // init RestAssured
+    protected void stopPippo(Pippo pippo) {
+        // TODO fix the bug in pippo-core (a starting flag maybe)
+//        pippo.stop(); // it's not needed because we have an hook on shutdown
+    }
+
+    protected void initRestAssured() {
+        // port
         RestAssured.port = pippo.getServer().getSettings().getPort();
+
+        // objectMapper
         RestAssured.objectMapper(new ObjectMapper() {
 
             @Override
@@ -89,29 +121,6 @@ public class PippoRule implements TestRule {
             }
 
         });
-    }
-
-    protected void stopPippo(Pippo pippo) {
-        // TODO fix the bug in pippo-core (a starting flag maybe)
-//        pippo.stop(); // it's not needed because we have an hook on shutdown
-    }
-
-    private Statement decorateStatement(Statement statement) {
-        return new Statement() {
-
-            @Override
-            public void evaluate() throws Throwable {
-                Pippo pippo = createPippo();
-                startPippo(pippo);
-
-                try {
-                    statement.evaluate();
-                } finally {
-                    stopPippo(pippo);
-                }
-            }
-
-        };
     }
 
 }
