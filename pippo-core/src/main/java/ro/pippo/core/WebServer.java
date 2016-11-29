@@ -103,4 +103,14 @@ public interface WebServer<T extends WebServerSettings> {
      */
     WebServer addListener(Class<? extends ServletContextListener> listener);
 
+    default int getPort() {
+        return getSettings().getPort();
+    }
+
+    default WebServer<T> setPort(int port) {
+        getSettings().port(port);
+
+        return this;
+    }
+
 }
