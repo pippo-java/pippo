@@ -181,7 +181,7 @@ public class Pippo implements ResourceRouting {
      */
     public static Pippo send(final String text) {
         Pippo pippo = new Pippo();
-        pippo.GET("/", (routeContext) -> routeContext.send(text));
+        pippo.GET("/", routeContext -> routeContext.send(text));
         pippo.start();
 
         return pippo;

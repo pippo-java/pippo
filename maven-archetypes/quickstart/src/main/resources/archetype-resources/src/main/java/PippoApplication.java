@@ -18,10 +18,10 @@ public class PippoApplication extends Application {
         getRouter().ignorePaths("/favicon.ico");
 
         // send 'Hello World' as response
-        GET("/", (routeContext) -> routeContext.send("Hello World"));
+        GET("/", routeContext -> routeContext.send("Hello World"));
 
         // send a template as response
-        GET("/template", (routeContext) -> {
+        GET("/template", routeContext -> {
             String message;
 
             String lang = routeContext.getParameter("lang").toString();
