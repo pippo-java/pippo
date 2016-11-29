@@ -123,6 +123,16 @@ public class Pippo implements ResourceRouting {
         return this;
     }
 
+    /**
+     * Start the web server on this port.
+     *
+     * @param port
+     */
+    public void start(int port) {
+        getServer().setPort(port);
+        start();
+    }
+
     public void start() {
         if (running) {
             log.warn("Server is already started ");
@@ -155,6 +165,12 @@ public class Pippo implements ResourceRouting {
     @Override
     public void addRouteGroup(RouteGroup routeGroup) {
         getApplication().addRouteGroup(routeGroup);
+    }
+
+    public Pippo setFilterPath(String filterPath) {
+        getServer().setPippoFilterPath(filterPath);
+
+        return this;
     }
 
     /**
