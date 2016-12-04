@@ -152,7 +152,7 @@ public class Route {
         this.name = name;
     }
 
-    void setAbsoluteUriPattern(String absoluteUriPattern) {
+    public void setAbsoluteUriPattern(String absoluteUriPattern) {
         if (this.absoluteUriPattern != null) {
             // when group1.addRoute(route); group2.addRoute(route);
             throw new PippoRuntimeException("This route is already in a group");
