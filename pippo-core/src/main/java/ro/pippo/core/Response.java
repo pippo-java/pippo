@@ -987,7 +987,7 @@ public final class Response {
      * @param templateName
      */
     public void render(String templateName) {
-        render(templateName, new HashMap<String, Object>());
+        render(templateName, new HashMap<>());
     }
 
     /**
