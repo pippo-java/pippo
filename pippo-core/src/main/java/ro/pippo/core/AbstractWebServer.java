@@ -15,7 +15,7 @@
  */
 package ro.pippo.core;
 
-import javax.servlet.ServletContextListener;
+import java.util.EventListener;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
@@ -30,7 +30,7 @@ public abstract class AbstractWebServer<T extends WebServerSettings> implements 
     protected PippoSettings pippoSettings;
     private T settings;
 
-    protected List<Class<? extends ServletContextListener>> listeners;
+    protected List<Class<? extends EventListener>> listeners;
 
     public AbstractWebServer() {
         listeners = new CopyOnWriteArrayList<>();
@@ -81,7 +81,7 @@ public abstract class AbstractWebServer<T extends WebServerSettings> implements 
     }
 
     @Override
-    public WebServer<T> addListener(Class<? extends ServletContextListener> listener) {
+    public WebServer<T> addListener(Class<? extends EventListener> listener) {
         listeners.add(listener);
 
         return this;

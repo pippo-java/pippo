@@ -31,6 +31,7 @@ import javax.servlet.ServletContextListener;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.util.EventListener;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
@@ -109,7 +110,7 @@ public class TjwsServer extends AbstractWebServer<WebServerSettings> {
     }
 
     @Override
-    public WebServer<WebServerSettings> addListener(Class<? extends ServletContextListener> listener) {
+    public WebServer<WebServerSettings> addListener(Class<? extends EventListener> listener) {
         throw new PippoRuntimeException("This feature is not available for this server type");
     }
 

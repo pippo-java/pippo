@@ -15,7 +15,7 @@
  */
 package ro.pippo.core;
 
-import javax.servlet.ServletContextListener;
+import java.util.EventListener;
 
 /**
  * @author Decebal Suiu
@@ -24,7 +24,7 @@ public interface WebServer<T extends WebServerSettings> {
 
     /**
      * Attribute name used to retrieve the application instance from a {@link javax.servlet.ServletContext}.
-     * See {@link WebServerInitializer} and {@link ServletContextListener}.
+     * See also {@link WebServerInitializer}.
      *
      * <pre>
      * {@code
@@ -95,13 +95,26 @@ public interface WebServer<T extends WebServerSettings> {
     void stop();
 
     /**
-     * Add a {@link ServletContextListener} programmatically.
-     * The preferred approach is to use {@link WebServerInitializer}.
+     * Add an {@link EventListener} programmatically.
+     *
+     * Servlet API provides following Listener interfaces:
+     *
+     * <ul>
+     * <li>{@code javax.servlet.ServletContextListener}</li>
+     * <li>{@code javax.servlet.ServletContextAttributeListener}</li>
+     * <li>{@code javax.servlet.ServletRequestListener}</li>
+     * <li>{@code javax.servlet.ServletRequestAttributeListener}</li>
+     * <li>{@code javax.servlet.http.HttpSessionListener}</li>
+     * <li>{@code javax.servlet.http.HttpSessionBindingListener}</li>
+     * <li>{@code javax.servlet.http.HttpSessionAttributeListener}</li>
+     * <li>{@code javax.servlet.http.HttpSessionActivationListener}</li>
+     * <li>{@code javax.servlet.AsyncListener}</li>
+     * </ul>
      *
      * @param listener
      * @return
      */
-    WebServer addListener(Class<? extends ServletContextListener> listener);
+    WebServer addListener(Class<? extends EventListener> listener);
 
     default int getPort() {
         return getSettings().getPort();
