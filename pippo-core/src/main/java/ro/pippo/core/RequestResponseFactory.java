@@ -32,12 +32,11 @@ public class RequestResponseFactory {
         this.application = application;
     }
 
-    public Request createRequest(HttpServletRequest httpServletRequest, Response response) {
-        return new Request(httpServletRequest, application);
-    }
+    public RequestResponse createRequestResponse(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
+        Request request = new Request(httpServletRequest, application);
+        Response response = new Response(httpServletResponse, application);
 
-    public Response createResponse(HttpServletResponse httpServletResponse) {
-        return new Response(httpServletResponse, application);
+        return new RequestResponse(request, response);
     }
 
 }
