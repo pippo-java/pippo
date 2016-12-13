@@ -119,8 +119,9 @@ public class PippoFilter implements Filter {
 
         // create Request, Response objects
         RequestResponseFactory requestResponseFactory = application.getRequestResponseFactory();
-        Response response = requestResponseFactory.createResponse(httpServletResponse);
-        Request request = requestResponseFactory.createRequest(httpServletRequest, response);
+        RequestResponse requestResponse = requestResponseFactory.createRequestResponse(httpServletRequest, httpServletResponse);
+        Request request = requestResponse.getRequest();
+        Response response = requestResponse.getResponse();
 
         // create a URI to automatically decode the path
         URI uri = URI.create(httpServletRequest.getRequestURL().toString());

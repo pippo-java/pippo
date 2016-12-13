@@ -65,18 +65,19 @@ public class HazelcastSessionDataStorageTest {
      */
     @Test
     public void testSave() {
-        HazelcastInstance hazelcastInstance2 = Hazelcast.newHazelcastInstance();
+//        HazelcastInstance hazelcastInstance2 = Hazelcast.newHazelcastInstance();
         System.out.println("save");
         HazelcastSessionDataStorage instance = new HazelcastSessionDataStorage(hazelcastInstance);
         SessionData sessionData = instance.create();
         String sessionId = sessionData.getId();
         sessionData.put(KEY, VALUE);
         instance.save(sessionData);
-        SessionData saved = hazelcastInstance2
+//        SessionData saved = hazelcastInstance2
+        SessionData saved = hazelcastInstance
                 .<String, SessionData>getMap(SESSION_NAME)
                 .get(sessionId);
         assertEquals(sessionData, saved);
-        hazelcastInstance2.shutdown();
+//        hazelcastInstance2.shutdown();
     }
 
     /**

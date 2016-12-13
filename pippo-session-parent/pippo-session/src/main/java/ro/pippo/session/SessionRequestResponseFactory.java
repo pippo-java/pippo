@@ -17,11 +17,12 @@ package ro.pippo.session;
 
 import ro.pippo.core.Application;
 import ro.pippo.core.Request;
+import ro.pippo.core.RequestResponse;
 import ro.pippo.core.RequestResponseFactory;
 import ro.pippo.core.Response;
-import ro.pippo.core.ResponseFinalizeListener;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 /**
  * @author Decebal Suiu
@@ -37,18 +38,13 @@ public class SessionRequestResponseFactory extends RequestResponseFactory {
     }
 
     @Override
-    public Request createRequest(HttpServletRequest httpServletRequest, Response response) {
-        final SessionHttpServletRequest sessionHttpServletRequest = new SessionHttpServletRequest(httpServletRequest, sessionManager);
-        response.getFinalizeListeners().add(new ResponseFinalizeListener() {
+    public RequestResponse createRequestResponse(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
+        SessionHttpServletRequest sessionHttpServletRequest = new SessionHttpServletRequest(httpServletRequest, sessionManager);
+        Request request = new Request(sessionHttpServletRequest, application);
+        Response response = new Response(httpServletResponse, application);
+        response.getFinalizeListeners().add(r -> sessionHttpServletRequest.commitSession(httpServletResponse));
 
-            @Override
-            public void onFinalize(Response response) {
-                sessionHttpServletRequest.commitSession(response.getHttpServletResponse());
-            }
-
-        });
-
-        return super.createRequest(sessionHttpServletRequest, response);
+        return new RequestResponse(request, response);
     }
 
 }
