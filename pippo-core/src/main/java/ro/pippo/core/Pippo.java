@@ -17,20 +17,21 @@ package ro.pippo.core;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import ro.pippo.core.route.ResourceRouting;
 import ro.pippo.core.route.Route;
 import ro.pippo.core.route.RouteGroup;
-import ro.pippo.core.route.Routing;
 import ro.pippo.core.util.ServiceLocator;
 
 /**
  * @author Decebal Suiu
  */
-public class Pippo implements Routing {
+public class Pippo implements ResourceRouting {
 
     private static final Logger log = LoggerFactory.getLogger(Pippo.class);
 
     private Application application;
     private WebServer server;
+    private volatile boolean running;
 
     public Pippo() {
         this(new Application());
@@ -56,32 +57,104 @@ public class Pippo implements Routing {
 
     public WebServer getServer() {
         if (server == null) {
-            server = ServiceLocator.locate(WebServer.class);
+            WebServer server = ServiceLocator.locate(WebServer.class);
             if (server == null) {
                 throw new PippoRuntimeException("Cannot find a WebServer");
             }
 
-            PippoFilter pippoFilter = createPippoFilter(application);
-            server.setPippoFilter(pippoFilter);
-
-            server.init(application.getPippoSettings());
+            setServer(server);
         }
 
         return server;
     }
 
+    /**
+     * Entry point for a custom WebServer.
+     * The idea is to create a custom WebServer if you want to override some aspects (method) of that server or
+     * if you want free access to the servlet container (Jetty, Tomcat, ...).
+     *
+     * <p>
+     * Show below the code for a <@code>JettyServer</@code> with persistent sessions.
+     * </p>
+     *
+     * <pre>
+     * <@code>
+     * public class MyJettyServer extends JettyServer {
+     *
+     *     @Override
+     *     protected ServletContextHandler createPippoHandler() {
+     *         ServletContextHandler handler = super.createPippoHandler();
+     *
+     *         // set session manager with persistence
+     *         HashSessionManager sessionManager = new HashSessionManager();
+     *         try {
+     *             sessionManager.setStoreDirectory(new File("sessions-storage"));
+     *         } catch (IOException e) {
+     *             throw new PippoRuntimeException(e);
+     *         }
+     *         sessionManager.setLazyLoad(true); // other possible option
+     *         handler.setSessionHandler(new SessionHandler(sessionManager));
+     *
+     *         return handler;
+     *     }
+     *
+     * }
+     *
+     * public class Main {
+     *
+     *     public static void main(String[] args) {
+     *         new Pippo(new MyApplication()).setServer(new MyJettyServer()).start();
+     *     }
+     *
+     * }
+     * </@code>
+     * </pre>
+     *
+     * @param server
+     * @return
+     */
+    public Pippo setServer(WebServer server) {
+        this.server = server;
+
+        PippoFilter pippoFilter = createPippoFilter(application);
+        PippoSettings pippoSettings = application.getPippoSettings();
+        this.server.setPippoFilter(pippoFilter).init(pippoSettings);
+
+        return this;
+    }
+
+    /**
+     * Start the web server on this port.
+     *
+     * @param port
+     */
+    public void start(int port) {
+        getServer().setPort(port);
+        start();
+    }
+
     public void start() {
-        if (getServer() != null) {
-            log.debug("Start server '{}'", server);
-            server.start();
+        if (running) {
+            log.warn("Server is already started ");
+            return;
         }
+
+        WebServer server = getServer();
+        log.debug("Start server '{}'", server);
+        server.start();
+        running = true;
     }
 
     public void stop() {
-        if (server != null) {
-            log.debug("Stop server '{}'", server);
-            server.stop();
+        if (!running) {
+            log.warn("Server is not started");
+            return;
         }
+
+        WebServer server = getServer();
+        log.debug("Stop server '{}'", server);
+        server.stop();
+        running = false;
     }
 
     @Override
@@ -94,6 +167,12 @@ public class Pippo implements Routing {
         getApplication().addRouteGroup(routeGroup);
     }
 
+    public Pippo setFilterPath(String filterPath) {
+        getServer().setPippoFilterPath(filterPath);
+
+        return this;
+    }
+
     /**
      * Create a pippo instance, add a route on "/" that responds with a message.
      *
@@ -102,7 +181,7 @@ public class Pippo implements Routing {
      */
     public static Pippo send(final String text) {
         Pippo pippo = new Pippo();
-        pippo.GET("/", (routeContext) -> routeContext.send(text));
+        pippo.GET("/", routeContext -> routeContext.send(text));
         pippo.start();
 
         return pippo;

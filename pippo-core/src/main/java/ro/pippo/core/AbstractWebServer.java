@@ -15,16 +15,26 @@
  */
 package ro.pippo.core;
 
+import java.util.EventListener;
+import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
+
 /**
  * @author Decebal Suiu
  */
-public abstract class AbstractWebServer<T extends WebServerSettings> implements WebServer {
+public abstract class AbstractWebServer<T extends WebServerSettings> implements WebServer<T> {
 
     protected PippoFilter pippoFilter;
     protected String pippoFilterPath;
 
     protected PippoSettings pippoSettings;
     private T settings;
+
+    protected List<Class<? extends EventListener>> listeners;
+
+    public AbstractWebServer() {
+        listeners = new CopyOnWriteArrayList<>();
+    }
 
     protected abstract T createDefaultSettings();
 
@@ -43,8 +53,10 @@ public abstract class AbstractWebServer<T extends WebServerSettings> implements 
     }
 
     @Override
-    public void setPippoFilter(PippoFilter pippoFilter) {
+    public WebServer<T> setPippoFilter(PippoFilter pippoFilter) {
         this.pippoFilter = pippoFilter;
+
+        return this;
     }
 
     @Override
@@ -53,13 +65,26 @@ public abstract class AbstractWebServer<T extends WebServerSettings> implements 
     }
 
     @Override
-    public void setPippoFilterPath(String pippoFilterPath) {
+    public WebServer<T> setPippoFilterPath(String pippoFilterPath) {
+        PippoFilter.validateFilterUrlPattern(pippoFilterPath);
+
         this.pippoFilterPath = pippoFilterPath;
+
+        return this;
     }
 
     @Override
-    public void init(PippoSettings pippoSettings) {
+    public WebServer<T> init(PippoSettings pippoSettings) {
         this.pippoSettings = pippoSettings;
+
+        return this;
+    }
+
+    @Override
+    public WebServer<T> addListener(Class<? extends EventListener> listener) {
+        listeners.add(listener);
+
+        return this;
     }
 
 }

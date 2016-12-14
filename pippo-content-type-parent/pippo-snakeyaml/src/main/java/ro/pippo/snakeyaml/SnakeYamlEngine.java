@@ -26,7 +26,7 @@ import ro.pippo.core.HttpConstants;
  *
  * @author James Moger
  */
-@MetaInfServices(ContentTypeEngine.class)
+@MetaInfServices
 public class SnakeYamlEngine implements ContentTypeEngine {
 
     @Override

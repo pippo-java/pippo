@@ -7,12 +7,59 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 #### Fixed
 
 #### Changed
+
+#### Added
+
+#### Removed
+
+### [0.10.0] - 2016-11-07
+
+#### Fixed
+- [#318]: Non-debug error handler
+
+#### Changed
+- [#315]: Improve the route group concept
+
+#### Added
+- [#317]: Add `setFileExtension` method to `TemplateEngine`
+- [#321]: Add possibility to register filter, servlet, listener
+- [#323]: Inject `Application` instance in `ServletContext`
+- [#326]: Add `SingletonControllerFactory`
+
+#### Removed
+
+### [0.9.1] - 2016-08-27
+
+#### Fixed
+- Fix stupid NPE in Pippo.start
+- [#308]: Fix NPE when Working with PippoTest
+- [#310]: `MongoDBSessionDataStorageTest` is failing
+
+#### Changed
+- Refine the use of `@MetaInfServices` when it's possible (remove annotation's parameter in some cases)
+
+#### Added
+- [#309]: Expose the values attribute of `ParameterValue` via `getValues:String[]`
+
+#### Removed
+- Remove unused class `PippoTemplateLocator` from `pippo-trimou`
+
+### [0.9.0] - 2016-08-27
+
+#### Fixed
+- [#262]: Errors Configuring Underlying Tomcat Server to use HTTPS without Client Auth
+- [#265]: JettyServer attempts to use keystore password as truststore file path
+- [#293]: JettyServer.start() blocks due to Jetty server.join()
+- [#305]: Trimou TEMPLATE_LOCATOR_INVALID_CONFIGURATION running fat jar
+- [#306]: Length issues with unicode characters
+
+#### Changed
 - Upgrade [pippo-undertow] to Undertow 1.3.24
 - Use `org.kohsuke.metainf-services:meta-services` annotation processor to automatically generate all META-INF/services files
 - [pippo-csv] now properly collects all fields in a class hierarchy when deserializing objects
 - [pippo-test] Automatically initialize RestAssurred with Pippo ContentType engines
 - Upgrade [pippo-trimou] to Trimou 1.8.4
-- Upgrade [pippo-xstream] to XStream 1.4.9
+- Upgrade [pippo-xstream] to XStream 1.4.
 - Upgrade [pippo-snakeyaml] to SnakeYaml 1.17
 - Upgrade [pippo-fastjson] to FastJSON 1.2.8
 - Upgrade [pippo-groovy] to Groovy 2.4.6
@@ -24,9 +71,13 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 - Make `chunked` transfer-encoding optional, not the default
 - Make the text/plain content type engine handle returning reasonable types like String, CharSequence, char[], and byte[]
 - Reduce the DirectoryHandler logging noise caused by connection resets, broken pipes, and connection timeouts by not logging the IOException stacktrace
+- Restructuring of the hierarchy of modules
 
 #### Added
 - [#245]: Route groups
+- [#258]: Optional logo display in PippoFilter
+- [#288]: Extract addRoute, GET, POST, ... methods in Routing interface
+- [#299]: Encrypted/signed cookie based session
 
 #### Removed
 
@@ -237,7 +288,10 @@ Initial release.
 - Added [pippo-freemarker]
 - Added [pippo-jetty]
 
-[unreleased]: https://github.com/decebals/pippo/compare/release-0.8.0...HEAD
+[unreleased]: https://github.com/decebals/pippo/compare/release-0.10.0...HEAD
+[0.10.0]: https://github.com/decebals/pippo/compare/release-0.9.1...release-0.10.0
+[0.9.1]: https://github.com/decebals/pippo/compare/release-0.9.0...release-0.9.1
+[0.9.0]: https://github.com/decebals/pippo/compare/release-0.8.0...release-0.9.0
 [0.8.0]: https://github.com/decebals/pippo/compare/release-0.7.0...release-0.8.0
 [0.7.0]: https://github.com/decebals/pippo/compare/release-0.6.0...release-0.7.0
 [0.6.0]: https://github.com/decebals/pippo/compare/release-0.5.0...release-0.6.0
@@ -248,6 +302,23 @@ Initial release.
 [0.3.0]: https://github.com/decebals/pippo/compare/pippo-parent-0.2.0...pippo-parent-0.3.0
 [0.2.0]: https://github.com/decebals/pippo/compare/pippo-parent-0.1.0...pippo-parent-0.2.0
 
+[#326]: https://github.com/decebals/pippo/issues/326
+[#323]: https://github.com/decebals/pippo/issues/323
+[#321]: https://github.com/decebals/pippo/issues/321
+[#318]: https://github.com/decebals/pippo/issues/318
+[#317]: https://github.com/decebals/pippo/issues/317
+[#315]: https://github.com/decebals/pippo/issues/315
+[#310]: https://github.com/decebals/pippo/issues/310
+[#309]: https://github.com/decebals/pippo/issues/309
+[#308]: https://github.com/decebals/pippo/issues/308
+[#306]: https://github.com/decebals/pippo/issues/306
+[#305]: https://github.com/decebals/pippo/issues/305
+[#299]: https://github.com/decebals/pippo/issues/299
+[#293]: https://github.com/decebals/pippo/issues/293
+[#288]: https://github.com/decebals/pippo/issues/288
+[#265]: https://github.com/decebals/pippo/issues/265
+[#262]: https://github.com/decebals/pippo/issues/262
+[#258]: https://github.com/decebals/pippo/issues/258
 [#245]: https://github.com/decebals/pippo/issues/245
 [#241]: https://github.com/decebals/pippo/issues/241
 [#234]: https://github.com/decebals/pippo/issues/234

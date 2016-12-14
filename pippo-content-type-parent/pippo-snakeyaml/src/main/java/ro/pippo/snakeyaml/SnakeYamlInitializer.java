@@ -22,7 +22,7 @@ import ro.pippo.core.Initializer;
 /**
  * @author James Moger
  */
-@MetaInfServices(Initializer.class)
+@MetaInfServices
 public class SnakeYamlInitializer implements Initializer {
 
     @Override

@@ -22,6 +22,7 @@ import org.trimou.Mustache;
 import org.trimou.engine.MustacheEngine;
 import org.trimou.engine.MustacheEngineBuilder;
 import org.trimou.engine.config.EngineConfigurationKey;
+import org.trimou.engine.locator.ClassPathTemplateLocator;
 import org.trimou.handlebars.HelpersBuilder;
 import org.trimou.handlebars.i18n.DateTimeFormatHelper;
 import org.trimou.minify.Minify;
@@ -44,17 +45,18 @@ import java.util.Map;
  *
  * @author James Moger
  */
-@MetaInfServices(TemplateEngine.class)
+@MetaInfServices
 public class TrimouTemplateEngine implements TemplateEngine {
 
     private static final Logger log = LoggerFactory.getLogger(TrimouTemplateEngine.class);
 
     public static final String MUSTACHE = "mustache";
-    public static final String FILE_SUFFIX = "." + MUSTACHE;
 
     private Languages languages;
     private ThreadLocalLocaleSupport localeSupport;
     private MustacheEngine engine;
+
+    private String extension = MUSTACHE;
 
     @Override
     public void init(Application application) {
@@ -80,7 +82,7 @@ public class TrimouTemplateEngine implements TemplateEngine {
             pathPrefix = TemplateEngine.DEFAULT_PATH_PREFIX;
         }
         pathPrefix = StringUtils.removeStart(pathPrefix, "/");
-        builder.addTemplateLocator(new PippoTemplateLocator(10, pathPrefix));
+        builder.addTemplateLocator(new ClassPathTemplateLocator(10, pathPrefix, MUSTACHE));
 
         if (pippoSettings.isDev()) {
             // enable debug mode
@@ -146,7 +148,7 @@ public class TrimouTemplateEngine implements TemplateEngine {
 
             localeSupport.setCurrentLocale(locale);
 
-            templateName = StringUtils.removeEnd(templateName, FILE_SUFFIX);
+            templateName = StringUtils.removeEnd(templateName, "." + extension);
 
             if (locale != null) {
                 // try the complete Locale
@@ -178,11 +180,16 @@ public class TrimouTemplateEngine implements TemplateEngine {
         }
     }
 
+    @Override
+    public void setFileExtension(String extension) {
+        this.extension = extension;
+    }
+
     protected void init(Application application, MustacheEngineBuilder builder) {
     }
 
     private String getLocalizedTemplateName(String templateName, String localePart) {
-        return StringUtils.removeEnd(templateName, FILE_SUFFIX) + "_" + localePart;
+        return StringUtils.removeEnd(templateName, "." + extension) + "_" + localePart;
     }
 
 }

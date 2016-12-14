@@ -38,4 +38,9 @@ import com.jayway.restassured.RestAssured;
  * @author Decebal Suiu
  */
 public abstract class PippoTest extends RestAssured {
+
+    static {
+        System.setProperty("pippo.mode", "test");
+    }
+
 }

@@ -23,7 +23,7 @@ import ro.pippo.core.Initializer;
 /**
  * @author James Moger
  */
-@MetaInfServices(Initializer.class)
+@MetaInfServices
 public class GroovyInitializer implements Initializer {
 
     @Override

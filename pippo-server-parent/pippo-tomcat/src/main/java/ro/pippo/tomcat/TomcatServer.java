@@ -28,6 +28,7 @@ import ro.pippo.core.Application;
 import ro.pippo.core.PippoFilter;
 import ro.pippo.core.PippoRuntimeException;
 import ro.pippo.core.PippoServlet;
+import ro.pippo.core.PippoServletContextListener;
 import ro.pippo.core.WebServer;
 import ro.pippo.core.util.StringUtils;
 
@@ -73,10 +74,12 @@ public class TomcatServer extends AbstractWebServer<TomcatSettings> {
     }
 
     @Override
-    public void setPippoFilter(PippoFilter pippoFilter) {
+    public WebServer setPippoFilter(PippoFilter pippoFilter) {
         super.setPippoFilter(pippoFilter);
 
         application = pippoFilter.getApplication();
+
+        return this;
     }
 
     @Override
@@ -112,6 +115,15 @@ public class TomcatServer extends AbstractWebServer<TomcatSettings> {
         wrapper.setServlet(pippoServlet);
         context.addChild(wrapper);
         context.addServletMapping(pippoFilterPath, name);
+
+        // inject application as context attribute
+        context.getServletContext().setAttribute(PIPPO_APPLICATION, application);
+
+        // add initializers
+        context.addApplicationListener(PippoServletContextListener.class.getName());
+
+        // add listeners
+        listeners.forEach(listener -> context.addApplicationListener(listener.getName()));
 
         try {
             String version = tomcat.getClass().getPackage().getImplementationVersion();

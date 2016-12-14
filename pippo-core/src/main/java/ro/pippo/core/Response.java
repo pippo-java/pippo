@@ -987,7 +987,7 @@ public final class Response {
      * @param templateName
      */
     public void render(String templateName) {
-        render(templateName, new HashMap<String, Object>());
+        render(templateName, new HashMap<>());
     }
 
     /**
@@ -1049,10 +1049,9 @@ public final class Response {
             contentType(HttpConstants.ContentType.TEXT_HTML);
         }
 
-
         try {
             if (content != null) {
-                contentLength(content.length());
+                contentLength(content.toString().getBytes().length);
                 httpServletResponse.getWriter().append(content);
             }
             log.trace("Response committed");
@@ -1114,7 +1113,6 @@ public final class Response {
         RouteContext routeContext = RouteDispatcher.getRouteContext();
 
         return (routeContext != null) ? routeContext.getResponse() : null;
-
     }
 
 }

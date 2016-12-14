@@ -47,17 +47,18 @@ import java.util.Map;
  *
  * @author James Moger
  */
-@MetaInfServices(TemplateEngine.class)
+@MetaInfServices
 public class PebbleTemplateEngine implements TemplateEngine {
 
     private final Logger log = LoggerFactory.getLogger(PebbleTemplateEngine.class);
 
     public static final String PEBBLE = "peb";
-    public static final String FILE_SUFFIX = "." + PEBBLE;
 
     private Languages languages;
 
     private PebbleEngine engine;
+
+    private String extension = PEBBLE;
 
     @Override
     public void init(Application application) {
@@ -75,7 +76,7 @@ public class PebbleTemplateEngine implements TemplateEngine {
         PippoTemplateLoader templateLoader = new PippoTemplateLoader();
         templateLoader.setCharset(PippoConstants.UTF8);
         templateLoader.setPrefix(pathPrefix);
-        templateLoader.setSuffix(FILE_SUFFIX);
+        templateLoader.setSuffix("." + extension);
         loaders.add(templateLoader);
 
         PebbleEngine.Builder builder = new PebbleEngine.Builder()
@@ -163,6 +164,11 @@ public class PebbleTemplateEngine implements TemplateEngine {
         }
     }
 
+    @Override
+    public void setFileExtension(String extension) {
+        this.extension = extension;
+    }
+
     protected void init(Application application, PebbleEngine.Builder builder) {
     }
 
@@ -172,7 +178,7 @@ public class PebbleTemplateEngine implements TemplateEngine {
             if (Strings.isNullOrEmpty(localePart)) {
                 template = engine.getTemplate(templateName);
             } else {
-                String localizedName = StringUtils.removeEnd(templateName, FILE_SUFFIX) + "_" + localePart;
+                String localizedName = StringUtils.removeEnd(templateName, "." + extension) + "_" + localePart;
                 template = engine.getTemplate(localizedName);
             }
         } catch (LoaderException e) {

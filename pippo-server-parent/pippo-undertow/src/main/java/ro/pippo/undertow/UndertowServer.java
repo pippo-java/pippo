@@ -26,6 +26,7 @@ import io.undertow.servlet.Servlets;
 import io.undertow.servlet.api.DeploymentInfo;
 import io.undertow.servlet.api.DeploymentManager;
 import io.undertow.servlet.api.FilterInfo;
+import io.undertow.servlet.api.ListenerInfo;
 import io.undertow.servlet.api.ServletInfo;
 import io.undertow.servlet.handlers.DefaultServlet;
 import io.undertow.servlet.util.ImmediateInstanceFactory;
@@ -36,8 +37,8 @@ import ro.pippo.core.AbstractWebServer;
 import ro.pippo.core.Application;
 import ro.pippo.core.PippoFilter;
 import ro.pippo.core.PippoRuntimeException;
+import ro.pippo.core.PippoServletContextListener;
 import ro.pippo.core.WebServer;
-import ro.pippo.core.util.StringUtils;
 
 import javax.net.ssl.KeyManager;
 import javax.net.ssl.KeyManagerFactory;
@@ -113,10 +114,13 @@ public class UndertowServer extends AbstractWebServer<UndertowSettings> {
         if (getSettings().getBufferSize() > 0) {
             builder.setBufferSize(getSettings().getBufferSize());
         }
+        // method builder.setBuffersPerRegion is deprecated
+        /*
         if (getSettings().getBuffersPerRegion() > 0) {
             builder.setBuffersPerRegion(getSettings().getBuffersPerRegion());
         }
-        if (getSettings().getDirectBuffers() == true) {
+        */
+        if (getSettings().getDirectBuffers()) {
             builder.setDirectBuffers(getSettings().getDirectBuffers());
         }
         if (getSettings().getIoThreads() > 0) {
@@ -131,7 +135,7 @@ public class UndertowServer extends AbstractWebServer<UndertowSettings> {
             builder.addHttpListener(getSettings().getPort(), getSettings().getHost());
         } else {
             // HTTPS
-            builder.setServerOption(UndertowOptions.ENABLE_SPDY, true);
+            builder.setServerOption(UndertowOptions.ENABLE_HTTP2, true);
             try {
                 KeyStore keyStore = loadKeyStore(getSettings().getKeystoreFile(), getSettings().getKeystorePassword());
                 KeyStore trustStore = loadKeyStore(getSettings().getTruststoreFile(), getSettings().getTruststorePassword());
@@ -166,28 +170,47 @@ public class UndertowServer extends AbstractWebServer<UndertowSettings> {
         info.setContextPath(getSettings().getContextPath());
         info.setIgnoreFlush(true);
 
-        if (StringUtils.isNullOrEmpty(pippoFilterPath)) {
-            pippoFilterPath = "/*"; // default value
-        }
+        // inject application as context attribute
+        info.addServletContextAttribute(PIPPO_APPLICATION, pippoFilter.getApplication());
 
-        info.addFilters(new FilterInfo("PippoFilter", PippoFilter.class, new ImmediateInstanceFactory<>(pippoFilter)));
-        info.addFilterUrlMapping("PippoFilter", pippoFilterPath, DispatcherType.REQUEST);
+        // add pippo filter
+        addPippoFilter(info);
+
+        // add initializers
+        info.addListener(new ListenerInfo(PippoServletContextListener.class));
+
+        // add listeners
+        listeners.forEach(listener -> info.addListener(new ListenerInfo(listener)));
 
         ServletInfo defaultServlet = new ServletInfo("DefaultServlet", DefaultServlet.class);
         defaultServlet.addMapping("/");
 
-        Application application = pippoFilter.getApplication();
-        String location = application.getUploadLocation();
-        long maxFileSize = application.getMaximumUploadSize();
-        MultipartConfigElement multipartConfig = new MultipartConfigElement(location, maxFileSize, -1L, 0);
+        MultipartConfigElement multipartConfig = createMultipartConfigElement();
         defaultServlet.setMultipartConfig(multipartConfig);
         info.addServlets(defaultServlet);
 
         DeploymentManager deploymentManager = Servlets.defaultContainer().addDeployment(info);
         deploymentManager.deploy();
-        log.debug("Using pippo filter for path '{}'", pippoFilterPath);
 
         return deploymentManager;
+    }
+
+    private MultipartConfigElement createMultipartConfigElement() {
+        Application application = pippoFilter.getApplication();
+        String location = application.getUploadLocation();
+        long maxFileSize = application.getMaximumUploadSize();
+
+        return new MultipartConfigElement(location, maxFileSize, -1L, 0);
+    }
+
+    private void addPippoFilter(DeploymentInfo info) {
+        if (pippoFilterPath == null) {
+            pippoFilterPath = "/*"; // default value
+        }
+
+        info.addFilter(new FilterInfo("PippoFilter", PippoFilter.class, new ImmediateInstanceFactory<>(pippoFilter)));
+        info.addFilterUrlMapping("PippoFilter", pippoFilterPath, DispatcherType.REQUEST);
+        log.debug("Using pippo filter for path '{}'", pippoFilterPath);
     }
 
     private SSLContext createSSLContext(final KeyStore keyStore, final KeyStore trustStore) throws Exception {

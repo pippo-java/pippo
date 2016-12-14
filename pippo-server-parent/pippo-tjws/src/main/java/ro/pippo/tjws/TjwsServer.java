@@ -27,9 +27,11 @@ import ro.pippo.core.PippoServlet;
 import ro.pippo.core.WebServer;
 import ro.pippo.core.WebServerSettings;
 
+import javax.servlet.ServletContextListener;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.util.EventListener;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
@@ -41,6 +43,8 @@ import java.util.Properties;
  * file uploading and servlet filters.
  * <p/>
  * TjwsServer uses PippoServlet.
+ *
+ * TjwsServer doesn't support {@link ServletContextListener}.
  *
  * @author James Moger
  */
@@ -60,8 +64,10 @@ public class TjwsServer extends AbstractWebServer<WebServerSettings> {
     }
 
     @Override
-    public void setPippoFilter(PippoFilter pippoFilter) {
+    public WebServer setPippoFilter(PippoFilter pippoFilter) {
         this.application = pippoFilter.getApplication();
+
+        return this;
     }
 
     @Override
@@ -101,6 +107,11 @@ public class TjwsServer extends AbstractWebServer<WebServerSettings> {
                 throw new PippoRuntimeException(e, "Cannot stop RESTEasy TJWS Server");
             }
         }
+    }
+
+    @Override
+    public WebServer<WebServerSettings> addListener(Class<? extends EventListener> listener) {
+        throw new PippoRuntimeException("This feature is not available for this server type");
     }
 
     @Override

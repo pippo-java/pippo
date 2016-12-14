@@ -18,8 +18,8 @@ package ro.pippo.core;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ro.pippo.core.route.DefaultRouter;
+import ro.pippo.core.route.ResourceRouting;
 import ro.pippo.core.route.Route;
-import ro.pippo.core.route.Routing;
 import ro.pippo.core.route.RouteContext;
 import ro.pippo.core.route.RouteDispatcher;
 import ro.pippo.core.route.RouteGroup;
@@ -30,6 +30,7 @@ import ro.pippo.core.util.HttpCacheToolkit;
 import ro.pippo.core.util.MimeTypes;
 import ro.pippo.core.util.ServiceLocator;
 
+import javax.servlet.ServletContext;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -42,7 +43,7 @@ import java.util.Map;
  *
  * @author Decebal Suiu
  */
-public class Application implements Routing {
+public class Application implements ResourceRouting {
 
     private static final Logger log = LoggerFactory.getLogger(Application.class);
 
@@ -56,6 +57,7 @@ public class Application implements Routing {
     protected Router router;
     private ErrorHandler errorHandler;
     private RequestResponseFactory requestResponseFactory;
+    private ServletContext servletContext;
 
     private List<Initializer> initializers;
 
@@ -160,9 +162,9 @@ public class Application implements Routing {
             log.debug("Template engine already registered, ignoring '{}'", engineClass.getName());
             return;
         }
-        TemplateEngine engine = null;
+
         try {
-            engine = engineClass.newInstance();
+            TemplateEngine engine = engineClass.newInstance();
             setTemplateEngine(engine);
         } catch (Exception e) {
             throw new PippoRuntimeException(e, "Failed to instantiate '{}'", engineClass.getName());
@@ -299,6 +301,29 @@ public class Application implements Routing {
         return locals;
     }
 
+    /**
+     * Returns the servlet context for this application.
+     * The servlet context is available after instantiation, so DON'T use this method in constructor
+     * because it returns null.
+     *
+     * @return The servlet context or null
+     */
+    public ServletContext getServletContext() {
+        return servletContext;
+    }
+
+    void setServletContext(ServletContext servletContext) {
+        this.servletContext = servletContext;
+    }
+
+    /**
+     * Returns not null only in the context of the web layer (on a HTTP request).
+     * It cannot be useful in a service (server side business layer).
+     * For example if want to have access to PippoSettings from a service you must to inject PippoSettings
+     * in that service and not to use Application.get().getPippoSettings().
+     *
+     * @return The application instance or null
+     */
     public static Application get() {
         RouteContext routeContext = RouteDispatcher.getRouteContext();
 

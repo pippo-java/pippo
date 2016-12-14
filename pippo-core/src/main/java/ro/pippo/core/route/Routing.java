@@ -17,8 +17,6 @@ package ro.pippo.core.route;
 
 import ro.pippo.core.PippoRuntimeException;
 
-import java.io.File;
-
 /**
  * @author Decebal Suiu
  */
@@ -76,63 +74,6 @@ public interface Routing {
 
     default Route ALL(String uriPattern, RouteHandler routeHandler) {
         Route route = Route.ALL(uriPattern, routeHandler);
-        addRoute(route);
-
-        return route;
-    }
-
-    /**
-     * It's a shortcut for {@link #addPublicResourceRoute(String)} with parameter <code>"/public"</code>.
-     */
-    default Route addPublicResourceRoute() {
-        return addPublicResourceRoute("/public");
-    }
-
-    /**
-     * Add a route that serves resources from the "public" directory within your classpath.
-     */
-    default Route addPublicResourceRoute(String urlPath) {
-        return addResourceRoute(new PublicResourceHandler(urlPath));
-    }
-
-    /**
-     * Add a route that serves resources from a directory(file system).
-     */
-    default Route addFileResourceRoute(String urlPath, File directory) {
-        return addResourceRoute(new FileResourceHandler(urlPath, directory));
-    }
-
-    default Route addFileResourceRoute(String urlPath, String directory) {
-        return addResourceRoute(new FileResourceHandler(urlPath, directory));
-    }
-
-    default Route addClasspathResourceRoute(String urlPath, Class<?> resourceClass) {
-        return addResourceRoute(new ClasspathResourceHandler(urlPath, resourceClass.getName().replace(".", "/")));
-    }
-
-    /**
-     * Add a route that serves resources from classpath.
-     */
-    default Route addClasspathResourceRoute(String urlPath, String resourceBasePath) {
-        return addResourceRoute(new ClasspathResourceHandler(urlPath, resourceBasePath));
-    }
-
-    /**
-     * It's a shortcut for {@link #addWebjarsResourceRoute(String)} with parameter <code>"/webjars"</code>.
-     */
-    default Route addWebjarsResourceRoute() {
-        return addWebjarsResourceRoute("/webjars");
-    }
-
-    /**
-     * Add a route that serves webjars (http://www.webjars.org/) resources.
-     */
-    default Route addWebjarsResourceRoute(String urlPath) {
-        return addResourceRoute(new WebjarsResourceHandler(urlPath));
-    }
-
-    default Route addResourceRoute(ResourceHandler resourceHandler) {
-        Route route = Route.GET(resourceHandler.getUriPattern(), resourceHandler);
         addRoute(route);
 
         return route;

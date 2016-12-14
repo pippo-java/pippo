@@ -1,6 +1,6 @@
 Micro Java Web Framework
 =====================
-
+[![Join the chat at https://gitter.im/decebals/pippo](https://badges.gitter.im/decebals/pippo.svg)](https://gitter.im/decebals/pippo?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 [![Travis CI Build Status](https://travis-ci.org/decebals/pippo.png)](https://travis-ci.org/decebals/pippo)
 [![Coverage Status](https://coveralls.io/repos/decebals/pippo/badge.svg?branch=master&service=github)](https://coveralls.io/github/decebals/pippo?branch=master)
 [![Maven Central](http://img.shields.io/maven-central/v/ro.pippo/pippo.svg)](http://search.maven.org/#search|ga|1|ro.pippo)
@@ -24,30 +24,31 @@ public class BasicApplication extends Application {
     @Override
     protected void onInit() {
 		// send 'Hello World' as response
-        GET("/", (routeContext) -> routeContext.send("Hello World"));
+        GET("/", routeContext -> routeContext.send("Hello World"));
 
 		// send a file as response
-        GET("/file", (routeContext) -> routeContext.send(new File("pom.xml")));
+        GET("/file", routeContext -> routeContext.send(new File("pom.xml")));
 
         // send a json as response
-        GET("/json", (routeContext) -> {
+        GET("/json", routeContext -> {
 			Contact contact = createContact();
 			routeContext.json().send(contact);
         });
 
         // send xml as response
-        GET("/xml", (routeContext) -> {
+        GET("/xml", routeContext -> {
 			Contact contact = createContact();
 			routeContext.xml().send(contact);
         });
         
         // send an object and negotiate the Response content-type, default to XML
-        GET("/negotiate", (routeContext) -> {
+        GET("/negotiate", routeContext -> {
+            Contact contact = createContact();
 			routeContext.xml().negotiateContentType().send(contact);
         });
         
         // send a template as response
-        GET("/template", (routeContext) -> {
+        GET("/template", routeContext -> {
 			routeContext.setLocal("greeting", "Hello");
 			routeContext.render("hello");        
 		});

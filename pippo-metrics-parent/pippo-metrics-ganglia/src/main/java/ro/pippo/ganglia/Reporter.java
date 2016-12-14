@@ -37,7 +37,7 @@ import com.codahale.metrics.ganglia.GangliaReporter;
  * @author James Moger
  *
  */
-@MetaInfServices(MetricsReporter.class)
+@MetaInfServices
 public class Reporter implements MetricsReporter {
 
 	private final Logger log = LoggerFactory.getLogger(Reporter.class);

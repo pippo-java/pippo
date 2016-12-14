@@ -24,7 +24,7 @@ import ro.pippo.core.Initializer;
 /**
  * @author Decebal Suiu
  */
-@MetaInfServices(Initializer.class)
+@MetaInfServices
 public class VelocityInitializer implements Initializer {
 
     private static final Logger log = LoggerFactory.getLogger(VelocityInitializer.class);

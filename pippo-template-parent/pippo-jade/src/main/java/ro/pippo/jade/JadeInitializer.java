@@ -23,7 +23,7 @@ import ro.pippo.core.Initializer;
 /**
  * @author Decebal Suiu
  */
-@MetaInfServices(Initializer.class)
+@MetaInfServices
 public class JadeInitializer implements Initializer {
 
     @Override

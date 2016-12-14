@@ -41,16 +41,17 @@ import java.util.Properties;
 /**
  * @author Decebal Suiu
  */
-@MetaInfServices(TemplateEngine.class)
+@MetaInfServices
 public class VelocityTemplateEngine implements TemplateEngine {
 
     public static final String VM = "vm";
-    public static final String FILE_SUFFIX = "." + VM;
 
     private Languages languages;
     private Messages messages;
     private Router router;
     private VelocityEngine velocityEngine;
+
+    private String extension = VM;
 
     @Override
     public void init(Application application) {
@@ -119,7 +120,7 @@ public class VelocityTemplateEngine implements TemplateEngine {
     public void renderResource(String templateName, Map<String, Object> model, Writer writer) {
         // add the file suffix if it's missing
         if (templateName.indexOf('.') == -1) {
-            templateName += FILE_SUFFIX;
+            templateName += "." + extension;
         }
 
         // create the velocity context
@@ -132,6 +133,11 @@ public class VelocityTemplateEngine implements TemplateEngine {
         } catch (Exception e) {
             throw new PippoRuntimeException(e);
         }
+    }
+
+    @Override
+    public void setFileExtension(String extension) {
+        this.extension = extension;
     }
 
     protected void init(Application application, Properties properties) {

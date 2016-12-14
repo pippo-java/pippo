@@ -27,8 +27,10 @@ import org.kohsuke.MetaInfServices;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ro.pippo.core.AbstractWebServer;
+import ro.pippo.core.Application;
 import ro.pippo.core.HttpConstants;
 import ro.pippo.core.PippoRuntimeException;
+import ro.pippo.core.PippoServletContextListener;
 import ro.pippo.core.WebServer;
 
 import javax.servlet.DispatcherType;
@@ -44,6 +46,8 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
 /**
+ * Must have a zero-argument constructor so that they can be instantiated during loading.
+ *
  * @author Decebal Suiu
  */
 @MetaInfServices(WebServer.class)
@@ -53,8 +57,15 @@ public class JettyServer extends AbstractWebServer<JettySettings> {
 
     private Server server;
 
-    private final ExecutorService executor = Executors.newSingleThreadExecutor();
-    private final CountDownLatch  startLatch = new CountDownLatch(1);
+    private final ExecutorService executor;
+    private final CountDownLatch  startLatch;
+
+    public JettyServer() {
+        super();
+
+        executor = Executors.newSingleThreadExecutor();
+        startLatch = new CountDownLatch(1);
+    }
 
     @Override
     public void start() {
@@ -150,12 +161,40 @@ public class JettyServer extends AbstractWebServer<JettySettings> {
     }
 
     protected ServletContextHandler createPippoHandler() {
-        String location = pippoFilter.getApplication().getUploadLocation();
-        long maxFileSize = pippoFilter.getApplication().getMaximumUploadSize();
-        MultipartConfigElement multipartConfig = new MultipartConfigElement(location, maxFileSize, -1L, 0);
+        MultipartConfigElement multipartConfig = createMultipartConfigElement();
         ServletContextHandler handler = new PippoHandler(ServletContextHandler.SESSIONS, multipartConfig);
         handler.setContextPath(getSettings().getContextPath());
 
+        // inject application as context attribute
+        handler.setAttribute(PIPPO_APPLICATION, pippoFilter.getApplication());
+
+        // add pippo filter
+        addPippoFilter(handler);
+
+        // add initializers
+        handler.addEventListener(new PippoServletContextListener());
+
+        // all listeners
+        listeners.forEach(listener -> {
+            try {
+                handler.addEventListener(listener.newInstance());
+            } catch (InstantiationException | IllegalAccessException e) {
+                throw new PippoRuntimeException(e);
+            }
+        });
+
+        return handler;
+    }
+
+    private MultipartConfigElement createMultipartConfigElement() {
+        Application application = pippoFilter.getApplication();
+        String location = application.getUploadLocation();
+        long maxFileSize = application.getMaximumUploadSize();
+
+        return new MultipartConfigElement(location, maxFileSize, -1L, 0);
+    }
+
+    private void addPippoFilter(ServletContextHandler handler) {
         if (pippoFilterPath == null) {
             pippoFilterPath = "/*"; // default value
         }
@@ -165,8 +204,6 @@ public class JettyServer extends AbstractWebServer<JettySettings> {
         FilterHolder pippoFilterHolder = new FilterHolder(pippoFilter);
         handler.addFilter(pippoFilterHolder, pippoFilterPath, dispatches);
         log.debug("Using pippo filter for path '{}'", pippoFilterPath);
-
-        return handler;
     }
 
     /**

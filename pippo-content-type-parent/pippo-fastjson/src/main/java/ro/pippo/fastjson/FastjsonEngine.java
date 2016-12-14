@@ -28,7 +28,7 @@ import com.alibaba.fastjson.JSON;
  *
  * @author James Moger
  */
-@MetaInfServices(ContentTypeEngine.class)
+@MetaInfServices
 public class FastjsonEngine implements ContentTypeEngine {
 
 	@Override

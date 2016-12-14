@@ -546,4 +546,8 @@ public class ParameterValue implements Serializable {
         return values != null && values.length > 1;
     }
 
+    public String[] getValues() {
+        return values;
+    }
+
 }
