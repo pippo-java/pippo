@@ -6,16 +6,8 @@
     <properties>
         <property name="hazelcast.logging.type">slf4j</property>
     </properties>
-    
-    <network>
-        <join>
-            <multicast enabled="true"/>
-        </join>
-    </network>
 
     <map name="session">
-        <backup-count>0</backup-count>
-        <async-backup-count>2</async-backup-count>
         <time-to-live-seconds>1</time-to-live-seconds>
         <max-idle-seconds>0</max-idle-seconds>
         <eviction-policy>LRU</eviction-policy>
