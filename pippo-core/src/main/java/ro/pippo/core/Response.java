@@ -33,6 +33,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.StringWriter;
+import java.io.Writer;
 import java.nio.charset.StandardCharsets;
 import java.util.Collection;
 import java.util.Date;
@@ -1104,6 +1105,21 @@ public final class Response {
 
         try {
             return httpServletResponse.getOutputStream();
+        } catch (IOException e) {
+            throw new PippoRuntimeException(e);
+        }
+    }
+
+    public Writer getWriter() {
+        checkCommitted();
+        finalizeResponse();
+
+        if (getContentType() == null) {
+            contentType(HttpConstants.ContentType.APPLICATION_OCTET_STREAM);
+        }
+
+        try {
+            return httpServletResponse.getWriter();
         } catch (IOException e) {
             throw new PippoRuntimeException(e);
         }
