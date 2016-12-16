@@ -20,7 +20,6 @@ import ro.pippo.core.Request;
 import ro.pippo.core.RequestResponse;
 import ro.pippo.core.RequestResponseFactory;
 import ro.pippo.core.Response;
-import ro.pippo.core.route.RoutePostDispatchListener;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -28,12 +27,10 @@ import javax.servlet.http.HttpServletResponse;
 /**
  * @author Decebal Suiu
  */
-public class GZipRequestResponseFactory extends RequestResponseFactory implements RoutePostDispatchListener {
+public class GZipRequestResponseFactory extends RequestResponseFactory {
 
     public GZipRequestResponseFactory(Application application) {
         super(application);
-
-        application.getRoutePostDispatchListeners().add(this);
     }
 
     @Override
@@ -43,6 +40,7 @@ public class GZipRequestResponseFactory extends RequestResponseFactory implement
 
         boolean acceptsGZipEncoding = acceptsGZipEncoding(httpServletRequest);
         if (acceptsGZipEncoding) {
+            // the response with be finished in Response.finishGZip() method
             GZipResponseWrapper responseWrapper = new GZipResponseWrapper(httpServletResponse);
             response = new Response(responseWrapper, application);
         } else {
@@ -50,15 +48,6 @@ public class GZipRequestResponseFactory extends RequestResponseFactory implement
         }
 
         return new RequestResponse(request, response);
-    }
-
-    @Override
-    public void onPostDispatch(Request request, Response response) {
-        HttpServletResponse httpServletResponse = response.getHttpServletResponse();
-        if (httpServletResponse instanceof GZipResponseWrapper) {
-            GZipResponseWrapper responseWrapper = (GZipResponseWrapper) httpServletResponse;
-            responseWrapper.finish();
-        }
     }
 
     protected boolean acceptsGZipEncoding(HttpServletRequest httpServletRequest) {

@@ -15,6 +15,8 @@
  */
 package ro.pippo.core.gzip;
 
+import ro.pippo.core.util.IoUtils;
+
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpServletResponseWrapper;
@@ -77,18 +79,9 @@ public class GZipResponseWrapper extends HttpServletResponseWrapper {
         // do nothing
     }
 
-    void finish() {
-        try {
-            if (writer != null) {
-                writer.close();
-            } else {
-                if (stream != null) {
-                    stream.close();
-                }
-            }
-        } catch (IOException e) {
-            // ignore
-        }
+    public void finish() {
+        IoUtils.close(writer);
+        IoUtils.close(stream);
     }
 
     private ServletOutputStream createOutputStream() throws IOException {

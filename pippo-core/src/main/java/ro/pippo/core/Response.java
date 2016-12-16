@@ -17,6 +17,7 @@ package ro.pippo.core;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import ro.pippo.core.gzip.GZipResponseWrapper;
 import ro.pippo.core.route.RouteContext;
 import ro.pippo.core.route.RouteDispatcher;
 import ro.pippo.core.util.DateUtils;
@@ -1058,6 +1059,8 @@ public final class Response {
             if (chunked) {
                 httpServletResponse.flushBuffer();
             }
+
+            finishGZip();
         } catch (IOException e) {
             throw new PippoRuntimeException(e);
         }
@@ -1082,6 +1085,16 @@ public final class Response {
         // call finalize listeners
         if ((finalizeListeners != null) && !finalizeListeners.isEmpty()) {
             finalizeListeners.onFinalize(this);
+        }
+    }
+
+    /*
+     * Finish the GZip response.
+     */
+    private void finishGZip() {
+        if (httpServletResponse instanceof GZipResponseWrapper) {
+            GZipResponseWrapper responseWrapper = (GZipResponseWrapper) httpServletResponse;
+            responseWrapper.finish();
         }
     }
 
