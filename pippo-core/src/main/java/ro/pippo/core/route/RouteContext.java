@@ -30,7 +30,7 @@ import java.util.Map;
  */
 public interface RouteContext {
 
-    Application getApplication();
+    <T extends Application> T getApplication();
 
     Request getRequest();
 
