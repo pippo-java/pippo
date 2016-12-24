@@ -18,6 +18,7 @@ package ro.pippo.core.route;
 /**
  * @author Decebal Suiu
  */
+@FunctionalInterface
 public interface RouteHandler<T extends RouteContext> {
 
     void handle(T routeContext);
