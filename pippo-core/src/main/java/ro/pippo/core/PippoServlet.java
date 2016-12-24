@@ -83,7 +83,14 @@ public class PippoServlet extends HttpServlet {
         }
 
         ServletContext servletContext = servletConfig.getServletContext();
+
+        // save the servlet context object in application
         application.setServletContext(servletContext);
+
+        // set the application as an attribute of the servlet container
+        if (servletContext.getAttribute(WebServer.PIPPO_APPLICATION) == null) {
+            servletContext.setAttribute(WebServer.PIPPO_APPLICATION, application);
+        }
 
         String contextPath = StringUtils.addStart(servletContext.getContextPath(), "/");
         application.getRouter().setContextPath(contextPath);
