@@ -48,13 +48,13 @@ public interface RouteContext {
 
     void invalidateSession();
 
-    <T> T setSession(String name, T t);
+    <T> T setSession(String name, T value);
 
     <T> T getSession(String name);
 
     <T> T removeSession(String name);
 
-    <T> T setLocal(String name, T t);
+    <T> T setLocal(String name, T value);
 
     void setLocals(Map<String, Object> locals);
 
@@ -66,7 +66,7 @@ public interface RouteContext {
 
     String getHeader(String name);
 
-    <T> T setHeader(String name, T t);
+    <T> T setHeader(String name, T value);
 
     Date setHeader(String name, Date date);
 

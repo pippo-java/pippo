@@ -95,10 +95,10 @@ public class DefaultRouteContext implements RouteContext {
     }
 
     @Override
-    public <T> T setSession(String name, T t) {
-        getSession().put(name, t);
+    public <T> T setSession(String name, T value) {
+        getSession().put(name, value);
 
-        return t;
+        return value;
     }
 
     @Override
@@ -114,10 +114,10 @@ public class DefaultRouteContext implements RouteContext {
     }
 
     @Override
-    public <T> T setLocal(String name, T t) {
-        response.getLocals().put(name, t);
+    public <T> T setLocal(String name, T value) {
+        response.getLocals().put(name, value);
 
-        return t;
+        return value;
     }
 
     @Override
@@ -148,10 +148,10 @@ public class DefaultRouteContext implements RouteContext {
     }
 
     @Override
-    public <T> T setHeader(String name, T t) {
-        response.header(name, t.toString());
+    public <T> T setHeader(String name, T value) {
+        response.header(name, value.toString());
 
-        return t;
+        return value;
     }
 
     @Override
