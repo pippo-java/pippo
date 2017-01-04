@@ -12,6 +12,18 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 #### Removed
 
+### [1.0.0] - 2016-11-21
+
+#### Fixed
+
+#### Changed
+- [#327]: Improve PippoTest (add the possibility to set a custom web server or to set `pippoFilterPath`)
+
+#### Added
+- Force `pippo.mode` on TEST in `PippoTest`
+
+#### Removed
+
 ### [0.10.0] - 2016-11-07
 
 #### Fixed
@@ -288,7 +300,8 @@ Initial release.
 - Added [pippo-freemarker]
 - Added [pippo-jetty]
 
-[unreleased]: https://github.com/decebals/pippo/compare/release-0.10.0...HEAD
+[unreleased]: https://github.com/decebals/pippo/compare/release-1.0.0...HEAD
+[1.0.0]: https://github.com/decebals/pippo/compare/release-0.10.0...release-1.0.0
 [0.10.0]: https://github.com/decebals/pippo/compare/release-0.9.1...release-0.10.0
 [0.9.1]: https://github.com/decebals/pippo/compare/release-0.9.0...release-0.9.1
 [0.9.0]: https://github.com/decebals/pippo/compare/release-0.8.0...release-0.9.0
@@ -302,6 +315,7 @@ Initial release.
 [0.3.0]: https://github.com/decebals/pippo/compare/pippo-parent-0.2.0...pippo-parent-0.3.0
 [0.2.0]: https://github.com/decebals/pippo/compare/pippo-parent-0.1.0...pippo-parent-0.2.0
 
+[#327]: https://github.com/decebals/pippo/issues/327
 [#326]: https://github.com/decebals/pippo/issues/326
 [#323]: https://github.com/decebals/pippo/issues/323
 [#321]: https://github.com/decebals/pippo/issues/321
