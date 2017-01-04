@@ -28,12 +28,14 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 import ro.pippo.session.SessionData;
 
 /**
  * @author Herman Barrantes
  */
+@Ignore("See issue #337 on GitHub")
 public class SpymemcachedSessionDataStorageTest {
 
     private static final String KEY = "KEY";
