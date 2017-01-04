@@ -30,6 +30,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.UUID;
+import java.util.Collections;
 
 import static org.junit.Assert.*;
 
@@ -196,6 +197,13 @@ public class ParameterValueTest {
     }
 
     @Test
+    public void testEmptySet() throws Exception {
+        assertEquals(Collections.emptySet(), new ParameterValue("").toSet());
+        assertEquals(Collections.emptySet(), new ParameterValue("  ").toSet());
+        assertEquals(Collections.emptySet(), new ParameterValue(" ").toSet(Integer.class));
+    }
+
+    @Test
     public void testStringHashSet() throws Exception {
         Set<String> mySet = new HashSet<>(Arrays.asList("A", "B", "C"));
         Set<String> targetSet = new ParameterValue("C", "B", "A").toSet(String.class);
@@ -230,6 +238,13 @@ public class ParameterValueTest {
     public void testEncodedTreeSet() throws Exception {
         TreeSet<Integer> mySet = new TreeSet<>(Arrays.asList(600, 200, 400, 200));
         assertEquals(mySet, new ParameterValue("[600, 400, 200]").toCollection(TreeSet.class, Integer.class, null));
+    }
+
+    @Test
+    public void testEmptyArrayList() throws Exception {
+        assertEquals(Collections.emptyList(), new ParameterValue("").toList());
+        assertEquals(Collections.emptyList(), new ParameterValue("  ").toList());
+        assertEquals(Collections.emptyList(), new ParameterValue(" ").toList(Integer.class));
     }
 
     @Test
