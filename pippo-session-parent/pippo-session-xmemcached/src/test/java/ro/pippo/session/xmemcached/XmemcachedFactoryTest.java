@@ -29,12 +29,14 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 import ro.pippo.core.Application;
 
 /**
  * @author Herman Barrantes
  */
+@Ignore("See issue #337 on GitHub")
 public class XmemcachedFactoryTest {
 
     private static final String HOST = "localhost:11211";
