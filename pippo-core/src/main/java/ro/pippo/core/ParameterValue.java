@@ -239,7 +239,7 @@ public class ParameterValue implements Serializable {
     }
 
     public Set<String> toSet(Set<String> defaultValue) {
-        if (isNull()) {
+        if (isNull() || (values.length == 1 && StringUtils.isNullOrEmpty(values[0]))) {
             return defaultValue;
         }
 
@@ -278,7 +278,7 @@ public class ParameterValue implements Serializable {
     }
 
     public List<String> toList(List<String> defaultValue) {
-        if (isNull()) {
+        if (isNull() || (values.length == 1 && StringUtils.isNullOrEmpty(values[0]))) {
             return defaultValue;
         }
 
