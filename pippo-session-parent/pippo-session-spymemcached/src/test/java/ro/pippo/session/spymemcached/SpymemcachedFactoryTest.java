@@ -26,12 +26,14 @@ import net.spy.memcached.MemcachedClient;
 import org.junit.AfterClass;
 import static org.junit.Assert.assertNotNull;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 import ro.pippo.core.Application;
 
 /**
  * @author Herman Barrantes
  */
+@Ignore("See issue #337 on GitHub")
 public class SpymemcachedFactoryTest {
 
     private static final String HOST = "localhost:11211";
