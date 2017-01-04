@@ -5,6 +5,16 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 ### [Unreleased][unreleased]
 
 #### Fixed
+
+#### Changed
+
+#### Added
+
+#### Removed
+
+### [1.1.0] - 2017-01-04
+
+#### Fixed
 - [#337]: Cannot run the MemCached unit tests
 - [#338]: Consistency in Parameter Value conversion
 
@@ -311,7 +321,8 @@ Initial release.
 - Added [pippo-freemarker]
 - Added [pippo-jetty]
 
-[unreleased]: https://github.com/decebals/pippo/compare/release-1.0.0...HEAD
+[unreleased]: https://github.com/decebals/pippo/compare/release-1.1.0...HEAD
+[1.1.0]: https://github.com/decebals/pippo/compare/release-1.0.0...release-1.1.0
 [1.0.0]: https://github.com/decebals/pippo/compare/release-0.10.0...release-1.0.0
 [0.10.0]: https://github.com/decebals/pippo/compare/release-0.9.1...release-0.10.0
 [0.9.1]: https://github.com/decebals/pippo/compare/release-0.9.0...release-0.9.1
