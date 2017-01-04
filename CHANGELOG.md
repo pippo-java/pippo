@@ -5,10 +5,21 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 ### [Unreleased][unreleased]
 
 #### Fixed
+- [#337]: Cannot run the MemCached unit tests
+- [#338]: Consistency in Parameter Value conversion
 
 #### Changed
+- [#329]: Make Pippo class a little bit more expressive
+- Improve Lambda code (avoid parentheses around a single parameter)
+- [#330]: Make public `Route.setAbsoluteUriPattern` method
+- [#332]: Relax the signature of WebServer.addListener method
+- Return generic type for `RouteContext.getApplication` (no need for cast)
+- Set the application as an attribute of the servlet container (ServletContext)
+- Mark `RouteHandler` as `FunctionalInterface`
 
 #### Added
+- Use `gzip` compression where it's possible; see [#331]
+- Add `getWriter` method to `Response`
 
 #### Removed
 
@@ -315,6 +326,12 @@ Initial release.
 [0.3.0]: https://github.com/decebals/pippo/compare/pippo-parent-0.2.0...pippo-parent-0.3.0
 [0.2.0]: https://github.com/decebals/pippo/compare/pippo-parent-0.1.0...pippo-parent-0.2.0
 
+[#338]: https://github.com/decebals/pippo/issues/338
+[#337]: https://github.com/decebals/pippo/issues/337
+[#332]: https://github.com/decebals/pippo/issues/332
+[#331]: https://github.com/decebals/pippo/issues/331
+[#330]: https://github.com/decebals/pippo/issues/330
+[#329]: https://github.com/decebals/pippo/issues/329
 [#327]: https://github.com/decebals/pippo/issues/327
 [#326]: https://github.com/decebals/pippo/issues/326
 [#323]: https://github.com/decebals/pippo/issues/323
