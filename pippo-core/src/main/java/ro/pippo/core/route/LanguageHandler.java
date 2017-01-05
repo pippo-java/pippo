@@ -24,14 +24,14 @@ import ro.pippo.core.util.StringUtils;
 import java.util.Locale;
 
 /**
- * The RequestLanguageFilter determines the appropriate language, binds the lang
+ * The {@code LanguageHandler} determines the appropriate language, binds the lang
  * and locale Response models, and continues the handler chain.
  *
  * @author James Moger
  */
-public class RequestLanguageFilter implements RouteHandler {
+public class LanguageHandler implements RouteHandler {
 
-    private static final Logger log = LoggerFactory.getLogger(RequestLanguageFilter.class);
+    private static final Logger log = LoggerFactory.getLogger(LanguageHandler.class);
 
     protected final Languages languages;
     protected final boolean enableQueryParameter;
@@ -45,7 +45,7 @@ public class RequestLanguageFilter implements RouteHandler {
      * @param enableQueryParameter
      * @param setCookie
      */
-    public RequestLanguageFilter(Languages languages, boolean enableQueryParameter, boolean setCookie) {
+    public LanguageHandler(Languages languages, boolean enableQueryParameter, boolean setCookie) {
         this.languages = languages;
         this.enableQueryParameter = enableQueryParameter;
         this.setCookie = setCookie;
