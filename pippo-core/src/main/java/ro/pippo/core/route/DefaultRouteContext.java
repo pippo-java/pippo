@@ -342,6 +342,16 @@ public class DefaultRouteContext implements RouteContext {
         return application.getRouter().uriFor(nameOrUriPattern, parameters);
     }
 
+    @Override
+    public String getMessage(String key, Object... args) {
+        return application.getMessages().get(key, this, args);
+    }
+
+    @Override
+    public String getMessage(String key, String language, Object... args) {
+        return application.getMessages().get(key, language, args);
+    }
+
     @SuppressWarnings("unchecked")
     protected void handleRoute(Route route) {
         if (StringUtils.isNullOrEmpty(route.getName())) {

@@ -122,4 +122,8 @@ public interface RouteContext {
 
     String uriFor(String nameOrUriPattern, Map<String, Object> parameters);
 
+    String getMessage(String key, Object... args);
+
+    String getMessage(String key, String language, Object... args);
+
 }
