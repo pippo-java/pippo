@@ -17,6 +17,7 @@ package ro.pippo.controller;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import ro.pippo.controller.extractor.MethodParameterExtractor;
 import ro.pippo.core.Application;
 import ro.pippo.core.PippoRuntimeException;
 import ro.pippo.core.PippoSettings;
@@ -25,6 +26,9 @@ import ro.pippo.core.route.RouteHandler;
 import ro.pippo.core.route.Router;
 import ro.pippo.core.util.ServiceLocator;
 
+import java.util.Arrays;
+import java.util.List;
+
 /**
  * @author Decebal Suiu
  */
@@ -32,12 +36,13 @@ public class ControllerApplication extends Application {
 
     private static final Logger log = LoggerFactory.getLogger(ControllerApplication.class);
 
-    private ControllerHandlerFactory controllerHandlerFactory;
+    private ControllerRouteHandlerFactory controllerHandlerFactory;
     private ControllerInstantiationListenerList controllerInstantiationListeners;
     private ControllerInitializationListenerList controllerInitializationListeners;
     private ControllerInvokeListenerList controllerInvokeListeners;
 
     private ControllerFactory controllerFactory;
+    private List<MethodParameterExtractor> extractors;
 
     public ControllerApplication() {
         super();
@@ -75,11 +80,11 @@ public class ControllerApplication extends Application {
         return ALL(uriPattern, createRouteHandler(controllerClass, methodName));
     }
 
-    public ControllerHandlerFactory getControllerHandlerFactory() {
+    public ControllerRouteHandlerFactory getControllerHandlerFactory() {
         if (controllerHandlerFactory == null) {
-            ControllerHandlerFactory factory = ServiceLocator.locate(ControllerHandlerFactory.class);
+            ControllerRouteHandlerFactory factory = ServiceLocator.locate(ControllerRouteHandlerFactory.class);
             if (factory == null) {
-                factory = new DefaultControllerHandlerFactory();
+                factory = new DefaultControllerRouteHandlerFactory();
             }
             factory.init(this);
             controllerHandlerFactory = factory;
@@ -138,13 +143,53 @@ public class ControllerApplication extends Application {
         return controllerFactory;
     }
 
-    public void setControllerFactory(ControllerFactory controllerFactory) {
+    public ControllerApplication setControllerFactory(ControllerFactory controllerFactory) {
         this.controllerFactory = controllerFactory;
         log.debug("Controller factory is '{}'", controllerFactory.getClass().getName());
+
+        return this;
     }
 
     public RouteHandler createRouteHandler(Class<? extends Controller> controllerClass, String methodName) {
         return getControllerHandlerFactory().createHandler(controllerClass, methodName);
+    }
+
+    public ControllerApplication addExtractors(MethodParameterExtractor... extractors) {
+        getExtractors().addAll(Arrays.asList(extractors));
+
+        return this;
+    }
+
+    public List<MethodParameterExtractor> getExtractors() {
+        if (extractors == null) {
+            extractors = ServiceLocator.locateAll(MethodParameterExtractor.class);
+        }
+
+        return extractors;
+    }
+
+    public ControllerApplication addControllers(String... packageNames) {
+        ControllerRegistry controllerRegistry = new ControllerRegistry(this);
+        controllerRegistry.register(packageNames);
+        controllerRegistry.getRoutes().forEach(this::addRoute);
+
+        return this;
+    }
+
+    public ControllerApplication addControllers(Package... packages) {
+        ControllerRegistry controllerRegistry = new ControllerRegistry(this);
+        controllerRegistry.register(packages);
+        controllerRegistry.getRoutes().forEach(this::addRoute);
+
+        return this;
+    }
+
+    public ControllerApplication addControllers(Class<? extends Controller>... controllers) {
+        ControllerRegistry controllerRegistry = new ControllerRegistry(this);
+        controllerRegistry.register(controllers);
+        controllerRegistry.getRoutes().forEach(this::addRoute);
+
+        return this;
     }
 
 }

@@ -16,6 +16,7 @@
 package ro.pippo.core.util;
 
 import java.lang.reflect.Method;
+import java.util.Collection;
 
 /**
  * @author Decebal Suiu
@@ -26,6 +27,14 @@ public class LangUtils {
 
     public static String toString(Method method) {
         return method.getDeclaringClass().getName() + "::" + method.getName();
+    }
+
+    public static String toString(Class<? extends Collection> collectionType, Class<?> objectType) {
+        if (collectionType == null) {
+            return objectType.getSimpleName();
+        }
+
+        return collectionType.getSimpleName() + "<" + objectType.getSimpleName() + ">";
     }
 
 }

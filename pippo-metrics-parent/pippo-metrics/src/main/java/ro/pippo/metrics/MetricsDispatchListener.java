@@ -25,26 +25,19 @@ import ro.pippo.core.route.RoutePostDispatchListener;
 import ro.pippo.core.route.RoutePreDispatchListener;
 
 /**
- * MetricsDispatchListener collects general Request & Response metrics.
+ * {@code MetricsDispatchListener} collects general Request & Response metrics.
  *
  * @author James Moger
  */
 public class MetricsDispatchListener implements RoutePreDispatchListener, RoutePostDispatchListener {
 
     protected Meter allRequestsMeter;
-
     protected Counter activeRequests;
-
     protected Meter badRequests;
-
     protected Meter unauthorizedRequests;
-
     protected Meter forbiddenRequests;
-
     protected Meter routesNotFound;
-
     protected Meter conflictRequests;
-
     protected Meter internalServerErrors;
 
     public MetricsDispatchListener(MetricRegistry metricRegistry) {

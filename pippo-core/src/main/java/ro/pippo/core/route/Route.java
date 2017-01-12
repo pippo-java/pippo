@@ -18,6 +18,10 @@ package ro.pippo.core.route;
 import ro.pippo.core.HttpConstants;
 import ro.pippo.core.PippoRuntimeException;
 
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * @author Decebal Suiu
  */
@@ -31,10 +35,29 @@ public class Route {
     private boolean runAsFinally;
     private String name;
 
+    private Map<String, Object> attributes;
+
     public Route(String requestMethod, String uriPattern, RouteHandler routeHandler) {
         this.requestMethod = requestMethod;
         this.uriPattern = uriPattern;
-        this.routeHandler = routeHandler;
+        setRouteHandler(routeHandler);
+
+        attributes = new HashMap<>();
+    }
+
+    /**
+     * Copy constructor.
+     *
+     * @param route
+     */
+    public Route(Route route) {
+        this.requestMethod = route.requestMethod;
+        this.uriPattern = route.uriPattern;
+        this.routeHandler = route.routeHandler;
+        this.absoluteUriPattern = route.absoluteUriPattern;
+        this.attributes = new HashMap<>(route.attributes);
+        this.name = route.name;
+        this.runAsFinally = route.runAsFinally;
     }
 
     /**
@@ -126,6 +149,14 @@ public class Route {
         return routeHandler;
     }
 
+    public void setRouteHandler(RouteHandler routeHandler) {
+        if (routeHandler == null) {
+            throw new IllegalArgumentException("Route handler cannot be null");
+        }
+
+        this.routeHandler = routeHandler;
+    }
+
     public boolean isRunAsFinally() {
         return runAsFinally;
     }
@@ -152,6 +183,29 @@ public class Route {
         this.name = name;
     }
 
+    /**
+     * Bind a value to a name. The idea is to extends the standard metadata (uriPattern,
+     * requestPattern, name, runAsFinally) and to make the route definition more dynamic.
+     *
+     * @param name
+     * @param value
+     * @return
+     */
+    public Route bind(String name, Object value) {
+        attributes.put(name, value);
+
+        return this;
+    }
+
+    public Map<String, Object> getAttributes() {
+        return Collections.unmodifiableMap(attributes);
+    }
+
+    @SuppressWarnings("unchecked")
+    public <T> T getAttribute(String name) {
+        return (T) attributes.get(name);
+    }
+
     public void setAbsoluteUriPattern(String absoluteUriPattern) {
         if (this.absoluteUriPattern != null) {
             // when group1.addRoute(route); group2.addRoute(route);
@@ -173,7 +227,6 @@ public class Route {
         Route route = (Route) o;
 
         return requestMethod.equals(route.requestMethod) && getUriPattern().equals(route.getUriPattern());
-
     }
 
     @Override

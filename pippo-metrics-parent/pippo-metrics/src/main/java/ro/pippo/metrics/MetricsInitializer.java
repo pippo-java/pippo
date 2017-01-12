@@ -27,12 +27,10 @@ import org.kohsuke.MetaInfServices;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ro.pippo.core.Application;
+import ro.pippo.core.Initializer;
 import ro.pippo.core.PippoConstants;
 import ro.pippo.core.PippoSettings;
-import ro.pippo.core.Request;
-import ro.pippo.core.Response;
-import ro.pippo.core.route.RouteContextFactory;
-import ro.pippo.core.route.RouteMatch;
+import ro.pippo.core.route.RouteTransformer;
 import ro.pippo.core.util.ServiceLocator;
 
 import java.io.Closeable;
@@ -48,31 +46,29 @@ import java.util.Map;
  * @author James Moger
  */
 @MetaInfServices
-public class PippoMetrics implements RouteContextFactory<MetricsRouteContext> {
+public class MetricsInitializer implements Initializer {
 
-    private static final Logger log = LoggerFactory.getLogger(PippoMetrics.class);
+    private static final Logger log = LoggerFactory.getLogger(MetricsInitializer.class);
 
-    private final MetricRegistry metricRegistry;
-
-    private final List<Closeable> reporters;
-
-    public PippoMetrics() {
-        this(new MetricRegistry());
-    }
-
-    public PippoMetrics(MetricRegistry metricRegistry) {
-        this.metricRegistry = metricRegistry;
-        this.reporters = new ArrayList<>();
-    }
+    private MetricRegistry metricRegistry;
+    private List<Closeable> reporters;
 
     @Override
     public void init(Application application) {
+        // init metricRegistry
+        metricRegistry = (MetricRegistry) application.getLocals().get("metricRegistry");
+        if (metricRegistry == null) {
+            metricRegistry = new MetricRegistry();
+//            application.getLocals().put("metricRegistry", metricRegistry);
+        }
+
+        // init reporters
+        reporters = new ArrayList<>();
+
         PippoSettings pippoSettings = application.getPippoSettings();
         String applicationName = pippoSettings.getString(PippoConstants.SETTING_APPLICATION_NAME, "Pippo");
 
-        /*
-         * Register optional metrics
-         */
+        // register optional metrics
         if (pippoSettings.getBoolean("metrics.jvm.enabled", false)) {
             registerAll("jvm.gc", new GarbageCollectorMetricSet());
             registerAll("jvm.memory", new MemoryUsageGaugeSet());
@@ -82,9 +78,7 @@ public class PippoMetrics implements RouteContextFactory<MetricsRouteContext> {
             log.debug("Registered JVM-Metrics integration");
         }
 
-        /*
-         * MBeans for VisualVM, JConsole, or JMX
-         */
+        // MBeans for VisualVM, JConsole, or JMX
         if (pippoSettings.getBoolean("metrics.mbeans.enabled", false)) {
             JmxReporter reporter = JmxReporter.forRegistry(metricRegistry).inDomain(applicationName).build();
             reporter.start();
@@ -93,35 +87,32 @@ public class PippoMetrics implements RouteContextFactory<MetricsRouteContext> {
             log.debug("Started Pippo Metrics MBeans reporter");
         }
 
-        /*
-         * Add classpath reporters
-         */
+        // add classpath reporters
         for (MetricsReporter reporter : ServiceLocator.locateAll(MetricsReporter.class)) {
             reporter.start(pippoSettings, metricRegistry);
             reporters.add(reporter);
         }
 
-        // Add the metrics dispatch listener
+        // add the metrics dispatch listener
         MetricsDispatchListener metricsDispatchListener = new MetricsDispatchListener(metricRegistry);
         application.getRoutePreDispatchListeners().add(metricsDispatchListener);
         application.getRoutePostDispatchListeners().add(metricsDispatchListener);
+
+        // add MetricsTransformer
+        RouteTransformer transformer = new MetricsTransformer(metricRegistry);
+        application.addRouteTransformer(transformer);
     }
 
     @Override
     public void destroy(Application application) {
         for (Closeable reporter : reporters) {
-            log.debug("Stopping {}", reporter.getClass().getName());
+            log.debug("Stopping '{}'", reporter.getClass().getName());
             try {
                 reporter.close();
             } catch (IOException e) {
                 log.error("Failed to stop Metrics reporter", e);
             }
         }
-    }
-
-    @Override
-    public MetricsRouteContext createRouteContext(Application application, Request request, Response response, List<RouteMatch> routeMatches) {
-        return new MetricsRouteContext(metricRegistry, application, request, response, routeMatches);
     }
 
     private void registerAll(String prefix, MetricSet metrics) throws IllegalArgumentException {

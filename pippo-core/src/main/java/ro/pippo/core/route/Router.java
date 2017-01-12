@@ -47,17 +47,44 @@ public interface Router {
 
     void ignorePaths(String... paths);
 
+    /**
+     * Add an uncompiled route.
+     *
+     * @param route
+     */
     void addRoute(Route route);
 
+    /**
+     * Remove a route (compiled or uncompiled).
+     *
+     * @param route
+     */
     void removeRoute(Route route);
 
     void addRouteGroup(RouteGroup routeGroup);
 
     void removeRouteGroup(RouteGroup routeGroup);
 
+    /**
+     * Find compiled routes for a request method and uri.
+     *
+     * @param requestMethod
+     * @param requestUri
+     * @return
+     */
     List<RouteMatch> findRoutes(String requestMethod, String requestUri);
 
+    /**
+     * Returns compiled and uncompiled routes.
+     *
+     * @return
+     */
     List<Route> getRoutes();
+
+    /**
+     * Compile each added route via {@code addRoute, addRouteGroup} and apply transformers.
+     */
+    void compileRoutes();
 
     /**
      * Get uri with context path.
@@ -67,6 +94,27 @@ public interface Router {
      */
     String uriFor(String relativeUri);
 
+    /**
+     * Generate an URI string for a route (referenced by an uriPattern) with some parameters.
+     * For example:
+     * <p/>
+     * <pre>
+     * // add a route
+     * GET("/user", routeContext -> {...});
+     *
+     * // get an uri string for the above route
+     * Map<String, Object> parameters = new HashMap<>();
+     * parameters.put("admin", true);
+     * parameters.put("company", "Home Office")
+     * String uri = uriFor("/user", parameters);
+     * // the result is "/user?admin=true&company=Home+Office"
+     * </pre>
+     * The parameters values are automatically encoded by this method.
+     *
+     * @param nameOrUriPattern
+     * @param parameters
+     * @return
+     */
     String uriFor(String nameOrUriPattern, Map<String, Object> parameters);
 
     String uriPatternFor(Class<? extends ResourceHandler> resourceHandlerClass);
@@ -77,5 +125,9 @@ public interface Router {
     String getApplicationPath();
 
     void setApplicationPath(String pippoPath);
+
+    void addRouteTransformer(RouteTransformer transformer);
+
+    List<RouteTransformer> getRouteTransformers();
 
 }

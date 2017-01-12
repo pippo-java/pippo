@@ -17,8 +17,8 @@ package ro.pippo.controller;
 
 import ro.pippo.core.route.DefaultRouter;
 import ro.pippo.core.route.Route;
-import ro.pippo.core.route.RouteHandler;
 
+import java.lang.reflect.Method;
 import java.util.List;
 import java.util.Map;
 
@@ -50,11 +50,11 @@ public class DefaultControllerRouter extends DefaultRouter implements Controller
     private Route getRoute(Class<? extends Controller> controllerClass, String methodName) {
         List<Route> routes = getRoutes();
         for (Route route : routes) {
-            RouteHandler routeHandler = route.getRouteHandler();
-            if (routeHandler instanceof ControllerHandler) {
-                ControllerHandler controllerHandler = (ControllerHandler) routeHandler;
-                if (controllerClass == controllerHandler.getControllerClass()
-                    && methodName.equals(controllerHandler.getMethodName())) {
+            // TODO
+            Method controllerMethod = route.getAttribute("__controllerMethod");
+            if (controllerMethod != null) {
+                if (controllerClass == route.getAttribute("__controllerClass")
+                    && methodName.equals(controllerMethod.getName())) {
                     return route;
                 }
             }
