@@ -19,9 +19,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ro.pippo.controller.extractor.MethodParameterExtractor;
 import ro.pippo.core.Application;
-import ro.pippo.core.PippoRuntimeException;
 import ro.pippo.core.PippoSettings;
-import ro.pippo.core.route.Router;
 import ro.pippo.core.util.ServiceLocator;
 
 import java.util.Arrays;
@@ -71,24 +69,6 @@ public class ControllerApplication extends Application {
         }
 
         return controllerInvokeListeners;
-    }
-
-    @Override
-    public ControllerRouter getRouter() {
-        if (router == null) {
-            router = new DefaultControllerRouter();
-        }
-
-        return (ControllerRouter) router;
-    }
-
-    @Override
-    public void setRouter(Router router) {
-        if (!(router instanceof ControllerRouter)) {
-            throw new PippoRuntimeException("'router' must be an instance of '{}'", ControllerRouter.class.getName());
-        }
-
-        super.setRouter(router);
     }
 
     public ControllerFactory getControllerFactory() {
