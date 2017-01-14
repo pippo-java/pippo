@@ -22,7 +22,6 @@ import ro.pippo.controller.util.ClassUtils;
 import ro.pippo.controller.util.ControllerUtils;
 import ro.pippo.core.ContentTypeEngines;
 import ro.pippo.core.HttpConstants;
-import ro.pippo.core.Messages;
 import ro.pippo.core.PippoRuntimeException;
 import ro.pippo.core.Request;
 import ro.pippo.core.route.Route;
@@ -45,38 +44,34 @@ import java.util.Set;
 import java.util.TreeSet;
 
 /**
- * DefaultControllerRouteHandler executes controller methods.
+ * {@code ControllerRouteHandler} executes controller methods.
  *
+ * @author Decebal Suiu
  * @author James Moger
  */
-public class DefaultControllerRouteHandler implements RouteHandler {
+public class ControllerRouteHandler implements RouteHandler {
 
-    private static final Logger log = LoggerFactory.getLogger(DefaultControllerRouteHandler.class);
+    private static final Logger log = LoggerFactory.getLogger(ControllerRouteHandler.class);
 
-    protected final Class<? extends Controller> controllerClass;
-    protected final String controllerMethodName;
-    protected final Method controllerMethod;
+    private final Class<? extends Controller> controllerClass;
+    private final Method controllerMethod;
 
-    protected final ControllerApplication application;
-    protected final Messages messages;
+    private final ControllerApplication application;
 
-    protected final List<RouteHandler> routeInterceptors;
-    protected final List<String> declaredConsumes;
-    protected final List<String> declaredProduces;
-    protected final boolean isNoCache;
-    protected MethodParameterExtractor[] extractors;
+    private final List<RouteHandler> routeInterceptors;
+    private final List<String> declaredConsumes;
+    private final List<String> declaredProduces;
+    private final boolean isNoCache;
+    private MethodParameterExtractor[] extractors;
 
-    public DefaultControllerRouteHandler(ControllerApplication application, Class<? extends Controller> controllerClass, String controllerMethodName) {
+    public ControllerRouteHandler(ControllerApplication application, Class<? extends Controller> controllerClass, String controllerMethodName) {
         this.application = application;
         this.controllerClass = controllerClass;
-        this.controllerMethodName = controllerMethodName;
 
         this.controllerMethod = findMethod(controllerClass, controllerMethodName);
         if (controllerMethod == null) {
             throw new PippoRuntimeException("Failed to find method '{}'", controllerClass + "::" + controllerMethodName);
         }
-
-        this.messages = application.getMessages();
 
         this.routeInterceptors = new ArrayList<>();
         ControllerUtils.collectRouteInterceptors(controllerMethod).forEach(handlerClass -> {

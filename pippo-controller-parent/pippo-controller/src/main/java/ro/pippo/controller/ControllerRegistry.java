@@ -157,7 +157,7 @@ public class ControllerRegistry {
                     String fullPath = StringUtils.addStart(StringUtils.removeEnd(controllerPath, "/"), "/");
 
                     // create the route handler
-                    RouteHandler handler = new DefaultControllerRouteHandler(application, controllerClass, method.getName());
+                    RouteHandler handler = new ControllerRouteHandler(application, controllerClass, method.getName());
 
                     // create the route
                     Route route = new Route(httpMethod, fullPath, handler)
@@ -175,7 +175,7 @@ public class ControllerRegistry {
                         String fullPath = StringUtils.addStart(StringUtils.removeEnd(path, "/"), "/");
 
                         // create the route handler
-                        RouteHandler handler = new DefaultControllerRouteHandler(application, controllerClass, method.getName());
+                        RouteHandler handler = new ControllerRouteHandler(application, controllerClass, method.getName());
 
                         // create the route
                         Route route = new Route(httpMethod, fullPath, handler)
