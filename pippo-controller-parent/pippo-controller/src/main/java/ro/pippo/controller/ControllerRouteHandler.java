@@ -24,6 +24,7 @@ import ro.pippo.core.ContentTypeEngines;
 import ro.pippo.core.HttpConstants;
 import ro.pippo.core.PippoRuntimeException;
 import ro.pippo.core.Request;
+import ro.pippo.core.route.DefaultRouteContext;
 import ro.pippo.core.route.Route;
 import ro.pippo.core.route.RouteContext;
 import ro.pippo.core.route.RouteHandler;
@@ -58,7 +59,7 @@ public class ControllerRouteHandler implements RouteHandler {
 
     private final ControllerApplication application;
 
-    private final List<RouteHandler> routeInterceptors;
+    private final List<RouteHandler> interceptors;
     private final List<String> declaredConsumes;
     private final List<String> declaredProduces;
     private final boolean isNoCache;
@@ -69,15 +70,9 @@ public class ControllerRouteHandler implements RouteHandler {
         this.application = application;
 
         this.controllerClass = (Class<? extends Controller>) controllerMethod.getDeclaringClass();
-        /*
-        this.controllerMethod = findMethod(controllerClass, controllerMethodName);
-        if (controllerMethod == null) {
-            throw new PippoRuntimeException("Failed to find method '{}'", controllerClass + "::" + controllerMethodName);
-        }
-        */
         this.controllerMethod = controllerMethod;
 
-        this.routeInterceptors = new ArrayList<>();
+        this.interceptors = new ArrayList<>();
         ControllerUtils.collectRouteInterceptors(controllerMethod).forEach(handlerClass -> {
             RouteHandler<RouteContext> handler;
             try {
@@ -85,7 +80,7 @@ public class ControllerRouteHandler implements RouteHandler {
             } catch (InstantiationException | IllegalAccessException e) {
                 throw new PippoRuntimeException(e);
             }
-            this.routeInterceptors.add(handler);
+            this.interceptors.add(handler);
         });
 
         ContentTypeEngines engines = application.getContentTypeEngines();
@@ -187,32 +182,6 @@ public class ControllerRouteHandler implements RouteHandler {
             handleDeclaredThrownException(e, routeContext);
         }
     }
-
-    /**
-     * Finds the named controller controllerMethod.
-     *
-     * @param controllerClass
-     * @param name
-     * @return the controller controllerMethod or null
-     */
-    /*
-    protected Method findMethod(Class<?> controllerClass, String name) {
-        // identify first controllerMethod which matches the name
-        Method controllerMethod = null;
-        for (Method method : controllerClass.getMethods()) {
-            if (method.getName().equals(name)) {
-                if (controllerMethod == null) {
-                    controllerMethod = method;
-                } else {
-                    throw new PippoRuntimeException("Found overloaded controller method '{}'. Method names must be unique!",
-                            LangUtils.toString(method));
-                }
-            }
-        }
-
-        return controllerMethod;
-    }
-    */
 
     /**
      * Init extractors from controller method.
@@ -362,21 +331,28 @@ public class ControllerRouteHandler implements RouteHandler {
     }
 
     protected void processRouteInterceptors(RouteContext routeContext) {
-        if (routeInterceptors.isEmpty()) {
+        if (interceptors.isEmpty()) {
             return;
         }
 
         List<RouteMatch> chain = new ArrayList<>();
-        for (RouteHandler interceptor : routeInterceptors) {
+        for (RouteHandler interceptor : interceptors) {
+            // create a route for interceptor
             Route route = new Route(routeContext.getRequestMethod(), routeContext.getRequestUri(), interceptor);
             route.setName(StringUtils.format("{}<{}>", Interceptor.class.getSimpleName(),
                     route.getRouteHandler().getClass().getSimpleName()));
+
+            // add route in chain
             RouteMatch match = new RouteMatch(route, null);
             chain.add(match);
         }
-        // TODO
-//        RouteContext subRouteContext = new ControllerContext(routeContext, chain);
-//        subRouteContext.next();
+
+        // TODO DefaultRouteContext is hardcoded
+        RouteContext context = new DefaultRouteContext(routeContext.getApplication(),
+            routeContext.getRequest(),
+            routeContext.getResponse(),
+            chain);
+        context.next();
     }
 
     protected Object[] prepareMethodParameters(RouteContext routeContext) {
