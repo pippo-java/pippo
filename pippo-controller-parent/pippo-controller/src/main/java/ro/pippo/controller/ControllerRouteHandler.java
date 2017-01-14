@@ -64,14 +64,18 @@ public class ControllerRouteHandler implements RouteHandler {
     private final boolean isNoCache;
     private MethodParameterExtractor[] extractors;
 
-    public ControllerRouteHandler(ControllerApplication application, Class<? extends Controller> controllerClass, String controllerMethodName) {
+    @SuppressWarnings("unchecked")
+    public ControllerRouteHandler(ControllerApplication application, Method controllerMethod) {
         this.application = application;
-        this.controllerClass = controllerClass;
 
+        this.controllerClass = (Class<? extends Controller>) controllerMethod.getDeclaringClass();
+        /*
         this.controllerMethod = findMethod(controllerClass, controllerMethodName);
         if (controllerMethod == null) {
             throw new PippoRuntimeException("Failed to find method '{}'", controllerClass + "::" + controllerMethodName);
         }
+        */
+        this.controllerMethod = controllerMethod;
 
         this.routeInterceptors = new ArrayList<>();
         ControllerUtils.collectRouteInterceptors(controllerMethod).forEach(handlerClass -> {
@@ -191,6 +195,7 @@ public class ControllerRouteHandler implements RouteHandler {
      * @param name
      * @return the controller controllerMethod or null
      */
+    /*
     protected Method findMethod(Class<?> controllerClass, String name) {
         // identify first controllerMethod which matches the name
         Method controllerMethod = null;
@@ -207,6 +212,7 @@ public class ControllerRouteHandler implements RouteHandler {
 
         return controllerMethod;
     }
+    */
 
     /**
      * Init extractors from controller method.

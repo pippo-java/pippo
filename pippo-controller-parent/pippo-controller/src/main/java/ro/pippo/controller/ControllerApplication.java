@@ -21,7 +21,6 @@ import ro.pippo.controller.extractor.MethodParameterExtractor;
 import ro.pippo.core.Application;
 import ro.pippo.core.PippoRuntimeException;
 import ro.pippo.core.PippoSettings;
-import ro.pippo.core.route.RouteHandler;
 import ro.pippo.core.route.Router;
 import ro.pippo.core.util.ServiceLocator;
 
@@ -35,7 +34,6 @@ public class ControllerApplication extends Application {
 
     private static final Logger log = LoggerFactory.getLogger(ControllerApplication.class);
 
-    private ControllerRouteHandlerFactory controllerHandlerFactory;
     private ControllerInstantiationListenerList controllerInstantiationListeners;
     private ControllerInitializationListenerList controllerInitializationListeners;
     private ControllerInvokeListenerList controllerInvokeListeners;
@@ -49,19 +47,6 @@ public class ControllerApplication extends Application {
 
     public ControllerApplication(PippoSettings settings) {
         super(settings);
-    }
-
-    public ControllerRouteHandlerFactory getControllerHandlerFactory() {
-        if (controllerHandlerFactory == null) {
-            ControllerRouteHandlerFactory factory = ServiceLocator.locate(ControllerRouteHandlerFactory.class);
-            if (factory == null) {
-                factory = new DefaultControllerRouteHandlerFactory();
-            }
-            factory.init(this);
-            controllerHandlerFactory = factory;
-        }
-
-        return controllerHandlerFactory;
     }
 
     public ControllerInstantiationListenerList getControllerInstantiationListeners() {
@@ -119,10 +104,6 @@ public class ControllerApplication extends Application {
         log.debug("Controller factory is '{}'", controllerFactory.getClass().getName());
 
         return this;
-    }
-
-    public RouteHandler createRouteHandler(Class<? extends Controller> controllerClass, String methodName) {
-        return getControllerHandlerFactory().createHandler(controllerClass, methodName);
     }
 
     public ControllerApplication addExtractors(MethodParameterExtractor... extractors) {
