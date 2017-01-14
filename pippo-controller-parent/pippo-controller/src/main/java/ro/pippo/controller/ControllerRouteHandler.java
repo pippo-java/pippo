@@ -59,10 +59,11 @@ public class ControllerRouteHandler implements RouteHandler {
 
     private final ControllerApplication application;
 
-    private final List<RouteHandler> interceptors;
     private final List<String> declaredConsumes;
     private final List<String> declaredProduces;
     private final boolean isNoCache;
+
+    private List<RouteHandler> interceptors;
     private MethodParameterExtractor[] extractors;
 
     @SuppressWarnings("unchecked")
@@ -71,17 +72,6 @@ public class ControllerRouteHandler implements RouteHandler {
 
         this.controllerClass = (Class<? extends Controller>) controllerMethod.getDeclaringClass();
         this.controllerMethod = controllerMethod;
-
-        this.interceptors = new ArrayList<>();
-        ControllerUtils.collectRouteInterceptors(controllerMethod).forEach(handlerClass -> {
-            RouteHandler<RouteContext> handler;
-            try {
-                handler = handlerClass.newInstance();
-            } catch (InstantiationException | IllegalAccessException e) {
-                throw new PippoRuntimeException(e);
-            }
-            this.interceptors.add(handler);
-        });
 
         ContentTypeEngines engines = application.getContentTypeEngines();
 
@@ -93,6 +83,7 @@ public class ControllerRouteHandler implements RouteHandler {
 
         this.isNoCache = ClassUtils.getAnnotation(controllerMethod, NoCache.class) != null;
 
+        initInterceptors();
         initExtractors();
     }
 
@@ -181,6 +172,22 @@ public class ControllerRouteHandler implements RouteHandler {
             // handles exceptions thrown within this handle() method
             handleDeclaredThrownException(e, routeContext);
         }
+    }
+
+    /**
+     * Init interceptors from controller method.
+     */
+    protected void initInterceptors() {
+        interceptors = new ArrayList<>();
+        ControllerUtils.collectRouteInterceptors(controllerMethod).forEach(handlerClass -> {
+            RouteHandler<RouteContext> handler;
+            try {
+                handler = handlerClass.newInstance();
+            } catch (InstantiationException | IllegalAccessException e) {
+                throw new PippoRuntimeException(e);
+            }
+            interceptors.add(handler);
+        });
     }
 
     /**
