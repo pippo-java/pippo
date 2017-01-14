@@ -21,7 +21,6 @@ import ro.pippo.controller.extractor.MethodParameterExtractor;
 import ro.pippo.core.Application;
 import ro.pippo.core.PippoRuntimeException;
 import ro.pippo.core.PippoSettings;
-import ro.pippo.core.route.Route;
 import ro.pippo.core.route.RouteHandler;
 import ro.pippo.core.route.Router;
 import ro.pippo.core.util.ServiceLocator;
@@ -50,34 +49,6 @@ public class ControllerApplication extends Application {
 
     public ControllerApplication(PippoSettings settings) {
         super(settings);
-    }
-
-    public Route GET(String uriPattern, Class<? extends Controller> controllerClass, String methodName) {
-        return GET(uriPattern, createRouteHandler(controllerClass, methodName));
-    }
-
-    public Route POST(String uriPattern, Class<? extends Controller> controllerClass, String methodName) {
-        return POST(uriPattern, createRouteHandler(controllerClass, methodName));
-    }
-
-    public Route DELETE(String uriPattern, Class<? extends Controller> controllerClass, String methodName) {
-        return DELETE(uriPattern, createRouteHandler(controllerClass, methodName));
-    }
-
-    public Route HEAD(String uriPattern, Class<? extends Controller> controllerClass, String methodName) {
-        return HEAD(uriPattern, createRouteHandler(controllerClass, methodName));
-    }
-
-    public Route PUT(String uriPattern, Class<? extends Controller> controllerClass, String methodName) {
-        return PUT(uriPattern, createRouteHandler(controllerClass, methodName));
-    }
-
-    public Route PATCH(String uriPattern, Class<? extends Controller> controllerClass, String methodName) {
-        return PATCH(uriPattern, createRouteHandler(controllerClass, methodName));
-    }
-
-    public Route ALL(String uriPattern, Class<? extends Controller> controllerClass, String methodName) {
-        return ALL(uriPattern, createRouteHandler(controllerClass, methodName));
     }
 
     public ControllerRouteHandlerFactory getControllerHandlerFactory() {
