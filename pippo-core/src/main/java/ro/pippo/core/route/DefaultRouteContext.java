@@ -42,7 +42,7 @@ public class DefaultRouteContext implements RouteContext {
     protected final Response response;
     protected final Iterator<RouteMatch> iterator;
 
-    protected DefaultRouteContext(Application application, Request request, Response response, List<RouteMatch> routeMatches) {
+    public DefaultRouteContext(Application application, Request request, Response response, List<RouteMatch> routeMatches) {
         this.application = application;
         this.request = request;
         this.response = response;

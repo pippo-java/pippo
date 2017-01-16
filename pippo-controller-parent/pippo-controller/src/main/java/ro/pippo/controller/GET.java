@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2014 the original author or authors.
+ * Copyright (C) 2016 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,17 +15,23 @@
  */
 package ro.pippo.controller;
 
-import ro.pippo.core.route.Router;
-
-import java.util.Map;
+import java.lang.annotation.Documented;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
 /**
- * @author Decebal Suiu
+ * Specifies HTTP GET method.
+ *
+ * @author James Moger
  */
-public interface ControllerRouter extends Router {
+@Documented
+@Target(ElementType.METHOD)
+@Retention(RetentionPolicy.RUNTIME)
+@HttpMethod(HttpMethod.GET)
+public @interface GET {
 
-    String uriFor(Class<? extends Controller> controllerClass, String methodName, Map<String, Object> parameters);
-
-    String uriFor(Class<? extends Controller> controllerClass, String methodName);
+    String[] value() default {};
 
 }

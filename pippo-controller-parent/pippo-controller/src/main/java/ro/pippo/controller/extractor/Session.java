@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2014 the original author or authors.
+ * Copyright (C) 2016 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,19 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package ro.pippo.controller;
+package ro.pippo.controller.extractor;
 
+import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Annotation that identifies that a request body should be mapped to a Java object.
+ * Annotation that defines a session attribute for mapping to a Java object.
  *
  * @author James Moger
  */
+@Documented
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.PARAMETER})
-public @interface Body {
+@Target({ElementType.PARAMETER, ElementType.FIELD})
+public @interface Session {
+
+    String value() default "";
+
 }

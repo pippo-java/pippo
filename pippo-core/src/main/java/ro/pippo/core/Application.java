@@ -26,6 +26,7 @@ import ro.pippo.core.route.RouteDispatcher;
 import ro.pippo.core.route.RouteGroup;
 import ro.pippo.core.route.RoutePostDispatchListenerList;
 import ro.pippo.core.route.RoutePreDispatchListenerList;
+import ro.pippo.core.route.RouteTransformer;
 import ro.pippo.core.route.Router;
 import ro.pippo.core.util.HttpCacheToolkit;
 import ro.pippo.core.util.MimeTypes;
@@ -87,7 +88,10 @@ public class Application implements ResourceRouting {
     }
 
     public final void init() {
+        // add initializers
         initializers.addAll(ServiceLocator.locateAll(Initializer.class));
+
+        // call each initializer
         for (Initializer initializer : initializers) {
             log.debug("Initializing '{}'", initializer.getClass().getName());
             try {
@@ -97,7 +101,16 @@ public class Application implements ResourceRouting {
             }
         }
 
+        // add transformers
+        List<RouteTransformer> transformers = ServiceLocator.locateAll(RouteTransformer.class);
+        for (RouteTransformer transformer : transformers) {
+            getRouter().addRouteTransformer(transformer);
+        }
+
         onInit();
+
+        // compile routes
+        getRouter().compileRoutes();
     }
 
     public final void destroy() {
@@ -210,6 +223,16 @@ public class Application implements ResourceRouting {
     }
 
     public void setRouter(Router router) {
+        setRouter(router, true);
+    }
+
+    public void setRouter(Router router, boolean preserveOldTransformers) {
+        if (preserveOldTransformers && (router != null)) {
+            // preserve route transformers already registered
+            List<RouteTransformer> transformers = this.router.getRouteTransformers();
+            transformers.forEach(router::addRouteTransformer);
+        }
+
         this.router = router;
     }
 
@@ -316,6 +339,15 @@ public class Application implements ResourceRouting {
 
     void setServletContext(ServletContext servletContext) {
         this.servletContext = servletContext;
+    }
+
+    /**
+     * Helper method that calls {@code getRouter().addRouteTransformer(transformer)}.
+     *
+     * @param transformer
+     */
+    public void addRouteTransformer(RouteTransformer transformer) {
+        getRouter().addRouteTransformer(transformer);
     }
 
     /**

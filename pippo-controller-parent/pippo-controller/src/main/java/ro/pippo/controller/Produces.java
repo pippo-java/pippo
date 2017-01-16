@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2014 the original author or authors.
+ * Copyright (C) 2016 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,17 +15,36 @@
  */
 package ro.pippo.controller;
 
+import ro.pippo.core.HttpConstants;
+
+import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Annotation that identifies that request parameters should be mapped to a Java object.
+ * Specifies returned Content-Types.
  *
  * @author James Moger
  */
+@Documented
+@Target({ElementType.TYPE, ElementType.METHOD})
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.PARAMETER})
-public @interface Form {
+public @interface Produces {
+
+    public static final String XML = HttpConstants.ContentType.APPLICATION_XML;
+
+    public static final String JSON = HttpConstants.ContentType.APPLICATION_JSON;
+
+    public static final String YAML = HttpConstants.ContentType.APPLICATION_X_YAML;
+
+    public static final String HTML = HttpConstants.ContentType.TEXT_HTML;
+
+    public static final String XHTML = HttpConstants.ContentType.TEXT_XHTML;
+
+    public static final String TEXT = HttpConstants.ContentType.TEXT_PLAIN;
+
+    String [] value();
+
 }
