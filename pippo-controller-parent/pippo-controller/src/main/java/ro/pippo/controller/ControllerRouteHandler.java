@@ -131,9 +131,7 @@ public class ControllerRouteHandler implements RouteHandler {
             if (routeContext.getResponse().isCommitted()) {
                 log.debug("Response committed in {}", LangUtils.toString(controllerMethod));
             } else {
-                if (Void.class == controllerMethod.getReturnType()) {
-                    // nothing to return
-                } else {
+                if (Void.class != controllerMethod.getReturnType()) {
                     // method declares a Return Type
                     if (result == null) {
                         // Null Result, prepare a NOT FOUND (404)
