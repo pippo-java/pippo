@@ -295,6 +295,22 @@ public final class Response {
     }
 
     /**
+     * Sets a filename header. It's a shortcut for {@code header(HttpConstants.Header.CONTENT_DISPOSITION, "attachment; filename=\"" + filename + "\"")}.
+     *
+     * @param filename
+     * @return
+     */
+    public Response filenameHeader(String filename) {
+        if (filename != null && !filename.isEmpty()) {
+            header(HttpConstants.Header.CONTENT_DISPOSITION, "attachment; filename=\"" + filename + "\"");
+        } else {
+            header(HttpConstants.Header.CONTENT_DISPOSITION, "attachment; filename=\"\"");
+        }
+
+        return this;
+    }
+
+    /**
      * Returns a header value, if set in the Response.
      *
      * @param name
@@ -958,11 +974,7 @@ public final class Response {
         }
 
         if (isHeaderEmpty(HttpConstants.Header.CONTENT_DISPOSITION)) {
-            if (filename != null && !filename.isEmpty()) {
-                header(HttpConstants.Header.CONTENT_DISPOSITION, "attachment; filename=\"" + filename + "\"");
-            } else {
-                header(HttpConstants.Header.CONTENT_DISPOSITION, "attachment; filename=\"\"");
-            }
+            filenameHeader(filename);
         }
 
         finalizeResponse();
