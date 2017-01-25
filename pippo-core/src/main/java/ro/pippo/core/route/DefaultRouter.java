@@ -36,6 +36,7 @@ import java.util.Set;
 import java.util.TreeSet;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 /**
  * The routes are matched in the order they are defined.
@@ -122,7 +123,6 @@ public class DefaultRouter implements Router {
 
     @Override
     public final List<Route> getRoutes() {
-//        Collections.unmodifiableList(routes);
         List<Route> allRoutes = new ArrayList<>();
         allRoutes.addAll(routes);
         allRoutes.addAll(compiledRoutes);
@@ -170,10 +170,13 @@ public class DefaultRouter implements Router {
 
     public List<Route> getRoutes(String requestMethod) {
         List<Route> allRoutes = new ArrayList<>();
+
+        // add routes that are not compiled yet
         if (routesCache.containsKey(requestMethod)) {
             allRoutes.addAll(routesCache.get(requestMethod));
         }
 
+        // add compiled routes
         allRoutes.addAll(getCompiledRoutes(requestMethod));
 
         return Collections.unmodifiableList(allRoutes);
@@ -186,17 +189,20 @@ public class DefaultRouter implements Router {
         // force compile routes
         compileRoutes();
 
-        List<RouteMatch> routeMatches = new ArrayList<>();
+        List<RouteMatch> routeMatches = compiledRoutes.stream()
+            .filter(route -> {
+                boolean matches = route.getRequestMethod().equals(requestMethod)
+                    || route.getRequestMethod().equals(HttpConstants.Method.ALL);
 
-        List<Route> compiledRoutes = getCompiledRoutes(requestMethod);
-        for (Route route : compiledRoutes) {
-            Pattern pattern = route.getAttribute("__pattern");
-            if (pattern.matcher(requestUri).matches()) {
-                // TODO improve (it's possible to have the same uriPattern for many routes => same parameters)
-                routeMatches.add(new RouteMatch(route, getParameters(route, requestUri)));
-                break;
-            }
-        }
+                if (matches) {
+                    Pattern pattern = route.getAttribute("__pattern");
+                    matches = pattern.matcher(requestUri).matches();
+                }
+
+                return matches;
+            })
+            .map(route -> new RouteMatch(route, getParameters(route, requestUri)))
+            .collect(Collectors.toList());
 
         log.debug("Found {} route matches for {} '{}'", routeMatches.size(), requestMethod, requestUri);
 
@@ -389,10 +395,6 @@ public class DefaultRouter implements Router {
 
         if (compiledRoutesCache.containsKey(requestMethod)) {
             compiledRoutes.addAll(compiledRoutesCache.get(requestMethod));
-        }
-
-        if (compiledRoutesCache.containsKey(HttpConstants.Method.ALL)) {
-            compiledRoutes.addAll(compiledRoutesCache.get(HttpConstants.Method.ALL));
         }
 
         return compiledRoutes;
