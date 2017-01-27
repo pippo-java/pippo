@@ -1150,6 +1150,28 @@ public final class Response {
         }
     }
 
+    /**
+     * This method resets the response.
+     */
+    public void reset() {
+        checkCommitted();
+
+        // reset all headers
+        headers = new HashMap<>();
+        // reset all cookies
+        cookies = new HashMap<>();
+        // reset all locales
+        locals = new HashMap<>();
+        // set status to 0 or INT MAX
+        status = 0;
+
+        try {
+            httpServletResponse.reset();
+        } catch (Exception e) {
+            throw new PippoRuntimeException(e);
+        }
+    }
+
     public static Response get() {
         RouteContext routeContext = RouteDispatcher.getRouteContext();
 
