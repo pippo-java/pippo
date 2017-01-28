@@ -30,10 +30,10 @@ import static org.mockito.Mockito.mock;
  */
 public class ResponseTest {
 
-    private HttpServletResponse servletResponse = mock(HttpServletResponse.class);
-
     @Test
     public void testResetResponse() {
+        HttpServletResponse servletResponse = mock(HttpServletResponse.class);
+
         doNothing().when(servletResponse).setCharacterEncoding(StandardCharsets.UTF_8.toString());
         doNothing().when(servletResponse).reset();
         doReturn(false).when(servletResponse).isCommitted();
@@ -54,4 +54,5 @@ public class ResponseTest {
         assertNull(response.getHeader("content-type"));
         assertNotEquals(500, response.getStatus());
     }
+
 }

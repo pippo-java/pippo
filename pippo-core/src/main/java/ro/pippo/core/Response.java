@@ -1152,6 +1152,8 @@ public final class Response {
 
     /**
      * This method resets the response.
+     * Clears any data that exists in the buffer as well as the status code, cookies, locals and headers.
+     * In the end, {@link HttpServletResponse#reset()} is called.
      */
     public void reset() {
         checkCommitted();
