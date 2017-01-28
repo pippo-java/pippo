@@ -178,13 +178,11 @@ public class ControllerRouteHandler implements RouteHandler {
     protected void initInterceptors() {
         interceptors = new ArrayList<>();
         ControllerUtils.collectRouteInterceptors(controllerMethod).forEach(handlerClass -> {
-            RouteHandler<RouteContext> handler;
             try {
-                handler = handlerClass.newInstance();
+                interceptors.add(handlerClass.newInstance());
             } catch (InstantiationException | IllegalAccessException e) {
                 throw new PippoRuntimeException(e);
             }
-            interceptors.add(handler);
         });
     }
 
