@@ -42,6 +42,8 @@ public class DefaultRouteContext implements RouteContext {
     protected final Response response;
     protected final Iterator<RouteMatch> iterator;
 
+    private Route route;
+
     public DefaultRouteContext(Application application, Request request, Response response, List<RouteMatch> routeMatches) {
         this.application = application;
         this.request = request;
@@ -352,6 +354,11 @@ public class DefaultRouteContext implements RouteContext {
         return application.getMessages().get(key, language, args);
     }
 
+    @Override
+    public Route getRoute() {
+        return route;
+    }
+
     @SuppressWarnings("unchecked")
     protected void handleRoute(Route route) {
         if (StringUtils.isNullOrEmpty(route.getName())) {
@@ -359,6 +366,9 @@ public class DefaultRouteContext implements RouteContext {
         } else {
             log.debug("Executing '{}' for {} '{}'", route.getName(), route.getRequestMethod(), route.getUriPattern());
         }
+
+        this.route = route;
+
         route.getRouteHandler().handle(this);
     }
 

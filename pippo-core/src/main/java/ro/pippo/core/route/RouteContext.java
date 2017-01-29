@@ -126,4 +126,6 @@ public interface RouteContext {
 
     String getMessage(String key, String language, Object... args);
 
+    Route getRoute();
+
 }
