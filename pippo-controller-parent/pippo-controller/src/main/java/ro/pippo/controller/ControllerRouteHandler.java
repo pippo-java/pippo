@@ -344,6 +344,7 @@ public class ControllerRouteHandler implements RouteHandler {
             Route route = new Route(routeContext.getRequestMethod(), routeContext.getRequestUri(), interceptor);
             route.setName(StringUtils.format("{}<{}>", Interceptor.class.getSimpleName(),
                     route.getRouteHandler().getClass().getSimpleName()));
+            route.bindAll(routeContext.getRoute().getAttributes());
 
             // add route in chain
             RouteMatch match = new RouteMatch(route, null);

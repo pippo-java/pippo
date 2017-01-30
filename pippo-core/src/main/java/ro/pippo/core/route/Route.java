@@ -197,6 +197,23 @@ public class Route {
         return this;
     }
 
+    /**
+     * Copies all of the attributes from the specified map to this route.
+     *
+     * @param attributes
+     * @return
+     */
+    public Route bindAll(Map<String, Object> attributes) {
+        this.attributes.putAll(attributes);
+
+        return this;
+    }
+
+    /**
+     * Returns an unmodifiable view of attributes.
+     *
+     * @return
+     */
     public Map<String, Object> getAttributes() {
         return Collections.unmodifiableMap(attributes);
     }
