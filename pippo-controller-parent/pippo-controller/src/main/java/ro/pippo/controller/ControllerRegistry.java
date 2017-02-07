@@ -29,7 +29,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
@@ -62,23 +61,26 @@ public class ControllerRegistry {
         routes = new ArrayList<>();
     }
 
+    /**
+     * Register all controller methods in the specified packages.
+     *
+     * @param packages
+     */
     public void register(Package... packages) {
-        List<String> names = new ArrayList<>();
-        for (Package pkg : packages) {
-            names.add(pkg.getName());
-        }
+        List<String> packageNames = Arrays.stream(packages)
+            .map(Package::getName)
+            .collect(Collectors.toList());
 
-        register(names.toArray(new String[names.size()]));
+        register(packageNames.toArray(new String[packageNames.size()]));
     }
 
     /**
-     * Scans, identifies, and registers annotated controller methods for the
-     * current runtime settings.
+     * Register all controller methods in the specified package names.
      *
      * @param packageNames
      */
     public void register(String... packageNames) {
-        Collection<Class<?>> classes = getControllerClasses(packageNames);
+        List<Class<? extends Controller>> classes = getControllerClasses(packageNames);
         if (classes.isEmpty()) {
             log.warn("No annotated controllers found in package(s) '{}'", Arrays.toString(packageNames));
             return;
@@ -86,17 +88,31 @@ public class ControllerRegistry {
 
         log.debug("Found {} controller classes in {} package(s)", classes.size(), packageNames.length);
 
-        register(classes);
+        for (Class<? extends Controller> controllerClass : classes) {
+            register(controllerClass);
+        }
     }
 
     /**
-     * Register all methods in the specified controller classes.
+     * Register all controller methods in the specified controller classes.
+     *
+     * @param controllerClasses
+     */
+    public void register(Class<? extends Controller>... controllerClasses) {
+        for (Class<? extends Controller> controllerClass : controllerClasses) {
+            register(controllerClass);
+        }
+    }
+
+    /**
+     * Register all controller methods in the specified controllers.
      *
      * @param controllers
      */
-    public void register(Class<? extends Controller>... controllers) {
-        List<Class<?>> classes = Arrays.asList(controllers);
-        register(classes);
+    public void register(Controller... controllers) {
+        for (Controller controller : controllers) {
+            register(controller);
+        }
     }
 
     /**
@@ -108,44 +124,73 @@ public class ControllerRegistry {
         return routes;
     }
 
-    private void register(Collection<Class<?>> classes) {
-        Map<Method, Class<? extends Annotation>> controllerMethods = getControllerMethods(classes);
+    private void register(Class<? extends Controller> controllerClass) {
+        Map<Method, Class<? extends Annotation>> controllerMethods = getControllerMethods(controllerClass);
         if (controllerMethods.isEmpty()) {
-            // if we are using this registry we expect to discover controllers!
-            log.warn("No annotated controller methods found in classes(s) '{}'", classes);
+            // if we are using this registry we expect to discover controller routes!
+            log.warn("No annotated controller methods found in class '{}'", controllerClass);
             return;
         }
 
         log.debug("Found {} annotated controller method(s)", controllerMethods.size());
 
-        registerControllerMethods(controllerMethods);
+        registerControllerMethods(controllerMethods, null);
 
-        log.debug("Added {} annotated routes from '{}'", routes.size(), classes);
+        log.debug("Added {} annotated routes from '{}'", routes.size(), controllerClass);
+    }
+
+    public void register(Controller controller) {
+        Class<? extends Controller> controllerClass = controller.getClass();
+        Map<Method, Class<? extends Annotation>> controllerMethods = getControllerMethods(controllerClass);
+        if (controllerMethods.isEmpty()) {
+            // if we are using this registry we expect to discover controller routes!
+            log.warn("No annotated controller methods found in class '{}'", controllerClass);
+            return;
+        }
+
+        registerControllerMethods(controllerMethods, controller);
+
+        log.debug("Found {} annotated controller method(s)", controllerMethods.size());
     }
 
     /**
      * Register the controller methods as routes.
      *
      * @param controllerMethods
+     * @param controller
+     */
+    private void registerControllerMethods(Map<Method, Class<? extends Annotation>> controllerMethods, Controller controller) {
+        List<Route> controllerRoutes = createControllerRoutes(controllerMethods);
+        for (Route controllerRoute : controllerRoutes) {
+            if (controller != null) {
+                ((ControllerRouteHandler) controllerRoute.getRouteHandler()).setController(controller);
+                controllerRoute.bind("__controller", controller);
+            }
+        }
+
+        this.routes.addAll(controllerRoutes);
+    }
+
+    /**
+     * Create controller routes from controller methods.
+     *
+     * @param controllerMethods
+     * @return
      */
     @SuppressWarnings("unchecked")
-    private void registerControllerMethods(Map<Method, Class<? extends Annotation>> controllerMethods) {
-        Map<Class<? extends Controller>, Set<String>> controllers = new HashMap<>();
+    private List<Route> createControllerRoutes(Map<Method, Class<? extends Annotation>> controllerMethods) {
+        List<Route> routes = new ArrayList<>();
+
+        Class<? extends Controller> controllerClass = (Class<? extends Controller>) controllerMethods.keySet().iterator().next().getDeclaringClass();
+        Set<String> controllerPaths = getControllerPaths(controllerClass);
         Collection<Method> methods = sortControllerMethods(controllerMethods.keySet());
         for (Method method : methods) {
-            Class<? extends Controller> controllerClass = (Class<? extends Controller>) method.getDeclaringClass();
-            if (!controllers.containsKey(controllerClass)) {
-                Set<String> paths = getControllerPaths(controllerClass);
-                controllers.put(controllerClass, paths);
-            }
-
             Class<? extends Annotation> httpMethodAnnotationClass = controllerMethods.get(method);
             Annotation httpMethodAnnotation = method.getAnnotation(httpMethodAnnotationClass);
 
             String httpMethod = httpMethodAnnotation.annotationType().getAnnotation(HttpMethod.class).value();
             String[] methodPaths = ClassUtils.executeDeclaredMethod(httpMethodAnnotation, "value");
 
-            Set<String> controllerPaths = controllers.get(controllerClass);
             if (controllerPaths.isEmpty()) {
                 // add an empty string to allow controllerPaths iteration
                 controllerPaths.add("");
@@ -188,6 +233,8 @@ public class ControllerRegistry {
                 }
             }
         }
+
+        return routes;
     }
 
     /**
@@ -196,30 +243,40 @@ public class ControllerRegistry {
      * @param packageNames
      * @return controller classes
      */
-    private Collection<Class<?>> getControllerClasses(String... packageNames) {
+    @SuppressWarnings("unchecked")
+    private List<Class<? extends Controller>> getControllerClasses(String... packageNames) {
         log.debug("Discovering annotated controller in package(s) '{}'", Arrays.toString(packageNames));
-        return ClassUtils.getAnnotatedClasses(Path.class, packageNames);
+        Collection<Class<?>> allClasses = ClassUtils.getAnnotatedClasses(Path.class, packageNames);
+
+        List<Class<? extends Controller>> classes = new ArrayList<>();
+        for (Class<?> aClass : allClasses) {
+            if (Controller.class.isAssignableFrom(aClass)) {
+                classes.add((Class<? extends Controller>) aClass);
+            } else {
+                log.warn("Class '{}' is annotated with @Path but is not a Controller", aClass.getSimpleName());
+            }
+        }
+
+        return classes;
     }
 
-    /*
+    /**
      * Discover Route methods.
      *
-     * @param classes
+     * @param controllerClass
      * @return discovered methods
      */
-    private Map<Method, Class<? extends Annotation>> getControllerMethods(Collection<Class<?>> classes) {
+    private Map<Method, Class<? extends Annotation>> getControllerMethods(Class<? extends Controller> controllerClass) {
         // collect the annotated methods
         Map<Method, Class<? extends Annotation>> controllerMethods = new LinkedHashMap<>();
 
-        // discover all annotated controllers and methods
-        for (Class<?> controllerClass : classes) {
-            for (Method method : controllerClass.getDeclaredMethods()) {
-                for (Annotation annotation : method.getAnnotations()) {
-                    Class<? extends Annotation> annotationClass = annotation.annotationType();
-                    if (httpMethodAnnotationClasses.contains(annotationClass)) {
-                        controllerMethods.put(method, annotationClass);
-                        break;
-                    }
+        // discover all annotated controllers methods
+        for (Method method : controllerClass.getDeclaredMethods()) {
+            for (Annotation annotation : method.getAnnotations()) {
+                Class<? extends Annotation> annotationClass = annotation.annotationType();
+                if (httpMethodAnnotationClasses.contains(annotationClass)) {
+                    controllerMethods.put(method, annotationClass);
+                    break;
                 }
             }
         }
@@ -227,7 +284,7 @@ public class ControllerRegistry {
         return controllerMethods;
     }
 
-    /*
+    /**
      * Recursively builds the paths for the controller class.
      *
      * @param controllerClass
@@ -262,13 +319,13 @@ public class ControllerRegistry {
         return paths;
     }
 
-    /*
+    /**
      * Sort the controller's methods by their preferred order, if specified.
      *
      * @param controllerMethods
      * @return a sorted list of methods
      */
-    private Collection<Method> sortControllerMethods(Collection<Method> controllerMethods) {
+    private Collection<Method> sortControllerMethods(Set<Method> controllerMethods) {
         List<Method> list = new ArrayList<>(controllerMethods);
         list.sort((m1, m2) -> {
             int o1 = Integer.MAX_VALUE;

@@ -18,33 +18,28 @@ package ro.pippo.controller;
 import ro.pippo.core.Request;
 import ro.pippo.core.Response;
 import ro.pippo.core.route.RouteContext;
+import ro.pippo.core.route.RouteDispatcher;
 
 /**
  * @author Decebal Suiu
  */
 public class Controller {
 
-    private RouteContext routeContext;
-
     public final RouteContext getRouteContext() {
-        return routeContext;
+        return RouteDispatcher.getRouteContext();
     }
 
     public final Request getRequest() {
-        return routeContext.getRequest();
+        return getRouteContext().getRequest();
     }
 
     public final Response getResponse() {
-        return routeContext.getResponse();
+        return getRouteContext().getResponse();
     }
 
     @SuppressWarnings("unchecked")
     public <T extends ControllerApplication> T getApplication() {
-        return (T) routeContext.getApplication();
-    }
-
-    protected void init(RouteContext routeContext) {
-        this.routeContext = routeContext;
+        return (T) getRouteContext().getApplication();
     }
 
 }

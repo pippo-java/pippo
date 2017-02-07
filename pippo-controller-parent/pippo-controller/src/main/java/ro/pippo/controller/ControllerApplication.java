@@ -116,7 +116,15 @@ public class ControllerApplication extends Application {
         return this;
     }
 
-    public ControllerApplication addControllers(Class<? extends Controller>... controllers) {
+    public ControllerApplication addControllers(Class<? extends Controller>... controllerClasses) {
+        ControllerRegistry controllerRegistry = new ControllerRegistry(this);
+        controllerRegistry.register(controllerClasses);
+        controllerRegistry.getRoutes().forEach(this::addRoute);
+
+        return this;
+    }
+
+    public ControllerApplication addControllers(Controller... controllers) {
         ControllerRegistry controllerRegistry = new ControllerRegistry(this);
         controllerRegistry.register(controllers);
         controllerRegistry.getRoutes().forEach(this::addRoute);
