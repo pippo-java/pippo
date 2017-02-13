@@ -34,6 +34,8 @@ public class RouteGroup implements Routing {
     private RouteGroup parent;
     private List<RouteGroup> children;
 
+    private String name;
+
     public RouteGroup(String uriPattern) {
         this(null, uriPattern);
     }
@@ -75,6 +77,20 @@ public class RouteGroup implements Routing {
     public void addRouteGroup(RouteGroup routeGroup) {
         routeGroup.parent = this;
         children.add(routeGroup);
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public RouteGroup named(String name) {
+        this.name = name;
+
+        return this;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
 }

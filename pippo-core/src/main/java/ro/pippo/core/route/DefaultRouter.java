@@ -244,12 +244,27 @@ public class DefaultRouter implements Router {
         // add routes of group
         routeGroup.getRoutes().forEach(route -> {
             String uriPattern = routeGroup.getUriPattern();
+            String name = route.getName();
+            if (!StringUtils.isNullOrEmpty(name)) {
+                String groupName = routeGroup.getName();
+                if (!StringUtils.isNullOrEmpty(groupName)) {
+                    name = groupName + name;
+                }
+            }
             RouteGroup parent = routeGroup.getParent();
             while (parent != null) {
                 uriPattern = concatUriPattern(parent.getUriPattern(), uriPattern);
+                if (!StringUtils.isNullOrEmpty(name)) {
+                    String groupName = parent.getName();
+                    if (!StringUtils.isNullOrEmpty(groupName)) {
+                        name = groupName + name;
+
+                    }
+                }
                 parent = parent.getParent();
             }
             route.setAbsoluteUriPattern(concatUriPattern(uriPattern, route.getUriPattern()));
+            route.setName(name);
 
             addRoute(route);
         });

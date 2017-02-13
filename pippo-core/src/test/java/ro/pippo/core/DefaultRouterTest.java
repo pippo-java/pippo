@@ -27,6 +27,7 @@ import ro.pippo.core.route.RouteHandler;
 import ro.pippo.core.route.RouteMatch;
 import ro.pippo.core.route.WebjarsResourceHandler;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -299,16 +300,15 @@ public class DefaultRouterTest {
         Route route = Route.GET(webjars.getUriPattern(), emptyRouteHandler);
         router.addRoute(route);
 
-        List<RouteMatch> routeMatches = router.findRoutes(HttpConstants.Method.GET, "/webjars/bootstrap/3.0.2/css/bootstrap.min.css"
-        );
+        List<RouteMatch> routeMatches = router.findRoutes(HttpConstants.Method.GET, "/webjars/bootstrap/3.0.2/css/bootstrap.min.css");
         assertEquals(1, routeMatches.size());
     }
 
     @Test
     public void testParameters() throws Exception {
-        // /////////////////////////////////////////////////////////////////////
+        ///////////////////////////////////////////////////////////////////////
         // One parameter:
-        // /////////////////////////////////////////////////////////////////////
+        ///////////////////////////////////////////////////////////////////////
         router.addRoute(Route.GET("/{name}/dashboard", emptyRouteHandler));
 
         assertEquals(0, router.findRoutes(HttpConstants.Method.GET, "/dashboard").size());
@@ -317,9 +317,9 @@ public class DefaultRouterTest {
         assertEquals(1, matches.size());
         assertEquals("John", matches.get(0).getPathParameters().get("name"));
 
-        // /////////////////////////////////////////////////////////////////////
+        ///////////////////////////////////////////////////////////////////////
         // More parameters
-        // /////////////////////////////////////////////////////////////////////
+        ///////////////////////////////////////////////////////////////////////
         router.addRoute(Route.GET("/{name}/{id}/dashboard", emptyRouteHandler));
 
         assertEquals(0, router.findRoutes(HttpConstants.Method.GET, "/dashboard").size());
@@ -721,6 +721,31 @@ public class DefaultRouterTest {
 
         List<RouteMatch> matches = router.findRoutes(HttpConstants.Method.GET, "/users");
         assertEquals(1, matches.size());
+    }
+
+    @Test
+    public void testNamedGroup() {
+        RouteGroup users = new RouteGroup("/users").named("users.");
+
+        users.GET("{id}", emptyRouteHandler).named("get"); // retrieves (all or a specific user)
+        users.PUT("{id}", emptyRouteHandler).named("update"); // update a specific user
+        users.POST("", emptyRouteHandler).named("new"); // create a new user
+        users.DELETE("/{id}", emptyRouteHandler).named("delete"); // delete a specific user
+        users.GET("/test", emptyRouteHandler);
+
+        router.addRouteGroup(users);
+
+        String uri = router.uriFor("users.get", Collections.emptyMap());
+        assertNotNull(uri);
+
+        uri = router.uriFor("users.update", Collections.emptyMap());
+        assertNotNull(uri);
+
+        uri = router.uriFor("users.new", Collections.emptyMap());
+        assertNotNull(uri);
+
+        uri = router.uriFor("users.delete", Collections.emptyMap());
+        assertNotNull(uri);
     }
 
     @Test
