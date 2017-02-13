@@ -66,6 +66,8 @@ public class ControllerRouteHandler implements RouteHandler {
     private List<RouteHandler> interceptors;
     private MethodParameterExtractor[] extractors;
 
+    private Controller controller;
+
     @SuppressWarnings("unchecked")
     public ControllerRouteHandler(ControllerApplication application, Method controllerMethod) {
         this.application = application;
@@ -120,8 +122,7 @@ public class ControllerRouteHandler implements RouteHandler {
             log.trace("Invoking '{}'", LangUtils.toString(controllerMethod));
 
             // create the controller instance
-            Controller controller = application.getControllerFactory().createController(controllerClass);
-            controller.init(routeContext);
+            Controller controller = getController();
 
             specifyCacheControls(routeContext);
             specifyContentType(routeContext);
@@ -170,6 +171,18 @@ public class ControllerRouteHandler implements RouteHandler {
             // handles exceptions thrown within this handle() method
             handleDeclaredThrownException(e, routeContext);
         }
+    }
+
+    protected Controller getController() {
+        if (controller == null) {
+            return application.getControllerFactory().createController(controllerClass);
+        }
+
+        return controller;
+    }
+
+    protected void setController(Controller controller) {
+        this.controller = controller;
     }
 
     /**
