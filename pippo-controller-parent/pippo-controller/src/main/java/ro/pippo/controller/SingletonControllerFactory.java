@@ -15,10 +15,13 @@
  */
 package ro.pippo.controller;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * A {@link ControllerFactory} that always returns a specific instance.
@@ -28,12 +31,14 @@ import java.util.Map;
  *
  * @author Decebal Suiu
  */
-public class SingletonControllerFactory implements  ControllerFactory {
+public class SingletonControllerFactory implements ControllerFactory {
+
+    private static final Logger log = LoggerFactory.getLogger(SingletonControllerFactory.class);
 
     private final ControllerFactory decoratedFactory;
     private final List<String> controllerClassNames;
 
-    private Map<String, Controller> cache;
+    private final Map<String, Controller> cache;
 
     public SingletonControllerFactory() {
         this (new DefaultControllerFactory());
@@ -47,20 +52,20 @@ public class SingletonControllerFactory implements  ControllerFactory {
         this.decoratedFactory = decoratedFactory;
         this.controllerClassNames = Arrays.asList(controllerClassNames);
 
-        cache = new HashMap<>(); // simple cache implementation
+        cache = new ConcurrentHashMap<>(); // simple cache implementation
     }
 
     @Override
     @SuppressWarnings("unchecked")
     public <T extends Controller> T createController(Class<T> controllerClass) {
         String controllerClassName = controllerClass.getName();
-        if (cache.containsKey(controllerClassName)) {
-            return (T) cache.get(controllerClassName);
-        }
-
-        T controller = decoratedFactory.createController(controllerClass);
-        if (controllerClassNames.isEmpty() || controllerClassNames.contains(controllerClassName)) {
-            cache.put(controllerClassName, controller);
+        T controller = (T) cache.get(controllerClassName);
+        if (controller == null) {
+            log.debug("Create instance of '{}'", controllerClassName);
+            controller = decoratedFactory.createController(controllerClass);
+            if (controllerClassNames.isEmpty() || controllerClassNames.contains(controllerClassName)) {
+                cache.put(controllerClassName, controller);
+            }
         }
 
         return controller;
