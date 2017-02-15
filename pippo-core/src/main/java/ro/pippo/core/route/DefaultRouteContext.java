@@ -20,6 +20,7 @@ import org.slf4j.LoggerFactory;
 import ro.pippo.core.Application;
 import ro.pippo.core.Messages;
 import ro.pippo.core.ParameterValue;
+import ro.pippo.core.PippoSettings;
 import ro.pippo.core.Request;
 import ro.pippo.core.Response;
 import ro.pippo.core.Session;
@@ -363,6 +364,11 @@ public class DefaultRouteContext implements RouteContext {
     @Override
     public Route getRoute() {
         return route;
+    }
+
+    @Override
+    public PippoSettings getSettings() {
+        return application.getPippoSettings();
     }
 
     @SuppressWarnings("unchecked")

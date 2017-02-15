@@ -18,6 +18,7 @@ package ro.pippo.core.route;
 import ro.pippo.core.Application;
 import ro.pippo.core.Messages;
 import ro.pippo.core.ParameterValue;
+import ro.pippo.core.PippoSettings;
 import ro.pippo.core.Request;
 import ro.pippo.core.Response;
 import ro.pippo.core.Session;
@@ -128,6 +129,8 @@ public interface RouteContext {
     String getMessage(String key, Object... args);
 
     String getMessage(String key, String language, Object... args);
+
+    PippoSettings getSettings();
 
     Route getRoute();
 
