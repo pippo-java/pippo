@@ -18,6 +18,7 @@ package ro.pippo.core.route;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ro.pippo.core.Application;
+import ro.pippo.core.Messages;
 import ro.pippo.core.ParameterValue;
 import ro.pippo.core.Request;
 import ro.pippo.core.Response;
@@ -342,6 +343,11 @@ public class DefaultRouteContext implements RouteContext {
     @Override
     public String uriFor(String nameOrUriPattern, Map<String, Object> parameters) {
         return application.getRouter().uriFor(nameOrUriPattern, parameters);
+    }
+
+    @Override
+    public Messages getMessages() {
+        return application.getMessages();
     }
 
     @Override

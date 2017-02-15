@@ -16,6 +16,7 @@
 package ro.pippo.core.route;
 
 import ro.pippo.core.Application;
+import ro.pippo.core.Messages;
 import ro.pippo.core.ParameterValue;
 import ro.pippo.core.Request;
 import ro.pippo.core.Response;
@@ -121,6 +122,8 @@ public interface RouteContext {
     RouteContext status(int code);
 
     String uriFor(String nameOrUriPattern, Map<String, Object> parameters);
+
+    Messages getMessages();
 
     String getMessage(String key, Object... args);
 
