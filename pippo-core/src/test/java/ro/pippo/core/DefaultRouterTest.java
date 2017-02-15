@@ -724,10 +724,10 @@ public class DefaultRouterTest {
     }
 
     @Test
-    public void testNamedGroup() {
+    public void testGroupWithName() {
         RouteGroup users = new RouteGroup("/users").named("users.");
 
-        users.GET("{id}", emptyRouteHandler).named("get"); // retrieves (all or a specific user)
+        users.GET("{id: [0-9]+}", emptyRouteHandler).named("get"); // retrieves (all or a specific user)
         users.PUT("{id}", emptyRouteHandler).named("update"); // update a specific user
         users.POST("", emptyRouteHandler).named("new"); // create a new user
         users.DELETE("/{id}", emptyRouteHandler).named("delete"); // delete a specific user
@@ -746,6 +746,27 @@ public class DefaultRouterTest {
 
         uri = router.uriFor("users.delete", Collections.emptyMap());
         assertNotNull(uri);
+
+        List<RouteMatch> matches = router.findRoutes(HttpConstants.Method.GET, "/users/test");
+        assertEquals(1, matches.size());
+        assertNull(matches.get(0).getRoute().getName());
+    }
+
+    @Test
+    public void testGroupWithAttributes() {
+        RouteGroup group = new RouteGroup("/users");
+        group.bind("audit", true);
+
+        group.GET("/", emptyRouteHandler).bind("secure", true);
+        router.addRouteGroup(group);
+
+        List<RouteMatch> matches = router.findRoutes(HttpConstants.Method.GET, "/users");
+        assertEquals(1, matches.size());
+        Route route = matches.get(0).getRoute();
+        assertTrue(route.getAttributes().containsKey("audit"));
+        assertTrue(route.getAttribute("audit"));
+        assertTrue(route.getAttributes().containsKey("secure"));
+        assertTrue(route.getAttribute("secure"));
     }
 
     @Test

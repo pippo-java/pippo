@@ -16,7 +16,10 @@
 package ro.pippo.core.route;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Route groups allow you to prefix <code>uriPattern</code>,
@@ -36,6 +39,8 @@ public class RouteGroup implements Routing {
 
     private String name;
 
+    private Map<String, Object> attributes;
+
     public RouteGroup(String uriPattern) {
         this(null, uriPattern);
     }
@@ -48,8 +53,9 @@ public class RouteGroup implements Routing {
             parent.children.add(this);
         }
 
-        this.routes = new ArrayList<>();
-        this.children = new ArrayList<>();
+        routes = new ArrayList<>();
+        children = new ArrayList<>();
+        attributes = new HashMap<>();
     }
 
     public String getUriPattern() {
@@ -91,6 +97,33 @@ public class RouteGroup implements Routing {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public RouteGroup bind(String name, Object value) {
+        attributes.put(name, value);
+
+        return this;
+    }
+
+    /**
+     * Copies all of the attributes from the specified map to this route group.
+     *
+     * @param attributes
+     * @return
+     */
+    public RouteGroup bindAll(Map<String, Object> attributes) {
+        this.attributes.putAll(attributes);
+
+        return this;
+    }
+
+    /**
+     * Returns an unmodifiable view of attributes.
+     *
+     * @return
+     */
+    public Map<String, Object> getAttributes() {
+        return Collections.unmodifiableMap(attributes);
     }
 
 }

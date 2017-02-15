@@ -20,6 +20,7 @@ import org.slf4j.LoggerFactory;
 import ro.pippo.core.HttpConstants;
 import ro.pippo.core.PippoConstants;
 import ro.pippo.core.PippoRuntimeException;
+import ro.pippo.core.util.Stack;
 import ro.pippo.core.util.StringUtils;
 
 import java.io.UnsupportedEncodingException;
@@ -37,6 +38,7 @@ import java.util.TreeSet;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 /**
  * The routes are matched in the order they are defined.
@@ -244,27 +246,43 @@ public class DefaultRouter implements Router {
         // add routes of group
         routeGroup.getRoutes().forEach(route -> {
             String uriPattern = routeGroup.getUriPattern();
-            String name = route.getName();
-            if (!StringUtils.isNullOrEmpty(name)) {
-                String groupName = routeGroup.getName();
-                if (!StringUtils.isNullOrEmpty(groupName)) {
-                    name = groupName + name;
-                }
-            }
+
+            // stack with names
+            Stack<String> nameStack =  new Stack<>();
+            nameStack.push(route.getName());
+            nameStack.pushIfNotEmpty(routeGroup.getName());
+
+            // stack with attributes
+            Stack<Map<String, Object>> attributesStack =  new Stack<>();
+            attributesStack.push(route.getAttributes());
+            attributesStack.push(routeGroup.getAttributes());
+
             RouteGroup parent = routeGroup.getParent();
             while (parent != null) {
                 uriPattern = concatUriPattern(parent.getUriPattern(), uriPattern);
-                if (!StringUtils.isNullOrEmpty(name)) {
-                    String groupName = parent.getName();
-                    if (!StringUtils.isNullOrEmpty(groupName)) {
-                        name = groupName + name;
 
-                    }
-                }
+                // push group name to stack
+                nameStack.pushIfNotEmpty(parent.getName());
+
+                // push group attributes to stack
+                attributesStack.push(parent.getAttributes());
+
                 parent = parent.getParent();
             }
             route.setAbsoluteUriPattern(concatUriPattern(uriPattern, route.getUriPattern()));
-            route.setName(name);
+
+            // set route name
+            if (!nameStack.isEmpty()) {
+                route.setName(StreamSupport.stream(nameStack.spliterator(), false)
+                    .collect(Collectors.joining("")));
+            }
+
+            // set route attributes
+            if (!attributesStack.isEmpty()) {
+                route.bindAll(StreamSupport.stream(attributesStack.spliterator(), false)
+                    .flatMap(map -> map.entrySet().stream())
+                    .collect(Collectors.toMap(Entry::getKey, Entry::getValue)));
+            }
 
             addRoute(route);
         });
