@@ -15,6 +15,8 @@
  */
 package ro.pippo.controller;
 
+import ro.pippo.core.Messages;
+import ro.pippo.core.PippoSettings;
 import ro.pippo.core.Request;
 import ro.pippo.core.Response;
 import ro.pippo.core.route.RouteContext;
@@ -40,6 +42,14 @@ public class Controller {
     @SuppressWarnings("unchecked")
     public <T extends ControllerApplication> T getApplication() {
         return (T) getRouteContext().getApplication();
+    }
+
+    public final Messages getMessages() {
+        return getRouteContext().getMessages();
+    }
+
+    public final PippoSettings getSettings() {
+        return getRouteContext().getSettings();
     }
 
 }
