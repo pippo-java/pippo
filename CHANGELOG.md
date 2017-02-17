@@ -5,6 +5,16 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 ### [Unreleased][unreleased]
 
 #### Fixed
+
+#### Changed
+
+#### Added
+
+#### Removed
+
+### [1.2.0]- 2017-02-17
+
+#### Fixed
 - Synchronize cache in `SingletonControllerFactory`
 
 #### Changed
@@ -334,7 +344,8 @@ Initial release.
 - Added [pippo-freemarker]
 - Added [pippo-jetty]
 
-[unreleased]: https://github.com/decebals/pippo/compare/release-1.1.0...HEAD
+[unreleased]: https://github.com/decebals/pippo/compare/release-1.2.0...HEAD
+[1.2.0]: https://github.com/decebals/pippo/compare/release-1.1.0...release-1.2.0
 [1.1.0]: https://github.com/decebals/pippo/compare/release-1.0.0...release-1.1.0
 [1.0.0]: https://github.com/decebals/pippo/compare/release-0.10.0...release-1.0.0
 [0.10.0]: https://github.com/decebals/pippo/compare/release-0.9.1...release-0.10.0
