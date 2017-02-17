@@ -7,7 +7,6 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 #### Fixed
 - Synchronize cache in `SingletonControllerFactory`
 
-
 #### Changed
 - Rename `RequestLanguageFilter` to `LanguageHandler`
 
