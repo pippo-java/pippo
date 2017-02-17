@@ -5,10 +5,24 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 ### [Unreleased][unreleased]
 
 #### Fixed
+- Synchronize cache in `SingletonControllerFactory`
+
 
 #### Changed
+- Rename `RequestLanguageFilter` to `LanguageHandler`
 
 #### Added
+- Add `getMessage` method helper/shortcut in `RouteContext`
+- [#341]: New controller concept
+- [#344]: Helper method in `Response` for setting filename
+- [#346]: Expose method to reset the response
+- [#347]: Make the `Route` available in `RouteHandler`
+- [#350]: Add possibility to use a singleton `Controller` (one instance for all requests)
+- [#253]: Named route group
+- [#348]: Support attributes in RouteGroup
+- Add `getMessages` method helper in `RouteContext`
+- Add `getSettings` method helper in `RouteContext`
+- Add `getMessages` and `getSettings` methods helper in `Controller`
 
 #### Removed
 
@@ -337,6 +351,12 @@ Initial release.
 [0.3.0]: https://github.com/decebals/pippo/compare/pippo-parent-0.2.0...pippo-parent-0.3.0
 [0.2.0]: https://github.com/decebals/pippo/compare/pippo-parent-0.1.0...pippo-parent-0.2.0
 
+[#350]: https://github.com/decebals/pippo/issues/350
+[#348]: https://github.com/decebals/pippo/issues/348
+[#347]: https://github.com/decebals/pippo/issues/347
+[#346]: https://github.com/decebals/pippo/issues/346
+[#344]: https://github.com/decebals/pippo/issues/344
+[#341]: https://github.com/decebals/pippo/issues/341
 [#338]: https://github.com/decebals/pippo/issues/338
 [#337]: https://github.com/decebals/pippo/issues/337
 [#332]: https://github.com/decebals/pippo/issues/332
@@ -361,6 +381,7 @@ Initial release.
 [#265]: https://github.com/decebals/pippo/issues/265
 [#262]: https://github.com/decebals/pippo/issues/262
 [#258]: https://github.com/decebals/pippo/issues/258
+[#253]: https://github.com/decebals/pippo/issues/253
 [#245]: https://github.com/decebals/pippo/issues/245
 [#241]: https://github.com/decebals/pippo/issues/241
 [#234]: https://github.com/decebals/pippo/issues/234
