@@ -4,12 +4,12 @@
     <parent>
         <groupId>ro.pippo</groupId>
         <artifactId>pippo-parent</artifactId>
-        <version>1.2.0</version>
+        <version>1.3.0-SNAPSHOT</version>
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
     <artifactId>pippo</artifactId>
-    <version>1.2.0</version>
+    <version>1.3.0-SNAPSHOT</version>
     <packaging>pom</packaging>
     <name>Pippo</name>
     <description>
