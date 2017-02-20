@@ -12,7 +12,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 #### Removed
 
-### [1.2.0]- 2017-02-17
+### [1.2.0] - 2017-02-17
 
 #### Fixed
 - Synchronize cache in `SingletonControllerFactory`
