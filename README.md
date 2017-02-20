@@ -16,6 +16,9 @@ The goal of this project is to create a micro web framework in Java that should 
 
 Sample code
 ---------------
+
+#### 1. Routes approach
+
 First we must create an __Application__ and add some routes:  
 
 ```java
@@ -128,6 +131,52 @@ Open your internet browser and check the routes declared in Application:
  - `http://localhost:8338/xml`
  - `http://localhost:8338/negotiate`
  - `http://localhost:8338/template` 
+
+#### 2. Controllers approach
+
+Define controller(s):
+
+```java
+@Path("/contacts")
+public class ContactsController extends Controller {
+
+    @GET("/?")
+    public void index() {
+		List<Contact> contacts = contactService.getContacts();
+		getResponse().bind("contacts", contacts).render("contacts");
+    }
+    
+    @GET("/{id: [0-9]+}")
+    public void getContact(@Param int id) {
+        Contact contact = contactService.getContact(id);
+        getResponse().bind("contact", contact).render(contact);
+    }
+
+    @GET("/text")
+    @Named("text")
+    @Produces(Produces.TEXT)
+    @NoCache
+    public void complex(@Param int id, @Param String action, @Header String host, @Session String user) {
+        // do something
+    }
+    
+}
+```
+
+Add controller(s) in your application:
+
+```java
+public class BasicApplication extends ControllerApplication {
+
+    @Override
+    protected void onInit() {
+        addControllers(ContactsController.class); // one instance for EACH request
+        // OR
+        addControllers(new ContactsController()); // one instance for ALL requests        
+    }
+
+}
+```
 
 Documentation
 ---------------
