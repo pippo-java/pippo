@@ -363,7 +363,7 @@ public class Application implements ResourceRouting {
     }
 
     /**
-     * Returns the catch all route handler or null.
+     * Returns the {@code Catch-All} route handler or null.
      *
      * @return
      */
