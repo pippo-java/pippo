@@ -45,12 +45,13 @@ public class RouteDispatcher {
 
     private final static ThreadLocal<RouteContext> ROUTE_CONTEXT_THREAD_LOCAL = new ThreadLocal<>();
 
-    protected static final List<RouteMatch> noMatches = Collections.emptyList();
+    private static final List<RouteMatch> noMatches = Collections.emptyList();
 
-    protected RouteContextFactory<?> routeContextFactory;
-    protected Application application;
-    protected Router router;
-    protected ErrorHandler errorHandler;
+    private RouteContextFactory<?> routeContextFactory;
+    private Application application;
+    private Router router;
+    private ErrorHandler errorHandler;
+    private RouteHandler notFoundRouteHandler;
 
     @SuppressWarnings("unchecked")
     public static <T extends RouteContext> T getRouteContext() {
@@ -71,6 +72,7 @@ public class RouteDispatcher {
 
         router = application.getRouter();
         errorHandler = application.getErrorHandler();
+        notFoundRouteHandler = application.getNotFoundRouteHandler();
 
         routeContextFactory = getRouteContextFactory();
         routeContextFactory.init(application);
@@ -137,8 +139,12 @@ public class RouteDispatcher {
 
         try {
             if (routeMatches.isEmpty()) {
-                // NOT FOUND (404)
-                errorHandler.handle(HttpConstants.StatusCode.NOT_FOUND, routeContext);
+                if (notFoundRouteHandler != null) {
+                    notFoundRouteHandler.handle(routeContext);
+                } else {
+                    // NOT FOUND (404)
+                    errorHandler.handle(HttpConstants.StatusCode.NOT_FOUND, routeContext);
+                }
             } else {
                 processFlash(routeContext);
             }

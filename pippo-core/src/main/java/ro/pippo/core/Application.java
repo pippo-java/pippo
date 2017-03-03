@@ -24,6 +24,7 @@ import ro.pippo.core.route.Route;
 import ro.pippo.core.route.RouteContext;
 import ro.pippo.core.route.RouteDispatcher;
 import ro.pippo.core.route.RouteGroup;
+import ro.pippo.core.route.RouteHandler;
 import ro.pippo.core.route.RoutePostDispatchListenerList;
 import ro.pippo.core.route.RoutePreDispatchListenerList;
 import ro.pippo.core.route.RouteTransformer;
@@ -70,6 +71,7 @@ public class Application implements ResourceRouting {
     private RoutePostDispatchListenerList routePostDispatchListeners;
 
     private Map<String, Object> locals;
+    private RouteHandler notFoundRouteHandler;
 
     public Application() {
         this(new PippoSettings(RuntimeMode.getCurrent()));
@@ -348,6 +350,25 @@ public class Application implements ResourceRouting {
      */
     public void addRouteTransformer(RouteTransformer transformer) {
         getRouter().addRouteTransformer(transformer);
+    }
+
+    /**
+     * Set the {@link RouteHandler} that is called only if no route has been found for a request.
+     * It's named {@code Catch-All} route handler.
+     *
+     * @param routeHandler
+     */
+    public void setNotFoundRouteHandler(RouteHandler routeHandler) {
+        this.notFoundRouteHandler = routeHandler;
+    }
+
+    /**
+     * Returns the catch all route handler or null.
+     *
+     * @return
+     */
+    public RouteHandler getNotFoundRouteHandler() {
+        return notFoundRouteHandler;
     }
 
     /**
