@@ -240,7 +240,7 @@ public final class Request {
     public <T, X> T updateEntityFromParameters(T entity) {
         for (Field field : ClassUtils.getAllFields(entity.getClass())) {
             String parameterName = field.getName();
-            Param parameter = field.getAnnotation(Param.class);
+            ParamField parameter = field.getAnnotation(ParamField.class);
             if (parameter != null) {
                 parameterName = parameter.value();
             }
@@ -250,11 +250,7 @@ public final class Request {
                     field.setAccessible(true);
                 }
 
-                String pattern = null;
-                ParamPattern parameterPattern = field.getAnnotation(ParamPattern.class);
-                if (parameterPattern != null) {
-                    pattern = parameterPattern.value();
-                }
+                String pattern = parameter.pattern();
 
                 try {
                     Class<?> fieldClass = field.getType();

@@ -21,13 +21,16 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Annotation that defines a pattern for helping to convert a request String
- * parameter into a Java object.
+ * Annotation that defines a request parameter name for mapping to a Java object.
  *
  * @author James Moger
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.PARAMETER, ElementType.FIELD})
-public @interface ParamPattern {
+public @interface ParamField {
+
     String value();
+
+    String pattern() default "";
+
 }
