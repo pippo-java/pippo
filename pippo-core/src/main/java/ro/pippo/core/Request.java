@@ -250,7 +250,7 @@ public final class Request {
                     field.setAccessible(true);
                 }
 
-                String pattern = parameter.pattern();
+                String pattern = (parameter != null) ? parameter.pattern() : null;
 
                 try {
                     Class<?> fieldClass = field.getType();
