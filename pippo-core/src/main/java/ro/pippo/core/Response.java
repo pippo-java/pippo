@@ -1012,9 +1012,27 @@ public final class Response {
      * @param model
      */
     public void render(String templateName, Map<String, Object> model) {
+        send(renderToString(templateName, model));
+    }
+
+    /**
+     * Renders a template to a {@link String}.
+     *
+     * @param templateName
+     */
+    public String renderToString(String templateName) {
+        return renderToString(templateName, new HashMap<>());
+    }
+
+    /**
+     * Renders a template to a {@link String}.
+     *
+     * @param templateName
+     * @param model
+     */
+    public String renderToString(String templateName, Map<String, Object> model) {
         if (templateEngine == null) {
-            log.error("You must set a template engine first");
-            return;
+            throw new PippoRuntimeException("You must set a template engine in your application");
         }
 
         // merge the model passed with the locals data
@@ -1029,7 +1047,8 @@ public final class Response {
         // render the template using the merged model
         StringWriter stringWriter = new StringWriter();
         templateEngine.renderResource(templateName, model, stringWriter);
-        send(stringWriter.toString());
+
+        return stringWriter.toString();
     }
 
     private void checkCommitted() {

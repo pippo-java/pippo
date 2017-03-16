@@ -90,9 +90,37 @@ public interface RouteContext {
 
     boolean isRequestMethod(String method);
 
+    /**
+     * Renders a template and writes the output directly to the response.
+     * <p>This method commits the response.</p>
+     *
+     * @param templateName
+     */
     void render(String templateName);
 
+    /**
+     * Renders a template and writes the output directly to the response.
+     * <p>This method commits the response.</p>
+     *
+     * @param templateName
+     * @param model
+     */
     void render(String templateName, Map<String, Object> model);
+
+    /**
+     * Renders a template to a {@link String}.
+     *
+     * @param templateName
+     */
+    String renderToString(String templateName);
+
+    /**
+     * Renders a template to a {@link String}.
+     *
+     * @param templateName
+     * @param model
+     */
+    String renderToString(String templateName, Map<String, Object> model);
 
     void send(CharSequence content);
 
