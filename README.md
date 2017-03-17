@@ -64,7 +64,7 @@ public class BasicApplication extends Application {
             .setName("John")
             .setPhone("0733434435")
             .setAddress("Sunflower Street, No. 6");
-	}
+    }
 
 }
 ```
@@ -247,7 +247,7 @@ public class BasicApplication extends ControllerApplication {
 }
 ```
 
-Don't forget that the `Controller` concept is included in `pippo-controller` module so you must add this module as dependency.
+Don't forget that the `Controller` concept is included in `pippo-controller` module so you must add this module as dependency in your project.
 
 Documentation
 ---------------
