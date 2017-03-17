@@ -896,7 +896,11 @@ public final class Response {
      * @param object
      */
     public void send(Object object) {
-        send(object, getContentType());
+        if (object instanceof File) {
+            file((File) object);
+        } else {
+            send(object, getContentType());
+        }
     }
 
     private void send(Object object, String contentType) {
