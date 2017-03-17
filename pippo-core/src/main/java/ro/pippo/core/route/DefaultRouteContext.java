@@ -237,7 +237,7 @@ public class DefaultRouteContext implements RouteContext {
 
     @Override
     public void send(File file) {
-        response.send(file);
+        response.file(file);
     }
 
     @Override
