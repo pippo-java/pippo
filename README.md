@@ -13,6 +13,7 @@ Micro Java Web Framework
 
 It's an open source (Apache License) micro web framework in Java, with minimal dependencies and a quick learning curve.     
 The goal of this project is to create a micro web framework in Java that should be easy to use and hack.      
+The size of `pippo-core` is only __140 KB__ and the size of `pippo-controller` (optional) is only __45 KB__.
 
 Sample code
 ---------------
@@ -43,14 +44,14 @@ public class BasicApplication extends Application {
 			Contact contact = createContact();
 			routeContext.xml().send(contact);
         });
-        
+
         // send an object and negotiate the Response content-type, default to XML
         GET("/negotiate", routeContext -> {
             Contact contact = createContact();
 			routeContext.xml().negotiateContentType().send(contact);
         });
-        
-        // send a template as response
+
+        // send a template with name "hello" as response
         GET("/template", routeContext -> {
 			routeContext.setLocal("greeting", "Hello");
 			routeContext.render("hello");        
@@ -62,11 +63,11 @@ public class BasicApplication extends Application {
 			.setId(12345)
 			.setName("John")
 			.setPhone("0733434435")
-			.setAddress("Sunflower Street, No. 6");	
+			.setAddress("Sunflower Street, No. 6");
 	}
-	
+
 }
-``` 
+```
 
 where `Contact` is a simple POJO:
 
@@ -77,17 +78,17 @@ public class Contact  {
     private String name;
     private String phone;
     private String address;
-    
+
     // getters and setters
 
 }
 ```
 
-The second step is to choose your favorite [server](http://www.pippo.ro/doc/server.html), 
-[template engine](http://www.pippo.ro/doc/templates.html) 
+The second step is to choose your favorite [server](http://www.pippo.ro/doc/server.html),
+[template engine](http://www.pippo.ro/doc/templates.html)
 and [content type engine](http://www.pippo.ro/doc/content-types.html).  
 For example, I will choose `Jetty` as server, `Freemarker` as template engine, `Jackson` as JSON engine and `JAXB` as XML engine.  
-My Maven `pom.xml` looks like: 
+My Maven `pom.xml` looks like:
 
 ```xml
 <dependency>
@@ -130,7 +131,7 @@ Open your internet browser and check the routes declared in Application:
  - `http://localhost:8338/json`
  - `http://localhost:8338/xml`
  - `http://localhost:8338/negotiate`
- - `http://localhost:8338/template` 
+ - `http://localhost:8338/template`
 
 #### 2. Controllers approach
 
@@ -138,28 +139,94 @@ Define controller(s):
 
 ```java
 @Path("/contacts")
+@Logging
 public class ContactsController extends Controller {
 
-    @GET("/?")
-    public void index() {
-		List<Contact> contacts = contactService.getContacts();
-		getResponse().bind("contacts", contacts).render("contacts");
-    }
-    
-    @GET("/{id: [0-9]+}")
-    public void getContact(@Param int id) {
-        Contact contact = contactService.getContact(id);
-        getResponse().bind("contact", contact).render(contact);
+    private ContactService contactService;
+
+    public ContactsController() {
+        contactService = new InMemoryContactService();
     }
 
-    @GET("/text")
-    @Named("text")
-    @Produces(Produces.TEXT)
-    @NoCache
-    public void complex(@Param int id, @Param String action, @Header String host, @Session String user) {
-        // do something
+    @GET
+    @Named("index")
+//    @Produces(Produces.HTML)
+    @Metered
+    @Logging
+    public void index() {
+        // inject "user" attribute in session
+        getRouteContext().setSession("user", "decebal");
+
+        // send a template with name "contacts" as response
+        getResponse()
+            .bind("contacts", contactService.getContacts())
+            .render("contacts");
     }
-    
+
+    @GET("/uriFor/{id: [0-9]+}")
+    @Named("uriFor")
+    @Produces(Produces.TEXT)
+    @Timed
+    public String uriFor(@Param int id, @Header String host, @Session String user) {
+        System.out.println("id = " + id);
+        System.out.println("host = " + host);
+        System.out.println("user = " + user);
+
+        Map<String, Object> parameters = new HashMap<>();
+        parameters.put("id", id);
+
+        String uri = getApplication().getRouter().uriFor("api.get", parameters);
+
+        return "id = " + id + "; uri = " + uri;
+    }
+
+    @GET("/api")
+    @Named("api.getAll")
+    @Produces(Produces.JSON)
+    @NoCache
+    public List<Contact> getAll() {
+        return contactService.getContacts();
+    }
+
+    @GET("/api/{id: [0-9]+}")
+    @Named("api.get")
+    @Produces(Produces.JSON)
+    public Contact get(@Param int id) {
+        return contactService.getContact(id);
+    }
+
+}
+```
+
+```java
+@Path("/files")
+public class FilesController extends Controller {
+
+    @GET
+    public void index() {
+        // send a template with name "files" as response
+        getRouteContext().render("files");
+    }
+
+    @GET("/download")
+    public File download() {
+        // send a file as response
+        return new File("pom.xml");
+    }
+
+    @POST("/upload")
+    @Produces(Produces.TEXT)
+    public String upload(FileItem file) {
+        // send a text (the info about uploaded file) as response
+//        return file.toString();
+        return new StringBuilder()
+            .append(file.getName()).append("\n")
+            .append(file.getSubmittedFileName()).append("\n")
+            .append(file.getSize()).append("\n")
+            .append(file.getContentType())
+            .toString();
+    }
+
 }
 ```
 
@@ -172,11 +239,15 @@ public class BasicApplication extends ControllerApplication {
     protected void onInit() {
         addControllers(ContactsController.class); // one instance for EACH request
         // OR
-        addControllers(new ContactsController()); // one instance for ALL requests        
+        addControllers(new ContactsController()); // one instance for ALL requests
+
+        addControllers(FilesController.class);
     }
 
 }
 ```
+
+Don't forget that the `Controller` concept is included in `pippo-controller` module so you must add this module as dependency.
 
 Documentation
 ---------------
