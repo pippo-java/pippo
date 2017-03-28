@@ -20,38 +20,53 @@ import org.slf4j.LoggerFactory;
 import ro.pippo.core.route.ResourceRouting;
 import ro.pippo.core.route.Route;
 import ro.pippo.core.route.RouteGroup;
+import ro.pippo.core.reload.ReloadWatcher;
+import ro.pippo.core.reload.ReloadClassLoader;
 import ro.pippo.core.util.ServiceLocator;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 /**
  * @author Decebal Suiu
  */
-public class Pippo implements ResourceRouting {
+public class Pippo implements ResourceRouting, ReloadWatcher.Listener {
 
     private static final Logger log = LoggerFactory.getLogger(Pippo.class);
 
     private Application application;
     private WebServer server;
     private volatile boolean running;
+    private volatile boolean reloading;
+
+    private ReloadWatcher reloadWatcher;
 
     public Pippo() {
-        this(new Application());
+        addShutdownHook();
     }
 
     public Pippo(Application application) {
         this.application = application;
         log.debug("Application '{}'", application);
 
-        Runtime.getRuntime().addShutdownHook(new Thread() {
-
-            @Override
-            public void run() {
-                Pippo.this.stop();
-            }
-
-        });
+        addShutdownHook();
     }
 
     public Application getApplication() {
+        if (application == null) {
+            initReloading();
+            if (reloading) {
+                log.info("Reload enabled");
+                application = createApplication();
+            } else {
+                log.debug("Create a default application");
+                application = new Application();
+            }
+        }
+
         return application;
     }
 
@@ -116,6 +131,7 @@ public class Pippo implements ResourceRouting {
     public Pippo setServer(WebServer server) {
         this.server = server;
 
+        Application application = getApplication();
         PippoFilter pippoFilter = createPippoFilter(application);
         PippoSettings pippoSettings = application.getPippoSettings();
         this.server.setPippoFilter(pippoFilter).init(pippoSettings);
@@ -143,12 +159,20 @@ public class Pippo implements ResourceRouting {
         log.debug("Start server '{}'", server);
         server.start();
         running = true;
+
+        if (reloading) {
+            startReloadWatcher();
+        }
     }
 
     public void stop() {
         if (!running) {
             log.warn("Server is not started");
             return;
+        }
+
+        if (reloading) {
+            stopReloadWatcher();
         }
 
         WebServer server = getServer();
@@ -207,6 +231,107 @@ public class Pippo implements ResourceRouting {
         pippoFilter.setApplication(application);
 
         return pippoFilter;
+    }
+
+    protected void startReloadWatcher() {
+        if (reloadWatcher == null) {
+            reloadWatcher = createReloadWatcher();
+        }
+        reloadWatcher.start();
+    }
+
+    protected void stopReloadWatcher() {
+        if (reloadWatcher != null) {
+            reloadWatcher.stop();
+            reloadWatcher = null;
+        }
+    }
+
+    protected ReloadWatcher createReloadWatcher() {
+        return new ReloadWatcher.Builder()
+            .addDirectory(System.getProperty(PippoConstants.SYSTEM_PROPERTY_RELOAD_TARGET_CLASSES, "target/classes"))
+            .build(this);
+    }
+
+    @Override
+    public void onEvent(ReloadWatcher.Event event, Path dir, Path path) {
+        stop();
+
+        // TODO: very important (I cannot delete this block)
+        try {
+            Thread.sleep(5 * 1000);
+        } catch (InterruptedException e) {
+            // ignore
+        }
+
+        application = createApplication();
+        getServer().getPippoFilter().setApplication(application);
+
+        start();
+    }
+
+    private void addShutdownHook() {
+        Runtime.getRuntime().addShutdownHook(new Thread() {
+
+            @Override
+            public void run() {
+                Pippo.this.stop();
+            }
+
+        });
+    }
+
+    private Application createApplication() {
+        String targetClasses = System.getProperty(PippoConstants.SYSTEM_PROPERTY_RELOAD_TARGET_CLASSES, "target/classes");
+        log.debug("Target classes is '{}'", targetClasses);
+        String rootPackageName = System.getProperty(PippoConstants.SYSTEM_PROPERTY_RELOAD_ROOT_PACKAGE_NAME, "");
+        log.debug("Root package name is '{}'", rootPackageName);
+        ClassLoader classLoader = new ReloadClassLoader(Pippo.class.getClassLoader(), rootPackageName) {
+
+            @Override
+            protected InputStream getInputStream(String path) {
+                Path resolvedPath = Paths.get(targetClasses).resolve(path);
+                if (Files.notExists(resolvedPath)) {
+                    return null;
+                }
+
+                try {
+                    return Files.newInputStream(resolvedPath);
+                } catch (IOException e) {
+                    throw new PippoRuntimeException(e);
+                }
+            }
+
+        };
+
+        Application application = ServiceLocator.locate(Application.class, classLoader);
+        if (application != null) {
+            return application;
+        }
+
+        String applicationClassName = System.getProperty(PippoConstants.SYSTEM_PROPERTY_APPLICATION_CLASS_NAME);
+        if (applicationClassName == null) {
+            throw new PippoRuntimeException("Cannot find the application class name");
+        }
+        log.debug("Application class name is '{}'", applicationClassName);
+
+        try {
+            Class<?> applicationClass = classLoader.loadClass(applicationClassName);
+            application = (Application) applicationClass.newInstance();
+        } catch (InstantiationException | ClassNotFoundException | IllegalAccessException e) {
+            throw new RuntimeException(e);
+        }
+
+        return application;
+    }
+
+    private void initReloading() {
+        String reloadEnabled = System.getProperty(PippoConstants.SYSTEM_PROPERTY_RELOAD_ENABLED);
+        if (reloadEnabled != null) {
+            reloading = Boolean.valueOf(reloadEnabled);
+        } else {
+            reloading = RuntimeMode.DEV == RuntimeMode.getCurrent();
+        }
     }
 
 }

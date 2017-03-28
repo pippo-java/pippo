@@ -27,9 +27,21 @@ public final class PippoConstants {
 
     public static final String APPLICATION_PROPERTIES = "application.properties";
 
+    // SYSTEM PROPERTIES
+
     public static final String SYSTEM_PROPERTY_PIPPO_MODE = "pippo.mode";
 
     public static final String SYSTEM_PROPERTY_PIPPO_SETTINGS = "pippo.settings";
+
+    public static final String SYSTEM_PROPERTY_APPLICATION_CLASS_NAME = "pippo.applicationClassName";
+
+    public static final String SYSTEM_PROPERTY_RELOAD_ENABLED = "pippo.reload.enabled";
+
+    public static final String SYSTEM_PROPERTY_RELOAD_TARGET_CLASSES = "pippo.reload.targetClasses";
+
+    public static final String SYSTEM_PROPERTY_RELOAD_ROOT_PACKAGE_NAME = "pippo.reload.rootPackageName";
+
+    // SETTINGS
 
     public static final String SETTING_APPLICATION_NAME = "application.name";
 
@@ -65,9 +77,12 @@ public final class PippoConstants {
 
     public static final String REQUEST_PARAMETER_LOCALE = "locale";
 
+    // OTHERS
+
     public static final String UTF8 = StandardCharsets.UTF_8.toString();
 
     private PippoConstants() {
         // restrict instantiation
     }
+
 }

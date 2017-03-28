@@ -33,13 +33,21 @@ public class ServiceLocator {
     }
 
     public static <T> T locate(Class<T> service) {
-        List<T> services = locateAll(service);
+        return locate(service, service.getClassLoader());
+    }
+
+    public static <T> T locate(Class<T> service, ClassLoader classLoader) {
+        List<T> services = locateAll(service, classLoader);
         return services.isEmpty() ? null : services.get(0);
     }
 
     public static <T> List<T> locateAll(Class<T> service) {
+        return locateAll(service, service.getClassLoader());
+    }
+
+    public static <T> List<T> locateAll(Class<T> service, ClassLoader classLoader) {
         log.debug("Locate service '{}' using ServiceLoader", service.getName());
-        ServiceLoader<T> loader = ServiceLoader.load(service, service.getClassLoader());
+        ServiceLoader<T> loader = ServiceLoader.load(service, classLoader);
 
         final List<T> services = new ArrayList<>();
         for (T item : loader) {

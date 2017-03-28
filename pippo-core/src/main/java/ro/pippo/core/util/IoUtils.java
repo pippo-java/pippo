@@ -16,6 +16,7 @@
 package ro.pippo.core.util;
 
 import java.io.BufferedWriter;
+import java.io.ByteArrayOutputStream;
 import java.io.Closeable;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -94,6 +95,18 @@ public class IoUtils {
             close(writer);
         }
     }
+
+    public static byte[] getBytes(InputStream input) throws IOException {
+        byte[] buffer = new byte[8 * 1024];
+        int count;
+        ByteArrayOutputStream output = new ByteArrayOutputStream();
+        while ((count = input.read(buffer, 0, buffer.length)) != -1) {
+            output.write(buffer, 0, count);
+        }
+
+        return output.toByteArray();
+    }
+
     /**
      * Silently closes a Closeable.
      *
