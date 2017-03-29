@@ -15,7 +15,12 @@
  */
 package ro.pippo.core.route;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.net.URL;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 /**
  * Serves classpath resources.
@@ -23,6 +28,7 @@ import java.net.URL;
  * @author James Moger
  */
 public class ClasspathResourceHandler extends UrlResourceHandler {
+    private static final Logger log = LoggerFactory.getLogger(ClasspathResourceHandler.class);
 
     private final String resourceBasePath;
 
@@ -32,10 +38,20 @@ public class ClasspathResourceHandler extends UrlResourceHandler {
         this.resourceBasePath = getNormalizedPath(resourceBasePath);
     }
 
+    private static Path ROOT_PATH = Paths.get("/");
+    private static String normalizePath(String subPath) {
+        return ROOT_PATH.relativize(ROOT_PATH.resolve(subPath).normalize()).toString();
+    }
+
     @Override
     public URL getResourceUrl(String resourcePath) {
-        String resourceName = getResourceBasePath() + "/" + resourcePath;
-        return this.getClass().getClassLoader().getResource(resourceName);
+        String normalizedPath = normalizePath(resourcePath);
+        Path resolved = Paths.get(resourceBasePath).resolve(normalizedPath).normalize();
+        if(!resolved.startsWith(resourceBasePath)) {
+            log.warn("Request for '{}' which is not located in '{}'", resourcePath, resourceBasePath);
+            return null;
+        }
+        return this.getClass().getClassLoader().getResource(resolved.toString());
     }
 
     public String getResourceBasePath() {
