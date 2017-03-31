@@ -43,7 +43,7 @@ import java.util.jar.JarInputStream;
  */
 public class WebjarsResourceHandler extends ClasspathResourceHandler {
 
-    private final Logger log = LoggerFactory.getLogger(WebjarsResourceHandler.class);
+    private static final Logger log = LoggerFactory.getLogger(WebjarsResourceHandler.class);
 
     private final Map<String, String> pathAliases;
 
@@ -59,6 +59,11 @@ public class WebjarsResourceHandler extends ClasspathResourceHandler {
 
     @Override
     public URL getResourceUrl(String resourcePath) {
+        if (!isValidResourcePath(resourceBasePath, resourcePath)) {
+            log.warn("Request for '{}' which is not located in '{}'", resourcePath, resourceBasePath);
+            return null;
+        }
+
         String resourceName = getResourceBasePath() + "/" + resourcePath;
         String artifactPath = resourcePath.substring(0, resourcePath.indexOf('/') + 1);
         if (pathAliases.containsKey(artifactPath)) {
