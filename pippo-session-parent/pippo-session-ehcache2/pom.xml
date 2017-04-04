@@ -4,12 +4,12 @@
     <parent>
         <groupId>ro.pippo</groupId>
         <artifactId>pippo-session-parent</artifactId>
-        <version>1.3.0-SNAPSHOT</version>
+        <version>1.3.0</version>
     </parent>
     
     <groupId>ro.pippo</groupId>
     <artifactId>pippo-session-ehcache2</artifactId>
-    <version>1.3.0-SNAPSHOT</version>
+    <version>1.3.0</version>
     <packaging>jar</packaging>
 
     <name>Pippo Session Ehcache2</name>
