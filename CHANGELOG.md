@@ -5,10 +5,15 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 ### [Unreleased][unreleased]
 
 #### Fixed
+- [353]: Two annotations named Param
+- [356]: `ClasspathResourceHandler` Directory Traversal Bug (Security)
 
 #### Changed
 
 #### Added
+- [#352]: NotFound (CatchAll) route handler
+- [#354]: Add possibility in Controller to return the template rendered string
+- [#355]: Hot reloading
 
 #### Removed
 
@@ -361,6 +366,11 @@ Initial release.
 [0.3.0]: https://github.com/decebals/pippo/compare/pippo-parent-0.2.0...pippo-parent-0.3.0
 [0.2.0]: https://github.com/decebals/pippo/compare/pippo-parent-0.1.0...pippo-parent-0.2.0
 
+[#356]: https://github.com/decebals/pippo/issues/356
+[#355]: https://github.com/decebals/pippo/issues/355
+[#354]: https://github.com/decebals/pippo/issues/354
+[#353]: https://github.com/decebals/pippo/issues/353
+[#352]: https://github.com/decebals/pippo/issues/352
 [#350]: https://github.com/decebals/pippo/issues/350
 [#348]: https://github.com/decebals/pippo/issues/348
 [#347]: https://github.com/decebals/pippo/issues/347
