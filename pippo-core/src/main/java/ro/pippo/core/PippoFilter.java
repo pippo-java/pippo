@@ -110,6 +110,7 @@ public class PippoFilter implements Filter {
             String runtimeMode = application.getRuntimeMode().toString().toUpperCase();
             log.info("Pippo started ({})", runtimeMode);
         } catch (Exception e) {
+            log.error(e.getMessage(), e);
             destroy();
             throw new ServletException(e);
         }
