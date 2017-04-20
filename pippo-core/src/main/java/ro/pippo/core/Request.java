@@ -413,6 +413,10 @@ public final class Request {
         return httpServletRequest.getHeader(name);
     }
 
+    public Enumeration<String> getHeaders(String name) {
+        return httpServletRequest.getHeaders(name);
+    }
+
     public boolean isSecure() {
         return httpServletRequest.isSecure();
     }
