@@ -196,7 +196,7 @@ public class StringUtils {
      * Format the string. Replace "{}" with %s and format the string using String.format
      */
     public static String format(String str, Object... args) {
-        str = str.replaceAll("\\{\\}", "%s");
+        str = str.replaceAll("\\{}", "%s");
 
         return String.format(str, args);
     }
