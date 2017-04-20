@@ -88,6 +88,7 @@ public class Application implements ResourceRouting {
         this.httpCacheToolkit = new HttpCacheToolkit(settings);
         this.engines = new ContentTypeEngines();
         this.initializers = new ArrayList<>();
+        this.webSocketHandlers = new HashMap<>();
 
         registerContentTypeEngine(TextPlainEngine.class);
     }
