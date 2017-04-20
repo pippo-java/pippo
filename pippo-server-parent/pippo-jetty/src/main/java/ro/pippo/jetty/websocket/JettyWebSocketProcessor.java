@@ -100,7 +100,6 @@ public class JettyWebSocketProcessor implements WebSocketProcessor, WebSocketLis
 
     @Override
     public void onWebSocketError(Throwable cause) {
-
         if (cause instanceof SocketTimeoutException) {
             handler.onTimeout(context);
         } else {
