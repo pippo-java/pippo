@@ -150,8 +150,7 @@ public class PippoFilter implements Filter {
 
         log.debug("Request {} '{}'", request.getMethod(), requestPath);
 
-        // dispatch route(s)
-        routeDispatcher.dispatch(request, response);
+        processRequest(request, response);
     }
 
     public Application getApplication() {
@@ -173,6 +172,11 @@ public class PippoFilter implements Filter {
                 application = null;
             }
         }
+    }
+
+    protected void processRequest(Request request, Response response) throws IOException, ServletException {
+        // dispatch route(s)
+        routeDispatcher.dispatch(request, response);
     }
 
     private boolean shouldIgnorePath(String requestUri) {
