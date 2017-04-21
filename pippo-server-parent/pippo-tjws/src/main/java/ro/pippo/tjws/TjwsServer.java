@@ -116,7 +116,7 @@ public class TjwsServer extends AbstractWebServer<WebServerSettings> {
 
     @Override
     protected WebServerSettings createDefaultSettings() {
-        return new WebServerSettings(pippoSettings);
+        return new WebServerSettings(getApplication().getPippoSettings());
     }
 
 }

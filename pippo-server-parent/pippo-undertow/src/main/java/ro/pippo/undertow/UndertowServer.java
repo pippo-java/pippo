@@ -105,7 +105,7 @@ public class UndertowServer extends AbstractWebServer<UndertowSettings> {
 
     @Override
     protected UndertowSettings createDefaultSettings() {
-        return new UndertowSettings(pippoSettings);
+        return new UndertowSettings(getApplication().getPippoSettings());
     }
 
     protected Undertow createServer(HttpHandler contextHandler) {
@@ -171,7 +171,7 @@ public class UndertowServer extends AbstractWebServer<UndertowSettings> {
         info.setIgnoreFlush(true);
 
         // inject application as context attribute
-        info.addServletContextAttribute(PIPPO_APPLICATION, pippoFilter.getApplication());
+        info.addServletContextAttribute(PIPPO_APPLICATION, getApplication());
 
         // add pippo filter
         addPippoFilter(info);
@@ -196,7 +196,7 @@ public class UndertowServer extends AbstractWebServer<UndertowSettings> {
     }
 
     private MultipartConfigElement createMultipartConfigElement() {
-        Application application = pippoFilter.getApplication();
+        Application application = getApplication();
         String location = application.getUploadLocation();
         long maxFileSize = application.getMaximumUploadSize();
 
@@ -208,7 +208,7 @@ public class UndertowServer extends AbstractWebServer<UndertowSettings> {
             pippoFilterPath = "/*"; // default value
         }
 
-        info.addFilter(new FilterInfo("PippoFilter", PippoFilter.class, new ImmediateInstanceFactory<>(pippoFilter)));
+        info.addFilter(new FilterInfo("PippoFilter", PippoFilter.class, new ImmediateInstanceFactory<>(getPippoFilter())));
         info.addFilterUrlMapping("PippoFilter", pippoFilterPath, DispatcherType.REQUEST);
         log.debug("Using pippo filter for path '{}'", pippoFilterPath);
     }

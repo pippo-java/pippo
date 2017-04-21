@@ -24,10 +24,10 @@ import java.util.concurrent.CopyOnWriteArrayList;
  */
 public abstract class AbstractWebServer<T extends WebServerSettings> implements WebServer<T> {
 
-    protected PippoFilter pippoFilter;
+    private PippoFilter pippoFilter;
     protected String pippoFilterPath;
 
-    protected PippoSettings pippoSettings;
+    private Application application;
     private T settings;
 
     protected List<Class<? extends EventListener>> listeners;
@@ -49,12 +49,25 @@ public abstract class AbstractWebServer<T extends WebServerSettings> implements 
 
     @Override
     public PippoFilter getPippoFilter() {
+        if (pippoFilter == null) {
+            setPippoFilter(createPippoFilter());
+        }
+
         return pippoFilter;
     }
 
+    /**
+     * Set the {@link PippoFilter} instance.
+     * This method call {@link PippoFilter#setApplication(Application)} to end.
+     *
+     * @param pippoFilter
+     * @return
+     */
     @Override
     public WebServer<T> setPippoFilter(PippoFilter pippoFilter) {
         this.pippoFilter = pippoFilter;
+
+        pippoFilter.setApplication(application);
 
         return this;
     }
@@ -74,8 +87,8 @@ public abstract class AbstractWebServer<T extends WebServerSettings> implements 
     }
 
     @Override
-    public WebServer<T> init(PippoSettings pippoSettings) {
-        this.pippoSettings = pippoSettings;
+    public WebServer<T> init(Application application) {
+        this.application = application;
 
         return this;
     }
@@ -85,6 +98,28 @@ public abstract class AbstractWebServer<T extends WebServerSettings> implements 
         listeners.add(listener);
 
         return this;
+    }
+
+    public Application getApplication() {
+        return application;
+    }
+
+    /**
+     * Override this method if you want to customize the {@link PippoFilter}.
+     * <p/>
+     * <pre>
+     * protected PippoFilter createPippoFilter() {
+     *     PippoFilter pippoFilter = super.createPippoFilter();
+     *     pippoFilter.setIgnorePaths(Collections.singleton("/favicon.ico"));
+     *
+     *     return pippoFilter;
+     * }
+     * </pre>
+     *
+     * @return
+     */
+    protected PippoFilter createPippoFilter() {
+        return new PippoFilter();
     }
 
 }

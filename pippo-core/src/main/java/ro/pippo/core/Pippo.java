@@ -17,11 +17,11 @@ package ro.pippo.core;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import ro.pippo.core.reload.ReloadClassLoader;
+import ro.pippo.core.reload.ReloadWatcher;
 import ro.pippo.core.route.ResourceRouting;
 import ro.pippo.core.route.Route;
 import ro.pippo.core.route.RouteGroup;
-import ro.pippo.core.reload.ReloadWatcher;
-import ro.pippo.core.reload.ReloadClassLoader;
 import ro.pippo.core.util.ServiceLocator;
 
 import java.io.IOException;
@@ -130,11 +130,7 @@ public class Pippo implements ResourceRouting, ReloadWatcher.Listener {
      */
     public Pippo setServer(WebServer server) {
         this.server = server;
-
-        Application application = getApplication();
-        PippoFilter pippoFilter = createPippoFilter(application);
-        PippoSettings pippoSettings = application.getPippoSettings();
-        this.server.setPippoFilter(pippoFilter).init(pippoSettings);
+        this.server.init(getApplication());
 
         return this;
     }
@@ -151,7 +147,7 @@ public class Pippo implements ResourceRouting, ReloadWatcher.Listener {
 
     public void start() {
         if (running) {
-            log.warn("Server is already started ");
+            log.warn("Server is already started");
             return;
         }
 
@@ -211,28 +207,6 @@ public class Pippo implements ResourceRouting, ReloadWatcher.Listener {
         return pippo;
     }
 
-    /**
-     * Override this method if you want to customize the PippoFilter.
-     * <p/>
-     * <pre>
-     * protected PippoFilter createPippoFilter(Application application) {
-     *     PippoFilter pippoFilter = super.createPippoFilter(application);
-     *     pippoFilter.setIgnorePaths(Collections.singleton("/favicon.ico"));
-     *
-     *     return pippoFilter;
-     * }
-     * </pre>
-     *
-     * @param application
-     * @return
-     */
-    protected PippoFilter createPippoFilter(Application application) {
-        PippoFilter pippoFilter = new PippoFilter();
-        pippoFilter.setApplication(application);
-
-        return pippoFilter;
-    }
-
     protected void startReloadWatcher() {
         if (reloadWatcher == null) {
             reloadWatcher = createReloadWatcher();
@@ -271,14 +245,7 @@ public class Pippo implements ResourceRouting, ReloadWatcher.Listener {
     }
 
     private void addShutdownHook() {
-        Runtime.getRuntime().addShutdownHook(new Thread() {
-
-            @Override
-            public void run() {
-                Pippo.this.stop();
-            }
-
-        });
+        Runtime.getRuntime().addShutdownHook(new Thread(Pippo.this::stop));
     }
 
     private Application createApplication() {

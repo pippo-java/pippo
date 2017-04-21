@@ -88,7 +88,7 @@ public interface WebServer<T extends WebServerSettings> {
      */
     WebServer<T> setPippoFilterPath(String pippoFilterPath);
 
-    WebServer<T> init(PippoSettings pippoSettings);
+    WebServer<T> init(Application application);
 
     void start();
 

@@ -24,8 +24,6 @@ import org.kohsuke.MetaInfServices;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ro.pippo.core.AbstractWebServer;
-import ro.pippo.core.Application;
-import ro.pippo.core.PippoFilter;
 import ro.pippo.core.PippoRuntimeException;
 import ro.pippo.core.PippoServlet;
 import ro.pippo.core.PippoServletContextListener;
@@ -45,7 +43,6 @@ public class TomcatServer extends AbstractWebServer<TomcatSettings> {
 
     private static final Logger log = LoggerFactory.getLogger(TomcatServer.class);
 
-    private Application application;
     private Tomcat tomcat;
 
     private final ExecutorService executor = Executors.newSingleThreadExecutor();
@@ -74,17 +71,8 @@ public class TomcatServer extends AbstractWebServer<TomcatSettings> {
     }
 
     @Override
-    public WebServer setPippoFilter(PippoFilter pippoFilter) {
-        super.setPippoFilter(pippoFilter);
-
-        application = pippoFilter.getApplication();
-
-        return this;
-    }
-
-    @Override
     protected TomcatSettings createDefaultSettings() {
-        return new TomcatSettings(pippoSettings);
+        return new TomcatSettings(getApplication().getPippoSettings());
     }
 
     protected void internalStart() {
@@ -105,7 +93,7 @@ public class TomcatServer extends AbstractWebServer<TomcatSettings> {
         Context context = tomcat.addContext(getSettings().getContextPath(), docBase.getAbsolutePath());
         context.setAllowCasualMultipartParsing(true);
         PippoServlet pippoServlet = new PippoServlet();
-        pippoServlet.setApplication(application);
+        pippoServlet.setApplication(getApplication());
 
         Wrapper wrapper = context.createWrapper();
         String name = "pippoServlet";
@@ -117,7 +105,7 @@ public class TomcatServer extends AbstractWebServer<TomcatSettings> {
         context.addServletMapping(pippoFilterPath, name);
 
         // inject application as context attribute
-        context.getServletContext().setAttribute(PIPPO_APPLICATION, application);
+        context.getServletContext().setAttribute(PIPPO_APPLICATION, getApplication());
 
         // add initializers
         context.addApplicationListener(PippoServletContextListener.class.getName());
