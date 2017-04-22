@@ -29,6 +29,7 @@ import org.slf4j.LoggerFactory;
 import ro.pippo.core.AbstractWebServer;
 import ro.pippo.core.Application;
 import ro.pippo.core.HttpConstants;
+import ro.pippo.core.PippoFilter;
 import ro.pippo.core.PippoRuntimeException;
 import ro.pippo.core.PippoServletContextListener;
 import ro.pippo.core.WebServer;
@@ -184,6 +185,30 @@ public class JettyServer extends AbstractWebServer<JettySettings> {
         });
 
         return handler;
+    }
+
+    /**
+     * Check the existence of {@code org.eclipse.jetty.websocket} as dependency
+     * and add {@link ro.pippo.jetty.websocket.JettyWebSocketFilter} instead of {@link PippoFilter}.
+     *
+     * @return
+     */
+    @Override
+    protected PippoFilter createPippoFilter() {
+        try {
+            // try to load a class from jetty.websocket
+            Class.forName("org.eclipse.jetty.websocket.api.WebSocketListener");
+        } catch (ClassNotFoundException e) {
+            return super.createPippoFilter();
+        }
+
+        try {
+            // create an instance of JettyWebSocketFilter
+            Class<?> pippoFilterClass = Class.forName("ro.pippo.jetty.websocket.JettyWebSocketFilter");
+            return (PippoFilter) pippoFilterClass.newInstance();
+        } catch (ClassNotFoundException | IllegalAccessException | InstantiationException e) {
+            throw new PippoRuntimeException(e);
+        }
     }
 
     private MultipartConfigElement createMultipartConfigElement() {
