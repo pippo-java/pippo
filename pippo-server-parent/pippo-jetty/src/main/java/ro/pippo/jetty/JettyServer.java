@@ -91,7 +91,7 @@ public class JettyServer extends AbstractWebServer<JettySettings> {
 
     @Override
     protected JettySettings createDefaultSettings() {
-        return new JettySettings(pippoSettings);
+        return new JettySettings(getApplication().getPippoSettings());
     }
 
     protected void internalStart() {
@@ -166,7 +166,7 @@ public class JettyServer extends AbstractWebServer<JettySettings> {
         handler.setContextPath(getSettings().getContextPath());
 
         // inject application as context attribute
-        handler.setAttribute(PIPPO_APPLICATION, pippoFilter.getApplication());
+        handler.setAttribute(PIPPO_APPLICATION, getApplication());
 
         // add pippo filter
         addPippoFilter(handler);
@@ -187,7 +187,7 @@ public class JettyServer extends AbstractWebServer<JettySettings> {
     }
 
     private MultipartConfigElement createMultipartConfigElement() {
-        Application application = pippoFilter.getApplication();
+        Application application = getApplication();
         String location = application.getUploadLocation();
         long maxFileSize = application.getMaximumUploadSize();
 
@@ -201,7 +201,7 @@ public class JettyServer extends AbstractWebServer<JettySettings> {
 
         EnumSet<DispatcherType> dispatches = EnumSet.of(DispatcherType.REQUEST, DispatcherType.ERROR);
 
-        FilterHolder pippoFilterHolder = new FilterHolder(pippoFilter);
+        FilterHolder pippoFilterHolder = new FilterHolder(getPippoFilter());
         handler.addFilter(pippoFilterHolder, pippoFilterPath, dispatches);
         log.debug("Using pippo filter for path '{}'", pippoFilterPath);
     }
