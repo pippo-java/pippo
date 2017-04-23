@@ -19,6 +19,10 @@ import java.io.IOException;
 import java.util.List;
 
 /**
+ * Used for accessing the current client connection and all clients connections.
+ * It contains helper methods ({@link #sendMessage(String)} and {@link #broadcastMessage(String)},
+ * to send a text message to clients.
+ *
  * @author Decebal Suiu
  */
 public class WebSocketContext {
@@ -33,6 +37,10 @@ public class WebSocketContext {
 
     public WebSocketConnection getConnection() {
         return connection;
+    }
+
+    public List<WebSocketConnection> getConnections() {
+        return connections;
     }
 
     public void sendMessage(String message) throws IOException {
