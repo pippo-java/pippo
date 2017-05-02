@@ -39,6 +39,7 @@ import ro.pippo.core.PippoFilter;
 import ro.pippo.core.PippoRuntimeException;
 import ro.pippo.core.PippoServletContextListener;
 import ro.pippo.core.WebServer;
+import ro.pippo.undertow.websocket.UndertowWebSocketFilter;
 
 import javax.net.ssl.KeyManager;
 import javax.net.ssl.KeyManagerFactory;
@@ -163,6 +164,11 @@ public class UndertowServer extends AbstractWebServer<UndertowSettings> {
         return contextHandler;
     }
 
+    @Override
+    protected PippoFilter createPippoFilter() {
+        return new UndertowWebSocketFilter();
+    }
+
     protected DeploymentManager createPippoDeploymentManager() throws ServletException {
         DeploymentInfo info = Servlets.deployment();
         info.setDeploymentName("Pippo");
@@ -214,10 +220,9 @@ public class UndertowServer extends AbstractWebServer<UndertowSettings> {
     }
 
     private SSLContext createSSLContext(final KeyStore keyStore, final KeyStore trustStore) throws Exception {
-        KeyManager[] keyManagers;
         KeyManagerFactory keyManagerFactory = KeyManagerFactory.getInstance(KeyManagerFactory.getDefaultAlgorithm());
         keyManagerFactory.init(keyStore, getSettings().getKeystorePassword().toCharArray());
-        keyManagers = keyManagerFactory.getKeyManagers();
+        KeyManager[] keyManagers = keyManagerFactory.getKeyManagers();
 
         TrustManagerFactory trustManagerFactory = TrustManagerFactory.getInstance(KeyManagerFactory.getDefaultAlgorithm());
         trustManagerFactory.init(trustStore);
