@@ -18,6 +18,7 @@ package ro.pippo.core.websocket;
 import ro.pippo.core.PippoFilter;
 import ro.pippo.core.Request;
 import ro.pippo.core.Response;
+import ro.pippo.core.util.StringUtils;
 
 import javax.servlet.ServletException;
 import java.io.IOException;
@@ -129,6 +130,17 @@ public abstract class AbstractWebSocketFilter extends PippoFilter {
      */
     protected String selectSubProtocol(List<String> subProtocols) {
         return null;
+    }
+
+    protected WebSocketHandler getWebSocketHandler(String requestUri) {
+        String applicationPath = getApplication().getRouter().getContextPath();
+        String path = applicationPath.isEmpty() ? requestUri : requestUri.substring(applicationPath.length());
+        if (StringUtils.isNullOrEmpty(path)) {
+            path = "/";
+        }
+
+        return getApplication().getWebSocketHandler(path);
+
     }
 
 }

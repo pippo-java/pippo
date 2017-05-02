@@ -22,7 +22,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ro.pippo.core.Request;
 import ro.pippo.core.Response;
-import ro.pippo.core.util.StringUtils;
 import ro.pippo.core.websocket.AbstractWebSocketFilter;
 import ro.pippo.core.websocket.WebSocketHandler;
 
@@ -95,14 +94,7 @@ public class JettyWebSocketFilter extends AbstractWebSocketFilter {
     }
 
     private WebSocketHandler getWebSocketHandler(ServletUpgradeRequest request) {
-        String applicationPath = getApplication().getRouter().getContextPath();
-        String requestUri = request.getRequestPath();
-        String path = applicationPath.isEmpty() ? requestUri : requestUri.substring(applicationPath.length());
-        if (StringUtils.isNullOrEmpty(path)) {
-            path = "/";
-        }
-
-        return getApplication().getWebSocketHandler(path);
+        return getWebSocketHandler(request.getRequestPath());
     }
 
 }
