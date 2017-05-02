@@ -47,7 +47,7 @@ public interface WebSocketConnection {
      * @return {@code this} object, for chaining methods
      * @throws IOException when an IO error occurs during the write to the client
      */
-    WebSocketConnection sendMessage(byte[] message, int offset, int length) throws IOException;
+    WebSocketConnection sendMessage(byte[] message) throws IOException;
 
     InetSocketAddress getRemoteAddress();
 

@@ -48,17 +48,15 @@ public class JettyWebSocketConnection implements WebSocketConnection {
     @Override
     public WebSocketConnection sendMessage(String message) throws IOException {
         checkClosed();
-
         session.getRemote().sendString(message);
 
         return this;
     }
 
     @Override
-    public WebSocketConnection sendMessage(byte[] message, int offset, int length) throws IOException {
+    public WebSocketConnection sendMessage(byte[] message) throws IOException {
         checkClosed();
-
-        ByteBuffer buffer = ByteBuffer.wrap(message, offset, length);
+        ByteBuffer buffer = ByteBuffer.wrap(message, 0, message.length);
         session.getRemote().sendBytes(buffer);
 
         return this;
@@ -75,7 +73,7 @@ public class JettyWebSocketConnection implements WebSocketConnection {
 
     private void checkClosed() {
         if (!isOpen()) {
-            throw new IllegalStateException("The connection is closed.");
+            throw new IllegalStateException("The connection is closed");
         }
     }
 

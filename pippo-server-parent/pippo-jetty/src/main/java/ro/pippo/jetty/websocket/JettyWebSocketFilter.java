@@ -62,7 +62,7 @@ public class JettyWebSocketFilter extends AbstractWebSocketFilter {
             }
 
             webSocketFactory = new WebSocketServerFactory(serverPolicy);
-            webSocketFactory.setCreator((request, response) -> createWebSocketProcessor(request));
+            webSocketFactory.setCreator((request, response) -> createWebSocketAdapter(request));
             webSocketFactory.start();
         } catch (ServletException e) {
             throw e;
@@ -90,8 +90,8 @@ public class JettyWebSocketFilter extends AbstractWebSocketFilter {
             .acceptWebSocket(request.getHttpServletRequest(), response.getHttpServletResponse());
     }
 
-    protected JettyWebSocketProcessor createWebSocketProcessor(ServletUpgradeRequest request) {
-        return new JettyWebSocketProcessor(getWebSocketHandler(request));
+    protected JettyWebSocketAdapter createWebSocketAdapter(ServletUpgradeRequest request) {
+        return new JettyWebSocketAdapter(getWebSocketHandler(request));
     }
 
     private WebSocketHandler getWebSocketHandler(ServletUpgradeRequest request) {

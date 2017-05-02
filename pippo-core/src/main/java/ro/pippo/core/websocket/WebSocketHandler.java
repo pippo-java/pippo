@@ -31,19 +31,15 @@ public interface WebSocketHandler {
      * @param message
      *      the text message from the client
      */
-    void onMessage(WebSocketContext webSocketContext, final String message);
+    void onMessage(WebSocketContext webSocketContext, String message);
 
     /**
      * Called when a binary message arrives from the client.
-     *
-     * @param data
+     * @param message
      *      the binary message from the client
-     * @param offset
-     *      the offset to read from
-     * @param length
-     *      how much data to read
+     *
      */
-    default void onMessage(WebSocketContext webSocketContext, byte[] data, int offset, int length) {
+    default void onMessage(WebSocketContext webSocketContext, byte[] message) {
         // do nothing
     }
 
