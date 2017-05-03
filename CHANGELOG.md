@@ -7,8 +7,11 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 #### Fixed
 
 #### Changed
+- [#361]: Move PippoFilter instantiation from Pippo class to the WebServer implementations (breaking change)
 
 #### Added
+- Log exception for `PippoFilter.init` method
+- [#360]: Websocket support (Jetty and Undertow)
 
 #### Removed
 
@@ -377,6 +380,8 @@ Initial release.
 [0.3.0]: https://github.com/decebals/pippo/compare/pippo-parent-0.2.0...pippo-parent-0.3.0
 [0.2.0]: https://github.com/decebals/pippo/compare/pippo-parent-0.1.0...pippo-parent-0.2.0
 
+[#361]: https://github.com/decebals/pippo/pull/361
+[#360]: https://github.com/decebals/pippo/pull/360
 [#356]: https://github.com/decebals/pippo/issues/356
 [#355]: https://github.com/decebals/pippo/issues/355
 [#354]: https://github.com/decebals/pippo/issues/354
