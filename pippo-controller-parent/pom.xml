@@ -5,12 +5,12 @@
     <parent>
         <groupId>ro.pippo</groupId>
         <artifactId>pippo-parent</artifactId>
-        <version>1.4.0-SNAPSHOT</version>
+        <version>1.4.0</version>
     </parent>
 
     <groupId>ro.pippo</groupId>
     <artifactId>pippo-controller-parent</artifactId>
-    <version>1.4.0-SNAPSHOT</version>
+    <version>1.4.0</version>
     <packaging>pom</packaging>
 
     <name>Pippo Controller Parent</name>
