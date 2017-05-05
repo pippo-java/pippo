@@ -7,6 +7,16 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 #### Fixed
 
 #### Changed
+
+#### Added
+
+#### Removed
+
+### [1.4.0] - 2017-05-03
+
+#### Fixed
+
+#### Changed
 - [#361]: Move PippoFilter instantiation from Pippo class to the WebServer implementations (breaking change)
 
 #### Added
@@ -363,6 +373,7 @@ Initial release.
 - Added [pippo-jetty]
 
 [unreleased]: https://github.com/decebals/pippo/compare/release-1.3.0...HEAD
+[1.4.0]: https://github.com/decebals/pippo/compare/release-1.3.0...release-1.4.0
 [1.3.0]: https://github.com/decebals/pippo/compare/release-1.2.0...release-1.3.0
 [1.2.0]: https://github.com/decebals/pippo/compare/release-1.1.0...release-1.2.0
 [1.1.0]: https://github.com/decebals/pippo/compare/release-1.0.0...release-1.1.0
