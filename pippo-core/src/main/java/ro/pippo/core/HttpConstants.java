@@ -31,8 +31,8 @@ public final class HttpConstants {
         /*
         public static final String TRACE = "TRACE";
         public static final String CONNECT = "CONNECT";
-        public static final String OPTIONS = "OPTIONS";
         */
+        public static final String OPTIONS = "OPTIONS";
 
         // not really a method (marker for all methods)
         public static final String ALL = "ALL";

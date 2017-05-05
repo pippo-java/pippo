@@ -127,6 +127,17 @@ public class Route {
     }
 
     /**
+     * Create an OPTIONS route.
+     *
+     * @param uriPattern
+     * @param routeHandler
+     * @return
+     */
+    public static Route OPTIONS(String uriPattern, RouteHandler routeHandler) {
+        return new Route(HttpConstants.Method.OPTIONS, uriPattern, routeHandler);
+    }
+
+    /**
      * Create a ALL route.
      *
      * @param uriPattern
