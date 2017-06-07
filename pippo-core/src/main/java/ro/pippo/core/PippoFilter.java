@@ -179,6 +179,30 @@ public class PippoFilter implements Filter {
         routeDispatcher.dispatch(request, response);
     }
 
+    /**
+     * Sets the filter path instead of reading it from {@code web.xml}.
+     *
+     * Please note that you must subclass {@code PippoFilter.init(FilterConfig)} and set your filter path
+     * before you call {@code super.init(filterConfig)}.
+     * For example:
+     * {@code
+     * class MyPippoFilter extends PippoFilter {
+     *
+     *     @Override
+     *     public void init(FilterConfig filterConfig) throws ServletException {
+     *         setFilterPath("/*");
+     *         super.init(filterConfig);
+     *     }
+     *
+     * }
+     * }
+     *
+     * @param urlPattern
+     */
+    protected void setFilterPath(String urlPattern) {
+        initFilterPath(urlPattern);
+    }
+
     private boolean shouldIgnorePath(String requestUri) {
         for (String path : application.getRouter().getIgnorePaths()) {
             if (requestUri.startsWith(path)) {
