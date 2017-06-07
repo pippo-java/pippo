@@ -27,14 +27,7 @@ public class RoutePostDispatchListenerList extends ListenerList<RoutePostDispatc
 
     @Override
     public void onPostDispatch(final Request request, final Response response) {
-        notify(new Notifier<RoutePostDispatchListener>() {
-
-            @Override
-            public void notify(RoutePostDispatchListener listener) {
-                listener.onPostDispatch(request, response);
-            }
-
-        });
+        notify(listener -> listener.onPostDispatch(request, response));
     }
 
 }

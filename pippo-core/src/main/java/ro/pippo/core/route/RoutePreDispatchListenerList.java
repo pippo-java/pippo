@@ -27,14 +27,7 @@ public class RoutePreDispatchListenerList extends ListenerList<RoutePreDispatchL
 
     @Override
     public void onPreDispatch(final Request request, final Response response) {
-        notify(new Notifier<RoutePreDispatchListener>() {
-
-            @Override
-            public void notify(RoutePreDispatchListener listener) {
-                listener.onPreDispatch(request, response);
-            }
-
-        });
+        notify(listener -> listener.onPreDispatch(request, response));
     }
 
 }

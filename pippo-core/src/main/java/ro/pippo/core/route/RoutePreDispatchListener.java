@@ -25,4 +25,5 @@ import ro.pippo.core.Response;
 public interface RoutePreDispatchListener {
 
     void onPreDispatch(Request request, Response response);
+
 }
