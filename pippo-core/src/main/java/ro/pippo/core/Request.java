@@ -75,7 +75,7 @@ public final class Request {
         // fill (query&post) parameters if any
         initParameters();
 
-        // empty path parameters for now (see setPathParameters method)
+        // empty path parameters for now (see internalSetPathParameters method)
         pathParameters = Collections.unmodifiableMap(new HashMap<String, ParameterValue>());
 
         // init all parameters
@@ -216,8 +216,10 @@ public final class Request {
         allParameters = Collections.unmodifiableMap(tmp);
     }
 
-    // INTERNAL, called in (Default)RouteContext.next()
-    public void setPathParameters(Map<String, String> pathParameters) {
+    /**
+     * THIS METHOD IS NOT PART OF THE PIPPO PUBLIC API.
+     */
+    public void internalSetPathParameters(Map<String, String> pathParameters) {
         initPathParameters(pathParameters);
         initAllParameters();
     }

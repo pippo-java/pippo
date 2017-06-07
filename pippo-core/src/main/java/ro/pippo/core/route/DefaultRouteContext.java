@@ -266,7 +266,7 @@ public class DefaultRouteContext implements RouteContext {
             // set the new path parameters in request
             Map<String, String> pathParameters = routeMatch.getPathParameters();
             if (pathParameters != null) {
-                request.setPathParameters(pathParameters);
+                request.internalSetPathParameters(pathParameters);
                 log.trace("Added path parameters to request");
             }
 
