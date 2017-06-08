@@ -312,7 +312,7 @@ public class DefaultRouter implements Router {
 
         Route compiledRoute = getCompiledRoute(nameOrUriPattern);
 
-        return (compiledRoute != null) ? prefixApplicationPath(uriFor(compiledRoute, parameters)) : null;
+        return (compiledRoute != null) ? uriFor(compiledRoute, parameters) : null;
     }
 
     @Override
