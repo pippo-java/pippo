@@ -26,7 +26,7 @@ import ro.pippo.core.util.StringUtils;
  * Using this handler you can have the same callback attached for both, the uri pattern with trailing slash
  * and the uri pattern without trailing slash.
  *
- * This handler use redirect approach (add/remove trailing slash and redirect to new path).
+ * This handler uses redirect approach (add/remove trailing slash and redirect to new path).
  *
  * <p>
  * Note:
