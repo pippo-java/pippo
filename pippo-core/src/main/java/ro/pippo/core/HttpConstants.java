@@ -34,8 +34,14 @@ public final class HttpConstants {
         */
         public static final String OPTIONS = "OPTIONS";
 
-        // not really a method (marker for all methods)
-        public static final String ALL = "ALL";
+        // not really a method (marker for any methods)
+        public static final String ANY = "ANY";
+
+        /**
+         * @deprecated Replaced by {@link #ANY}.
+         */
+        @Deprecated
+        public static final String ALL = ANY;
 
         private Method() {
             // restrict instantiation

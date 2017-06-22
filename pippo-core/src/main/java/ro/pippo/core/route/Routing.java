@@ -72,8 +72,16 @@ public interface Routing {
         return route;
     }
 
+    /**
+     * @deprecated Replaced by {@link #ANY(String, RouteHandler)}.
+     */
+    @Deprecated
     default Route ALL(String uriPattern, RouteHandler routeHandler) {
-        Route route = Route.ALL(uriPattern, routeHandler);
+        return ANY(uriPattern, routeHandler);
+    }
+
+    default Route ANY(String uriPattern, RouteHandler routeHandler) {
+        Route route = Route.ANY(uriPattern, routeHandler);
         addRoute(route);
 
         return route;

@@ -138,14 +138,22 @@ public class Route {
     }
 
     /**
-     * Create a ALL route.
+     * @deprecated Replaced by {@link #ANY(String, RouteHandler)}.
+     */
+    @Deprecated
+    public static Route ALL(String uriPattern, RouteHandler routeHandler) {
+        return ANY(uriPattern, routeHandler);
+    }
+
+    /**
+     * Create a route responding to any HTTP Verb (GET, POST, PUT, ...).
      *
      * @param uriPattern
      * @param routeHandler
      * @return
      */
-    public static Route ALL(String uriPattern, RouteHandler routeHandler) {
-        return new Route(HttpConstants.Method.ALL, uriPattern, routeHandler);
+    public static Route ANY(String uriPattern, RouteHandler routeHandler) {
+        return new Route(HttpConstants.Method.ANY, uriPattern, routeHandler);
     }
 
     public String getRequestMethod() {

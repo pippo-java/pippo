@@ -580,7 +580,7 @@ public class DefaultRouterTest {
 
     @Test
     public void testExclusionFilter() throws Exception {
-        Route route = Route.ALL("^(?!/(webjars|public)/).*", emptyRouteHandler);
+        Route route = Route.ANY("^(?!/(webjars|public)/).*", emptyRouteHandler);
         router.addRoute(route);
 
         List<RouteMatch> matches = router.findRoutes(HttpConstants.Method.GET, "/test/route");
@@ -595,7 +595,7 @@ public class DefaultRouterTest {
 
     @Test
     public void testOptionalSuffixGroup() throws Exception {
-        Route route = Route.ALL("/api/contact/{id: [0-9]+}(\\.(json|xml|yaml))?", emptyRouteHandler);
+        Route route = Route.ANY("/api/contact/{id: [0-9]+}(\\.(json|xml|yaml))?", emptyRouteHandler);
         router.addRoute(route);
 
         List<RouteMatch> matches = router.findRoutes(HttpConstants.Method.GET, "/api/contact/5");
@@ -616,7 +616,7 @@ public class DefaultRouterTest {
 
     @Test
     public void testRequiredSuffixGroup() throws Exception {
-        Route route = Route.ALL("/api/contact/{id: [0-9]+}(\\.(json|xml|yaml))", emptyRouteHandler);
+        Route route = Route.ANY("/api/contact/{id: [0-9]+}(\\.(json|xml|yaml))", emptyRouteHandler);
         router.addRoute(route);
 
         List<RouteMatch> matches = router.findRoutes(HttpConstants.Method.GET, "/api/contact/5");

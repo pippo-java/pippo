@@ -194,7 +194,7 @@ public class DefaultRouter implements Router {
         List<RouteMatch> routeMatches = compiledRoutes.stream()
             .filter(route -> {
                 boolean matches = route.getRequestMethod().equals(requestMethod)
-                    || route.getRequestMethod().equals(HttpConstants.Method.ALL);
+                    || route.getRequestMethod().equals(HttpConstants.Method.ANY);
 
                 if (matches) {
                     Pattern pattern = route.getAttribute("__pattern");
