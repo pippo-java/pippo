@@ -54,7 +54,7 @@ public class PippoRule implements TestRule {
     public PippoRule(Pippo pippo, Integer port) {
         this.pippo = pippo;
 
-        pippo.getServer().getSettings().port(port);
+        pippo.getServer().setPort(port);
     }
 
     /**
@@ -95,7 +95,7 @@ public class PippoRule implements TestRule {
 
     protected void initRestAssured() {
         // port
-        RestAssured.port = pippo.getServer().getSettings().getPort();
+        RestAssured.port = pippo.getServer().getPort();
 
         // objectMapper
         RestAssured.objectMapper(new ObjectMapper() {
