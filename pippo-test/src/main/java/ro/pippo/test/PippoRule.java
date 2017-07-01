@@ -89,8 +89,7 @@ public class PippoRule implements TestRule {
     }
 
     protected void stopPippo(Pippo pippo) {
-        // TODO fix the bug in pippo-core (a starting flag maybe)
-//        pippo.stop(); // it's not needed because we have an hook on shutdown
+        pippo.stop();
     }
 
     protected void initRestAssured() {
