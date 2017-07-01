@@ -51,10 +51,12 @@ public class TomcatServer extends AbstractWebServer<TomcatSettings> {
     @Override
     public void start() {
         executor.submit(this::internalStart);
-        try {
-            startLatch.await();
-        } catch (InterruptedException e) {
-            log.info(e.getMessage());
+        if (!getApplication().getPippoSettings().isTest()) {
+            try {
+                startLatch.await();
+            } catch (InterruptedException e) {
+                log.info(e.getMessage());
+            }
         }
     }
 
