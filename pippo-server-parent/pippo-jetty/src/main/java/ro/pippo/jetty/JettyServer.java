@@ -117,7 +117,9 @@ public class JettyServer extends AbstractWebServer<JettySettings> {
 
             server.start();
             startLatch.countDown();
-            server.join();
+            if (!getApplication().getPippoSettings().isTest()) {
+                server.join();
+            }
         } catch (Exception e) {
             throw new PippoRuntimeException(e);
         }
