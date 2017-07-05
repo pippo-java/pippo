@@ -60,7 +60,7 @@ public class JettyWebSocketFilter extends AbstractWebSocketFilter {
                 serverPolicy.setMaxTextMessageSize(Integer.parseInt(maxTextMessageSize));
             }
 
-            webSocketFactory = new WebSocketServerFactory(serverPolicy);
+            webSocketFactory = new WebSocketServerFactory(filterConfig.getServletContext(), serverPolicy);
             webSocketFactory.setCreator((request, response) -> createWebSocketAdapter(request));
             webSocketFactory.start();
         } catch (ServletException e) {
