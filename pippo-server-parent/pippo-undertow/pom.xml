@@ -14,6 +14,10 @@
     <name>Pippo Undertow</name>
     <description>Undertow embedded server</description>
 
+    <properties>
+        <undertow.version>1.4.12.Final</undertow.version>
+    </properties>
+
     <dependencies>
         <dependency>
             <groupId>ro.pippo</groupId>
@@ -24,7 +28,7 @@
         <dependency>
             <groupId>io.undertow</groupId>
             <artifactId>undertow-servlet</artifactId>
-            <version>1.4.0.Final</version>
+            <version>${undertow.version}</version>
         </dependency>
 
         <dependency>
