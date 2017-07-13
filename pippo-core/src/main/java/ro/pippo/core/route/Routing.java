@@ -72,6 +72,13 @@ public interface Routing {
         return route;
     }
 
+    default Route CONNECT(String uriPattern, RouteHandler routeHandler) {
+        Route route = Route.CONNECT(uriPattern, routeHandler);
+        addRoute(route);
+
+        return route;
+    }
+
     /**
      * @deprecated Replaced by {@link #ANY(String, RouteHandler)}.
      */

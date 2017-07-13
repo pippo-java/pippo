@@ -61,7 +61,7 @@ public class Route {
     }
 
     /**
-     * Create a GET route.
+     * Create a {@code GET} route.
      *
      * @param uriPattern
      * @param routeHandler
@@ -72,7 +72,7 @@ public class Route {
     }
 
     /**
-     * Create a POST route.
+     * Create a {@code POST} route.
      *
      * @param uriPattern
      * @param routeHandler
@@ -83,7 +83,7 @@ public class Route {
     }
 
     /**
-     * Create a DELETE route.
+     * Create a {@code DELETE} route.
      *
      * @param uriPattern
      * @param routeHandler
@@ -94,7 +94,7 @@ public class Route {
     }
 
     /**
-     * Create a HEAD route.
+     * Create a {@code HEAD} route.
      *
      * @param uriPattern
      * @param routeHandler
@@ -105,7 +105,7 @@ public class Route {
     }
 
     /**
-     * Create a PUT route.
+     * Create a {@code PUT} route.
      *
      * @param uriPattern
      * @param routeHandler
@@ -116,7 +116,7 @@ public class Route {
     }
 
     /**
-     * Create a PATCH route.
+     * Create a {@code PATCH} route.
      *
      * @param uriPattern
      * @param routeHandler
@@ -127,7 +127,7 @@ public class Route {
     }
 
     /**
-     * Create an OPTIONS route.
+     * Create an {@code OPTIONS} route.
      *
      * @param uriPattern
      * @param routeHandler
@@ -135,6 +135,17 @@ public class Route {
      */
     public static Route OPTIONS(String uriPattern, RouteHandler routeHandler) {
         return new Route(HttpConstants.Method.OPTIONS, uriPattern, routeHandler);
+    }
+
+    /**
+     * Create an {@code CONNECT} route.
+     *
+     * @param uriPattern
+     * @param routeHandler
+     * @return
+     */
+    public static Route CONNECT(String uriPattern, RouteHandler routeHandler) {
+        return new Route(HttpConstants.Method.CONNECT, uriPattern, routeHandler);
     }
 
     /**

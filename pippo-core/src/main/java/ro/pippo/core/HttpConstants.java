@@ -28,10 +28,7 @@ public final class HttpConstants {
         public static final String HEAD = "HEAD";
         public static final String PUT = "PUT";
         public static final String PATCH = "PATCH";
-        /*
-        public static final String TRACE = "TRACE";
         public static final String CONNECT = "CONNECT";
-        */
         public static final String OPTIONS = "OPTIONS";
 
         // not really a method (marker for any methods)
