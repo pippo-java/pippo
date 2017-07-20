@@ -98,22 +98,22 @@ public class JettyServer extends AbstractWebServer<JettySettings> {
     }
 
     protected void internalStart() {
-        server = createServer();
-
-        ServerConnector serverConnector = createServerConnector(server);
-        serverConnector.setIdleTimeout(TimeUnit.HOURS.toMillis(1));
-        serverConnector.setSoLingerTime(-1);
-        serverConnector.setHost(getSettings().getHost());
-        serverConnector.setPort(getSettings().getPort());
-
-        ServerConnector[] connectors = new ServerConnector[1];
-        connectors[0] = serverConnector;
-        server.setConnectors(connectors);
-
-        Handler pippoHandler = createPippoHandler();
-        server.setHandler(pippoHandler);
-
         try {
+            server = createServer();
+
+            ServerConnector serverConnector = createServerConnector(server);
+            serverConnector.setIdleTimeout(TimeUnit.HOURS.toMillis(1));
+            serverConnector.setSoLingerTime(-1);
+            serverConnector.setHost(getSettings().getHost());
+            serverConnector.setPort(getSettings().getPort());
+
+            ServerConnector[] connectors = new ServerConnector[1];
+            connectors[0] = serverConnector;
+            server.setConnectors(connectors);
+
+            Handler pippoHandler = createPippoHandler();
+            server.setHandler(pippoHandler);
+
             String version = server.getClass().getPackage().getImplementationVersion();
             log.info("Starting Jetty Server {} on port {}", version, getSettings().getPort());
 
@@ -123,6 +123,7 @@ public class JettyServer extends AbstractWebServer<JettySettings> {
                 server.join();
             }
         } catch (Exception e) {
+            log.error("Unable to launch Jetty", e);
             throw new PippoRuntimeException(e);
         }
     }
