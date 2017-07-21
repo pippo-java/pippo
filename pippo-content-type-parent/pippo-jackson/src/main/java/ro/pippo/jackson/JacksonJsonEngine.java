@@ -29,7 +29,7 @@ import ro.pippo.core.HttpConstants;
 public class JacksonJsonEngine extends JacksonBaseEngine {
 
     @Override
-    protected ObjectMapper constructObjectMapper() {
+    protected ObjectMapper createObjectMapper() {
         return new ObjectMapper();
     }
 

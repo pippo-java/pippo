@@ -30,7 +30,7 @@ import ro.pippo.core.HttpConstants;
 public class JacksonYamlEngine extends JacksonBaseEngine {
 
     @Override
-    protected ObjectMapper constructObjectMapper() {
+    protected ObjectMapper createObjectMapper() {
         return new YAMLMapper();
     }
 

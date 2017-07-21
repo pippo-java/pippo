@@ -39,17 +39,13 @@ public abstract class JacksonBaseEngine implements ContentTypeEngine {
 
     @Override
     public void init(Application application) {
-        objectMapper = constructObjectMapper();
+        objectMapper = createObjectMapper();
         objectMapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
         objectMapper.setTimeZone(TimeZone.getDefault());
         objectMapper.registerModule(new AfterburnerModule());
     }
 
-    public ObjectMapper getObjectMapper() {
-        return objectMapper;
-    }
-
-    protected abstract ObjectMapper constructObjectMapper();
+    protected abstract ObjectMapper createObjectMapper();
 
     @Override
     public String toString(Object object) {
