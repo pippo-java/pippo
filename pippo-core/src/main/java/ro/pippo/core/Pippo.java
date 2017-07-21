@@ -163,7 +163,7 @@ public class Pippo implements ResourceRouting, ReloadWatcher.Listener {
 
     public void stop() {
         if (!running) {
-            log.warn("Server is not started");
+            log.debug("Server is not started");
             return;
         }
 
@@ -245,10 +245,7 @@ public class Pippo implements ResourceRouting, ReloadWatcher.Listener {
     }
 
     private void addShutdownHook() {
-        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
-            if (running)
-                stop();
-        }));
+        Runtime.getRuntime().addShutdownHook(new Thread(Pippo.this::stop));
     }
 
     private Application createApplication() {
