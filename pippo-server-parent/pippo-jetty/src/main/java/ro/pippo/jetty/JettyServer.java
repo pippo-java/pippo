@@ -41,9 +41,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.EnumSet;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -58,46 +55,8 @@ public class JettyServer extends AbstractWebServer<JettySettings> {
 
     private Server server;
 
-    private final ExecutorService executor;
-    private final CountDownLatch  startLatch;
-
-    public JettyServer() {
-        super();
-
-        executor = Executors.newSingleThreadExecutor();
-        startLatch = new CountDownLatch(1);
-    }
-
     @Override
     public void start() {
-        executor.submit(this::internalStart);
-        try {
-            startLatch.await();
-        } catch (InterruptedException e) {
-            log.info(e.getMessage());
-        }
-    }
-
-    @Override
-    public void stop() {
-        if (server != null) {
-            try {
-                server.stop();
-                executor.shutdownNow();
-            } catch (InterruptedException e) {
-                // ignore
-            } catch (Exception e) {
-                throw new PippoRuntimeException(e, "Cannot stop Jetty Server");
-            }
-        }
-    }
-
-    @Override
-    protected JettySettings createDefaultSettings() {
-        return new JettySettings(getApplication().getPippoSettings());
-    }
-
-    protected void internalStart() {
         server = createServer();
 
         ServerConnector serverConnector = createServerConnector(server);
@@ -113,18 +72,34 @@ public class JettyServer extends AbstractWebServer<JettySettings> {
         Handler pippoHandler = createPippoHandler();
         server.setHandler(pippoHandler);
 
-        try {
-            String version = server.getClass().getPackage().getImplementationVersion();
-            log.info("Starting Jetty Server {} on port {}", version, getSettings().getPort());
+        String version = server.getClass().getPackage().getImplementationVersion();
+        log.info("Starting Jetty Server {} on port {}", version, getSettings().getPort());
 
+        try {
             server.start();
-            startLatch.countDown();
-            if (!getApplication().getPippoSettings().isTest()) {
-                server.join();
-            }
         } catch (Exception e) {
+            log.error("Unable to launch Jetty", e);
             throw new PippoRuntimeException(e);
         }
+    }
+
+    @Override
+    public void stop() {
+        if (server != null) {
+            try {
+                server.stop();
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt(); //don't lose interrupted state: https://www.ibm.com/developerworks/java/library/j-jtp05236/index.html
+                throw new PippoRuntimeException(e, "Interrupted while waiting for Jetty Server to stop.");
+            } catch (Exception e) {
+                throw new PippoRuntimeException(e, "Cannot stop Jetty Server");
+            }
+        }
+    }
+
+    @Override
+    protected JettySettings createDefaultSettings() {
+        return new JettySettings(getApplication().getPippoSettings());
     }
 
     protected Server createServer() {

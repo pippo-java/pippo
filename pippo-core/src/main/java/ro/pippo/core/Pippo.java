@@ -163,7 +163,7 @@ public class Pippo implements ResourceRouting, ReloadWatcher.Listener {
 
     public void stop() {
         if (!running) {
-            log.warn("Server is not started");
+            log.debug("Server is not started");
             return;
         }
 
