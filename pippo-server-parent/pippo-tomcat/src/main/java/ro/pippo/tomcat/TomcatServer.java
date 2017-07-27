@@ -31,9 +31,6 @@ import ro.pippo.core.WebServer;
 import ro.pippo.core.util.StringUtils;
 
 import java.io.File;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 /**
  * @author Daniel Jipa
@@ -45,39 +42,8 @@ public class TomcatServer extends AbstractWebServer<TomcatSettings> {
 
     private Tomcat tomcat;
 
-    private final ExecutorService executor = Executors.newSingleThreadExecutor();
-    private final CountDownLatch startLatch = new CountDownLatch(1);
-
     @Override
     public void start() {
-        executor.submit(this::internalStart);
-        if (!getApplication().getPippoSettings().isTest()) {
-            try {
-                startLatch.await();
-            } catch (InterruptedException e) {
-                log.info(e.getMessage());
-            }
-        }
-    }
-
-    @Override
-    public void stop() {
-        if (tomcat != null) {
-            try {
-                tomcat.stop();
-                executor.shutdownNow();
-            } catch (Exception e) {
-                throw new PippoRuntimeException(e, "Cannot stop Tomcat Server");
-            }
-        }
-    }
-
-    @Override
-    protected TomcatSettings createDefaultSettings() {
-        return new TomcatSettings(getApplication().getPippoSettings());
-    }
-
-    protected void internalStart() {
         if (StringUtils.isNullOrEmpty(pippoFilterPath)) {
             pippoFilterPath = "/*";
         }
@@ -115,16 +81,35 @@ public class TomcatServer extends AbstractWebServer<TomcatSettings> {
         // add listeners
         listeners.forEach(listener -> context.addApplicationListener(listener.getName()));
 
+        String version = tomcat.getClass().getPackage().getImplementationVersion();
+        log.info("Starting Tomcat Server {} on port {}", version, getSettings().getPort());
+
         try {
-            String version = tomcat.getClass().getPackage().getImplementationVersion();
-            log.info("Starting Tomcat Server {} on port {}", version, getSettings().getPort());
             tomcat.start();
         } catch (LifecycleException e) {
+            log.error("Unable to launch Tomcat", e);
             throw new PippoRuntimeException(e);
         }
 
-        startLatch.countDown();
-        tomcat.getServer().await();
+        if (!getApplication().getPippoSettings().isTest()) {
+            tomcat.getServer().await();
+        }
+    }
+
+    @Override
+    public void stop() {
+        if (tomcat != null) {
+            try {
+                tomcat.stop();
+            } catch (Exception e) {
+                throw new PippoRuntimeException(e, "Cannot stop Tomcat Server");
+            }
+        }
+    }
+
+    @Override
+    protected TomcatSettings createDefaultSettings() {
+        return new TomcatSettings(getApplication().getPippoSettings());
     }
 
     private void enablePlainConnector(Tomcat tomcat) {
