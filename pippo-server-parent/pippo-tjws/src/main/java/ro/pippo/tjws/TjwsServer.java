@@ -53,27 +53,13 @@ public class TjwsServer extends AbstractWebServer<WebServerSettings> {
 
     private static final Logger log = LoggerFactory.getLogger(TjwsServer.class);
 
-    private Application application;
-
     private Serve server;
     private PippoServlet pippoServlet;
 
     @Override
-    public PippoFilter getPippoFilter() {
-        return null;
-    }
-
-    @Override
-    public WebServer setPippoFilter(PippoFilter pippoFilter) {
-        this.application = pippoFilter.getApplication();
-
-        return this;
-    }
-
-    @Override
     public void start() {
         pippoServlet = new PippoServlet();
-        pippoServlet.setApplication(application);
+        pippoServlet.setApplication(getApplication());
 
         Map<String, Object> arguments = new HashMap<>();
         arguments.put(Serve.ARG_BINDADDRESS, getSettings().getHost());
