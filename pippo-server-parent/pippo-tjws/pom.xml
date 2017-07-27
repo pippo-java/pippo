@@ -22,7 +22,7 @@
         <dependency>
             <groupId>org.jboss.resteasy</groupId>
             <artifactId>tjws</artifactId>
-            <version>3.0.10.Final</version>
+            <version>3.1.4.Final</version>
         </dependency>
 
         <dependency>
@@ -30,7 +30,6 @@
             <artifactId>metainf-services</artifactId>
             <scope>provided</scope>
         </dependency>
-
     </dependencies>
 
 </project>
