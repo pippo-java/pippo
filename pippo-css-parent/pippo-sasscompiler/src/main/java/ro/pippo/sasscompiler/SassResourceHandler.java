@@ -18,6 +18,8 @@ package ro.pippo.sasscompiler;
 import com.vaadin.sass.internal.ScssContext;
 import com.vaadin.sass.internal.ScssStylesheet;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import ro.pippo.core.PippoRuntimeException;
 import ro.pippo.core.route.ClasspathResourceHandler;
 import ro.pippo.core.route.RouteContext;
@@ -34,14 +36,18 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class SassResourceHandler extends ClasspathResourceHandler {
 
+    private static final Logger log = LoggerFactory.getLogger(SassResourceHandler.class);
+
     private boolean minify;
-    private Map<String, String> sourceMap = new ConcurrentHashMap<>(); // cache
+    private Map<String, String> sourceMap; // cache (activated only in prod mode)
 
     public SassResourceHandler(String urlPath, String resourceBasePath) {
         super(urlPath, resourceBasePath);
+
+        sourceMap = new ConcurrentHashMap<>();
     }
 
-    public SassResourceHandler useMinimized(boolean minimized){
+    public SassResourceHandler useMinimized(boolean minimized) {
         this.minify = minimized;
 
         return this;
@@ -51,8 +57,14 @@ public class SassResourceHandler extends ClasspathResourceHandler {
     protected void sendResource(URL resourceUrl, RouteContext routeContext) throws IOException {
         try {
             // compile sass to css
+            log.trace("Send css for '{}'", resourceUrl);
             ScssContext.UrlMode urlMode = ScssContext.UrlMode.ABSOLUTE;
-            ScssStylesheet scssStylesheet = ScssStylesheet.get(resourceUrl.getFile());
+            String identifier = resourceUrl.getFile();
+            ScssStylesheet scssStylesheet = ScssStylesheet.get(identifier);
+            if (scssStylesheet == null) {
+                throw new Exception("ScssStylesheet is null for '" + identifier + "'");
+            }
+
             String content = scssStylesheet.toString();
             String result = sourceMap.get(content);
             if (result == null) {
@@ -61,7 +73,7 @@ public class SassResourceHandler extends ClasspathResourceHandler {
                 scssStylesheet.write(writer, minify);
                 result = writer.toString();
 
-                if (routeContext.getApplication().getPippoSettings().isDev()) {
+                if (routeContext.getApplication().getPippoSettings().isProd()) {
                     sourceMap.put(content, result);
                 }
             }

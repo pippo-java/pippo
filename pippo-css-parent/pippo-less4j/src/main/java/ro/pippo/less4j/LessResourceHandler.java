@@ -37,13 +37,15 @@ public class LessResourceHandler extends ClasspathResourceHandler {
     private static final Logger log = LoggerFactory.getLogger(LessResourceHandler.class);
 
     private boolean minify;
-    private Map<String, String> sourceMap = new ConcurrentHashMap<>(); // cache
+    private Map<String, String> sourceMap; // cache (activated only in prod mode)
 
     public LessResourceHandler(String urlPath, String resourceBasePath) {
         super(urlPath, resourceBasePath);
+
+        sourceMap = new ConcurrentHashMap<>();
     }
 
-    public LessResourceHandler useMinimized(boolean minimized){
+    public LessResourceHandler useMinimized(boolean minimized) {
         this.minify = minimized;
 
         return this;
@@ -53,6 +55,7 @@ public class LessResourceHandler extends ClasspathResourceHandler {
     protected void sendResource(URL resourceUrl, RouteContext routeContext) throws IOException {
         try {
             // compile less to css
+            log.trace("Send css for '{}'", resourceUrl);
             LessSource.URLSource source = new LessSource.URLSource(resourceUrl);
             String content = source.getContent();
             String result = sourceMap.get(content);
