@@ -23,7 +23,6 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.module.afterburner.AfterburnerModule;
 import ro.pippo.core.Application;
 import ro.pippo.core.ContentTypeEngine;
-import ro.pippo.core.HttpConstants;
 import ro.pippo.core.PippoRuntimeException;
 
 import java.io.IOException;
@@ -36,17 +35,17 @@ import java.util.TimeZone;
  */
 public abstract class JacksonBaseEngine implements ContentTypeEngine {
 
-    protected ObjectMapper objectMapper;
+    private ObjectMapper objectMapper;
 
     @Override
     public void init(Application application) {
-        objectMapper = getObjectMapper();
+        objectMapper = createObjectMapper();
         objectMapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
         objectMapper.setTimeZone(TimeZone.getDefault());
         objectMapper.registerModule(new AfterburnerModule());
     }
 
-    protected abstract ObjectMapper getObjectMapper();
+    protected abstract ObjectMapper createObjectMapper();
 
     @Override
     public String toString(Object object) {

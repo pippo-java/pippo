@@ -31,7 +31,7 @@ import ro.pippo.core.HttpConstants;
 public class JacksonXmlEngine extends JacksonBaseEngine {
 
     @Override
-    protected ObjectMapper getObjectMapper() {
+    protected ObjectMapper createObjectMapper() {
         // Check out: https://github.com/FasterXML/jackson-dataformat-xml
         JacksonXmlModule module = new JacksonXmlModule();
         // setDefaultUseWrapper produces more similar output to
