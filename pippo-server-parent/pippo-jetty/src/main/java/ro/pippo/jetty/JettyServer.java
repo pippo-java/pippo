@@ -40,6 +40,11 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.EnumSet;
 import java.util.concurrent.TimeUnit;
 
@@ -120,18 +125,52 @@ public class JettyServer extends AbstractWebServer<JettySettings> {
         return new Server();
     }
 
+    /**
+     * Jetty treats non-URL paths are file paths interpreted in the current working directory.
+     * Provide ability to accept paths to resources on the Classpath.
+     * @param path
+     * @param name Descriptive name of what  is for. Used in logs, error messages
+     * @return Path in a format Jetty will understand, even if it is a Classpath-relative path.
+     */
+    private String asJettyFriendlyPath(String path, String name) {
+        try {
+            new URL(path);
+            log.debug("Defer interpretation of {} URL '{}' to Jetty", name, path);
+            return path;
+        } catch (MalformedURLException e) {
+            //Expected. We've got a path and not a URL
+            Path p = Paths.get(path);
+            if (Files.exists(Paths.get(path))) {
+                //Jetty knows how to find files on the file system
+                log.debug("Located {} '{}' on file system", name, path);
+                return path;
+            } else {
+                //Maybe it's a resource on the Classpath. Jetty needs that converted to a URL.
+                //(e.g. "jar:file:/path/to/my.jar!<path>")
+                URL url = JettyServer.class.getResource(path);
+                if (url != null) {
+                    log.debug("Located {} '{}' on Classpath", name, path);
+                    return url.toExternalForm();
+                } else {
+                    throw new IllegalArgumentException(String.format("%s '%s' not found", name, path));
+                }
+            }
+        }
+    }
+
     protected ServerConnector createServerConnector(Server server) {
-        if (getSettings().getKeystoreFile() == null) {
+        String keyStoreFile = getSettings().getKeystoreFile();
+        if (keyStoreFile == null) {
             return new ServerConnector(server);
         }
-
-        SslContextFactory sslContextFactory = new SslContextFactory(getSettings().getKeystoreFile());
+        SslContextFactory sslContextFactory = new SslContextFactory(asJettyFriendlyPath(keyStoreFile, "Keystore file"));
 
         if (getSettings().getKeystorePassword() != null) {
             sslContextFactory.setKeyStorePassword(getSettings().getKeystorePassword());
         }
-        if (getSettings().getTruststoreFile() != null) {
-            sslContextFactory.setTrustStorePath(getSettings().getTruststoreFile());
+        String truststoreFile = getSettings().getTruststoreFile();
+        if (truststoreFile != null) {
+            sslContextFactory.setTrustStorePath(asJettyFriendlyPath(truststoreFile, "Truststore file"));
         }
         if (getSettings().getTruststorePassword() != null) {
             sslContextFactory.setTrustStorePassword(getSettings().getTruststorePassword());
