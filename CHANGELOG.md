@@ -12,6 +12,33 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 #### Removed
 
+### [1.5.0] - 2017-08-07
+
+#### Fixed
+- [#367]: Redirecting to named routes using `setPippoFilterPath` settings
+- Stop web server in `PippoRule`
+- [#368]: Hot deployment doesn't work in Jetty
+- [#381]: Error in Pippo-TJWS module
+
+#### Changed 
+- Replace `ALL` route with `ANY` (deprecate `ALL`)
+- Update `Pebble` template engine to 2.4.0
+- Update `Jetty` to 9.4.6.v20170531
+- Update `Undertow` to 1.4.12.Final
+- Update `RestAssured` used by `PippoTest` to 2.9.0
+- [#378]: Simplify `JettyServer`
+- Update `TJWS` to 3.1.4.Final
+- Simplify `TomcatServer` (delete executor service)
+
+#### Added
+- [#363]: Route `OPTIONS`
+- [#366]: Add `TrailingSlashHandler`
+- Add `CONNECT` method
+- Add log entry in Less and Sass
+- [#377]: Handle keystore paths that are relative to Classpath
+
+#### Removed
+
 ### [1.4.0] - 2017-05-03
 
 #### Fixed
@@ -372,7 +399,8 @@ Initial release.
 - Added [pippo-freemarker]
 - Added [pippo-jetty]
 
-[unreleased]: https://github.com/decebals/pippo/compare/release-1.3.0...HEAD
+[unreleased]: https://github.com/decebals/pippo/compare/release-1.5.0...HEAD
+[1.5.0]: https://github.com/decebals/pippo/compare/release-1.4.0...release-1.5.0
 [1.4.0]: https://github.com/decebals/pippo/compare/release-1.3.0...release-1.4.0
 [1.3.0]: https://github.com/decebals/pippo/compare/release-1.2.0...release-1.3.0
 [1.2.0]: https://github.com/decebals/pippo/compare/release-1.1.0...release-1.2.0
@@ -391,6 +419,13 @@ Initial release.
 [0.3.0]: https://github.com/decebals/pippo/compare/pippo-parent-0.2.0...pippo-parent-0.3.0
 [0.2.0]: https://github.com/decebals/pippo/compare/pippo-parent-0.1.0...pippo-parent-0.2.0
 
+[#381]: https://github.com/decebals/pippo/issues/381
+[#378]: https://github.com/decebals/pippo/pull/378
+[#377]:https://github.com/decebals/pippo/pull/377
+[#368]: https://github.com/decebals/pippo/issues/368
+[#367]: https://github.com/decebals/pippo/issues/367
+[#366]: https://github.com/decebals/pippo/issues/366
+[#363]: https://github.com/decebals/pippo/issues/363
 [#361]: https://github.com/decebals/pippo/pull/361
 [#360]: https://github.com/decebals/pippo/pull/360
 [#356]: https://github.com/decebals/pippo/issues/356
