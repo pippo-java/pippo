@@ -15,8 +15,16 @@
  */
 package ro.pippo.undertow;
 
+import io.undertow.Undertow;
+import io.undertow.UndertowOptions;
+import org.xnio.Option;
+import org.xnio.OptionMap;
 import ro.pippo.core.PippoSettings;
 import ro.pippo.core.WebServerSettings;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @author Decebal Suiu
@@ -28,12 +36,25 @@ public class UndertowSettings extends WebServerSettings {
     public static final String DIRECT_BUFFERS = "undertow.directBuffers";
     public static final String IO_THREADS = "undertow.ioThreads";
     public static final String WORKER_THREADS = "undertow.workerThreads";
+    private static Map<String, Class> parameterOptionMap;
+
+    private interface UndertowParameters {
+        String SERVER_PREFIX = "undertow.server.";
+        String WORKER_PREFIX = "undertow.worker.";
+        String SOCKET_PREFIX = "undertow.socket.";
+
+        // add all undertow parameters
+        String MAX_PARAMETERS = "undertow.server.MAX_PARAMETERS";
+        String IDLE_TIMEOUT = "undertow.server.IDLE_TIMEOUT";
+
+    }
 
     private int bufferSize;
     private int buffersPerRegion;
     private int ioThreads;
     private int workerThreads;
     private Boolean directBuffers;
+    private PippoSettings pippoSettings;
 
     public UndertowSettings(PippoSettings pippoSettings) {
         super(pippoSettings);
@@ -43,6 +64,9 @@ public class UndertowSettings extends WebServerSettings {
         directBuffers = pippoSettings.getBoolean(UndertowSettings.DIRECT_BUFFERS, false);
         ioThreads = pippoSettings.getInteger(UndertowSettings.IO_THREADS, 0);
         workerThreads = pippoSettings.getInteger(UndertowSettings.WORKER_THREADS, 0);
+
+        this.pippoSettings = pippoSettings;
+        initializeOptionsMap();
     }
 
     public int getBufferSize() {
@@ -88,6 +112,74 @@ public class UndertowSettings extends WebServerSettings {
     public UndertowSettings setWorkerThreads(int workerThreads) {
         this.workerThreads = workerThreads;
         return this;
+    }
+
+    private void initializeOptionsMap() {
+        if (parameterOptionMap == null) {
+            parameterOptionMap = new HashMap<>();
+            parameterOptionMap.put(UndertowParameters.MAX_PARAMETERS, Integer.class);
+            parameterOptionMap.put(UndertowParameters.IDLE_TIMEOUT, Integer.class);
+        }
+    }
+
+    public void addUndertowOptions(Undertow.Builder builder) {
+        List<String> propertyNames = pippoSettings.getSettingNames();
+        for (String propertyName: propertyNames) {
+            if (parameterOptionMap.containsKey(propertyName)) {
+                if (propertyName.startsWith(UndertowParameters.SERVER_PREFIX)) {
+                    addUndertowOption(builder, propertyName, UndertowParameters.SERVER_PREFIX);
+                } else if (propertyName.startsWith(UndertowParameters.SOCKET_PREFIX)) {
+                    addUndertowOption(builder, propertyName, UndertowParameters.SOCKET_PREFIX);
+                } else if (propertyName.startsWith(UndertowParameters.WORKER_PREFIX)) {
+                    addUndertowOption(builder, propertyName, UndertowParameters.WORKER_PREFIX);
+                }
+            }
+        }
+    }
+
+    private void addUndertowOption(Undertow.Builder builder, String propertyName, String prefix) {
+        Class propertyType = parameterOptionMap.get(propertyName);
+        if (propertyType != null) {
+            if (propertyType.equals(Integer.class)) {
+                int value = pippoSettings.getInteger(propertyName, -1);
+                if (value != -1) {
+                    Option<Integer> option = Option.simple(
+                            UndertowOptions.class, propertyName.replace(prefix, ""), Integer.class);
+                    addUndertowOption(builder, option, value, prefix);
+                }
+            } else if (propertyType.equals(Long.class)) {
+                long value = pippoSettings.getLong(propertyName, -1L);
+                if (value != -1) {
+                    Option<Long> option = Option.simple(
+                            UndertowOptions.class, propertyName.replace(prefix, ""), Long.class);
+                    addUndertowOption(builder, option, value, prefix);
+                }
+            } else if (propertyType.equals(String.class)) {
+                Option<String> option = Option.simple(
+                        UndertowOptions.class, propertyName.replace(prefix, ""), String.class);
+                addUndertowOption(builder, option, pippoSettings.getString(propertyName, ""), prefix);
+            } else if (propertyType.equals(Boolean.class)) {
+                Option<Boolean> option = Option.simple(
+                        UndertowOptions.class, propertyName.replace(prefix, ""), Boolean.class);
+                addUndertowOption(builder, option, pippoSettings.getBoolean(propertyName, false), prefix);
+            }
+        }
+    }
+
+    private <T> void addUndertowOption(Undertow.Builder builder, Option<T> option, T value, String prefix) {
+        switch (prefix) {
+            case UndertowParameters.SERVER_PREFIX:
+                builder.setServerOption(option, value);
+                break;
+            case UndertowParameters.SOCKET_PREFIX:
+                builder.setServerOption(option, value);
+                break;
+            case UndertowParameters.WORKER_PREFIX:
+                builder.setWorkerOption(option, value);
+                break;
+            default:
+                break;
+        }
     }
 
 }
