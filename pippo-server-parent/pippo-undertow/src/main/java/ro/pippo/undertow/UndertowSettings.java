@@ -15,15 +15,29 @@
  */
 package ro.pippo.undertow;
 
+import io.undertow.Undertow;
+import io.undertow.UndertowOptions;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.xnio.Option;
 import ro.pippo.core.PippoSettings;
 import ro.pippo.core.WebServerSettings;
+
+import java.lang.reflect.Field;
+import java.util.List;
 
 /**
  * @author Decebal Suiu
  */
 public class UndertowSettings extends WebServerSettings {
 
+    private static final Logger log = LoggerFactory.getLogger(UndertowServer.class);
+
     public static final String BUFFER_SIZE = "undertow.bufferSize";
+    private static final String PREFIX = "undertow.";
+    private static final String UNDERTOW_SERVER_PREFIX = "undertow.server.";
+    private static final String UNDERTOW_WORKER_PREFIX = "undertow.worker.";
+    private static final String UNDERTOW_SOCKET_PREFIX = "undertow.socket.";
     public static final String BUFFERS_PER_REGION = "undertow.buffersPerRegion";
     public static final String DIRECT_BUFFERS = "undertow.directBuffers";
     public static final String IO_THREADS = "undertow.ioThreads";
@@ -34,6 +48,7 @@ public class UndertowSettings extends WebServerSettings {
     private int ioThreads;
     private int workerThreads;
     private Boolean directBuffers;
+    private PippoSettings pippoSettings;
 
     public UndertowSettings(PippoSettings pippoSettings) {
         super(pippoSettings);
@@ -43,6 +58,8 @@ public class UndertowSettings extends WebServerSettings {
         directBuffers = pippoSettings.getBoolean(UndertowSettings.DIRECT_BUFFERS, false);
         ioThreads = pippoSettings.getInteger(UndertowSettings.IO_THREADS, 0);
         workerThreads = pippoSettings.getInteger(UndertowSettings.WORKER_THREADS, 0);
+
+        this.pippoSettings = pippoSettings;
     }
 
     public int getBufferSize() {
@@ -88,6 +105,104 @@ public class UndertowSettings extends WebServerSettings {
     public UndertowSettings setWorkerThreads(int workerThreads) {
         this.workerThreads = workerThreads;
         return this;
+    }
+
+    /**
+     *
+     * @param builder - undertow builder
+     * method adds undertow options to builder
+     * undertow.server.* would be added to serverOptions
+     * undertow.socket.* would be added to socketOptions
+     * undertow.worker.* would be added to workerOptions
+     */
+    public void addUndertowOptions(Undertow.Builder builder) {
+        List<String> propertyNames = pippoSettings.getSettingNames(PREFIX);
+        String typeName;
+        String prefix;
+        for (String propertyName: propertyNames) {
+            typeName = null;
+            prefix = null;
+            if (propertyName.startsWith(UNDERTOW_SERVER_PREFIX)) {
+                prefix = UNDERTOW_SERVER_PREFIX;
+            } else if (propertyName.startsWith(UNDERTOW_SOCKET_PREFIX)) {
+                prefix = UNDERTOW_SOCKET_PREFIX;
+            } else if (propertyName.startsWith(UNDERTOW_WORKER_PREFIX)) {
+                prefix = UNDERTOW_WORKER_PREFIX;
+            }
+            if (prefix != null)
+                typeName = getTypeName(propertyName.replace(prefix, ""));
+            if (typeName != null)
+                addUndertowOption(builder, propertyName, prefix, typeName);
+        }
+    }
+
+    /**
+     *
+     * @return - returns Option type as String
+     * Currently, only Options in UndertowOptions are supported
+     */
+    private String getTypeName(String parameter) {
+        try {
+            Field field = UndertowOptions.class.getDeclaredField(parameter);
+            if (Option.class.getName().equals(field.getType().getTypeName())) {
+                Object value = field.get(null);
+                Field optionField = value.getClass().getDeclaredField("type");
+                optionField.setAccessible(true);
+                return optionField.get(value).toString();
+            }
+        } catch (Exception e) {
+            log.debug("getting Option type for parameter {} failed with {}", parameter, e);
+        }
+        return null;
+    }
+
+    /**
+     *
+     * @param builder - undertow builder
+     * @param propertyName - name of property to be set in undertow
+     * @param prefix - defines property type (SERVER, SOCKET, WORKER)
+     * @param typeName - Option type, currently Integer, String, Long, Boolean are supported
+     */
+    private void addUndertowOption(Undertow.Builder builder, String propertyName, String prefix, String typeName) {
+        if (typeName.equals(Integer.class.toString())) {
+            int value = pippoSettings.getInteger(propertyName, Integer.MIN_VALUE);
+            if (value > Integer.MIN_VALUE) {
+                Option<Integer> option = Option.simple(
+                        UndertowOptions.class, propertyName.replace(prefix, ""), Integer.class);
+                addUndertowOption(builder, option, value, prefix);
+            }
+        } else if (typeName.equals(Long.class.toString())) {
+            long value = pippoSettings.getLong(propertyName, Long.MIN_VALUE);
+            if (value > Long.MIN_VALUE) {
+                Option<Long> option = Option.simple(
+                        UndertowOptions.class, propertyName.replace(prefix, ""), Long.class);
+                addUndertowOption(builder, option, value, prefix);
+            }
+        } else if (typeName.equals(String.class.toString())) {
+            Option<String> option = Option.simple(
+                    UndertowOptions.class, propertyName.replace(prefix, ""), String.class);
+            addUndertowOption(builder, option, pippoSettings.getString(propertyName, ""), prefix);
+        } else if (typeName.equals(Boolean.class.toString())) {
+            Option<Boolean> option = Option.simple(
+                    UndertowOptions.class, propertyName.replace(prefix, ""), Boolean.class);
+            addUndertowOption(builder, option, pippoSettings.getBoolean(propertyName, false), prefix);
+        }
+    }
+
+    private <T> void addUndertowOption(Undertow.Builder builder, Option<T> option, T value, String prefix) {
+        switch (prefix) {
+            case UNDERTOW_SERVER_PREFIX:
+                builder.setServerOption(option, value);
+                break;
+            case UNDERTOW_SOCKET_PREFIX:
+                builder.setSocketOption(option, value);
+                break;
+            case UNDERTOW_WORKER_PREFIX:
+                builder.setWorkerOption(option, value);
+                break;
+            default:
+                break;
+        }
     }
 
 }

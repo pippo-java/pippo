@@ -147,6 +147,8 @@ public class UndertowServer extends AbstractWebServer<UndertowSettings> {
             }
         }
 
+        // add undertow options
+        getSettings().addUndertowOptions(builder);
         builder.setHandler(contextHandler);
 
         return builder.build();
