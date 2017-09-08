@@ -15,6 +15,8 @@
  */
 package ro.pippo.session.jedis;
 
+import java.net.URI;
+import java.net.URISyntaxException;
 import org.apache.commons.pool2.impl.GenericObjectPoolConfig;
 import redis.clients.jedis.JedisPool;
 import redis.clients.jedis.JedisPoolConfig;
@@ -54,7 +56,12 @@ public class JedisFactory {
         config.setMinIdle(minIdle);
         config.setMaxIdle(maxIdle);
         config.setMaxTotal(maxTotal);
-        return new JedisPool(config, host);
+
+        try {
+            return new JedisPool(config, new URI(host));
+        } catch (URISyntaxException e) {
+            throw new PippoRuntimeException("Malformed redis URI", e);
+        }
     }
 
 }
