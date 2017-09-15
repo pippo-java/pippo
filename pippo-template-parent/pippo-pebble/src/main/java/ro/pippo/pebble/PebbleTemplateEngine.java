@@ -58,7 +58,7 @@ public class PebbleTemplateEngine implements TemplateEngine {
 
     private PebbleEngine engine;
 
-    private String extension = PEBBLE;
+    private String extension;
 
     @Override
     public void init(Application application) {
@@ -74,6 +74,9 @@ public class PebbleTemplateEngine implements TemplateEngine {
 
         List<Loader<?>> loaders = Lists.newArrayList();
         PippoTemplateLoader templateLoader = new PippoTemplateLoader();
+
+        extension = pippoSettings.getString(PippoConstants.SETTING_TEMPLATE_EXTENSION, PEBBLE);
+
         templateLoader.setCharset(PippoConstants.UTF8);
         templateLoader.setPrefix(pathPrefix);
         templateLoader.setSuffix("." + extension);

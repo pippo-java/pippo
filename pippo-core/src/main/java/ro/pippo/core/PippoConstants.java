@@ -77,6 +77,8 @@ public final class PippoConstants {
 
     public static final String REQUEST_PARAMETER_LOCALE = "locale";
 
+    public static final String SETTING_TEMPLATE_EXTENSION = "template.extension";
+
     // OTHERS
 
     public static final String UTF8 = StandardCharsets.UTF_8.toString();
