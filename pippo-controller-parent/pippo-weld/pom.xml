@@ -29,6 +29,20 @@
             <artifactId>weld-se</artifactId>
             <version>${weld.version}</version>
         </dependency>
+
+        <dependency>
+            <groupId>ro.pippo</groupId>
+            <artifactId>pippo-test</artifactId>
+            <version>${project.version}</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>ro.pippo</groupId>
+            <artifactId>pippo-undertow</artifactId>
+            <version>${project.version}</version>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 
 </project>

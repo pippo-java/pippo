@@ -27,15 +27,15 @@ import ro.pippo.core.route.RouteDispatcher;
  */
 public class Controller {
 
-    public final RouteContext getRouteContext() {
+    public RouteContext getRouteContext() {
         return RouteDispatcher.getRouteContext();
     }
 
-    public final Request getRequest() {
+    public Request getRequest() {
         return getRouteContext().getRequest();
     }
 
-    public final Response getResponse() {
+    public Response getResponse() {
         return getRouteContext().getResponse();
     }
 
@@ -44,11 +44,11 @@ public class Controller {
         return (T) getRouteContext().getApplication();
     }
 
-    public final Messages getMessages() {
+    public Messages getMessages() {
         return getRouteContext().getMessages();
     }
 
-    public final PippoSettings getSettings() {
+    public PippoSettings getSettings() {
         return getRouteContext().getSettings();
     }
 
