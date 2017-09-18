@@ -43,7 +43,7 @@ import java.util.Map;
  * @author James Moger
  */
 @MetaInfServices
-public class PebbleTemplateEngine extends AbstractTemplateEngine<PebbleEngine.Builder> {
+public class PebbleTemplateEngine extends AbstractTemplateEngine {
 
     private final Logger log = LoggerFactory.getLogger(PebbleTemplateEngine.class);
 
@@ -91,7 +91,6 @@ public class PebbleTemplateEngine extends AbstractTemplateEngine<PebbleEngine.Bu
         engine = builder.build();
     }
 
-    @Override
     protected void init(Application application, PebbleEngine.Builder configurationTarget) {
         // NO OP
     }

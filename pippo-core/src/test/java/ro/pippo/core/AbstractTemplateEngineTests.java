@@ -216,7 +216,7 @@ public class AbstractTemplateEngineTests {
         reset(mockLanguages);
     }
 
-    private static class TestTemplateEngine extends AbstractTemplateEngine<String> {
+    private static class TestTemplateEngine extends AbstractTemplateEngine {
 
         @Override
         public void init(Application application) {

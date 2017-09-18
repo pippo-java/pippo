@@ -17,28 +17,20 @@ package ro.pippo.core;
 
 import ro.pippo.core.route.RouteContext;
 import ro.pippo.core.route.Router;
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
-import java.io.Writer;
 import java.util.Locale;
-import java.util.Map;
 
 /**
  * Convenience abstract implementation of {@link TemplateEngine}
  *
- * A configuration configuration target <code>CT</code> is a template engine specific component
- * that needs to be setup for the engine to function correctly.
- *
  * To use the convenience methods in this class, implementations must override {@link #init(Application)}
  * and call this class' implementation before performing any of their initialization.
- *
- * @param <CT> configuration target for custom initialization, implementations could use this
  *
  * @see TemplateEngine
  *
  * @author Ranganath Kini
  */
-public abstract class AbstractTemplateEngine<CT> implements TemplateEngine {
+public abstract class AbstractTemplateEngine implements TemplateEngine {
 
     private Languages languages;
     private Messages messages;
@@ -68,39 +60,6 @@ public abstract class AbstractTemplateEngine<CT> implements TemplateEngine {
         fileExtension = pippoSettings.getString(PippoConstants.SETTING_TEMPLATE_EXTENSION, getDefaultFileExtension());
         templatePathPrefix = pippoSettings.getString(PippoConstants.SETTING_TEMPLATE_PATH_PREFIX, TemplateEngine.DEFAULT_PATH_PREFIX);
     }
-
-    /**
-     * Performs additional initialization on the specified template engine specific configuration target
-     *
-     * This method serves as a hook for implementation to support additional fine-grained extension to initialize
-     * a template engine specific configuration object.
-     *
-     * Implementations can support this by invoking this method from {@link #init(Application)}.
-     * Supporting this is completely optional.
-     *
-     * The default implementation throws a {@link NotImplementedException}.
-     *
-     * @param application reference to the Pippo {@link Application} the can be used to access configuration details
-     * @param configurationTarget reference to the template engine specific configuration object that needs initialization
-     *
-     * @throws NotImplementedException
-     *          if no additional initialization is supported by the implementation
-     */
-    protected void init(Application application, CT configurationTarget) {
-        throw new NotImplementedException();
-    }
-
-    /**
-     * @see TemplateEngine#renderString(String, Map, Writer)
-     */
-    @Override
-    public abstract void renderString(String templateContent, Map<String, Object> model, Writer writer);
-
-    /**
-     * @see TemplateEngine#renderResource(String, Map, Writer)
-     */
-    @Override
-    public abstract void renderResource(String templateName, Map<String, Object> model, Writer writer);
 
     /**
      * Returns the default file extension for template resources.
