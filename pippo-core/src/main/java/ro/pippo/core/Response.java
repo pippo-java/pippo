@@ -718,9 +718,9 @@ public final class Response {
      * @return the content type
      */
     public String getContentType() {
-        String contentType = httpServletResponse.getContentType();
+        String contentType = getHeader(HttpConstants.Header.CONTENT_TYPE);
         if (contentType == null) {
-            contentType = getHeader(HttpConstants.Header.CONTENT_TYPE);
+            contentType = httpServletResponse.getContentType();
         }
 
         return contentType;
@@ -735,8 +735,8 @@ public final class Response {
     public Response contentType(String contentType) {
         checkCommitted();
 
-        httpServletResponse.setContentType(contentType);
         header(HttpConstants.Header.CONTENT_TYPE, contentType);
+        httpServletResponse.setContentType(contentType);
 
         return this;
     }
