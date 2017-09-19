@@ -27,12 +27,7 @@ import org.trimou.handlebars.HelpersBuilder;
 import org.trimou.handlebars.i18n.DateTimeFormatHelper;
 import org.trimou.minify.Minify;
 import org.trimou.prettytime.PrettyTimeHelper;
-import ro.pippo.core.Application;
-import ro.pippo.core.Languages;
-import ro.pippo.core.PippoConstants;
-import ro.pippo.core.PippoRuntimeException;
-import ro.pippo.core.PippoSettings;
-import ro.pippo.core.TemplateEngine;
+import ro.pippo.core.*;
 import ro.pippo.core.route.Router;
 import ro.pippo.core.util.StringUtils;
 
@@ -46,25 +41,21 @@ import java.util.Map;
  * @author James Moger
  */
 @MetaInfServices
-public class TrimouTemplateEngine implements TemplateEngine {
+public class TrimouTemplateEngine extends AbstractTemplateEngine {
 
     private static final Logger log = LoggerFactory.getLogger(TrimouTemplateEngine.class);
 
     public static final String MUSTACHE = "mustache";
 
-    private Languages languages;
     private ThreadLocalLocaleSupport localeSupport;
     private MustacheEngine engine;
 
-    private String extension = MUSTACHE;
-
     @Override
     public void init(Application application) {
-        this.languages = application.getLanguages();
         this.localeSupport = new ThreadLocalLocaleSupport();
 
-        Router router = application.getRouter();
-        PippoSettings pippoSettings = application.getPippoSettings();
+        Router router = getRouter();
+        PippoSettings pippoSettings = getPippoSettings();
 
         MustacheEngineBuilder builder = MustacheEngineBuilder.newBuilder();
         builder.setLocaleSupport(localeSupport);
@@ -103,16 +94,21 @@ public class TrimouTemplateEngine implements TemplateEngine {
     }
 
     @Override
+    protected String getDefaultFileExtension() {
+        return MUSTACHE;
+    }
+
+    @Override
     public void renderString(String templateContent, Map<String, Object> model, Writer writer) {
         String language = (String) model.get(PippoConstants.REQUEST_PARAMETER_LANG);
         if (StringUtils.isNullOrEmpty(language)) {
-            language = languages.getLanguageOrDefault(language);
+            language = getLanguageOrDefault(language);
         }
 
         // prepare the locale
         Locale locale = (Locale) model.get(PippoConstants.REQUEST_PARAMETER_LOCALE);
         if (locale == null) {
-            locale = languages.getLocaleOrDefault(language);
+            locale = getLocaleOrDefault(language);
         }
 
         try {
@@ -134,13 +130,13 @@ public class TrimouTemplateEngine implements TemplateEngine {
     public void renderResource(String templateName, Map<String, Object> model, Writer writer) {
         String language = (String) model.get(PippoConstants.REQUEST_PARAMETER_LANG);
         if (StringUtils.isNullOrEmpty(language)) {
-            language = languages.getLanguageOrDefault(language);
+            language = getLanguageOrDefault(language);
         }
 
         // prepare the locale
         Locale locale = (Locale) model.get(PippoConstants.REQUEST_PARAMETER_LOCALE);
         if (locale == null) {
-            locale = languages.getLocaleOrDefault(language);
+            locale = getLocaleOrDefault(language);
         }
 
         try {
@@ -148,7 +144,7 @@ public class TrimouTemplateEngine implements TemplateEngine {
 
             localeSupport.setCurrentLocale(locale);
 
-            templateName = StringUtils.removeEnd(templateName, "." + extension);
+            templateName = StringUtils.removeEnd(templateName, "." + getFileExtension());
 
             if (locale != null) {
                 // try the complete Locale
@@ -180,16 +176,11 @@ public class TrimouTemplateEngine implements TemplateEngine {
         }
     }
 
-    @Override
-    public void setFileExtension(String extension) {
-        this.extension = extension;
-    }
-
     protected void init(Application application, MustacheEngineBuilder builder) {
     }
 
     private String getLocalizedTemplateName(String templateName, String localePart) {
-        return StringUtils.removeEnd(templateName, "." + extension) + "_" + localePart;
+        return StringUtils.removeEnd(templateName, "." + getFileExtension()) + "_" + localePart;
     }
 
 }

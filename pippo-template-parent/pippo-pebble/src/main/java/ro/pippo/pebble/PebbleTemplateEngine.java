@@ -28,12 +28,7 @@ import com.mitchellbosecke.pebble.template.PebbleTemplate;
 import org.kohsuke.MetaInfServices;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import ro.pippo.core.Application;
-import ro.pippo.core.Languages;
-import ro.pippo.core.PippoConstants;
-import ro.pippo.core.PippoRuntimeException;
-import ro.pippo.core.PippoSettings;
-import ro.pippo.core.TemplateEngine;
+import ro.pippo.core.*;
 import ro.pippo.core.route.Router;
 import ro.pippo.core.util.StringUtils;
 
@@ -48,35 +43,27 @@ import java.util.Map;
  * @author James Moger
  */
 @MetaInfServices
-public class PebbleTemplateEngine implements TemplateEngine {
+public class PebbleTemplateEngine extends AbstractTemplateEngine {
 
     private final Logger log = LoggerFactory.getLogger(PebbleTemplateEngine.class);
 
-    public static final String PEBBLE = "peb";
-
-    private Languages languages;
+    private static final String PEBBLE = "peb";
 
     private PebbleEngine engine;
 
-    private String extension = PEBBLE;
-
     @Override
     public void init(Application application) {
-        this.languages = application.getLanguages();
+        super.init(application);
 
-        Router router = application.getRouter();
-        PippoSettings pippoSettings = application.getPippoSettings();
-
-        String pathPrefix = pippoSettings.getString(PippoConstants.SETTING_TEMPLATE_PATH_PREFIX, null);
-        if (StringUtils.isNullOrEmpty(pathPrefix)) {
-            pathPrefix = TemplateEngine.DEFAULT_PATH_PREFIX;
-        }
+        Router router = getRouter();
+        PippoSettings pippoSettings = getPippoSettings();
 
         List<Loader<?>> loaders = Lists.newArrayList();
         PippoTemplateLoader templateLoader = new PippoTemplateLoader();
+
         templateLoader.setCharset(PippoConstants.UTF8);
-        templateLoader.setPrefix(pathPrefix);
-        templateLoader.setSuffix("." + extension);
+        templateLoader.setPrefix(getTemplatePathPrefix());
+        templateLoader.setSuffix("." + getFileExtension());
         loaders.add(templateLoader);
 
         PebbleEngine.Builder builder = new PebbleEngine.Builder()
@@ -104,15 +91,20 @@ public class PebbleTemplateEngine implements TemplateEngine {
         engine = builder.build();
     }
 
+    protected void init(Application application, PebbleEngine.Builder configurationTarget) {
+        // NO OP
+    }
+
     @Override
     public void renderString(String templateContent, Map<String, Object> model, Writer writer) {
         String language = (String) model.get(PippoConstants.REQUEST_PARAMETER_LANG);
+
         if (StringUtils.isNullOrEmpty(language)) {
-            language = languages.getLanguageOrDefault(language);
+            language = getLanguageOrDefault(language);
         }
         Locale locale = (Locale) model.get(PippoConstants.REQUEST_PARAMETER_LOCALE);
         if (locale == null) {
-            locale = languages.getLocaleOrDefault(language);
+            locale = getLocaleOrDefault(language);
         }
 
         try {
@@ -133,16 +125,19 @@ public class PebbleTemplateEngine implements TemplateEngine {
     @Override
     public void renderResource(String templateName, Map<String, Object> model, Writer writer) {
         String language = (String) model.get(PippoConstants.REQUEST_PARAMETER_LANG);
+
         if (StringUtils.isNullOrEmpty(language)) {
-            language = languages.getLanguageOrDefault(language);
+            language = getLanguageOrDefault(language);
         }
+
         Locale locale = (Locale) model.get(PippoConstants.REQUEST_PARAMETER_LOCALE);
         if (locale == null) {
-            locale = languages.getLocaleOrDefault(language);
+            locale = getLocaleOrDefault(language);
         }
 
         try {
             PebbleTemplate template = null;
+
             if (locale != null) {
                 // try the complete Locale
                 template = getTemplate(templateName, locale.toString());
@@ -165,11 +160,8 @@ public class PebbleTemplateEngine implements TemplateEngine {
     }
 
     @Override
-    public void setFileExtension(String extension) {
-        this.extension = extension;
-    }
-
-    protected void init(Application application, PebbleEngine.Builder builder) {
+    protected String getDefaultFileExtension() {
+        return PEBBLE;
     }
 
     private PebbleTemplate getTemplate(String templateName, String localePart) throws PebbleException {
@@ -178,7 +170,8 @@ public class PebbleTemplateEngine implements TemplateEngine {
             if (Strings.isNullOrEmpty(localePart)) {
                 template = engine.getTemplate(templateName);
             } else {
-                String localizedName = StringUtils.removeEnd(templateName, "." + extension) + "_" + localePart;
+                String localizedName = StringUtils.removeEnd(templateName, "." +
+                    getFileExtension()) + "_" + localePart;
                 template = engine.getTemplate(localizedName);
             }
         } catch (LoaderException e) {

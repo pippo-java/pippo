@@ -27,13 +27,7 @@ import org.kohsuke.MetaInfServices;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import ro.pippo.core.Application;
-import ro.pippo.core.Languages;
-import ro.pippo.core.Messages;
-import ro.pippo.core.PippoConstants;
-import ro.pippo.core.PippoRuntimeException;
-import ro.pippo.core.PippoSettings;
-import ro.pippo.core.TemplateEngine;
+import ro.pippo.core.*;
 import ro.pippo.core.route.Router;
 import ro.pippo.core.util.StringUtils;
 
@@ -43,27 +37,21 @@ import ro.pippo.core.util.StringUtils;
  * @author James Moger
  */
 @MetaInfServices
-public class GroovyTemplateEngine implements TemplateEngine {
+public class GroovyTemplateEngine extends AbstractTemplateEngine {
 
     private static final Logger log = LoggerFactory.getLogger(GroovyTemplateEngine.class);
 
     public static final String GROOVY = "groovy";
 
-    private Languages languages;
-    private Messages messages;
     private Router router;
 
     private MarkupTemplateEngine engine;
 
-    private String extension = GROOVY;
-
     @Override
     public void init(Application application) {
-        this.languages = application.getLanguages();
-        this.messages = application.getMessages();
-        this.router = application.getRouter();
+        this.router = getRouter();
 
-        PippoSettings pippoSettings = application.getPippoSettings();
+        PippoSettings pippoSettings = getPippoSettings();
 
         TemplateConfiguration configuration = new TemplateConfiguration();
         configuration.setBaseTemplateClass(PippoGroovyTemplate.class);
@@ -96,11 +84,16 @@ public class GroovyTemplateEngine implements TemplateEngine {
     }
 
     @Override
+    protected String getDefaultFileExtension() {
+        return GROOVY;
+    }
+
+    @Override
     public void renderString(String templateContent, Map<String, Object> model, Writer writer) {
         try {
             Template groovyTemplate = engine.createTemplate(templateContent);
             PippoGroovyTemplate gt = (PippoGroovyTemplate) groovyTemplate.make(model);
-            gt.setup(languages, messages, router);
+            gt.setup(getLanguages(), getMessages(), router);
             gt.writeTo(writer);
         } catch (Exception e) {
             log.error("Error processing Groovy template {} ", templateContent, e);
@@ -111,7 +104,7 @@ public class GroovyTemplateEngine implements TemplateEngine {
     @Override
     public void renderResource(String templateName, Map<String, Object> model, Writer writer) {
         if (templateName.indexOf('.') == -1) {
-            templateName += "." + extension;
+            templateName += "." + getFileExtension();
         }
 
         Template groovyTemplate;
@@ -124,17 +117,12 @@ public class GroovyTemplateEngine implements TemplateEngine {
 
         try {
             PippoGroovyTemplate gt = (PippoGroovyTemplate) groovyTemplate.make(model);
-            gt.setup(languages, messages, router);
+            gt.setup(getLanguages(), getMessages(), router);
             gt.writeTo(writer);
         } catch (Exception e) {
             log.error("Error processing Groovy template {} ", templateName, e);
             throw new PippoRuntimeException(e);
         }
-    }
-
-    @Override
-    public void setFileExtension(String extension) {
-        this.extension = extension;
     }
 
     protected void init(Application application, TemplateConfiguration configuration) {
