@@ -25,7 +25,6 @@ import ro.pippo.core.Application;
 import ro.pippo.core.PippoConstants;
 import ro.pippo.core.PippoRuntimeException;
 import ro.pippo.core.PippoSettings;
-import ro.pippo.core.TemplateEngine;
 import ro.pippo.core.route.Router;
 import ro.pippo.core.util.StringUtils;
 
@@ -55,18 +54,16 @@ public class FreemarkerTemplateEngine extends AbstractTemplateEngine {
 
     @Override
     public void init(Application application) {
+        super.init(application);
+
         Router router = getRouter();
         PippoSettings pippoSettings = getPippoSettings();
 
-        String pathPrefix = pippoSettings.getString(PippoConstants.SETTING_TEMPLATE_PATH_PREFIX, null);
-        if (StringUtils.isNullOrEmpty(pathPrefix)) {
-            pathPrefix = TemplateEngine.DEFAULT_PATH_PREFIX;
-        }
         configuration = new Configuration(Configuration.VERSION_2_3_21);
         configuration.setDefaultEncoding(PippoConstants.UTF8);
         configuration.setOutputEncoding(PippoConstants.UTF8);
         configuration.setLocalizedLookup(true);
-        configuration.setClassForTemplateLoading(FreemarkerTemplateEngine.class, pathPrefix);
+        configuration.setClassForTemplateLoading(FreemarkerTemplateEngine.class, getTemplatePathPrefix());
 
         // We also do not want Freemarker to chose a platform dependent
         // number formatting. Eg "1000" could be printed out by FTL as "1,000"

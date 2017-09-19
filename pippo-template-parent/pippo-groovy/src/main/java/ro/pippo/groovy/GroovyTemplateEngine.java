@@ -23,11 +23,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ro.pippo.core.AbstractTemplateEngine;
 import ro.pippo.core.Application;
-import ro.pippo.core.PippoConstants;
 import ro.pippo.core.PippoRuntimeException;
 import ro.pippo.core.PippoSettings;
-import ro.pippo.core.TemplateEngine;
-import ro.pippo.core.route.Router;
 import ro.pippo.core.util.StringUtils;
 
 import java.io.IOException;
@@ -46,13 +43,11 @@ public class GroovyTemplateEngine extends AbstractTemplateEngine {
 
     public static final String GROOVY = "groovy";
 
-    private Router router;
-
     private MarkupTemplateEngine engine;
 
     @Override
     public void init(Application application) {
-        this.router = getRouter();
+        super.init(application);
 
         PippoSettings pippoSettings = getPippoSettings();
 
@@ -69,10 +64,7 @@ public class GroovyTemplateEngine extends AbstractTemplateEngine {
             configuration.setAutoIndentString("  ");
         }
 
-        String pathPrefix = pippoSettings.getString(PippoConstants.SETTING_TEMPLATE_PATH_PREFIX, null);
-        if (StringUtils.isNullOrEmpty(pathPrefix)) {
-            pathPrefix = TemplateEngine.DEFAULT_PATH_PREFIX;
-        }
+        String pathPrefix = getTemplatePathPrefix();
         pathPrefix = StringUtils.removeStart(pathPrefix, "/");
         pathPrefix = StringUtils.removeEnd(pathPrefix, "/");
 
@@ -96,7 +88,7 @@ public class GroovyTemplateEngine extends AbstractTemplateEngine {
         try {
             Template groovyTemplate = engine.createTemplate(templateContent);
             PippoGroovyTemplate gt = (PippoGroovyTemplate) groovyTemplate.make(model);
-            gt.setup(getLanguages(), getMessages(), router);
+            gt.setup(getLanguages(), getMessages(), getRouter());
             gt.writeTo(writer);
         } catch (Exception e) {
             log.error("Error processing Groovy template {} ", templateContent, e);
@@ -120,7 +112,7 @@ public class GroovyTemplateEngine extends AbstractTemplateEngine {
 
         try {
             PippoGroovyTemplate gt = (PippoGroovyTemplate) groovyTemplate.make(model);
-            gt.setup(getLanguages(), getMessages(), router);
+            gt.setup(getLanguages(), getMessages(), getRouter());
             gt.writeTo(writer);
         } catch (Exception e) {
             log.error("Error processing Groovy template {} ", templateName, e);

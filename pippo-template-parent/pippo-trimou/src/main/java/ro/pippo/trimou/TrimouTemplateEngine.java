@@ -32,7 +32,6 @@ import ro.pippo.core.Application;
 import ro.pippo.core.PippoConstants;
 import ro.pippo.core.PippoRuntimeException;
 import ro.pippo.core.PippoSettings;
-import ro.pippo.core.TemplateEngine;
 import ro.pippo.core.route.Router;
 import ro.pippo.core.util.StringUtils;
 
@@ -57,6 +56,8 @@ public class TrimouTemplateEngine extends AbstractTemplateEngine {
 
     @Override
     public void init(Application application) {
+        super.init(application);
+
         this.localeSupport = new ThreadLocalLocaleSupport();
 
         Router router = getRouter();
@@ -73,10 +74,7 @@ public class TrimouTemplateEngine extends AbstractTemplateEngine {
         builder.registerHelper("publicAt", new PublicAtHelper(router));
         builder.registerHelpers(HelpersBuilder.extra().build());
 
-        String pathPrefix = pippoSettings.getString(PippoConstants.SETTING_TEMPLATE_PATH_PREFIX, null);
-        if (StringUtils.isNullOrEmpty(pathPrefix)) {
-            pathPrefix = TemplateEngine.DEFAULT_PATH_PREFIX;
-        }
+        String pathPrefix = getTemplatePathPrefix();
         pathPrefix = StringUtils.removeStart(pathPrefix, "/");
         builder.addTemplateLocator(new ClassPathTemplateLocator(10, pathPrefix, MUSTACHE));
 

@@ -26,7 +26,6 @@ import ro.pippo.core.Application;
 import ro.pippo.core.PippoConstants;
 import ro.pippo.core.PippoRuntimeException;
 import ro.pippo.core.PippoSettings;
-import ro.pippo.core.TemplateEngine;
 import ro.pippo.core.route.Router;
 import ro.pippo.core.util.StringUtils;
 
@@ -46,21 +45,17 @@ public class JadeTemplateEngine extends AbstractTemplateEngine {
 
     public static final String JADE = "jade";
 
-    private Router router;
     private JadeConfiguration configuration;
 
     @Override
     public void init(Application application) {
-        this.router = getRouter();
+        super.init(application);
 
+        Router router = getRouter();
         PippoSettings pippoSettings = getPippoSettings();
 
-        String pathPrefix = pippoSettings.getString(PippoConstants.SETTING_TEMPLATE_PATH_PREFIX, null);
-        if (StringUtils.isNullOrEmpty(pathPrefix)) {
-            pathPrefix = TemplateEngine.DEFAULT_PATH_PREFIX;
-        }
         configuration = new JadeConfiguration();
-        configuration.setTemplateLoader(new ClassTemplateLoader(JadeTemplateEngine.class, pathPrefix));
+        configuration.setTemplateLoader(new ClassTemplateLoader(JadeTemplateEngine.class, getTemplatePathPrefix()));
         configuration.setMode(Mode.HTML);
         if (pippoSettings.isDev()) {
             configuration.setPrettyPrint(true);
@@ -94,7 +89,7 @@ public class JadeTemplateEngine extends AbstractTemplateEngine {
             locale = getLocaleOrDefault(language);
         }
 
-        model.put("pippo", new PippoHelper(getMessages(), language, locale, router));
+        model.put("pippo", new PippoHelper(getMessages(), language, locale, getRouter()));
         try (StringReader reader = new StringReader(templateContent)) {
             ReaderTemplateLoader stringTemplateLoader = new ReaderTemplateLoader(reader, "StringTemplate");
 
@@ -126,7 +121,7 @@ public class JadeTemplateEngine extends AbstractTemplateEngine {
             locale = getLocaleOrDefault(language);
         }
 
-        model.put("pippo", new PippoHelper(getMessages(), language, locale, router));
+        model.put("pippo", new PippoHelper(getMessages(), language, locale, getRouter()));
         try {
             JadeTemplate template = configuration.getTemplate(templateName);
             configuration.renderTemplate(template, model, writer);
@@ -143,7 +138,6 @@ public class JadeTemplateEngine extends AbstractTemplateEngine {
      * @param configuration
      */
     protected void init(Application application, JadeConfiguration configuration) {
-        // NO OP
     }
 
     private class ClassTemplateLoader implements TemplateLoader {

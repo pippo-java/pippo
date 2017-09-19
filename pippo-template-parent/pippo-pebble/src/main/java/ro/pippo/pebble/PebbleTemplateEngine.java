@@ -102,7 +102,6 @@ public class PebbleTemplateEngine extends AbstractTemplateEngine {
      * @param configurationTarget
      */
     protected void init(Application application, PebbleEngine.Builder configurationTarget) {
-        // NO OP
     }
 
     @Override
