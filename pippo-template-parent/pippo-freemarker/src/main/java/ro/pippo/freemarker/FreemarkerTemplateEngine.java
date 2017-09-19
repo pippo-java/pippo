@@ -20,13 +20,7 @@ import java.util.Locale;
 import java.util.Map;
 
 import org.kohsuke.MetaInfServices;
-import ro.pippo.core.Application;
-import ro.pippo.core.Languages;
-import ro.pippo.core.Messages;
-import ro.pippo.core.PippoConstants;
-import ro.pippo.core.PippoRuntimeException;
-import ro.pippo.core.PippoSettings;
-import ro.pippo.core.TemplateEngine;
+import ro.pippo.core.*;
 import ro.pippo.core.route.Router;
 import ro.pippo.core.util.StringUtils;
 import freemarker.log.Logger;
@@ -38,18 +32,13 @@ import freemarker.template.Template;
  * @author Decebal Suiu
  */
 @MetaInfServices
-public class FreemarkerTemplateEngine implements TemplateEngine {
+public class FreemarkerTemplateEngine extends AbstractTemplateEngine {
 
     public static final String FTL = "ftl";
-
-    private Languages languages;
-    private Messages messages;
 
     private WebjarsAtMethod webjarResourcesMethod;
     private PublicAtMethod publicResourcesMethod;
     private Configuration configuration;
-
-    private String extension = FTL;
 
     static {
         try {
@@ -61,11 +50,8 @@ public class FreemarkerTemplateEngine implements TemplateEngine {
 
     @Override
     public void init(Application application) {
-        this.languages = application.getLanguages();
-        this.messages = application.getMessages();
-
-        Router router = application.getRouter();
-        PippoSettings pippoSettings = application.getPippoSettings();
+        Router router = getRouter();
+        PippoSettings pippoSettings = getPippoSettings();
 
         String pathPrefix = pippoSettings.getString(PippoConstants.SETTING_TEMPLATE_PATH_PREFIX, null);
         if (StringUtils.isNullOrEmpty(pathPrefix)) {
@@ -107,18 +93,23 @@ public class FreemarkerTemplateEngine implements TemplateEngine {
     }
 
     @Override
+    protected String getDefaultFileExtension() {
+        return FTL;
+    }
+
+    @Override
     public void renderString(String templateContent, Map<String, Object> model, Writer writer) {
         // prepare the locale-aware i18n method
         String language = (String) model.get(PippoConstants.REQUEST_PARAMETER_LANG);
         if (StringUtils.isNullOrEmpty(language)) {
-            language = languages.getLanguageOrDefault(language);
+            language = getLanguageOrDefault(language);
         }
-        model.put("i18n", new I18nMethod(messages, language));
+        model.put("i18n", new I18nMethod(getMessages(), language));
 
         // prepare the locale-aware prettyTime method
         Locale locale = (Locale) model.get(PippoConstants.REQUEST_PARAMETER_LOCALE);
         if (locale == null) {
-            locale = languages.getLocaleOrDefault(language);
+            locale = getLocaleOrDefault(language);
         }
         model.put("prettyTime", new PrettyTimeMethod(locale));
         model.put("formatTime", new FormatTimeMethod(locale));
@@ -138,14 +129,14 @@ public class FreemarkerTemplateEngine implements TemplateEngine {
         // prepare the locale-aware i18n method
         String language = (String) model.get(PippoConstants.REQUEST_PARAMETER_LANG);
         if (StringUtils.isNullOrEmpty(language)) {
-            language = languages.getLanguageOrDefault(language);
+            language = getLanguageOrDefault(language);
         }
-        model.put("i18n", new I18nMethod(messages, language));
+        model.put("i18n", new I18nMethod(getMessages(), language));
 
         // prepare the locale-aware prettyTime method
         Locale locale = (Locale) model.get(PippoConstants.REQUEST_PARAMETER_LOCALE);
         if (locale == null) {
-            locale = languages.getLocaleOrDefault(language);
+            locale = getLocaleOrDefault(language);
         }
         model.put("prettyTime", new PrettyTimeMethod(locale));
         model.put("formatTime", new FormatTimeMethod(locale));
@@ -154,18 +145,13 @@ public class FreemarkerTemplateEngine implements TemplateEngine {
 
         try {
             if (templateName.indexOf('.') == -1) {
-                templateName += "." + extension;
+                templateName += "." + getFileExtension();
             }
             Template template = configuration.getTemplate(templateName, locale);
             template.process(model, writer);
         } catch (Exception e) {
             throw new PippoRuntimeException(e);
         }
-    }
-
-    @Override
-    public void setFileExtension(String extension) {
-        this.extension = extension;
     }
 
     protected void init(Application application, Configuration configuration) {

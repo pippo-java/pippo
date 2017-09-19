@@ -85,6 +85,11 @@ public abstract class AbstractTemplateEngine implements TemplateEngine {
     protected final String getFileExtension() { return fileExtension; }
 
     /**
+     * @see Application#getLanguages()
+     */
+    protected final Languages getLanguages() { return languages; }
+
+    /**
      * @see Application#getMessages()
      */
     protected final Messages getMessages() { return this.messages; }

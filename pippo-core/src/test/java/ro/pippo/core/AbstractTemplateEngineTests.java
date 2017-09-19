@@ -24,8 +24,6 @@ public class AbstractTemplateEngineTests {
 
     private static final String EXPECTED_LANGUAGE = "en_US";
     private static final Locale EXPECTED_LOCALE = Locale.forLanguageTag(EXPECTED_LANGUAGE);
-    private static final String EXPECTED_CONTEXT_PATH = "/";
-    private static final String EXPECTED_APPLICATION_PATH = "/";
     private static final String EXPECTED_DEFAULT_FILE_EXTENSION = "test";
     private static final String EXPECTED_FILE_EXTENSION = "foo";
     private static final String EXPECTED_TEMPLATE_PATH_PREFIX = "/testTemplates";

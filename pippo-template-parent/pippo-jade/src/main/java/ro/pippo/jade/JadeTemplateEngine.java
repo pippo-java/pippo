@@ -21,13 +21,7 @@ import de.neuland.jade4j.template.JadeTemplate;
 import de.neuland.jade4j.template.ReaderTemplateLoader;
 import de.neuland.jade4j.template.TemplateLoader;
 import org.kohsuke.MetaInfServices;
-import ro.pippo.core.Application;
-import ro.pippo.core.Languages;
-import ro.pippo.core.Messages;
-import ro.pippo.core.PippoConstants;
-import ro.pippo.core.PippoRuntimeException;
-import ro.pippo.core.PippoSettings;
-import ro.pippo.core.TemplateEngine;
+import ro.pippo.core.*;
 import ro.pippo.core.route.Router;
 import ro.pippo.core.util.StringUtils;
 
@@ -43,24 +37,18 @@ import java.util.Map;
  * @author Decebal Suiu
  */
 @MetaInfServices
-public class JadeTemplateEngine implements TemplateEngine {
+public class JadeTemplateEngine extends AbstractTemplateEngine {
 
     public static final String JADE = "jade";
 
-    private Languages languages;
-    private Messages messages;
     private Router router;
     private JadeConfiguration configuration;
 
-    private String extension = JADE;
-
     @Override
     public void init(Application application) {
-        this.languages = application.getLanguages();
-        this.messages = application.getMessages();
-        this.router = application.getRouter();
+        this.router = getRouter();
 
-        PippoSettings pippoSettings = application.getPippoSettings();
+        PippoSettings pippoSettings = getPippoSettings();
 
         String pathPrefix = pippoSettings.getString(PippoConstants.SETTING_TEMPLATE_PATH_PREFIX, null);
         if (StringUtils.isNullOrEmpty(pathPrefix)) {
@@ -83,20 +71,25 @@ public class JadeTemplateEngine implements TemplateEngine {
     }
 
     @Override
+    protected String getDefaultFileExtension() {
+        return JADE;
+    }
+
+    @Override
     public void renderString(String templateContent, Map<String, Object> model, Writer writer) {
         // prepare the locale-aware i18n method
         String language = (String) model.get(PippoConstants.REQUEST_PARAMETER_LANG);
         if (StringUtils.isNullOrEmpty(language)) {
-            language = languages.getLanguageOrDefault(language);
+            language = getLanguageOrDefault(language);
         }
 
         // prepare the locale-aware prettyTime method
         Locale locale = (Locale) model.get(PippoConstants.REQUEST_PARAMETER_LOCALE);
         if (locale == null) {
-            locale = languages.getLocaleOrDefault(language);
+            locale = getLocaleOrDefault(language);
         }
 
-        model.put("pippo", new PippoHelper(messages, language, locale, router));
+        model.put("pippo", new PippoHelper(getMessages(), language, locale, router));
         try (StringReader reader = new StringReader(templateContent)) {
             ReaderTemplateLoader stringTemplateLoader = new ReaderTemplateLoader(reader, "StringTemplate");
 
@@ -119,16 +112,16 @@ public class JadeTemplateEngine implements TemplateEngine {
         // prepare the locale-aware i18n method
         String language = (String) model.get(PippoConstants.REQUEST_PARAMETER_LANG);
         if (StringUtils.isNullOrEmpty(language)) {
-            language = languages.getLanguageOrDefault(language);
+            language = getLanguageOrDefault(language);
         }
 
         // prepare the locale-aware prettyTime method
         Locale locale = (Locale) model.get(PippoConstants.REQUEST_PARAMETER_LOCALE);
         if (locale == null) {
-            locale = languages.getLocaleOrDefault(language);
+            locale = getLocaleOrDefault(language);
         }
 
-        model.put("pippo", new PippoHelper(messages, language, locale, router));
+        model.put("pippo", new PippoHelper(getMessages(), language, locale, router));
         try {
             JadeTemplate template = configuration.getTemplate(templateName);
             configuration.renderTemplate(template, model, writer);
@@ -138,12 +131,8 @@ public class JadeTemplateEngine implements TemplateEngine {
         }
     }
 
-    @Override
-    public void setFileExtension(String extension) {
-        this.extension = extension;
-    }
-
     protected void init(Application application, JadeConfiguration configuration) {
+        // NO OP
     }
 
     private class ClassTemplateLoader implements TemplateLoader {
@@ -171,7 +160,7 @@ public class JadeTemplateEngine implements TemplateEngine {
         @Override
         public Reader getReader(String name) throws IOException {
             if (name.indexOf('.') == -1) {
-                name += "." + extension;
+                name += "." + getFileExtension();
             }
 
             String fullPath = pathPrefix + name;
