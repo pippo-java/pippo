@@ -15,18 +15,23 @@
  */
 package ro.pippo.freemarker;
 
-import java.io.Writer;
-import java.util.Locale;
-import java.util.Map;
-
-import org.kohsuke.MetaInfServices;
-import ro.pippo.core.*;
-import ro.pippo.core.route.Router;
-import ro.pippo.core.util.StringUtils;
 import freemarker.log.Logger;
 import freemarker.template.Configuration;
 import freemarker.template.SimpleScalar;
 import freemarker.template.Template;
+import org.kohsuke.MetaInfServices;
+import ro.pippo.core.AbstractTemplateEngine;
+import ro.pippo.core.Application;
+import ro.pippo.core.PippoConstants;
+import ro.pippo.core.PippoRuntimeException;
+import ro.pippo.core.PippoSettings;
+import ro.pippo.core.TemplateEngine;
+import ro.pippo.core.route.Router;
+import ro.pippo.core.util.StringUtils;
+
+import java.io.Writer;
+import java.util.Locale;
+import java.util.Map;
 
 /**
  * @author Decebal Suiu
@@ -154,6 +159,12 @@ public class FreemarkerTemplateEngine extends AbstractTemplateEngine {
         }
     }
 
+    /**
+     * Override this method if you want to modify the template configuration.
+     *
+     * @param application
+     * @param configuration
+     */
     protected void init(Application application, Configuration configuration) {
     }
 

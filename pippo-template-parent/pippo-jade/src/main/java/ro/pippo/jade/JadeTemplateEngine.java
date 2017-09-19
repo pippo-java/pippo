@@ -21,7 +21,12 @@ import de.neuland.jade4j.template.JadeTemplate;
 import de.neuland.jade4j.template.ReaderTemplateLoader;
 import de.neuland.jade4j.template.TemplateLoader;
 import org.kohsuke.MetaInfServices;
-import ro.pippo.core.*;
+import ro.pippo.core.AbstractTemplateEngine;
+import ro.pippo.core.Application;
+import ro.pippo.core.PippoConstants;
+import ro.pippo.core.PippoRuntimeException;
+import ro.pippo.core.PippoSettings;
+import ro.pippo.core.TemplateEngine;
 import ro.pippo.core.route.Router;
 import ro.pippo.core.util.StringUtils;
 
@@ -131,6 +136,12 @@ public class JadeTemplateEngine extends AbstractTemplateEngine {
         }
     }
 
+    /**
+     * Override this method if you want to modify the template configuration.
+     *
+     * @param application
+     * @param configuration
+     */
     protected void init(Application application, JadeConfiguration configuration) {
         // NO OP
     }

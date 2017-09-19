@@ -61,16 +61,19 @@ public class ControllerInterceptorTest extends PippoTest {
     @Interceptor
     @Priority(Interceptor.Priority.APPLICATION)
     public static class SecuredInterceptor {
+
         @AroundInvoke
         public Object doSecured(InvocationContext context) throws Exception {
             return context.proceed();
         }
+
     }
 
     @Path("/")
     @Secured
     @Dependent
     public static class ControllerWithInterceptor extends Controller {
+
         @GET
         public void index() {
             // test all controller methods
@@ -79,14 +82,17 @@ public class ControllerInterceptorTest extends PippoTest {
             getRequest().getClientIp();
             getResponse().send("ok");
         }
+
     }
 
     public static class PippoApplication extends ControllerApplication {
+
         @Override
         protected void onInit() {
             setControllerFactory(new WeldControllerFactory(new Weld().initialize()));
             addControllers(ControllerWithInterceptor.class);
         }
+
     }
 
 }

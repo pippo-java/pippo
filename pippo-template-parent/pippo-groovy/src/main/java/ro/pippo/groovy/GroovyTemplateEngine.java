@@ -18,18 +18,21 @@ package ro.pippo.groovy;
 import groovy.text.Template;
 import groovy.text.markup.MarkupTemplateEngine;
 import groovy.text.markup.TemplateConfiguration;
+import org.kohsuke.MetaInfServices;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import ro.pippo.core.AbstractTemplateEngine;
+import ro.pippo.core.Application;
+import ro.pippo.core.PippoConstants;
+import ro.pippo.core.PippoRuntimeException;
+import ro.pippo.core.PippoSettings;
+import ro.pippo.core.TemplateEngine;
+import ro.pippo.core.route.Router;
+import ro.pippo.core.util.StringUtils;
 
 import java.io.IOException;
 import java.io.Writer;
 import java.util.Map;
-
-import org.kohsuke.MetaInfServices;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import ro.pippo.core.*;
-import ro.pippo.core.route.Router;
-import ro.pippo.core.util.StringUtils;
 
 /**
  * Groovy template engine for Pippo.
@@ -125,6 +128,12 @@ public class GroovyTemplateEngine extends AbstractTemplateEngine {
         }
     }
 
+    /**
+     * Override this method if you want to modify the template configuration.
+     *
+     * @param application
+     * @param configuration
+     */
     protected void init(Application application, TemplateConfiguration configuration) {
     }
 

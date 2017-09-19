@@ -28,7 +28,11 @@ import com.mitchellbosecke.pebble.template.PebbleTemplate;
 import org.kohsuke.MetaInfServices;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import ro.pippo.core.*;
+import ro.pippo.core.AbstractTemplateEngine;
+import ro.pippo.core.Application;
+import ro.pippo.core.PippoConstants;
+import ro.pippo.core.PippoRuntimeException;
+import ro.pippo.core.PippoSettings;
 import ro.pippo.core.route.Router;
 import ro.pippo.core.util.StringUtils;
 
@@ -91,6 +95,12 @@ public class PebbleTemplateEngine extends AbstractTemplateEngine {
         engine = builder.build();
     }
 
+    /**
+     * Override this method if you want to modify the template configuration.
+     *
+     * @param application
+     * @param configurationTarget
+     */
     protected void init(Application application, PebbleEngine.Builder configurationTarget) {
         // NO OP
     }

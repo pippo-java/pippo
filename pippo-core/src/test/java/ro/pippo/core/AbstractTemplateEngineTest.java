@@ -1,3 +1,18 @@
+/*
+ * Copyright (C) 2014 the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package ro.pippo.core;
 
 import org.junit.After;
@@ -15,12 +30,18 @@ import java.util.Locale;
 import java.util.Map;
 
 import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.assertThat;
+import static org.junit.Assert.*;
 import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.anyString;
+import static org.mockito.Mockito.eq;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.reset;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
-public class AbstractTemplateEngineTests {
+public class AbstractTemplateEngineTest {
 
     private static final String EXPECTED_LANGUAGE = "en_US";
     private static final Locale EXPECTED_LOCALE = Locale.forLanguageTag(EXPECTED_LANGUAGE);
@@ -54,6 +75,12 @@ public class AbstractTemplateEngineTests {
         when(mockApplication.getLanguages()).thenReturn(mockLanguages);
         when(mockApplication.getMessages()).thenReturn(mockMessages);
         when(mockApplication.getRouter()).thenReturn(mockRouter);
+    }
+
+    @After
+    public void tearDown() {
+        reset(mockApplication);
+        reset(mockLanguages);
     }
 
     @Test
@@ -208,12 +235,6 @@ public class AbstractTemplateEngineTests {
             .getString(eq(PippoConstants.SETTING_TEMPLATE_PATH_PREFIX), eq(TemplateEngine.DEFAULT_PATH_PREFIX));
     }
 
-    @After
-    public void tearDown() {
-        reset(mockApplication);
-        reset(mockLanguages);
-    }
-
     private static class TestTemplateEngine extends AbstractTemplateEngine {
 
         @Override
@@ -223,17 +244,19 @@ public class AbstractTemplateEngineTests {
 
         @Override
         public void renderString(String templateContent, Map<String, Object> model, Writer writer) {
-
+            // do nothing
         }
 
         @Override
         public void renderResource(String templateName, Map<String, Object> model, Writer writer) {
-
+            // do nothing
         }
 
         @Override
         protected String getDefaultFileExtension() {
             return EXPECTED_DEFAULT_FILE_EXTENSION;
         }
+
     }
+
 }

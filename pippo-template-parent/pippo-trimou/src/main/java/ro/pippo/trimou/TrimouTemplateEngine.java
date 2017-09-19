@@ -27,7 +27,12 @@ import org.trimou.handlebars.HelpersBuilder;
 import org.trimou.handlebars.i18n.DateTimeFormatHelper;
 import org.trimou.minify.Minify;
 import org.trimou.prettytime.PrettyTimeHelper;
-import ro.pippo.core.*;
+import ro.pippo.core.AbstractTemplateEngine;
+import ro.pippo.core.Application;
+import ro.pippo.core.PippoConstants;
+import ro.pippo.core.PippoRuntimeException;
+import ro.pippo.core.PippoSettings;
+import ro.pippo.core.TemplateEngine;
 import ro.pippo.core.route.Router;
 import ro.pippo.core.util.StringUtils;
 
@@ -176,6 +181,12 @@ public class TrimouTemplateEngine extends AbstractTemplateEngine {
         }
     }
 
+    /**
+     * Override this method if you want to modify the template configuration.
+     *
+     * @param application
+     * @param builder
+     */
     protected void init(Application application, MustacheEngineBuilder builder) {
     }
 
