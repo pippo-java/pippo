@@ -939,17 +939,9 @@ public final class Response {
         }
 
         try {
-            // by calling httpServletResponse.getOutputStream() we are committing the response
-            IoUtils.copy(input, httpServletResponse.getOutputStream());
-
-            if (chunked) {
-                // flushing the buffer forces chunked-encoding
-                httpServletResponse.flushBuffer();
-            }
-        } catch (Exception e) {
+            send(input);
+        } catch (IOException e) {
             throw new PippoRuntimeException(e);
-        } finally {
-            IoUtils.close(input);
         }
     }
 
@@ -990,6 +982,14 @@ public final class Response {
         finalizeResponse();
 
         try {
+            send(input);
+        } catch (IOException e) {
+            throw new PippoRuntimeException(e);
+        }
+    }
+
+    private void send(InputStream input) throws IOException {
+        try {
             // by calling httpServletResponse.getOutputStream() we are committing the response
             IoUtils.copy(input, httpServletResponse.getOutputStream());
 
@@ -997,8 +997,6 @@ public final class Response {
                 // flushing the buffer forces chunked-encoding
                 httpServletResponse.flushBuffer();
             }
-        } catch (Exception e) {
-            throw new PippoRuntimeException(e);
         } finally {
             IoUtils.close(input);
         }
