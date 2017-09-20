@@ -48,7 +48,7 @@ public class TomcatServer extends AbstractWebServer<TomcatSettings> {
             pippoFilterPath = "/*";
         }
 
-        tomcat = new Tomcat();
+        tomcat = createTomcat();
         tomcat.setBaseDir(getSettings().getBaseFolder());
 
         if (getSettings().getKeystoreFile() == null) {
@@ -110,6 +110,10 @@ public class TomcatServer extends AbstractWebServer<TomcatSettings> {
     @Override
     protected TomcatSettings createDefaultSettings() {
         return new TomcatSettings(getApplication().getPippoSettings());
+    }
+
+    protected Tomcat createTomcat() {
+        return new Tomcat();
     }
 
     private void enablePlainConnector(Tomcat tomcat) {
