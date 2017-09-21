@@ -70,10 +70,16 @@
             <resource>
                 <directory>src/main/resources</directory>
                 <filtering>true</filtering>
+                <includes>
+                    <include>conf/application.properties</include>
+                </includes>
+            </resource>
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>false</filtering>
             </resource>
 
             <resource>
-                <filtering>false</filtering>
                 <directory>src/main/java</directory>
                 <includes>
                     <include>**</include>
@@ -81,17 +87,17 @@
                 <excludes>
                     <exclude>**/*.java</exclude>
                 </excludes>
+                <filtering>false</filtering>
             </resource>
         </resources>
 
         <testResources>
             <testResource>
-                <filtering>false</filtering>
                 <directory>src/test/resources</directory>
+                <filtering>false</filtering>
             </testResource>
 
             <testResource>
-                <filtering>false</filtering>
                 <directory>src/test/java</directory>
                 <includes>
                     <include>**</include>
@@ -99,6 +105,7 @@
                 <excludes>
                     <exclude>**/*.java</exclude>
                 </excludes>
+                <filtering>false</filtering>
             </testResource>
         </testResources>
 
