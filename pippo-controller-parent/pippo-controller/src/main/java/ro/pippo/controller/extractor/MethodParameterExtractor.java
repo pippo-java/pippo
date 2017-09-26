@@ -26,8 +26,21 @@ import ro.pippo.core.route.RouteContext;
  */
 public interface MethodParameterExtractor {
 
+    /**
+     * Returns true if this extractor is applicable to the given {@link MethodParameter}.
+
+     * @param parameter
+     * @return
+     */
     boolean isApplicable(MethodParameter parameter);
 
+    /**
+     * Extract a value from a {@link MethodParameter} for a specified {@link RouteContext}.
+     *
+     * @param parameter
+     * @param routeContext
+     * @return
+     */
     Object extract(MethodParameter parameter, RouteContext routeContext);
 
 }
