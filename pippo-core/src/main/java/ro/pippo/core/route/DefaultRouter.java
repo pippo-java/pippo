@@ -17,14 +17,13 @@ package ro.pippo.core.route;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import ro.pippo.core.DefaultUriMatcher;
 import ro.pippo.core.HttpConstants;
-import ro.pippo.core.PippoConstants;
 import ro.pippo.core.PippoRuntimeException;
+import ro.pippo.core.UriMatcher;
 import ro.pippo.core.util.Stack;
 import ro.pippo.core.util.StringUtils;
 
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -35,8 +34,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.TreeSet;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
@@ -50,18 +47,12 @@ public class DefaultRouter implements Router {
 
     private static final Logger log = LoggerFactory.getLogger(DefaultRouter.class);
 
-    // Matches: {id} AND {id: .*?}
-    // group(1) extracts the name of the group (in that case "id").
-    // group(3) extracts the regex if defined
-    private static final Pattern PATTERN_FOR_VARIABLE_PARTS_OF_ROUTE = Pattern.compile("\\{(.*?)(:\\s(.*?))?\\}");
-
-    // This regex matches everything in between path slashes.
-    private static final String VARIABLE_ROUTES_DEFAULT_REGEX = "(?<%s>[^/]+)";
-
-    // This regex works for both {myParam} AND {myParam: .*}
-    private static final String VARIABLE_PART_PATTERN_WITH_PLACEHOLDER = "\\{(%s)(:\\s([^}]*))?\\}";
-
-    private static final String PATH_PARAMETER_REGEX_GROUP_NAME_PREFIX = "param";
+    private List<Route> routes;
+    private List<Route> compiledRoutes;
+    private List<RouteTransformer> transformers;
+    private Set<String> ignorePaths;
+    private String contextPath;
+    private String applicationPath;
 
     // key = requestMethod
     private Map<String, List<Route>> routesCache;
@@ -69,12 +60,7 @@ public class DefaultRouter implements Router {
     // key = requestMethod
     private Map<String, List<Route>> compiledRoutesCache;
 
-    private List<Route> routes;
-    private List<Route> compiledRoutes;
-    private List<RouteTransformer> transformers;
-    private Set<String> ignorePaths;
-    private String contextPath;
-    private String applicationPath;
+    private UriMatcher uriMatcher;
 
     public DefaultRouter() {
         routes = new LinkedList<>();
@@ -85,6 +71,34 @@ public class DefaultRouter implements Router {
         compiledRoutesCache = new HashMap<>();
         contextPath = "";
         applicationPath = "";
+
+        uriMatcher = new DefaultUriMatcher() {
+
+            @Override
+            protected String getPathParameterValue(String uriPattern, String parameterName, Object parameterValue) {
+                String value = super.getPathParameterValue(uriPattern, parameterName, parameterValue);
+
+                // retrieve the compiled route for uriPattern
+                Route compiledRoute = compiledRoutes.stream()
+                    .filter(route -> uriPattern.equals(route.getUriPattern()))
+                    .findAny()
+                    .orElseThrow(() -> new PippoRuntimeException("Cannot find a compiled route for '{}'", uriPattern));
+
+                RouteHandler handler = compiledRoute.getRouteHandler();
+                boolean isResourceRoute = ResourceHandler.class.isAssignableFrom(handler.getClass());
+
+                // inject version for resource routes
+                if (isResourceRoute && ResourceHandler.PATH_PARAMETER.equals(parameterName)) {
+                    ResourceHandler resourceHandler = (ResourceHandler) compiledRoute.getRouteHandler();
+                    if (resourceHandler.isVersioned()) {
+                        value = resourceHandler.injectVersion(value);
+                    }
+                }
+
+                return value;
+            }
+
+        };
     }
 
     @Override
@@ -191,20 +205,20 @@ public class DefaultRouter implements Router {
         // force compile routes
         compileRoutes();
 
-        List<RouteMatch> routeMatches = compiledRoutes.stream()
-            .filter(route -> {
-                boolean matches = route.getRequestMethod().equals(requestMethod)
-                    || route.getRequestMethod().equals(HttpConstants.Method.ANY);
+        List<RouteMatch> routeMatches = new ArrayList<>();
+        for (Route route : compiledRoutes) {
+            boolean methodMatches = route.getRequestMethod().equals(requestMethod)
+                || route.getRequestMethod().equals(HttpConstants.Method.ANY);
 
-                if (matches) {
-                    Pattern pattern = route.getAttribute("__pattern");
-                    matches = pattern.matcher(requestUri).matches();
+            if (methodMatches) {
+                String uriPattern = route.getUriPattern();
+                Map<String, String> parameters = uriMatcher.match(requestUri, uriPattern);
+                if (parameters != null) {
+                    // complete matching => add route match ro returned list
+                    routeMatches.add(new RouteMatch(route, parameters));
                 }
-
-                return matches;
-            })
-            .map(route -> new RouteMatch(route, getParameters(route, requestUri)))
-            .collect(Collectors.toList());
+            }
+        }
 
         log.debug("Found {} route matches for {} '{}'", routeMatches.size(), requestMethod, requestUri);
 
@@ -312,7 +326,7 @@ public class DefaultRouter implements Router {
 
         Route compiledRoute = getCompiledRoute(nameOrUriPattern);
 
-        return (compiledRoute != null) ? uriFor(compiledRoute, parameters) : null;
+        return (compiledRoute != null) ? uriMatcher.uriFor(parameters, compiledRoute.getUriPattern()) : null;
     }
 
     @Override
@@ -377,14 +391,12 @@ public class DefaultRouter implements Router {
 
     private Route compileRoute(Route route) {
         String uriPattern = route.getUriPattern();
-        // TODO improve (it's possible to have the same uriPattern for many routes => same pattern)
-        String regex = getRegex(uriPattern);
-        List<String> parameterNames = getParameterNames(uriPattern);
+        UriMatcher.UriPatternBinding binding = uriMatcher.addUriPattern(uriPattern);
+        List<String> parameterNames = binding.getParameterNames();
 
         Route compiledRoute = new Route(route);
         // add additional metadata as attributes
-        compiledRoute.bind("__regex", regex);
-        compiledRoute.bind("__pattern", Pattern.compile(regex));
+        compiledRoute.bind("__pattern", binding.getPattern());
         compiledRoute.bind("__parameterNames", parameterNames);
 
         return compiledRoute;
@@ -399,11 +411,19 @@ public class DefaultRouter implements Router {
             compiledRoutesCache.put(requestMethod, new ArrayList<>());
         }
         compiledRoutesCache.get(requestMethod).add(compiledRoute);
+
+        // it's added on compileRoute method
+//        uriMatcher.addUriPattern(compiledRoute.getUriPattern());
     }
 
     private void removeCompiledRoute(Route route) {
         String nameOrUriPattern = StringUtils.isNullOrEmpty(route.getName()) ? route.getUriPattern() : route.getName();
         Route compiledRoute = getCompiledRoute(nameOrUriPattern);
+        if (compiledRoute == null) {
+            // do nothing; probably the route was not yet compiled
+            return;
+        }
+
         compiledRoutes.remove(compiledRoute);
 
         // update cache
@@ -411,6 +431,8 @@ public class DefaultRouter implements Router {
         if (cacheEntry != null) {
             cacheEntry.remove(compiledRoute);
         }
+
+        uriMatcher.removeUriPattern(compiledRoute.getUriPattern());
     }
 
     private Route getCompiledRoute(String nameOrUriPattern) {
@@ -433,180 +455,6 @@ public class DefaultRouter implements Router {
         return compiledRoutes;
     }
 
-    /**
-     * Transforms an url pattern like "/{name}/id/*" into a regex like "/([^/]*)/id/*."
-     * <p/>
-     * Also handles regular expressions if defined inside routes:
-     * For instance "/users/{username: [a-zA-Z][a-zA-Z_0-9]}" becomes
-     * "/users/([a-zA-Z][a-zA-Z_0-9])"
-     *
-     * @return The converted regex with default matching regex - or the regex
-     * specified by the user.
-     */
-    private String getRegex(String urlPattern) {
-        StringBuffer buffer = new StringBuffer();
-
-        Matcher matcher = PATTERN_FOR_VARIABLE_PARTS_OF_ROUTE.matcher(urlPattern);
-        int pathParameterIndex = 0;
-        while (matcher.find()) {
-            // By convention group 3 is the regex if provided by the user.
-            // If it is not provided by the user the group 3 is null.
-            String namedVariablePartOfRoute = matcher.group(3);
-            String namedVariablePartOfORouteReplacedWithRegex;
-
-            if (namedVariablePartOfRoute != null) {
-                // we convert that into a regex matcher group itself
-                String variableRegex = replacePosixClasses(namedVariablePartOfRoute);
-                namedVariablePartOfORouteReplacedWithRegex = String.format("(?<%s>%s)",
-                    getPathParameterRegexGroupName(pathParameterIndex), Matcher.quoteReplacement(variableRegex));
-            } else {
-                // we convert that into the default namedVariablePartOfRoute regex group
-                namedVariablePartOfORouteReplacedWithRegex = String.format(VARIABLE_ROUTES_DEFAULT_REGEX,
-                    getPathParameterRegexGroupName(pathParameterIndex));
-            }
-            // we replace the current namedVariablePartOfRoute group
-            matcher.appendReplacement(buffer, namedVariablePartOfORouteReplacedWithRegex);
-            pathParameterIndex++;
-        }
-
-        // .. and we append the tail to complete the stringBuffer
-        matcher.appendTail(buffer);
-
-        return buffer.toString();
-    }
-
-    private static String getPathParameterRegexGroupName(int pathParameterIndex) {
-        return PATH_PARAMETER_REGEX_GROUP_NAME_PREFIX + pathParameterIndex;
-    }
-
-    /**
-     * Replace any specified POSIX character classes with the Java equivalent.
-     *
-     * @param input
-     * @return a Java regex
-     */
-    private String replacePosixClasses(String input) {
-        return input
-            .replace(":alnum:", "\\p{Alnum}")
-            .replace(":alpha:", "\\p{L}")
-            .replace(":ascii:", "\\p{ASCII}")
-            .replace(":digit:", "\\p{Digit}")
-            .replace(":xdigit:", "\\p{XDigit}");
-    }
-
-    /**
-     * Extracts the name of the parameters from a route
-     * <p/>
-     * /{my_id}/{my_name}
-     * <p/>
-     * would return a List with "my_id" and "my_name"
-     *
-     * @param uriPattern
-     * @return a list with the names of all parameters in the url pattern
-     */
-    private List<String> getParameterNames(String uriPattern) {
-        List<String> list = new ArrayList<>();
-
-        Matcher matcher = PATTERN_FOR_VARIABLE_PARTS_OF_ROUTE.matcher(uriPattern);
-        while (matcher.find()) {
-            // group(1) is the name of the group. Must be always there...
-            // "/assets/{file}" and "/assets/{file: [a-zA-Z][a-zA-Z_0-9]}"
-            // will return file.
-            list.add(matcher.group(1));
-        }
-
-        return list;
-    }
-
-    @SuppressWarnings("unchecked")
-    private Map<String, String> getParameters(Route compiledRoute, String requestUri) {
-        List<String> parameterNames = compiledRoute.getAttribute("__parameterNames");
-        if (parameterNames.isEmpty()) {
-            return Collections.EMPTY_MAP;
-        }
-
-        Map<String, String> parameters = new HashMap<>();
-        Pattern pattern = compiledRoute.getAttribute("__pattern");
-        Matcher matcher = pattern.matcher(requestUri);
-        matcher.matches();
-        int groupCount = matcher.groupCount();
-        if (groupCount > 0) {
-            for (int i = 0; i < parameterNames.size(); i++) {
-                parameters.put(parameterNames.get(i), matcher.group(getPathParameterRegexGroupName(i)));
-            }
-        }
-
-        return parameters;
-    }
-
-    private String uriFor(Route compiledRoute, Map<String, Object> parameters) {
-        RouteHandler handler = compiledRoute.getRouteHandler();
-        boolean isResourceRoute = ResourceHandler.class.isAssignableFrom(handler.getClass());
-
-        List<String> parameterNames = compiledRoute.getAttribute("__parameterNames");
-        if (!parameters.keySet().containsAll(parameterNames)) {
-            log.error("You must provide values for all path parameters. {} vs {}", parameterNames, parameters.keySet());
-        }
-
-        Map<String, Object> queryParameters = new HashMap<>(parameters.size());
-
-        String uri = compiledRoute.getUriPattern();
-
-        for (Entry<String, Object> parameterPair : parameters.entrySet()) {
-            boolean foundAsPathParameter = false;
-
-            StringBuffer sb = new StringBuffer();
-            String regex = String.format(VARIABLE_PART_PATTERN_WITH_PLACEHOLDER, parameterPair.getKey());
-            Pattern pattern = Pattern.compile(regex);
-            Matcher matcher = pattern.matcher(uri);
-            while (matcher.find()) {
-                String pathValue = parameterPair.getValue().toString();
-                if (isResourceRoute && ResourceHandler.PATH_PARAMETER.equals(parameterPair.getKey())) {
-                    ResourceHandler resourceHandler = (ResourceHandler) compiledRoute.getRouteHandler();
-                    if (resourceHandler.isVersioned()) {
-                        pathValue = resourceHandler.injectVersion(pathValue);
-                    }
-                }
-                matcher.appendReplacement(sb, pathValue);
-                foundAsPathParameter = true;
-            }
-
-            matcher.appendTail(sb);
-            uri = sb.toString();
-
-            if (!foundAsPathParameter) {
-                queryParameters.put(parameterPair.getKey(), parameterPair.getValue());
-            }
-        }
-
-        // now prepare the query string for this url if we got some query params
-        if (!queryParameters.isEmpty()) {
-            // add remaining parameters as query parameters
-            StringBuilder query = new StringBuilder();
-            Iterator<Entry<String, Object>> iterator = queryParameters.entrySet().iterator();
-            while (iterator.hasNext()) {
-                Entry<String, Object> parameterEntry = iterator.next();
-                String parameterName = parameterEntry.getKey();
-                Object parameterValue = parameterEntry.getValue();
-                String encodedParameterValue;
-                try {
-                    encodedParameterValue = URLEncoder.encode(parameterValue.toString(), PippoConstants.UTF8);
-                } catch (UnsupportedEncodingException e) {
-                    throw new PippoRuntimeException(e, "Cannot encode the parameter value '{}'", parameterValue.toString());
-                }
-                query.append(parameterName).append("=").append(encodedParameterValue);
-
-                if (iterator.hasNext()) {
-                    query.append("&");
-                }
-            }
-
-            uri += "?" + query;
-        }
-
-        return uri;
-    }
-
     private String concatUriPattern(String prefix, String uriPattern) {
         uriPattern = StringUtils.addStart(StringUtils.addStart(uriPattern, "/"), prefix);
 
@@ -615,7 +463,7 @@ public class DefaultRouter implements Router {
 
     /*
     private boolean isCompiledRoute(Route route) {
-        return route.getAttributes().containsKey("__regex");
+        return route.getAttributes().containsKey("__pattern");
     }
     */
 

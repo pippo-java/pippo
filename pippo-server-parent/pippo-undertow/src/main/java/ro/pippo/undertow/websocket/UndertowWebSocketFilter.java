@@ -100,7 +100,7 @@ public class UndertowWebSocketFilter extends AbstractWebSocketFilter {
     }
 
     private WebSocketHandler getWebSocketHandler(Request request) {
-        return getWebSocketHandler(request.getUri());
+        return findWebSocketRoute(request.getUri()).getHandler();
     }
 
 }

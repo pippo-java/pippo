@@ -94,7 +94,7 @@ public class JettyWebSocketFilter extends AbstractWebSocketFilter {
     }
 
     private WebSocketHandler getWebSocketHandler(ServletUpgradeRequest request) {
-        return getWebSocketHandler(request.getRequestPath());
+        return findWebSocketRoute(request.getRequestPath()).getHandler();
     }
 
 }

@@ -132,15 +132,14 @@ public abstract class AbstractWebSocketFilter extends PippoFilter {
         return null;
     }
 
-    protected WebSocketHandler getWebSocketHandler(String requestUri) {
+    protected WebSocketRouter.WebSocketMatch findWebSocketRoute(String requestUri) {
         String applicationPath = getApplication().getRouter().getContextPath();
         String path = applicationPath.isEmpty() ? requestUri : requestUri.substring(applicationPath.length());
         if (StringUtils.isNullOrEmpty(path)) {
             path = "/";
         }
 
-        return getApplication().getWebSocketHandler(path);
-
+        return getApplication().getWebSocketRouter().match(path);
     }
 
 }
