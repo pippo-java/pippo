@@ -171,34 +171,40 @@ public class DefaultErrorHandler implements ErrorHandler {
     public void handle(Exception exception, RouteContext routeContext) {
         checkForRecursion(routeContext);
 
-        ExceptionHandler exceptionHandler = getExceptionHandler(exception);
-        if (exceptionHandler != null) {
-            log.debug("Handling '{}' with '{}'", exception.getClass().getSimpleName(), exceptionHandler.getClass().getName());
-            exceptionHandler.handle(exception, routeContext);
-            return;
+        if (exception instanceof PippoRuntimeException && exception.getCause() instanceof Exception) {
+            this.handle((Exception) exception.getCause(), routeContext);
+        } else {
+
+            ExceptionHandler exceptionHandler = getExceptionHandler(exception);
+            if (exceptionHandler != null) {
+                log.debug("Handling '{}' with '{}'", exception.getClass().getSimpleName(), exceptionHandler.getClass().getName());
+
+                exceptionHandler.handle(exception, routeContext);
+                return;
+            }
+
+            log.error(exception.getMessage(), exception);
+
+            if (routeContext.getResponse().isCommitted()) {
+                log.debug("The response has already been committed. Cannot use the exception handler.");
+                return;
+            }
+
+            String message = exception.getMessage();
+            if (!StringUtils.isNullOrEmpty(message) && !routeContext.getResponse().getLocals().containsKey(MESSAGE)) {
+                routeContext.setLocal(MESSAGE, message);
+            }
+
+            if (application.getPippoSettings().isDev()) {
+                StringWriter stringWriter = new StringWriter();
+                PrintWriter printWriter = new PrintWriter(stringWriter);
+                exception.printStackTrace(printWriter);
+                String stackTrace = stringWriter.toString();
+                routeContext.setLocal("stacktrace", stackTrace);
+            }
+
+            handle(HttpConstants.StatusCode.INTERNAL_ERROR, routeContext);
         }
-
-        log.error(exception.getMessage(), exception);
-
-        if (routeContext.getResponse().isCommitted()) {
-            log.debug("The response has already been committed. Cannot use the exception handler.");
-            return;
-        }
-
-        String message = exception.getMessage();
-        if (!StringUtils.isNullOrEmpty(message) && !routeContext.getResponse().getLocals().containsKey(MESSAGE)) {
-            routeContext.setLocal(MESSAGE, message);
-        }
-
-        if (application.getPippoSettings().isDev()) {
-            StringWriter stringWriter = new StringWriter();
-            PrintWriter printWriter = new PrintWriter(stringWriter);
-            exception.printStackTrace(printWriter);
-            String stackTrace = stringWriter.toString();
-            routeContext.setLocal("stacktrace", stackTrace);
-        }
-
-        handle(HttpConstants.StatusCode.INTERNAL_ERROR, routeContext);
     }
 
     /**
