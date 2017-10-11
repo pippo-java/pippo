@@ -296,6 +296,14 @@ public class ParameterValueTest {
     }
 
     @Test
+    public void testEmptyArray() throws Exception {
+        // when parameterValue is empty
+        assertTrue(Arrays.equals(new int[0], new ParameterValue("").to(int[].class)));
+        // when parameterValue is null
+        assertTrue(Arrays.equals(new int[0], new ParameterValue().to(int[].class)));
+    }
+
+    @Test
     public void testEnums() throws Exception {
         assertNull(new ParameterValue(" ").toEnum(Alphabet.class));
         assertEquals(Alphabet.B, new ParameterValue("B").toEnum(Alphabet.class));
