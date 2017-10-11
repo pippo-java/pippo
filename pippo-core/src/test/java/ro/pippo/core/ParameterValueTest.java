@@ -223,6 +223,16 @@ public class ParameterValueTest {
     }
 
     @Test
+    public void testHashSet() throws Exception {
+        Set<String> mySet = new HashSet<>(Arrays.asList("200", "400", "600"));
+        assertEquals(mySet, new ParameterValue("600", "200", "400", "200").toSet());
+
+        // when values contains single entry
+        mySet = new HashSet<>(Arrays.asList("200"));
+        assertEquals(mySet, new ParameterValue("200").toSet());
+    }
+
+    @Test
     public void testStringTreeSet() throws Exception {
         TreeSet<String> mySet = new TreeSet<>(Arrays.asList("C", "B", "A"));
         assertEquals(mySet, new ParameterValue("C", "A", "B", "A").toCollection(TreeSet.class, String.class, null));
@@ -293,6 +303,14 @@ public class ParameterValueTest {
     public void testEncodedArray3() throws Exception {
         int [] myArray = { 600, 400, 200 };
         assertTrue(Arrays.equals(myArray, new ParameterValue("600| 400|200").to(int[].class)));
+    }
+
+    @Test
+    public void testEmptyArray() throws Exception {
+        // when parameterValue is empty
+        assertTrue(Arrays.equals(new int[0], new ParameterValue("").to(int[].class)));
+        // when parameterValue is null
+        assertTrue(Arrays.equals(new int[0], new ParameterValue().to(int[].class)));
     }
 
     @Test
