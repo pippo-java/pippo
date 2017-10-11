@@ -240,15 +240,11 @@ public class ParameterValue implements Serializable {
     }
 
     public Set<String> toSet(Set<String> defaultValue) {
-        if (isNull() || (values.length == 1 && StringUtils.isNullOrEmpty(values[0]))) {
+        List<String> list = toList();
+        if (list.isEmpty()) {
             return defaultValue;
         }
-
-        if (values.length == 1) {
-            return new HashSet<>(Arrays.asList(values[0].split(",")));
-        }
-
-        return new HashSet<>(Arrays.asList(values));
+        return new HashSet<>(list);
     }
 
     /**

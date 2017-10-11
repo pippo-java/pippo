@@ -223,6 +223,16 @@ public class ParameterValueTest {
     }
 
     @Test
+    public void testHashSet() throws Exception {
+        Set<String> mySet = new HashSet<>(Arrays.asList("200", "400", "600"));
+        assertEquals(mySet, new ParameterValue("600", "200", "400", "200").toSet());
+
+        // when values contains single entry
+        mySet = new HashSet<>(Arrays.asList("200"));
+        assertEquals(mySet, new ParameterValue("200").toSet());
+    }
+
+    @Test
     public void testStringTreeSet() throws Exception {
         TreeSet<String> mySet = new TreeSet<>(Arrays.asList("C", "B", "A"));
         assertEquals(mySet, new ParameterValue("C", "A", "B", "A").toCollection(TreeSet.class, String.class, null));
