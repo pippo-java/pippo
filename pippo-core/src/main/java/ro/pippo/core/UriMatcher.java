@@ -20,13 +20,18 @@ import java.util.Map;
 import java.util.regex.Pattern;
 
 /**
+ * {@code UriMatcher} provides the functionality of comparing a given {@code requestUri}
+ * with a {@code uriPattern}.
+ *
  * @author Decebal Suiu
  */
 public interface UriMatcher {
 
     /**
-     * Returns null for no matching and not null for matching.
-     * The returned map represent the path parameters.
+     * Returns {@code null} for no matching and {@code not null} for matching.
+     * The returned map represent the path parameters (the key is the parameter name
+     * and the value is parameter value). The returned map is empty for matching but
+     * without parameters.
      *
      * @param requestUri
      * @param uriPattern

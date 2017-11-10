@@ -26,6 +26,7 @@ import ro.pippo.core.websocket.WebSocketHandler;
 import java.net.SocketTimeoutException;
 import java.nio.ByteBuffer;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
@@ -41,19 +42,21 @@ public class JettyWebSocketAdapter implements WebSocketListener {
     private static List<WebSocketConnection> connections = new CopyOnWriteArrayList<>();
 
     private final WebSocketHandler handler;
+    private final Map<String, String> pathParameters;
 
     private WebSocketContext context;
     private WebSocketConnection connection;
 
-    public JettyWebSocketAdapter(WebSocketHandler handler) {
+    public JettyWebSocketAdapter(WebSocketHandler handler, Map<String, String> pathParameters) {
         this.handler = handler;
+        this.pathParameters = pathParameters;
     }
 
     @Override
     public void onWebSocketConnect(Session session) {
         connection = new JettyWebSocketConnection(session);
         connections.add(connection);
-        context = new WebSocketContext(connections, connection);
+        context = new WebSocketContext(connections, connection, pathParameters);
 
         handler.onOpen(context);
     }

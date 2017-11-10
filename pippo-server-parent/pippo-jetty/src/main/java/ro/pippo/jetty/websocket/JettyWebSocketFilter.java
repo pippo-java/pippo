@@ -23,7 +23,7 @@ import org.slf4j.LoggerFactory;
 import ro.pippo.core.Request;
 import ro.pippo.core.Response;
 import ro.pippo.core.websocket.AbstractWebSocketFilter;
-import ro.pippo.core.websocket.WebSocketHandler;
+import ro.pippo.core.websocket.WebSocketRouter;
 
 import javax.servlet.FilterConfig;
 import javax.servlet.ServletException;
@@ -90,11 +90,9 @@ public class JettyWebSocketFilter extends AbstractWebSocketFilter {
     }
 
     protected JettyWebSocketAdapter createWebSocketAdapter(ServletUpgradeRequest request) {
-        return new JettyWebSocketAdapter(getWebSocketHandler(request));
-    }
+        WebSocketRouter.WebSocketMatch match = findWebSocketRoute(request.getRequestPath());
 
-    private WebSocketHandler getWebSocketHandler(ServletUpgradeRequest request) {
-        return findWebSocketRoute(request.getRequestPath()).getHandler();
+        return new JettyWebSocketAdapter(match.getHandler(), match.getPathParameters());
     }
 
 }
