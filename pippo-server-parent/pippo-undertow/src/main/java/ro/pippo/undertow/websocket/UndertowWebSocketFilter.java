@@ -26,7 +26,7 @@ import ro.pippo.core.PippoRuntimeException;
 import ro.pippo.core.Request;
 import ro.pippo.core.Response;
 import ro.pippo.core.websocket.AbstractWebSocketFilter;
-import ro.pippo.core.websocket.WebSocketHandler;
+import ro.pippo.core.websocket.WebSocketRouter;
 
 import javax.servlet.FilterConfig;
 import javax.servlet.ServletException;
@@ -96,11 +96,9 @@ public class UndertowWebSocketFilter extends AbstractWebSocketFilter {
     }
 
     protected UndertowWebSocketAdapter createWebSocketAdapter(Request request) {
-        return new UndertowWebSocketAdapter(getWebSocketHandler(request));
-    }
+        WebSocketRouter.WebSocketMatch match = findWebSocketRoute(request.getUri());
 
-    private WebSocketHandler getWebSocketHandler(Request request) {
-        return getWebSocketHandler(request.getUri());
+        return new UndertowWebSocketAdapter(match.getHandler(), match.getPathParameters());
     }
 
 }

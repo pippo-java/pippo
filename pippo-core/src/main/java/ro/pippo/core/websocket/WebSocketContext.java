@@ -15,8 +15,12 @@
  */
 package ro.pippo.core.websocket;
 
+import ro.pippo.core.ParameterValue;
+
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Used for accessing the current client connection and all clients connections.
@@ -27,12 +31,19 @@ import java.util.List;
  */
 public class WebSocketContext {
 
-    private final WebSocketConnection connection;
     private final List<WebSocketConnection> connections;
+    private final WebSocketConnection connection;
+    private final Map<String, ParameterValue> pathParameters;
 
-    public WebSocketContext(List<WebSocketConnection> connections, WebSocketConnection connection) {
+
+    public WebSocketContext(List<WebSocketConnection> connections, WebSocketConnection connection, Map<String, String> pathParameters) {
         this.connections = connections;
         this.connection = connection;
+
+        this.pathParameters = new HashMap<>(pathParameters.size());
+        for (String name : pathParameters.keySet()) {
+            this.pathParameters.put(name, new ParameterValue(pathParameters.get(name)));
+        }
     }
 
     public WebSocketConnection getConnection() {
@@ -51,6 +62,24 @@ public class WebSocketContext {
         for (WebSocketConnection connection : connections) {
             connection.sendMessage(message);
         }
+    }
+
+    /**
+     * Returns all path parameters.
+     */
+    public Map<String, ParameterValue> getPathParameters() {
+        return pathParameters;
+    }
+
+    /**
+     * Returns one path parameter.
+     */
+    public ParameterValue getPathParameter(String name) {
+        if (!getPathParameters().containsKey(name)) {
+            return new ParameterValue();
+        }
+
+        return getPathParameters().get(name);
     }
 
 }

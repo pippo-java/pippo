@@ -34,6 +34,7 @@ import java.io.IOException;
 import java.net.SocketTimeoutException;
 import java.nio.ByteBuffer;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
@@ -49,12 +50,14 @@ public class UndertowWebSocketAdapter extends AbstractReceiveListener implements
     private static List<WebSocketConnection> connections = new CopyOnWriteArrayList<>();
 
     private final WebSocketHandler handler;
+    private final Map<String, String> pathParameters;
 
     private WebSocketContext context;
     private WebSocketConnection connection;
 
-    public UndertowWebSocketAdapter(WebSocketHandler handler) {
+    public UndertowWebSocketAdapter(WebSocketHandler handler, Map<String, String> pathParameters) {
         this.handler = handler;
+        this.pathParameters = pathParameters;
     }
 
     @Override
@@ -64,7 +67,7 @@ public class UndertowWebSocketAdapter extends AbstractReceiveListener implements
 
         connection = new UndertowWebSocketConnection(exchange, channel);
         connections.add(connection);
-        context = new WebSocketContext(connections, connection);
+        context = new WebSocketContext(connections, connection, pathParameters);
 
         handler.onOpen(context);
     }

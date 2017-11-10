@@ -33,6 +33,7 @@ import ro.pippo.core.util.HttpCacheToolkit;
 import ro.pippo.core.util.MimeTypes;
 import ro.pippo.core.util.ServiceLocator;
 import ro.pippo.core.websocket.WebSocketHandler;
+import ro.pippo.core.websocket.WebSocketRouter;
 
 import javax.servlet.ServletContext;
 import java.util.ArrayList;
@@ -74,7 +75,7 @@ public class Application implements ResourceRouting {
     private Map<String, Object> locals;
     private RouteHandler notFoundRouteHandler;
 
-    private Map<String, WebSocketHandler> webSocketHandlers;
+    private WebSocketRouter webSocketRouter;
 
     public Application() {
         this(new PippoSettings(RuntimeMode.getCurrent()));
@@ -88,7 +89,7 @@ public class Application implements ResourceRouting {
         this.httpCacheToolkit = new HttpCacheToolkit(settings);
         this.engines = new ContentTypeEngines();
         this.initializers = new ArrayList<>();
-        this.webSocketHandlers = new HashMap<>();
+        this.webSocketRouter = new WebSocketRouter();
 
         registerContentTypeEngine(TextPlainEngine.class);
     }
@@ -375,12 +376,12 @@ public class Application implements ResourceRouting {
         return notFoundRouteHandler;
     }
 
-    public void addWebSocket(String path, WebSocketHandler webSocketHandler) {
-        webSocketHandlers.put(path, webSocketHandler);
+    public void addWebSocket(String uriPattern, WebSocketHandler webSocketHandler) {
+        webSocketRouter.addRoute(uriPattern, webSocketHandler);
     }
 
-    public WebSocketHandler getWebSocketHandler(String path) {
-        return webSocketHandlers.get(path);
+    public WebSocketRouter getWebSocketRouter() {
+        return webSocketRouter;
     }
 
     /**
