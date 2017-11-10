@@ -32,6 +32,7 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Enumeration;
@@ -160,6 +161,31 @@ public class ClassUtils {
         return getAnnotation(objectClass.getSuperclass(), annotationClass);
     }
 
+    /**
+     * Returns an array containing {@code Method} objects reflecting all the
+     * declared methods of the class or interface represented by this {@code
+     * Class} object, including public, protected, default (package)
+     * access, and private methods, <b>but excluding inherited methods</b>.
+     * 
+     * <p>This method differs from {@link Class#getDeclaredMethods()} since it
+     * does <b>not return bridge methods</b>, in other words, only the methods of
+     * the class are returned. <b>If you just want the methods declared in
+     * {@code clazz} use this method!</b></p>
+     * 
+     * @param clazz Class
+     * 
+     * @return the array of {@code Method} objects representing all the
+     *          declared methods of this class
+     * 
+     * @see Class#getDeclaredMethods()
+     */
+    public static List<Method> getDeclaredMethods(Class<?> clazz) {
+        return Arrays
+                .stream(clazz.getDeclaredMethods())
+                .filter(method -> !method.isBridge())
+                .collect(Collectors.toList());
+    }
+    
     public static <T extends Annotation> List<T> collectNestedAnnotation(Method method, Class<T> annotationClass) {
         List<T> list = new ArrayList<>();
         for (Annotation annotation : method.getDeclaredAnnotations()) {

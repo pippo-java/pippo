@@ -79,6 +79,13 @@ public interface Routing {
         return route;
     }
 
+    default Route OPTIONS(String uriPattern, RouteHandler routeHandler) {
+        Route route = Route.OPTIONS(uriPattern, routeHandler);
+        addRoute(route);
+
+        return route;
+    }
+
     /**
      * @deprecated Replaced by {@link #ANY(String, RouteHandler)}.
      */

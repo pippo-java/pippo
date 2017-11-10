@@ -29,6 +29,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
@@ -239,15 +240,11 @@ public class ParameterValue implements Serializable {
     }
 
     public Set<String> toSet(Set<String> defaultValue) {
-        if (isNull() || (values.length == 1 && StringUtils.isNullOrEmpty(values[0]))) {
+        List<String> list = toList();
+        if (list.isEmpty()) {
             return defaultValue;
         }
-
-        if (values.length == 1) {
-            return new HashSet<>(Arrays.asList(values[0].split(",")));
-        }
-
-        return new HashSet<>(Arrays.asList(values));
+        return new HashSet<>(list);
     }
 
     /**
@@ -274,7 +271,7 @@ public class ParameterValue implements Serializable {
     }
 
     public List<String> toList() {
-        return toList(new ArrayList<String>());
+        return toList(Collections.emptyList());
     }
 
     public List<String> toList(List<String> defaultValue) {
@@ -287,7 +284,7 @@ public class ParameterValue implements Serializable {
             tmp = StringUtils.removeStart(tmp, "[");
             tmp = StringUtils.removeEnd(tmp, "]");
 
-            return Arrays.asList(tmp.split("(,|\\|)"));
+            return StringUtils.getList(tmp, "(,|\\|)");
         }
 
         return Arrays.asList(values);
@@ -375,32 +372,17 @@ public class ParameterValue implements Serializable {
 
         if (classOfT.isArray()) {
             Class<?> componentType = classOfT.getComponentType();
-            Object array;
             // cheat by not instantiating a ParameterValue for every value
             ParameterValue parameterValue = new ParameterValue("PLACEHOLDER");
-            if (values.length == 1) {
-                // split a single-value list into an array
-                String tmp = values[0];
-                tmp = StringUtils.removeStart(tmp, "[");
-                tmp = StringUtils.removeEnd(tmp, "]");
-                List<String> list = StringUtils.getList(tmp, "(,|\\|)");
-                array = Array.newInstance(componentType, list.size());
-                for (int i = 0; i < list.size(); i++) {
-                    String value = list.get(i);
-                    parameterValue.values[0] = value;
-                    Object object = parameterValue.toObject(componentType, pattern);
-                    Array.set(array, i, object);
-                }
-            } else {
-                array = Array.newInstance(componentType, values.length);
-                for (int i = 0; i < values.length; i++) {
-                    String value = values[i];
-                    parameterValue.values[0] = value;
-                    Object object = parameterValue.toObject(componentType, pattern);
-                    Array.set(array, i, object);
-                }
-            }
+            List<String> list = toList();
+            Object array = Array.newInstance(componentType, list.size());
 
+            for (int i = 0; i < list.size(); i++) {
+                String value = list.get(i);
+                parameterValue.values[0] = value;
+                Object object = parameterValue.toObject(componentType, pattern);
+                Array.set(array, i, object);
+            }
             return (T) array;
         } else {
             return (T) toObject(classOfT, pattern);
@@ -431,15 +413,7 @@ public class ParameterValue implements Serializable {
             // cheat by not instantiating a ParameterValue for every value
             ParameterValue parameterValue = new ParameterValue("PLACEHOLDER");
 
-            List<String> list;
-            if (values.length == 1) {
-                String tmp = values[0];
-                tmp = StringUtils.removeStart(tmp, "[");
-                tmp = StringUtils.removeEnd(tmp, "]");
-                list = StringUtils.getList(tmp, "(,|\\|)");
-            } else {
-                list = Arrays.asList(values);
-            }
+            List<String> list = toList();
 
             for (String value : list) {
                 parameterValue.values[0] = value;

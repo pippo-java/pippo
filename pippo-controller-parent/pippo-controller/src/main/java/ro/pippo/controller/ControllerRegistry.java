@@ -271,7 +271,7 @@ public class ControllerRegistry {
         Map<Method, Class<? extends Annotation>> controllerMethods = new LinkedHashMap<>();
 
         // discover all annotated controllers methods
-        for (Method method : controllerClass.getDeclaredMethods()) {
+        for (Method method : ClassUtils.getDeclaredMethods(controllerClass)) {
             for (Annotation annotation : method.getAnnotations()) {
                 Class<? extends Annotation> annotationClass = annotation.annotationType();
                 if (httpMethodAnnotationClasses.contains(annotationClass)) {
