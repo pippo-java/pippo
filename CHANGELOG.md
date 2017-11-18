@@ -5,6 +5,16 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 ### [Unreleased][unreleased]
 
 #### Fixed
+
+#### Changed
+
+#### Added
+
+#### Removed
+
+### [1.6.0] - 2017-11-18
+
+#### Fixed
 - [#382]: Missing content type on Response for TJWS server
 - [#385]: JedisFactory not initializing redis URI
 - [#387]: Intercepted bean method public final Controller.getRequest() cannot be declared final
@@ -410,7 +420,8 @@ Initial release.
 - Added [pippo-freemarker]
 - Added [pippo-jetty]
 
-[unreleased]: https://github.com/decebals/pippo/compare/release-1.5.0...HEAD
+[unreleased]: https://github.com/decebals/pippo/compare/release-1.6.0...HEAD
+[1.6.0]: https://github.com/decebals/pippo/compare/release-1.5.0...release-1.6.0
 [1.5.0]: https://github.com/decebals/pippo/compare/release-1.4.0...release-1.5.0
 [1.4.0]: https://github.com/decebals/pippo/compare/release-1.3.0...release-1.4.0
 [1.3.0]: https://github.com/decebals/pippo/compare/release-1.2.0...release-1.3.0
