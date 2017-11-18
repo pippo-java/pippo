@@ -13,19 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package ro.pippo.core;
+package ro.pippo.core.route;
 
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
-import ro.pippo.core.route.DefaultRouter;
-import ro.pippo.core.route.Route;
-import ro.pippo.core.route.RouteGroup;
-import ro.pippo.core.route.RouteHandler;
-import ro.pippo.core.route.RouteMatch;
-import ro.pippo.core.route.WebjarsResourceHandler;
+import ro.pippo.core.EmptyRouteHandler;
+import ro.pippo.core.HttpConstants;
 
 import java.util.Collections;
 import java.util.HashMap;
