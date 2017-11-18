@@ -5,10 +5,21 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 ### [Unreleased][unreleased]
 
 #### Fixed
+- [#382]: Missing content type on Response for TJWS server
+- [#385]: JedisFactory not initializing redis URI
+- [#387]: Intercepted bean method public final Controller.getRequest() cannot be declared final
+- [#394]: getResponse().status(200) return 404 code
+- [#396]: ErrorHandler not properly working with Controllers and CheckedExceptions
+- [#400]: Duplicate routes being created
 
 #### Changed
 
 #### Added
+- [#384]: Add full support to configure Undertow server
+- [#388]: TemplateEngine customization and extension support
+- [#397]: Add path params in websocket uri
+- [#404]: Add Polish translation
+- Add OPTIONS to Routing
 
 #### Removed
 
@@ -419,6 +430,16 @@ Initial release.
 [0.3.0]: https://github.com/decebals/pippo/compare/pippo-parent-0.2.0...pippo-parent-0.3.0
 [0.2.0]: https://github.com/decebals/pippo/compare/pippo-parent-0.1.0...pippo-parent-0.2.0
 
+[#404]: https://github.com/decebals/pippo/pull/404
+[#400]: https://github.com/decebals/pippo/issues/400
+[#397]: https://github.com/decebals/pippo/pull/397
+[#396]: https://github.com/decebals/pippo/issues/396
+[#394]: https://github.com/decebals/pippo/issues/394
+[#388]: https://github.com/decebals/pippo/pull/388
+[#387]: https://github.com/decebals/pippo/issues/387
+[#385]: https://github.com/decebals/pippo/issues/385
+[#384]: https://github.com/decebals/pippo/pull/384
+[#382]: https://github.com/decebals/pippo/issues/382
 [#381]: https://github.com/decebals/pippo/issues/381
 [#378]: https://github.com/decebals/pippo/pull/378
 [#377]:https://github.com/decebals/pippo/pull/377
