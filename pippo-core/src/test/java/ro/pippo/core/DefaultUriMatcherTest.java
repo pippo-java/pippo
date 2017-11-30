@@ -21,8 +21,10 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
+import java.util.HashMap;
 import java.util.Map;
 
+import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.*;
 
 /**
@@ -67,6 +69,67 @@ public class DefaultUriMatcherTest {
         Map<String, String> params = uriMatcher.match("/login", "/login");
         assertNotNull(params);
         assertTrue(params.isEmpty());
+    }
+
+    @Test
+    public void testUriForWithRegex() throws Exception {
+        UriMatcher.UriPatternBinding binding = uriMatcher.addUriPattern("/user/{email}/{id: .*}");
+
+        Map<String, Object> parameters = new HashMap<>();
+        parameters.put("email", "test@test.com");
+        parameters.put("id", 5);
+        String path = uriMatcher.uriFor(binding.getUriPattern(), parameters);
+
+        assertThat(path, equalTo("/user/test@test.com/5"));
+    }
+
+    @Test
+    public void testUriForWithMultipleRegex() throws Exception {
+        UriMatcher.UriPatternBinding binding = uriMatcher.addUriPattern("/user/{email: .*}/test/{id: .*}");
+
+        Map<String, Object> parameters = new HashMap<>();
+        parameters.put("email", "test@test.com");
+        parameters.put("id", 5);
+        String path = uriMatcher.uriFor(binding.getUriPattern(), parameters);
+
+        assertThat(path, equalTo("/user/test@test.com/test/5"));
+    }
+
+    @Test
+    public void testUriForWithSplat() throws Exception {
+        UriMatcher.UriPatternBinding binding = uriMatcher.addUriPattern("/repository/{repo: .*}/ticket/{id: .*}");
+
+        Map<String, Object> parameters = new HashMap<>();
+        parameters.put("repo", "test/myrepo");
+        parameters.put("id", 5);
+        String path = uriMatcher.uriFor(binding.getUriPattern(), parameters);
+
+        assertThat(path, equalTo("/repository/test/myrepo/ticket/5"));
+    }
+
+    @Test
+    public void testUriForWithRegexAndQueryParameters() throws Exception {
+        UriMatcher.UriPatternBinding binding = uriMatcher.addUriPattern("/user/{email}/{id: .*}");
+
+        Map<String, Object> parameters = new HashMap<>();
+        parameters.put("email", "test@test.com");
+        parameters.put("id", 5);
+        parameters.put("query", "recent_changes");
+        String path = uriMatcher.uriFor(binding.getUriPattern(), parameters);
+
+        assertThat(path, equalTo("/user/test@test.com/5?query=recent_changes"));
+    }
+
+    @Test
+    public void testUriForWithEncodedParameters() throws Exception {
+        UriMatcher.UriPatternBinding binding = uriMatcher.addUriPattern("/user/{email}");
+
+        Map<String, Object> parameters = new HashMap<>();
+        parameters.put("email", "test@test.com");
+        parameters.put("name", "Decebal Suiu");
+        String path = uriMatcher.uriFor(binding.getUriPattern(), parameters);
+
+        assertThat(path, equalTo("/user/test@test.com?name=Decebal+Suiu"));
     }
 
 }

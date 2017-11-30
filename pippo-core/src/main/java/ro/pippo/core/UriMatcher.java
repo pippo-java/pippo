@@ -43,7 +43,7 @@ public interface UriMatcher {
 
     UriPatternBinding removeUriPattern(String uriPattern);
 
-    String uriFor(Map<String, Object> parameters, String uriPattern);
+    String uriFor(String uriPattern, Map<String, Object> parameters);
 
     class UriPatternBinding {
 

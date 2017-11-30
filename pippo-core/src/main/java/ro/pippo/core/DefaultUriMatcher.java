@@ -89,7 +89,7 @@ public class DefaultUriMatcher implements UriMatcher {
     }
 
     @Override
-    public String uriFor(Map<String, Object> parameters, String uriPattern) {
+    public String uriFor(String uriPattern, Map<String, Object> parameters) {
         UriPatternBinding binding = bindings.get(uriPattern);
         if (binding == null) {
             // something is wrong

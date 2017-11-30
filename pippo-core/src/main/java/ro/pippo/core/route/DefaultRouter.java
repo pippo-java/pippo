@@ -326,7 +326,7 @@ public class DefaultRouter implements Router {
 
         Route compiledRoute = getCompiledRoute(nameOrUriPattern);
 
-        return (compiledRoute != null) ? uriMatcher.uriFor(parameters, compiledRoute.getUriPattern()) : null;
+        return (compiledRoute != null) ? uriMatcher.uriFor(compiledRoute.getUriPattern(), parameters) : null;
     }
 
     @Override
