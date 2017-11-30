@@ -252,7 +252,15 @@ public class DefaultRouteContext implements RouteContext {
 
     @Override
     public void redirect(String nameOrUriPattern, Map<String, Object> parameters) {
-        redirect(uriFor(nameOrUriPattern, parameters));
+        String uri = uriFor(nameOrUriPattern, parameters);
+
+        String applicationPath = application.getRouter().getApplicationPath();
+        if (!applicationPath.isEmpty()) {
+            // remove application path
+            uri = StringUtils.removeStart(uri.substring(applicationPath.length()), "/");
+        }
+
+        redirect(uri);
     }
 
     @Override

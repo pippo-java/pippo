@@ -87,7 +87,7 @@ public interface Router {
     void compileRoutes();
 
     /**
-     * Get uri with context path.
+     * Get uri with application path.
      *
      * @param relativeUri
      * @return
@@ -111,6 +111,8 @@ public interface Router {
      * </pre>
      * The parameters values are automatically encoded by this method.
      *
+     * The returned URI contains the application path.
+     *
      * @param nameOrUriPattern
      * @param parameters
      * @return
@@ -121,6 +123,7 @@ public interface Router {
 
     /**
      * Returns the base path for the Pippo application.
+     * application path = servlet context path + filter path
      */
     String getApplicationPath();
 
