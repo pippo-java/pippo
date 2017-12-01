@@ -16,7 +16,6 @@
 package ro.pippo.pac4j;
 
 import org.pac4j.core.context.HttpConstants;
-import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.http.HttpActionAdapter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -50,10 +49,6 @@ public class PippoHttpActionAdapter implements HttpActionAdapter<Void, PippoWebC
             context.getResponse().badRequest().send("bad request");
         } else if (code == HttpConstants.OK) {
             context.getResponse().ok().html();
-        } else {
-            String message = "Unsupported HTTP action: " + code;
-            log.error(message);
-            throw new TechnicalException(message);
         }
 
         return null;
