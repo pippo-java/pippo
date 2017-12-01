@@ -51,6 +51,10 @@ public class PippoHttpActionAdapter implements HttpActionAdapter<Void, PippoWebC
             context.getResponse().ok().html();
         }
 
+        // it's enough to set the status code on response and RouteDispatcher will finish the response;
+        // in this mode a nice error message will be displayed using the registered TemplateEngine
+//        context.getResponse().status(code);
+
         return null;
     }
 
