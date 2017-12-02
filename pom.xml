@@ -172,6 +172,7 @@
         <module>pippo-server-parent</module>
         <module>pippo-controller-parent</module>
         <module>pippo-css-parent</module>
+        <module>pippo-security-parent</module>
     </modules>
 
     <profiles>
