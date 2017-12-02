@@ -32,6 +32,10 @@ public class PippoNopHttpActionAdapter implements HttpActionAdapter<Void, PippoW
 
     public static final PippoNopHttpActionAdapter INSTANCE = new PippoNopHttpActionAdapter();
 
+    private PippoNopHttpActionAdapter() {
+        // prevent instantiation
+    }
+
     @Override
     public Void adapt(int code, PippoWebContext context) {
         return null;
