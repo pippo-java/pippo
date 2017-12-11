@@ -36,6 +36,12 @@
             <version>${pac4j.version}</version>
         </dependency>
 
+        <dependency>
+            <groupId>org.pac4j</groupId>
+            <artifactId>pac4j-config</artifactId>
+            <version>${pac4j.version}</version>
+        </dependency>
+
         <!-- Test -->
         <dependency>
             <groupId>junit</groupId>
