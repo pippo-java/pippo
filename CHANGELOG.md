@@ -5,6 +5,16 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 ### [Unreleased][unreleased]
 
 #### Fixed
+
+#### Changed
+
+#### Added
+
+#### Removed
+
+### [1.7.0] - 2017-12-12
+
+#### Fixed
 - [#367]: Redirecting to named routes using setPippoFilterPath settings (improvement)
 
 #### Changed
@@ -423,7 +433,8 @@ Initial release.
 - Added [pippo-freemarker]
 - Added [pippo-jetty]
 
-[unreleased]: https://github.com/decebals/pippo/compare/release-1.6.0...HEAD
+[unreleased]: https://github.com/decebals/pippo/compare/release-1.7.0...HEAD
+[1.7.0]: https://github.com/decebals/pippo/compare/release-1.6.0...release-1.7.0
 [1.6.0]: https://github.com/decebals/pippo/compare/release-1.5.0...release-1.6.0
 [1.5.0]: https://github.com/decebals/pippo/compare/release-1.4.0...release-1.5.0
 [1.4.0]: https://github.com/decebals/pippo/compare/release-1.3.0...release-1.4.0
