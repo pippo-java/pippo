@@ -5,10 +5,13 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 ### [Unreleased][unreleased]
 
 #### Fixed
+- [#367]: Redirecting to named routes using setPippoFilterPath settings (improvement)
 
 #### Changed
+- Downgrade TJWS version to 3.0.10.Final because the last version is deprecated
 
 #### Added
+- [#408]: Add security (PAC4J) module
 
 #### Removed
 
@@ -441,6 +444,7 @@ Initial release.
 [0.3.0]: https://github.com/decebals/pippo/compare/pippo-parent-0.2.0...pippo-parent-0.3.0
 [0.2.0]: https://github.com/decebals/pippo/compare/pippo-parent-0.1.0...pippo-parent-0.2.0
 
+[#408]: https://github.com/decebals/pippo/pull/408
 [#404]: https://github.com/decebals/pippo/pull/404
 [#400]: https://github.com/decebals/pippo/issues/400
 [#397]: https://github.com/decebals/pippo/pull/397
