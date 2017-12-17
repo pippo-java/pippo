@@ -62,6 +62,7 @@ public class Pac4jCallbackHandler implements RouteHandler {
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public void handle(RouteContext routeContext) {
         Objects.requireNonNull(callbackLogic);
         Objects.requireNonNull(config);
@@ -75,32 +76,40 @@ public class Pac4jCallbackHandler implements RouteHandler {
         return callbackLogic;
     }
 
-    public void setCallbackLogic(CallbackLogic<Object, PippoWebContext> callbackLogic) {
+    public Pac4jCallbackHandler setCallbackLogic(CallbackLogic<Object, PippoWebContext> callbackLogic) {
         this.callbackLogic = callbackLogic;
+
+        return this;
     }
 
     public String getDefaultUrl() {
         return this.defaultUrl;
     }
 
-    public void setDefaultUrl(String defaultUrl) {
+    public Pac4jCallbackHandler setDefaultUrl(String defaultUrl) {
         this.defaultUrl = defaultUrl;
+
+        return this;
     }
 
     public Boolean getMultiProfile() {
         return multiProfile;
     }
 
-    public void setMultiProfile(Boolean multiProfile) {
+    public Pac4jCallbackHandler setMultiProfile(Boolean multiProfile) {
         this.multiProfile = multiProfile;
+
+        return this;
     }
 
     public Boolean getRenewSession() {
         return renewSession;
     }
 
-    public void setRenewSession(Boolean renewSession) {
+    public Pac4jCallbackHandler setRenewSession(Boolean renewSession) {
         this.renewSession = renewSession;
+
+        return this;
     }
 
 }

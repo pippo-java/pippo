@@ -45,6 +45,14 @@ public class SettingsConfigFactory extends PropertiesConfigFactory {
         super(getPac4jSettings(settings, prefix));
     }
 
+    @Override
+    public Config build(Object... parameters) {
+        Config config = super.build(parameters);
+        config.setHttpActionAdapter(PippoNopHttpActionAdapter.INSTANCE);
+
+        return config;
+    }
+
     private static Map<String, String> getPac4jSettings(PippoSettings settings, String prefix) {
         Map<String, String> pac4jSettings = new HashMap<>();
 
@@ -55,14 +63,6 @@ public class SettingsConfigFactory extends PropertiesConfigFactory {
         }
 
         return pac4jSettings;
-    }
-
-    @Override
-    public Config build(Object... parameters) {
-        Config config = super.build(parameters);
-        config.setHttpActionAdapter(PippoNopHttpActionAdapter.INSTANCE);
-
-        return config;
     }
 
 }

@@ -70,6 +70,7 @@ public class Pac4jSecurityHandler implements RouteHandler {
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public void handle(RouteContext routeContext) {
         Objects.requireNonNull(securityLogic);
         Objects.requireNonNull(config);
@@ -93,32 +94,40 @@ public class Pac4jSecurityHandler implements RouteHandler {
         return securityLogic;
     }
 
-    public void setSecurityLogic(SecurityLogic<Object, PippoWebContext> securityLogic) {
+    public Pac4jSecurityHandler setSecurityLogic(SecurityLogic<Object, PippoWebContext> securityLogic) {
         this.securityLogic = securityLogic;
+
+        return this;
     }
 
     public String getAuthorizers() {
         return authorizers;
     }
 
-    public void setAuthorizers(String authorizers) {
+    public Pac4jSecurityHandler setAuthorizers(String authorizers) {
         this.authorizers = authorizers;
+
+        return this;
     }
 
     public String getMatchers() {
         return matchers;
     }
 
-    public void setMatchers(String matchers) {
+    public Pac4jSecurityHandler setMatchers(String matchers) {
         this.matchers = matchers;
+
+        return this;
     }
 
     public Boolean getMultiProfile() {
         return multiProfile;
     }
 
-    public void setMultiProfile(Boolean multiProfile) {
+    public Pac4jSecurityHandler setMultiProfile(Boolean multiProfile) {
         this.multiProfile = multiProfile;
+
+        return this;
     }
 
     /**

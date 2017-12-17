@@ -61,6 +61,7 @@ public class Pac4jLogoutHandler implements RouteHandler {
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public void handle(RouteContext routeContext) {
         Objects.requireNonNull(logoutLogic);
         Objects.requireNonNull(config);
@@ -74,48 +75,60 @@ public class Pac4jLogoutHandler implements RouteHandler {
         return logoutLogic;
     }
 
-    public void setLogoutLogic(LogoutLogic<Object, PippoWebContext> logoutLogic) {
+    public Pac4jLogoutHandler setLogoutLogic(LogoutLogic<Object, PippoWebContext> logoutLogic) {
         this.logoutLogic = logoutLogic;
+
+        return this;
     }
 
     public String getDefaultUrl() {
         return this.defaultUrl;
     }
 
-    public void setDefaultUrl(String defaultUrl) {
+    public Pac4jLogoutHandler setDefaultUrl(String defaultUrl) {
         this.defaultUrl = defaultUrl;
+
+        return this;
     }
 
     public String getLogoutUrlPattern() {
         return logoutUrlPattern;
     }
 
-    public void setLogoutUrlPattern(String logoutUrlPattern) {
+    public Pac4jLogoutHandler setLogoutUrlPattern(String logoutUrlPattern) {
         this.logoutUrlPattern = logoutUrlPattern;
+
+        return this;
     }
 
     public Boolean getLocalLogout() {
         return localLogout;
     }
 
-    public void setLocalLogout(Boolean localLogout) {
+    public Pac4jLogoutHandler setLocalLogout(Boolean localLogout) {
         this.localLogout = localLogout;
+
+        return this;
     }
 
     public Boolean getDestroySession() {
         return destroySession;
     }
 
-    public void setDestroySession(Boolean destroySession) {
+    public Pac4jLogoutHandler setDestroySession(Boolean destroySession) {
         this.destroySession = destroySession;
+
+        return this;
     }
 
     public Boolean getCentralLogout() {
         return centralLogout;
     }
 
-    public void setCentralLogout(Boolean centralLogout) {
+    public Pac4jLogoutHandler setCentralLogout(Boolean centralLogout) {
         this.centralLogout = centralLogout;
+
+        return this;
     }
 
 }
