@@ -16,6 +16,7 @@
 package ro.pippo.pac4j;
 
 import org.pac4j.config.client.PropertiesConfigFactory;
+import org.pac4j.core.config.Config;
 import ro.pippo.core.PippoSettings;
 
 import java.util.HashMap;
@@ -54,6 +55,14 @@ public class SettingsConfigFactory extends PropertiesConfigFactory {
         }
 
         return pac4jSettings;
+    }
+
+    @Override
+    public Config build(Object... parameters) {
+        Config config = super.build(parameters);
+        config.setHttpActionAdapter(PippoNopHttpActionAdapter.INSTANCE);
+
+        return config;
     }
 
 }
