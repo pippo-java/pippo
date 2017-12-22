@@ -78,7 +78,7 @@ public class DefaultUriMatcher implements UriMatcher {
         List<String> parameterNames = getParameterNames(uriPattern);
         UriPatternBinding binding = new UriPatternBinding(uriPattern, pattern, parameterNames);
         bindings.put(uriPattern, binding);
-        log.debug("Add binding '{}'", binding);
+        log.trace("Add binding '{}'", binding);
 
         return binding;
     }
