@@ -316,7 +316,7 @@ public class DefaultErrorHandler implements ErrorHandler {
         }
         depth += 1;
         routeContext.setLocal("__errorHandlerDepth", depth);
-        if (depth > 2) {
+        if (depth > 4) {
             throw new PippoRuntimeException("Recursion in error handler");
         }
     }
