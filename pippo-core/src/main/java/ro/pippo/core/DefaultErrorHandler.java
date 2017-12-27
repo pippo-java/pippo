@@ -70,7 +70,6 @@ public class DefaultErrorHandler implements ErrorHandler {
     public ExceptionHandler getExceptionHandler(Exception exception) {
         Class<? extends Exception> exceptionClass = exception.getClass();
         if (!exceptionHandlers.containsKey(exceptionClass)) {
-
             Class<?> superClass = exceptionClass.getSuperclass();
             while (superClass != null) {
                 if (exceptionHandlers.containsKey(superClass)) {
@@ -172,9 +171,8 @@ public class DefaultErrorHandler implements ErrorHandler {
         checkForRecursion(routeContext);
 
         if (exception instanceof PippoRuntimeException && exception.getCause() instanceof Exception) {
-            this.handle((Exception) exception.getCause(), routeContext);
+            handle((Exception) exception.getCause(), routeContext);
         } else {
-
             ExceptionHandler exceptionHandler = getExceptionHandler(exception);
             if (exceptionHandler != null) {
                 log.debug("Handling '{}' with '{}'", exception.getClass().getSimpleName(), exceptionHandler.getClass().getName());
