@@ -29,9 +29,9 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * DefaultErrorHandler is the core ExceptionHandler that integrates with
- * the TemplateEngine & ContentTypeEngines.  It generates a representation
- * of an exception or error result.
+ * {@code DefaultErrorHandler} is the core {@link ExceptionHandler} that integrates with
+ * the {@link TemplateEngine} and {@link ContentTypeEngines}.
+ * It generates a representation of an {@link Exception} or error result ({@link HttpConstants.StatusCode}).
  *
  * @author Decebal Suiu
  * @author James Moger
@@ -41,6 +41,7 @@ public class DefaultErrorHandler implements ErrorHandler {
     private static final Logger log = LoggerFactory.getLogger(DefaultErrorHandler.class);
 
     private static final String MESSAGE = "message";
+    private static final String STACKTRACE = "stacktrace";
 
     private Application application;
 
@@ -75,6 +76,7 @@ public class DefaultErrorHandler implements ErrorHandler {
                 if (exceptionHandlers.containsKey(superClass)) {
                     ExceptionHandler exceptionHandler = exceptionHandlers.get(superClass);
                     exceptionHandlers.put(exceptionClass, exceptionHandler);
+
                     return exceptionHandler;
                 }
 
@@ -134,7 +136,7 @@ public class DefaultErrorHandler implements ErrorHandler {
                 try {
                     routeContext.getResponse().contentType(engine.getContentType()).send(error);
                 } catch (Exception e) {
-                    log.error("Unexpected error generating '{}' as '{}'!", Error.class.getName(), contentType, e);
+                    log.error("Unexpected error generating '{}' as '{}'", Error.class.getName(), contentType, e);
                     routeContext.status(HttpConstants.StatusCode.INTERNAL_ERROR);
                     routeContext.send(application.getMessages().get("pippo.statusCode500", routeContext));
                 }
@@ -143,13 +145,13 @@ public class DefaultErrorHandler implements ErrorHandler {
     }
 
     protected void renderHtml(int statusCode, RouteContext routeContext) {
-        if (application.getTemplateEngine() == null) {
+        TemplateEngine engine = application.getTemplateEngine();
+        if (engine == null) {
             renderDirectly(statusCode, routeContext);
         } else {
             String template = getTemplateForStatusCode(statusCode);
             if (template == null) {
-                log.debug("There is no {} template for status code '{}'", application.getTemplateEngine().getClass()
-                    .getSimpleName(), statusCode);
+                log.debug("There is no {} template for status code '{}'", engine.getClass().getSimpleName(), statusCode);
                 renderDirectly(statusCode, routeContext);
             } else {
                 try {
@@ -159,8 +161,8 @@ public class DefaultErrorHandler implements ErrorHandler {
                     routeContext.setLocals(bindings);
                     routeContext.render(template);
                 } catch (Exception e) {
-                    log.error("Unexpected error rendering your '{}' template!", template, e);
-                    handle(e, routeContext);
+                    log.error("Unexpected error rendering '{}' template", template, e);
+                    renderDirectly(statusCode, routeContext);
                 }
             }
         }
@@ -198,7 +200,7 @@ public class DefaultErrorHandler implements ErrorHandler {
                 PrintWriter printWriter = new PrintWriter(stringWriter);
                 exception.printStackTrace(printWriter);
                 String stackTrace = stringWriter.toString();
-                routeContext.setLocal("stacktrace", stackTrace);
+                routeContext.setLocal(STACKTRACE, stackTrace);
             }
 
             handle(HttpConstants.StatusCode.INTERNAL_ERROR, routeContext);
@@ -206,36 +208,50 @@ public class DefaultErrorHandler implements ErrorHandler {
     }
 
     /**
-     * Render the result directly.
+     * Render the result directly (without template).
      *
      * @param routeContext
      */
     protected void renderDirectly(int statusCode, RouteContext routeContext) {
-        if (statusCode == HttpConstants.StatusCode.NOT_FOUND && !application.getPippoSettings().isProd()) {
-            StringBuilder content = new StringBuilder();
-            content.append("<html><body>");
-            content.append("<div>");
-            content.append("Cannot find a route for '");
-            content.append(routeContext.getRequestMethod());
-            content.append(" ");
-            content.append(routeContext.getRequestUri());
-            content.append("'</div>");
-            content.append("<div>Available routes:</div>");
-            content.append("<ul style=\" list-style-type: none; margin: 0; \">");
-            List<Route> routes = application.getRouter().getRoutes();
-            for (Route route : routes) {
-                content.append("<li>");
-                content.append(route.getRequestMethod());
-                content.append(" ");
-                content.append(route.getUriPattern());
-                content.append("</li>");
-            }
-            content.append("</ul>");
-            content.append("</body></html>");
-
-            routeContext.send(content);
-        } else {
+        if (application.getPippoSettings().isProd()) {
             routeContext.getResponse().commit();
+        } else {
+            if (statusCode == HttpConstants.StatusCode.NOT_FOUND) {
+                StringBuilder content = new StringBuilder();
+                content.append("<html><body>");
+                content.append("<pre>");
+
+                content.append("Cannot find a route for '");
+                content.append(routeContext.getRequestMethod()).append(' ').append(routeContext.getRequestUri());
+                content.append('\'');
+                content.append('\n');
+
+                content.append("Available routes:");
+                content.append('\n');
+
+                List<Route> routes = application.getRouter().getRoutes();
+                for (Route route : routes) {
+                    content.append('\t').append(route.getRequestMethod()).append(' ').append(route.getUriPattern());
+                    content.append('\n');
+                }
+
+                content.append("</pre>");
+                content.append("</body></html>");
+
+                routeContext.send(content);
+            } else if (statusCode == HttpConstants.StatusCode.INTERNAL_ERROR) {
+                StringBuilder content = new StringBuilder();
+                content.append("<html><body>");
+                content.append("<pre>");
+
+                Error error = prepareError(statusCode, routeContext);
+                content.append(error.toString());
+
+                content.append("</pre>");
+                content.append("</body></html>");
+
+                routeContext.send(content);
+            }
         }
     }
 
@@ -272,8 +288,7 @@ public class DefaultErrorHandler implements ErrorHandler {
         error.setStatusMessage(application.getMessages().get(messageKey, routeContext));
         error.setRequestMethod(routeContext.getRequestMethod());
         error.setRequestUri(routeContext.getRequestUri());
-        error.setRequestUri(routeContext.getRequestUri());
-        error.setStacktrace(routeContext.getLocal("stacktrace"));
+        error.setStacktrace(routeContext.getLocal(STACKTRACE));
         error.setMessage(routeContext.getLocal(MESSAGE));
 
         return error;

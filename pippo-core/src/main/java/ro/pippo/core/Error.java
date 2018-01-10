@@ -92,6 +92,28 @@ public class Error implements Serializable {
         this.stacktrace = stacktrace;
     }
 
+    /**
+     * Get the Error as a {@link Map}.
+     *
+     * @return the error as a map
+     */
+    public Map<String, Object> asMap() {
+        Map<String, Object> map = new LinkedHashMap<>();
+        map.put("statusCode", statusCode);
+        map.put("statusMessage", statusMessage);
+        map.put("requestMethod", requestMethod);
+        map.put("requestUri", requestUri);
+
+        if (!StringUtils.isNullOrEmpty(message)) {
+            map.put("message", message);
+        }
+        if (!StringUtils.isNullOrEmpty(stacktrace)) {
+            map.put("stacktrace", stacktrace);
+        }
+
+        return map;
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
@@ -107,29 +129,6 @@ public class Error implements Serializable {
         }
 
         return sb.toString();
-    }
-
-    /**
-     * Get the Error as a Map.
-     *
-     * @return the error as a map
-     */
-    public Map<String, Object> asMap() {
-
-        Map<String, Object> map = new LinkedHashMap<>();
-        map.put("statusCode", statusCode);
-        map.put("statusMessage", statusMessage);
-        map.put("requestMethod", requestMethod);
-        map.put("requestUri", requestUri);
-
-        if (!StringUtils.isNullOrEmpty(message)) {
-            map.put("message", message);
-        }
-        if (!StringUtils.isNullOrEmpty(stacktrace)) {
-            map.put("stacktrace", stacktrace);
-        }
-
-        return map;
     }
 
 }
