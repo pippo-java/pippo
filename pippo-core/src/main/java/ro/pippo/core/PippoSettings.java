@@ -627,6 +627,12 @@ public class PippoSettings {
         if (StringUtils.isNullOrEmpty(value)) {
             return Collections.emptyList();
         }
+
+        value = value.trim();
+        // to handles cases where value is specified like [a,b, c]
+        if (value.startsWith("[") && value.endsWith("]")) {
+            value = value.substring(1, value.length() - 1);
+        }
         return StringUtils.getList(value, delimiter);
     }
 
