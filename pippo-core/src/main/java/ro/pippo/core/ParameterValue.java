@@ -236,15 +236,22 @@ public class ParameterValue implements Serializable {
     }
 
     public Set<String> toSet() {
-        return toSet(new HashSet<>());
+        return toSet(Collections.emptySet());
     }
 
+    /**
+     * Converts a string value(s) to a Set. default value specified would be returned
+     * if value is empty or null
+     *
+     * @param defaultValue the value to be returned by default, when value(s) is not present
+     * @return an Immutable Set
+     */
     public Set<String> toSet(Set<String> defaultValue) {
         List<String> list = toList();
         if (list.isEmpty()) {
             return defaultValue;
         }
-        return new HashSet<>(list);
+        return Collections.unmodifiableSet(new HashSet<>(list));
     }
 
     /**
@@ -254,7 +261,7 @@ public class ParameterValue implements Serializable {
      * @return a set of the values
      */
     public <T> Set<T> toSet(Class<T> classOfT) {
-        return (Set<T>) toCollection(HashSet.class, classOfT, null);
+        return toSet(classOfT, null);
     }
 
     /**
@@ -291,7 +298,7 @@ public class ParameterValue implements Serializable {
     }
 
     public <T> List<T> toList(Class<T> classOfT) {
-        return toCollection(ArrayList.class, classOfT, null);
+        return toList(classOfT, null);
     }
 
     public <T> List<T> toList(Class<T> classOfT, String pattern) {
