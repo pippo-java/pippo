@@ -134,7 +134,7 @@ public class DefaultErrorHandler implements ErrorHandler {
             } else {
                 Error error = prepareError(statusCode, routeContext);
                 try {
-                    routeContext.getResponse().contentType(engine.getContentType()).send(error);
+                    routeContext.getResponse().contentType(contentType).send(error);
                 } catch (Exception e) {
                     log.error("Unexpected error generating '{}' as '{}'", Error.class.getName(), contentType, e);
                     routeContext.status(HttpConstants.StatusCode.INTERNAL_ERROR);
@@ -178,8 +178,8 @@ public class DefaultErrorHandler implements ErrorHandler {
             ExceptionHandler exceptionHandler = getExceptionHandler(exception);
             if (exceptionHandler != null) {
                 log.debug("Handling '{}' with '{}'", exception.getClass().getSimpleName(), exceptionHandler.getClass().getName());
-
                 exceptionHandler.handle(exception, routeContext);
+
                 return;
             }
 
