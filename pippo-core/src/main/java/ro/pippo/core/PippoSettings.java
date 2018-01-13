@@ -493,7 +493,7 @@ public class PippoSettings {
         try {
             String value = getString(name, null);
             if (!StringUtils.isNullOrEmpty(value)) {
-                return Integer.parseInt(value.trim().split(" ")[0]);
+                return Integer.parseInt(value.trim());
             }
         } catch (NumberFormatException e) {
             log.warn("Failed to parse integer for " + name + USING_DEFAULT_OF
@@ -516,7 +516,7 @@ public class PippoSettings {
         try {
             String value = getString(name, null);
             if (!StringUtils.isNullOrEmpty(value)) {
-                return Long.parseLong(value.trim().split(" ")[0]);
+                return Long.parseLong(value.trim());
             }
         } catch (NumberFormatException e) {
             log.warn("Failed to parse long for " + name + USING_DEFAULT_OF
@@ -539,7 +539,7 @@ public class PippoSettings {
         try {
             String value = getString(name, null);
             if (!StringUtils.isNullOrEmpty(value)) {
-                return Float.parseFloat(value.trim().split(" ")[0]);
+                return Float.parseFloat(value.trim());
             }
         } catch (NumberFormatException e) {
             log.warn("Failed to parse float for " + name + USING_DEFAULT_OF
@@ -562,7 +562,7 @@ public class PippoSettings {
         try {
             String value = getString(name, null);
             if (!StringUtils.isNullOrEmpty(value)) {
-                return Double.parseDouble(value.trim().split(" ")[0]);
+                return Double.parseDouble(value.trim());
             }
         } catch (NumberFormatException e) {
             log.warn("Failed to parse double for " + name + USING_DEFAULT_OF
@@ -627,6 +627,12 @@ public class PippoSettings {
         if (StringUtils.isNullOrEmpty(value)) {
             return Collections.emptyList();
         }
+
+        value = value.trim();
+        // to handles cases where value is specified like [a,b, c]
+        if (value.startsWith("[") && value.endsWith("]")) {
+            value = value.substring(1, value.length() - 1);
+        }
         return StringUtils.getList(value, delimiter);
     }
 
@@ -634,7 +640,7 @@ public class PippoSettings {
      * Returns a list of comma-delimited integers from the specified name.
      *
      * @param name
-     * @return list of strings
+     * @return list of integers
      */
     public List<Integer> getIntegers(String name) {
         return getIntegers(name, DEFAULT_LIST_DELIMITER);
@@ -649,11 +655,8 @@ public class PippoSettings {
      */
     public List<Integer> getIntegers(String name, String delimiter) {
         List<String> strings = getStrings(name, delimiter);
-        if (strings.isEmpty()) {
-            return Collections.emptyList();
-        }
 
-        List<Integer> ints = new ArrayList<>();
+        List<Integer> ints = new ArrayList<>(strings.size());
         for (String value : strings) {
             try {
                 int i = Integer.parseInt(value);
@@ -669,7 +672,7 @@ public class PippoSettings {
      * Returns a list of comma-delimited longs from the specified name.
      *
      * @param name
-     * @return list of strings
+     * @return list of longs
      */
     public List<Long> getLongs(String name) {
         return getLongs(name, DEFAULT_LIST_DELIMITER);
@@ -684,11 +687,8 @@ public class PippoSettings {
      */
     public List<Long> getLongs(String name, String delimiter) {
         List<String> strings = getStrings(name, delimiter);
-        if (strings.isEmpty()) {
-            return Collections.emptyList();
-        }
 
-        List<Long> longs = new ArrayList<>();
+        List<Long> longs = new ArrayList<>(strings.size());
         for (String value : strings) {
             try {
                 long i = Long.parseLong(value);
@@ -698,6 +698,68 @@ public class PippoSettings {
         }
 
         return Collections.unmodifiableList(longs);
+    }
+
+    /**
+     * Returns a list of comma-delimited floats from the specified name.
+     *
+     * @param name
+     * @return list of floats
+     */
+    public List<Float> getFloats(String name) {
+        return getFloats(name, DEFAULT_LIST_DELIMITER);
+    }
+
+    /**
+     * Returns a list of floats from the specified name using the specified delimiter.
+     *
+     * @param name
+     * @param delimiter
+     * @return list of floats
+     */
+    public List<Float> getFloats(String name, String delimiter) {
+        List<String> strings = getStrings(name, delimiter);
+
+        List<Float> floats = new ArrayList<>(strings.size());
+        for (String value : strings) {
+            try {
+                float i = Float.parseFloat(value);
+                floats.add(i);
+            } catch (NumberFormatException e) {
+            }
+        }
+        return Collections.unmodifiableList(floats);
+    }
+
+    /**
+     * Returns a list of comma-delimited doubles from the specified name.
+     *
+     * @param name
+     * @return list of doubles
+     */
+    public List<Double> getDoubles(String name) {
+        return getDoubles(name, DEFAULT_LIST_DELIMITER);
+    }
+
+    /**
+     * Returns a list of doubles from the specified name using the specified delimiter.
+     *
+     * @param name
+     * @param delimiter
+     * @return list of doubles
+     */
+    public List<Double> getDoubles(String name, String delimiter) {
+        List<String> strings = getStrings(name, delimiter);
+
+        List<Double> doubles = new ArrayList<>(strings.size());
+        for (String value : strings) {
+            try {
+                double i = Double.parseDouble(value);
+                doubles.add(i);
+            } catch (NumberFormatException e) {
+            }
+        }
+        return Collections.unmodifiableList(doubles);
     }
 
     /**
