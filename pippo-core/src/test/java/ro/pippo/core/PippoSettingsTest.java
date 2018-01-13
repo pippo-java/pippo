@@ -63,6 +63,22 @@ public class PippoSettingsTest {
     }
 
     @Test
+    public void testGetDoubles() {
+        // tests would similar for getFloats(String, String)
+        Mockito.doReturn(" [1234, 123, value3]").when(pippoSettings)
+            .getString("key", null);
+        Mockito.doCallRealMethod().when(pippoSettings).getStrings("key", ",");
+        Mockito.doCallRealMethod().when(pippoSettings).getDoubles("key", ",");
+
+        List<Double> values = pippoSettings.getDoubles("key", ",");
+        assertEquals(Arrays.asList(1234d, 123d), values);
+
+        Mockito.doReturn(Collections.emptyList()).when(pippoSettings).getStrings("key", ",");
+        values = pippoSettings.getDoubles("key", ",");
+        assertTrue(values.isEmpty());
+    }
+
+    @Test
     public void testGetNumber() {
         Mockito.doReturn(" 1234").when(pippoSettings).getString("key", null);
         Mockito.doCallRealMethod().when(pippoSettings).getInteger("key", 0);

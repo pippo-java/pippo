@@ -640,7 +640,7 @@ public class PippoSettings {
      * Returns a list of comma-delimited integers from the specified name.
      *
      * @param name
-     * @return list of strings
+     * @return list of integers
      */
     public List<Integer> getIntegers(String name) {
         return getIntegers(name, DEFAULT_LIST_DELIMITER);
@@ -672,7 +672,7 @@ public class PippoSettings {
      * Returns a list of comma-delimited longs from the specified name.
      *
      * @param name
-     * @return list of strings
+     * @return list of longs
      */
     public List<Long> getLongs(String name) {
         return getLongs(name, DEFAULT_LIST_DELIMITER);
@@ -698,6 +698,68 @@ public class PippoSettings {
         }
 
         return Collections.unmodifiableList(longs);
+    }
+
+    /**
+     * Returns a list of comma-delimited floats from the specified name.
+     *
+     * @param name
+     * @return list of floats
+     */
+    public List<Float> getFloats(String name) {
+        return getFloats(name, DEFAULT_LIST_DELIMITER);
+    }
+
+    /**
+     * Returns a list of floats from the specified name using the specified delimiter.
+     *
+     * @param name
+     * @param delimiter
+     * @return list of floats
+     */
+    public List<Float> getFloats(String name, String delimiter) {
+        List<String> strings = getStrings(name, delimiter);
+
+        List<Float> floats = new ArrayList<>(strings.size());
+        for (String value : strings) {
+            try {
+                float i = Float.parseFloat(value);
+                floats.add(i);
+            } catch (NumberFormatException e) {
+            }
+        }
+        return Collections.unmodifiableList(floats);
+    }
+
+    /**
+     * Returns a list of comma-delimited doubles from the specified name.
+     *
+     * @param name
+     * @return list of doubles
+     */
+    public List<Double> getDoubles(String name) {
+        return getDoubles(name, DEFAULT_LIST_DELIMITER);
+    }
+
+    /**
+     * Returns a list of doubles from the specified name using the specified delimiter.
+     *
+     * @param name
+     * @param delimiter
+     * @return list of doubles
+     */
+    public List<Double> getDoubles(String name, String delimiter) {
+        List<String> strings = getStrings(name, delimiter);
+
+        List<Double> doubles = new ArrayList<>(strings.size());
+        for (String value : strings) {
+            try {
+                double i = Double.parseDouble(value);
+                doubles.add(i);
+            } catch (NumberFormatException e) {
+            }
+        }
+        return Collections.unmodifiableList(doubles);
     }
 
     /**
