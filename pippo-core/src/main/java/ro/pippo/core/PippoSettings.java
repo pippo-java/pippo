@@ -493,7 +493,7 @@ public class PippoSettings {
         try {
             String value = getString(name, null);
             if (!StringUtils.isNullOrEmpty(value)) {
-                return Integer.parseInt(value.trim().split(" ")[0]);
+                return Integer.parseInt(value.trim());
             }
         } catch (NumberFormatException e) {
             log.warn("Failed to parse integer for " + name + USING_DEFAULT_OF
@@ -516,7 +516,7 @@ public class PippoSettings {
         try {
             String value = getString(name, null);
             if (!StringUtils.isNullOrEmpty(value)) {
-                return Long.parseLong(value.trim().split(" ")[0]);
+                return Long.parseLong(value.trim());
             }
         } catch (NumberFormatException e) {
             log.warn("Failed to parse long for " + name + USING_DEFAULT_OF
@@ -539,7 +539,7 @@ public class PippoSettings {
         try {
             String value = getString(name, null);
             if (!StringUtils.isNullOrEmpty(value)) {
-                return Float.parseFloat(value.trim().split(" ")[0]);
+                return Float.parseFloat(value.trim());
             }
         } catch (NumberFormatException e) {
             log.warn("Failed to parse float for " + name + USING_DEFAULT_OF
@@ -562,7 +562,7 @@ public class PippoSettings {
         try {
             String value = getString(name, null);
             if (!StringUtils.isNullOrEmpty(value)) {
-                return Double.parseDouble(value.trim().split(" ")[0]);
+                return Double.parseDouble(value.trim());
             }
         } catch (NumberFormatException e) {
             log.warn("Failed to parse double for " + name + USING_DEFAULT_OF
@@ -655,11 +655,8 @@ public class PippoSettings {
      */
     public List<Integer> getIntegers(String name, String delimiter) {
         List<String> strings = getStrings(name, delimiter);
-        if (strings.isEmpty()) {
-            return Collections.emptyList();
-        }
 
-        List<Integer> ints = new ArrayList<>();
+        List<Integer> ints = new ArrayList<>(strings.size());
         for (String value : strings) {
             try {
                 int i = Integer.parseInt(value);
@@ -690,11 +687,8 @@ public class PippoSettings {
      */
     public List<Long> getLongs(String name, String delimiter) {
         List<String> strings = getStrings(name, delimiter);
-        if (strings.isEmpty()) {
-            return Collections.emptyList();
-        }
 
-        List<Long> longs = new ArrayList<>();
+        List<Long> longs = new ArrayList<>(strings.size());
         for (String value : strings) {
             try {
                 long i = Long.parseLong(value);

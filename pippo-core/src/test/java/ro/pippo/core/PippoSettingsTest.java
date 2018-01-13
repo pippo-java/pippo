@@ -61,4 +61,36 @@ public class PippoSettingsTest {
         values = pippoSettings.getIntegers("key", ",");
         assertTrue(values.isEmpty());
     }
+
+    @Test
+    public void testGetNumber() {
+        Mockito.doReturn(" 1234").when(pippoSettings).getString("key", null);
+        Mockito.doCallRealMethod().when(pippoSettings).getInteger("key", 0);
+        Mockito.doCallRealMethod().when(pippoSettings).getLong("key", 0);
+        Mockito.doCallRealMethod().when(pippoSettings).getFloat("key", 0.0f);
+        Mockito.doCallRealMethod().when(pippoSettings).getDouble("key", 2.4d);
+
+        int valueInt = pippoSettings.getInteger("key", 0);
+        long valueLong = pippoSettings.getLong("key", 0);
+        float valueFloat = pippoSettings.getFloat("key", 0.0f);
+        double valueDouble = pippoSettings.getDouble("key", 2.4d);
+
+        assertEquals(1234, valueInt);
+        assertEquals(1234L, valueLong);
+        assertEquals(Float.parseFloat("1234"), valueFloat, 0.0f);
+        assertEquals(Double.parseDouble("1234"), valueDouble, 0.0d);
+
+        // case when number followed by some char sequence
+        Mockito.doReturn(" 1234 abc").when(pippoSettings).getString("key", null);
+        valueInt = pippoSettings.getInteger("key", 0);
+        valueLong = pippoSettings.getLong("key", 0);
+        valueFloat = pippoSettings.getFloat("key", 0.0f);
+        valueDouble = pippoSettings.getDouble("key", 2.4d);
+
+        assertEquals(0, valueInt);
+        assertEquals(0L, valueLong);
+        assertEquals(0.0f, valueFloat, 0.0f);
+        assertEquals(2.4d, valueDouble, 0.0d);
+    }
+
 }
