@@ -5,10 +5,17 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 ### [Unreleased][unreleased]
 
 #### Fixed
+- [#410]: Any syntax error in freemarker template results in "PippoRuntimeException: Recursion in error handler" exception
 
 #### Changed
+- Make setters fluent in `Pac4jCallbackHandler` (pippo-pac4j module)
+- Move logging from debug to trace in `DefaultUriMatcher#addUriPattern` (less noise)
+- Feat settings: remove braces from start and end in `getStrings`
+- Feat settings: add helper methods to get list of float or double
+- [#412]: Return immutable `Set` when `ParameterValue#toSet` is called
 
 #### Added
+- Add automatically `PippoNopHttpActionAdapter` in `SettingsConfigFactory#build` (pippo-pac4j module)
 
 #### Removed
 
@@ -455,6 +462,8 @@ Initial release.
 [0.3.0]: https://github.com/decebals/pippo/compare/pippo-parent-0.2.0...pippo-parent-0.3.0
 [0.2.0]: https://github.com/decebals/pippo/compare/pippo-parent-0.1.0...pippo-parent-0.2.0
 
+[#412]: https://github.com/decebals/pippo/pull/412
+[#410]: https://github.com/decebals/pippo/issues/410
 [#408]: https://github.com/decebals/pippo/pull/408
 [#404]: https://github.com/decebals/pippo/pull/404
 [#400]: https://github.com/decebals/pippo/issues/400
