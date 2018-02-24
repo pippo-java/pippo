@@ -20,8 +20,8 @@ import ro.pippo.core.route.RouteContext;
 /**
  * ErrorHandler is the core ExceptionHandler.
  * <p>
- * ErrorHandler can register custom ExceptionHandlers and will handle an exception
- * with a matching ExceptionHandler, if found.  Otherwise ErrorHandler will fallback
+ * {@link ErrorHandler} can register custom {@link ExceptionHandler}s and will handle an exception
+ * with a matching {@code ExceptionHandler}, if found. Otherwise {@code ErrorHandler} will fallback
  * to itself to handle the exception.
  * </p>
  *
