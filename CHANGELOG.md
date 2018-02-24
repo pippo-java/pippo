@@ -5,6 +5,16 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 ### [Unreleased][unreleased]
 
 #### Fixed
+
+#### Changed
+
+#### Added
+
+#### Removed
+
+### [1.8.0] - 2018-02-24
+
+#### Fixed
 - [#410]: Any syntax error in freemarker template results in "PippoRuntimeException: Recursion in error handler" exception
 
 #### Changed
@@ -440,7 +450,8 @@ Initial release.
 - Added [pippo-freemarker]
 - Added [pippo-jetty]
 
-[unreleased]: https://github.com/decebals/pippo/compare/release-1.7.0...HEAD
+[unreleased]: https://github.com/decebals/pippo/compare/release-1.8.0...HEAD
+[1.8.0]: https://github.com/decebals/pippo/compare/release-1.7.0...release-1.8.0
 [1.7.0]: https://github.com/decebals/pippo/compare/release-1.6.0...release-1.7.0
 [1.6.0]: https://github.com/decebals/pippo/compare/release-1.5.0...release-1.6.0
 [1.5.0]: https://github.com/decebals/pippo/compare/release-1.4.0...release-1.5.0
