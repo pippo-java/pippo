@@ -1,13 +1,13 @@
 Micro Java Web Framework
 =====================
 [![Join the chat at https://gitter.im/decebals/pippo](https://badges.gitter.im/decebals/pippo.svg)](https://gitter.im/decebals/pippo?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
-[![Travis CI Build Status](https://travis-ci.org/decebals/pippo.png)](https://travis-ci.org/decebals/pippo)
-[![Coverage Status](https://coveralls.io/repos/decebals/pippo/badge.svg?branch=master&service=github)](https://coveralls.io/github/decebals/pippo?branch=master)
+[![Travis CI Build Status](https://travis-ci.org/pippo-java/pippo.png)](https://travis-ci.org/pippo-java/pippo)
+[![Coverage Status](https://coveralls.io/repos/pippo-java/pippo/badge.svg?branch=master&service=github)](https://coveralls.io/github/pippo-java/pippo?branch=master)
 [![Maven Central](http://img.shields.io/maven-central/v/ro.pippo/pippo.svg)](http://search.maven.org/#search|ga|1|ro.pippo)
 
 <!--
-[![Issue Stats](http://www.issuestats.com/github/decebals/pippo/badge/issue?style=flat)](http://www.issuestats.com/github/decebals/pippo)
-[![Issue Stats](http://www.issuestats.com/github/decebals/pippo/badge/pr?style=flat)](http://www.issuestats.com/github/decebals/pippo)
+[![Issue Stats](http://www.issuestats.com/github/pippo-java/pippo/badge/issue?style=flat)](http://www.issuestats.com/github/pippo-java/pippo)
+[![Issue Stats](http://www.issuestats.com/github/pippo-java/pippo/badge/pr?style=flat)](http://www.issuestats.com/github/pippo-java/pippo)
 -->
 
 
@@ -255,5 +255,5 @@ Documentation is available on [pippo.ro](http://www.pippo.ro)
 
 Demo
 ---------------
-Demo applications are available on [pippo-demo](https://github.com/decebals/pippo-demo)   
-For a real life application built with Pippo please look at [Web Accounting - Pippo Demo](https://github.com/decebals/matilda)
+Demo applications are available on [pippo-demo](https://github.com/pippo-java/pippo-demo)   
+For a real life application built with Pippo please look at [Web Accounting - Pippo Demo](https://github.com/pippo-java/matilda)
