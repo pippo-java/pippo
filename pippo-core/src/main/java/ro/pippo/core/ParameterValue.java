@@ -24,6 +24,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.math.BigDecimal;
 import java.sql.Time;
 import java.sql.Timestamp;
+import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -33,6 +34,7 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Set;
 import java.util.UUID;
 
@@ -45,9 +47,15 @@ import java.util.UUID;
  */
 public class ParameterValue implements Serializable {
 
+    private final Locale locale;
     private final String[] values;
 
     public ParameterValue(final String... values) {
+        this(Locale.getDefault(), values);
+    }
+
+    public ParameterValue(final Locale locale, final String... values) {
+        this.locale = locale;
         this.values = values;
     }
 
@@ -131,7 +139,12 @@ public class ParameterValue implements Serializable {
             return defaultValue;
         }
 
-        return Float.parseFloat(values[0]);
+        try {
+            Number number = getDecimalFormat().parse(values[0]);
+            return number.floatValue();
+        } catch (ParseException e) {
+            throw new PippoRuntimeException(e, "Failed to parse '{}'", values[0]);
+        }
     }
 
     public double toDouble() {
@@ -143,7 +156,12 @@ public class ParameterValue implements Serializable {
             return defaultValue;
         }
 
-        return Double.parseDouble(values[0]);
+        try {
+            Number number = getDecimalFormat().parse(values[0]);
+            return number.doubleValue();
+        } catch (ParseException e) {
+            throw new PippoRuntimeException(e, "Failed to parse '{}'", values[0]);
+        }
     }
 
     public BigDecimal toBigDecimal() {
@@ -155,7 +173,13 @@ public class ParameterValue implements Serializable {
             return defaultValue;
         }
 
-        return new BigDecimal(Double.parseDouble(values[0]));
+        DecimalFormat formatter = getDecimalFormat();
+        formatter.setParseBigDecimal(true);
+        try {
+            return (BigDecimal) formatter.parse(values[0]);
+        } catch (ParseException e) {
+            throw new PippoRuntimeException(e, "Failed to parse '{}'", values[0]);
+        }
     }
 
     public UUID toUUID() {
@@ -380,7 +404,7 @@ public class ParameterValue implements Serializable {
         if (classOfT.isArray()) {
             Class<?> componentType = classOfT.getComponentType();
             // cheat by not instantiating a ParameterValue for every value
-            ParameterValue parameterValue = new ParameterValue("PLACEHOLDER");
+            ParameterValue parameterValue = newParameterValuePlaceHolder();
             List<String> list = toList();
             Object array = Array.newInstance(componentType, list.size());
 
@@ -418,7 +442,7 @@ public class ParameterValue implements Serializable {
             X collection = (X) constructor.newInstance();
 
             // cheat by not instantiating a ParameterValue for every value
-            ParameterValue parameterValue = new ParameterValue("PLACEHOLDER");
+            ParameterValue parameterValue = newParameterValuePlaceHolder();
 
             List<String> list = toList();
 
@@ -529,6 +553,14 @@ public class ParameterValue implements Serializable {
 
     public String[] getValues() {
         return values;
+    }
+
+    private DecimalFormat getDecimalFormat() {
+        return (DecimalFormat) DecimalFormat.getInstance(locale);
+    }
+
+    private ParameterValue newParameterValuePlaceHolder() {
+        return new ParameterValue(locale, "PLACEHOLDER");
     }
 
 }

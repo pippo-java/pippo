@@ -23,10 +23,12 @@ import java.math.BigDecimal;
 import java.sql.Date;
 import java.sql.Time;
 import java.sql.Timestamp;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.UUID;
@@ -95,29 +97,98 @@ public class ParameterValueTest {
 
     @Test
     public void testFloat() throws Exception {
+        final Locale US = Locale.US;
+        assertEquals(0f, new ParameterValue(US, "").toFloat(), 0f);
+        assertEquals(0f, new ParameterValue(US, " ").toFloat(), 0f);
+        assertEquals(3.14159f, new ParameterValue(US, "3.14159").toFloat(), 0f);
+        assertEquals(3.14159f, new ParameterValue(US, "3.14159", "3.14159", "3.14159").toFloat(), 0f);
+        assertArrayEquals(new Float[]{3.14159f, 3.14159f, 3.14159f}, new ParameterValue(US, "3.14159", "3.14159", "3.14159").to(Float[].class));
+    }
+
+    @Test
+    public void testFloatDefaultLocale() throws Exception {
         assertEquals(0f, new ParameterValue("").toFloat(), 0f);
         assertEquals(0f, new ParameterValue(" ").toFloat(), 0f);
-        assertEquals(3.14159f, new ParameterValue("3.14159").toFloat(), 0f);
-        assertEquals(3.14159f, new ParameterValue("3.14159", "3.14159", "3.14159").toFloat(), 0f);
-        assertArrayEquals(new Float[]{3.14159f, 3.14159f, 3.14159f}, new ParameterValue("3.14159", "3.14159", "3.14159").to(Float[].class));
+
+        {
+            final float expected = 3.14159f;
+            final String numberString = formatFloatToDefaultLocale(expected);
+            assertEquals(expected, new ParameterValue(numberString).toFloat(), 0f);
+            assertEquals(expected, new ParameterValue(numberString, numberString, numberString).toFloat(), 0f);
+            assertArrayEquals(new Float[]{expected, expected, expected}, new ParameterValue(numberString, numberString, numberString).to(Float[].class));
+        }
+
+        {
+            final float expected = 1.00f; // same 1.0f or 1f
+            final String numberString = formatFloatToDefaultLocale(expected);
+            assertEquals(expected, new ParameterValue(numberString).toFloat(), 0f);
+            assertEquals(expected, new ParameterValue(numberString, numberString, numberString).toFloat(), 0f);
+            assertArrayEquals(new Float[]{expected, expected, expected}, new ParameterValue(numberString, numberString, numberString).to(Float[].class));
+        }
     }
 
     @Test
     public void testDouble() throws Exception {
+        final Locale US = Locale.US;
+        assertEquals(0d, new ParameterValue(US, "").toDouble(), 0d);
+        assertEquals(0d, new ParameterValue(US, " ").toDouble(), 0d);
+        assertEquals(3.14159d, new ParameterValue(US, "3.14159").toDouble(), 0d);
+        assertEquals(3.14159d, new ParameterValue(US, "3.14159", "3.14159", "3.14159").toDouble(), 0d);
+        assertArrayEquals(new Double[]{3.14159d, 3.14159d, 3.14159d}, new ParameterValue(US, "3.14159", "3.14159", "3.14159").to(Double[].class));
+    }
+
+    @Test
+    public void testDoubleDefaultLocale() throws Exception {
         assertEquals(0d, new ParameterValue("").toDouble(), 0d);
         assertEquals(0d, new ParameterValue(" ").toDouble(), 0d);
-        assertEquals(3.14159d, new ParameterValue("3.14159").toDouble(), 0d);
-        assertEquals(3.14159d, new ParameterValue("3.14159", "3.14159", "3.14159").toDouble(), 0d);
-        assertArrayEquals(new Double[]{3.14159d, 3.14159d, 3.14159d}, new ParameterValue("3.14159", "3.14159", "3.14159").to(Double[].class));
+
+        {
+            final double expected = 3.14159d;
+            final String numberString = formatDoubleToDefaultLocale(expected);
+            assertEquals(expected, new ParameterValue(numberString).toDouble(), 0d);
+            assertEquals(expected, new ParameterValue(numberString, numberString, numberString).toDouble(), 0d);
+            assertArrayEquals(new Double[]{expected, expected, expected}, new ParameterValue(numberString, numberString, numberString).to(Double[].class));
+        }
+
+        {
+            final double expected = 1.00d; // same 1.0d or 1d
+            final String numberString = formatDoubleToDefaultLocale(expected);
+            assertEquals(expected, new ParameterValue(numberString).toDouble(), 0d);
+            assertEquals(expected, new ParameterValue(numberString, numberString, numberString).toDouble(), 0d);
+            assertArrayEquals(new Double[]{expected, expected, expected}, new ParameterValue(numberString, numberString, numberString).to(Double[].class));
+        }
     }
 
     @Test
     public void testBigDecimal() throws Exception {
+        final Locale US = Locale.US;
         assertEquals(new BigDecimal(0d), new ParameterValue("").toBigDecimal());
         assertEquals(new BigDecimal(0d), new ParameterValue(" ").toBigDecimal());
-        assertEquals(new BigDecimal(3.14159d), new ParameterValue("3.14159").toBigDecimal());
-        assertEquals(new BigDecimal(3.14159d), new ParameterValue("3.14159", "3.14159", "3.14159").toBigDecimal());
-        assertArrayEquals(new BigDecimal[]{new BigDecimal(3.14159d), new BigDecimal(3.14159d), new BigDecimal(3.14159d)}, new ParameterValue("3.14159", "3.14159", "3.14159").to(BigDecimal[].class));
+        assertEquals(new BigDecimal("3.14159"), new ParameterValue(US, "3.14159").toBigDecimal());
+        assertEquals(new BigDecimal("3.14159"), new ParameterValue(US, "3.14159", "3.14159", "3.14159").toBigDecimal());
+        assertArrayEquals(new BigDecimal[]{new BigDecimal("3.14159"), new BigDecimal("3.14159"), new BigDecimal("3.14159")}, new ParameterValue(US, "3.14159", "3.14159", "3.14159").to(BigDecimal[].class));
+    }
+
+    @Test
+    public void testBigDecimalDefaultLocale() throws Exception {
+        assertEquals(new BigDecimal(0d), new ParameterValue("").toBigDecimal());
+        assertEquals(new BigDecimal(0d), new ParameterValue(" ").toBigDecimal());
+
+        {
+            final BigDecimal expected = new BigDecimal("3.14159");
+            final String numberString = formatBigDecimalToDefaultLocale(expected);
+            assertEquals(expected, new ParameterValue(numberString).toBigDecimal());
+            assertEquals(expected, new ParameterValue(numberString, numberString, numberString).toBigDecimal());
+            assertArrayEquals(new BigDecimal[]{expected, expected, expected}, new ParameterValue(numberString, numberString, numberString).to(BigDecimal[].class));
+        }
+
+        {
+            final BigDecimal expected = new BigDecimal("1.00");
+            final String numberString = formatBigDecimalToDefaultLocale(expected);
+            assertEquals(expected, new ParameterValue(numberString).toBigDecimal());
+            assertEquals(expected, new ParameterValue(numberString, numberString, numberString).toBigDecimal());
+            assertArrayEquals(new BigDecimal[]{expected, expected, expected}, new ParameterValue(numberString, numberString, numberString).to(BigDecimal[].class));
+        }
     }
 
     @Test
@@ -331,6 +402,21 @@ public class ParameterValueTest {
 
     private enum Alphabet {
         A, B, C, D, E, F, G
+    }
+
+    private String formatBigDecimalToDefaultLocale(BigDecimal number) {
+        final DecimalFormat formatter = (DecimalFormat) DecimalFormat.getInstance(Locale.getDefault());
+        formatter.setMinimumFractionDigits(number.scale());
+        formatter.setMaximumFractionDigits(number.scale());
+        return formatter.format(number);
+    }
+
+    private String formatFloatToDefaultLocale(float number) {
+        return formatBigDecimalToDefaultLocale(new BigDecimal(Float.toString(number)));
+    }
+
+    private String formatDoubleToDefaultLocale(double number) {
+        return formatBigDecimalToDefaultLocale(new BigDecimal(Double.toString(number)));
     }
 
 }
