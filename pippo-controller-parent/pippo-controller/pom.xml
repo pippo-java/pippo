@@ -34,6 +34,22 @@
             <version>${servlet.version}</version>
             <scope>provided</scope>
         </dependency>
+
+	    <!-- Test -->
+	    <dependency>
+	        <groupId>ro.pippo</groupId>
+	        <artifactId>pippo-test</artifactId>
+	        <version>${project.version}</version>
+	        <scope>test</scope>
+	    </dependency>
+
+        <dependency>
+            <groupId>ro.pippo</groupId>
+            <artifactId>pippo-undertow</artifactId>
+            <version>${project.version}</version>
+            <scope>test</scope>
+        </dependency>
+
     </dependencies>
 
 </project>

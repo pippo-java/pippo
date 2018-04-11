@@ -37,6 +37,7 @@ import java.util.Collections;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
@@ -94,7 +95,7 @@ public final class Request {
      */
     public ParameterValue getParameter(String name) {
         if (!getParameters().containsKey(name)) {
-            return new ParameterValue();
+            return buildParameterValue();
         }
 
         return getParameters().get(name);
@@ -112,7 +113,7 @@ public final class Request {
      */
     public ParameterValue getQueryParameter(String name) {
         if (!getQueryParameters().containsKey(name)) {
-            return new ParameterValue();
+            return buildParameterValue();
         }
 
         return getQueryParameters().get(name);
@@ -130,7 +131,7 @@ public final class Request {
      */
     public ParameterValue getPathParameter(String name) {
         if (!getPathParameters().containsKey(name)) {
-            return new ParameterValue();
+            return buildParameterValue();
         }
 
         return getPathParameters().get(name);
@@ -163,11 +164,11 @@ public final class Request {
                 } catch (NumberFormatException e) {
                     // add as a simple parameter
                     String[] values = httpServletRequest.getParameterValues(name);
-                    tmp.put(name, new ParameterValue(values));
+                    tmp.put(name, buildParameterValue(values));
                 }
             } else {
                 String[] values = httpServletRequest.getParameterValues(name);
-                tmp.put(name, new ParameterValue(values));
+                tmp.put(name, buildParameterValue(values));
             }
         }
 
@@ -186,7 +187,7 @@ public final class Request {
             for (Map.Entry<Integer, String> indexedValue : entry.getValue().entrySet()) {
                 values[indexedValue.getKey()] = indexedValue.getValue();
             }
-            tmp.put(entry.getKey(), new ParameterValue(values));
+            tmp.put(entry.getKey(), buildParameterValue(values));
         }
 
         parameters = Collections.unmodifiableMap(tmp);
@@ -197,7 +198,7 @@ public final class Request {
         if (map != null) {
             Set<String> names = map.keySet();
             for (String name : names) {
-                tmp.put(name, new ParameterValue(map.get(name)));
+                tmp.put(name, buildParameterValue(map.get(name)));
             }
         }
 
@@ -390,6 +391,19 @@ public final class Request {
         }
         return contentType;
     }
+
+    /**
+     * Returns the preferred <code>Locale</code> that the client will
+     * accept content in, based on the Accept-Language header.
+     * If the client request doesn't provide an Accept-Language header,
+     * this method returns the default locale for the server.
+     *
+     *
+     * @return		the preferred <code>Locale</code> for the client
+     */
+    public Locale getLocale() {
+		return httpServletRequest.getLocale();
+	}
 
     public String getBody() {
         if (body == null) {
@@ -613,6 +627,10 @@ public final class Request {
         RouteContext routeContext = RouteDispatcher.getRouteContext();
 
         return (routeContext != null) ? routeContext.getRequest() : null;
+    }
+
+    private ParameterValue buildParameterValue(final String... values) {
+    	return new ParameterValue(getLocale());
     }
 
     @Override
