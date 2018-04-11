@@ -630,7 +630,7 @@ public final class Request {
     }
 
     private ParameterValue buildParameterValue(final String... values) {
-    	return new ParameterValue(getLocale());
+    	return new ParameterValue(getLocale(), values);
     }
 
     @Override
