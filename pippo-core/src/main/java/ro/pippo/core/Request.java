@@ -393,13 +393,7 @@ public final class Request {
     }
 
     /**
-     * Returns the preferred <code>Locale</code> that the client will
-     * accept content in, based on the Accept-Language header.
-     * If the client request doesn't provide an Accept-Language header,
-     * this method returns the default locale for the server.
-     *
-     *
-     * @return		the preferred <code>Locale</code> for the client
+     * It's wrapper over {@link HttpServletRequest#getLocale}.
      */
     public Locale getLocale() {
 		return httpServletRequest.getLocale();
