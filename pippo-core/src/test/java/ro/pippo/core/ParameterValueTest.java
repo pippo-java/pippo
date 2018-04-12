@@ -160,7 +160,7 @@ public class ParameterValueTest {
 
     @Test
     public void testDoublePtBR() throws Exception {
-    	final Locale PT_BR = new Locale("pt", "BR");
+        final Locale PT_BR = new Locale("pt", "BR");
         assertEquals(0d, new ParameterValue(PT_BR, "").toDouble(), 0d);
         assertEquals(0d, new ParameterValue(PT_BR, " ").toDouble(), 0d);
         assertEquals(3.14159d, new ParameterValue(PT_BR, "3,14159").toDouble(), 0d);
@@ -213,7 +213,7 @@ public class ParameterValueTest {
 
     @Test
     public void testBigDecimalPtBR() throws Exception {
-    	final Locale PT_BR = new Locale("pt", "BR");
+        final Locale PT_BR = new Locale("pt", "BR");
         assertEquals(new BigDecimal(0d), new ParameterValue(PT_BR, "").toBigDecimal());
         assertEquals(new BigDecimal(0d), new ParameterValue(PT_BR, " ").toBigDecimal());
         assertEquals(new BigDecimal("3.14159"), new ParameterValue(PT_BR, "3,14159").toBigDecimal());
