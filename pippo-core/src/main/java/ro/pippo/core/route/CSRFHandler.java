@@ -109,7 +109,7 @@ public class CSRFHandler implements RouteHandler<RouteContext> {
         if (HttpConstants.Method.POST.equals(rawMethod)) {
 
             // Verify the content-type is guarded
-            String contentType = new ParameterValue(context.getHeader("Content-Type")).toString("").toLowerCase();
+            String contentType = new ParameterValue(context.getRequest().getLocale(), context.getHeader("Content-Type")).toString("").toLowerCase();
             contentType = StringUtils.getPrefix(contentType, ';').trim();
             if (!guardedTypes.contains(contentType)) {
                 log.debug("Ignoring '{}' request for {} '{}'", contentType, context.getRequestMethod(),

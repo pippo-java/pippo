@@ -44,7 +44,7 @@ public class HeaderExtractor implements MethodParameterExtractor {
         String name = getParameterName(parameter, annotation);
         String pattern = annotation.pattern();
 
-        ParameterValue parameterValue = new ParameterValue(routeContext.getHeader(name));
+        ParameterValue parameterValue = new ParameterValue(routeContext.getRequest().getLocale(), routeContext.getHeader(name));
 
         Class<?> parameterType = parameter.getParameterType();
         if (Collection.class.isAssignableFrom(parameterType)) {

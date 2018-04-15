@@ -96,13 +96,34 @@ public class ParameterValueTest {
     }
 
     @Test
-    public void testFloat() throws Exception {
+    public void testFloatUS() throws Exception {
         final Locale US = Locale.US;
         assertEquals(0f, new ParameterValue(US, "").toFloat(), 0f);
         assertEquals(0f, new ParameterValue(US, " ").toFloat(), 0f);
         assertEquals(3.14159f, new ParameterValue(US, "3.14159").toFloat(), 0f);
         assertEquals(3.14159f, new ParameterValue(US, "3.14159", "3.14159", "3.14159").toFloat(), 0f);
         assertArrayEquals(new Float[]{3.14159f, 3.14159f, 3.14159f}, new ParameterValue(US, "3.14159", "3.14159", "3.14159").to(Float[].class));
+    }
+
+    @Test
+    public void testFloatPtBR() throws Exception {
+        final Locale PT_BR = new Locale("pt", "BR");
+        assertEquals(0f, new ParameterValue(PT_BR, "").toFloat(), 0f);
+        assertEquals(0f, new ParameterValue(PT_BR, " ").toFloat(), 0f);
+        assertEquals(3.14159f, new ParameterValue(PT_BR, "3,14159").toFloat(), 0f);
+        assertEquals(3.14159f, new ParameterValue(PT_BR, "3,14159", "3,14159", "3,14159").toFloat(), 0f);
+        assertArrayEquals(new Float[]{3.14159f, 3.14159f, 3.14159f}, new ParameterValue(PT_BR, "3,14159", "3,14159", "3,14159").to(Float[].class));
+    }
+
+    @Test
+    public void testFloatFrench() throws Exception {
+        assertEquals(0f, new ParameterValue(Locale.FRENCH, "").toFloat(), 0f);
+        assertEquals(0f, new ParameterValue(Locale.FRENCH, " ").toFloat(), 0f);
+        // grouping separator for the French locale to be used should be \u00a0 (non-breaking space) not \u0020 (space)
+        final String frenchNumber = "3 987,14159".replaceAll(" ", "\u00A0");
+        assertEquals(3987.14159f, new ParameterValue(Locale.FRENCH, frenchNumber).toFloat(), 0f);
+        assertEquals(3987.14159f, new ParameterValue(Locale.FRENCH, frenchNumber, frenchNumber, frenchNumber).toFloat(), 0f);
+        assertArrayEquals(new Float[]{3987.14159f, 3987.14159f, 3987.14159f}, new ParameterValue(Locale.FRENCH, frenchNumber, frenchNumber, frenchNumber).to(Float[].class));
     }
 
     @Test
@@ -128,13 +149,34 @@ public class ParameterValueTest {
     }
 
     @Test
-    public void testDouble() throws Exception {
+    public void testDoubleUS() throws Exception {
         final Locale US = Locale.US;
         assertEquals(0d, new ParameterValue(US, "").toDouble(), 0d);
         assertEquals(0d, new ParameterValue(US, " ").toDouble(), 0d);
         assertEquals(3.14159d, new ParameterValue(US, "3.14159").toDouble(), 0d);
         assertEquals(3.14159d, new ParameterValue(US, "3.14159", "3.14159", "3.14159").toDouble(), 0d);
         assertArrayEquals(new Double[]{3.14159d, 3.14159d, 3.14159d}, new ParameterValue(US, "3.14159", "3.14159", "3.14159").to(Double[].class));
+    }
+
+    @Test
+    public void testDoublePtBR() throws Exception {
+        final Locale PT_BR = new Locale("pt", "BR");
+        assertEquals(0d, new ParameterValue(PT_BR, "").toDouble(), 0d);
+        assertEquals(0d, new ParameterValue(PT_BR, " ").toDouble(), 0d);
+        assertEquals(3.14159d, new ParameterValue(PT_BR, "3,14159").toDouble(), 0d);
+        assertEquals(3.14159d, new ParameterValue(PT_BR, "3,14159", "3,14159", "3,14159").toDouble(), 0d);
+        assertArrayEquals(new Double[]{3.14159d, 3.14159d, 3.14159d}, new ParameterValue(PT_BR, "3,14159", "3,14159", "3,14159").to(Double[].class));
+    }
+
+    @Test
+    public void testDoubleFrench() throws Exception {
+        assertEquals(0d, new ParameterValue(Locale.FRENCH, "").toDouble(), 0d);
+        assertEquals(0d, new ParameterValue(Locale.FRENCH, " ").toDouble(), 0d);
+        // grouping separator for the French locale to be used should be \u00a0 (non-breaking space) not \u0020 (space)
+        final String frenchNumber = "3 987,14159".replaceAll(" ", "\u00A0");
+        assertEquals(3987.14159d, new ParameterValue(Locale.FRENCH, frenchNumber).toDouble(), 0d);
+        assertEquals(3987.14159d, new ParameterValue(Locale.FRENCH, frenchNumber, frenchNumber, frenchNumber).toDouble(), 0d);
+        assertArrayEquals(new Double[]{3987.14159d, 3987.14159d, 3987.14159d}, new ParameterValue(Locale.FRENCH, frenchNumber, frenchNumber, frenchNumber).to(Double[].class));
     }
 
     @Test
@@ -160,13 +202,34 @@ public class ParameterValueTest {
     }
 
     @Test
-    public void testBigDecimal() throws Exception {
+    public void testBigDecimalUS() throws Exception {
         final Locale US = Locale.US;
-        assertEquals(new BigDecimal(0d), new ParameterValue("").toBigDecimal());
-        assertEquals(new BigDecimal(0d), new ParameterValue(" ").toBigDecimal());
+        assertEquals(new BigDecimal(0d), new ParameterValue(US, "").toBigDecimal());
+        assertEquals(new BigDecimal(0d), new ParameterValue(US, " ").toBigDecimal());
         assertEquals(new BigDecimal("3.14159"), new ParameterValue(US, "3.14159").toBigDecimal());
         assertEquals(new BigDecimal("3.14159"), new ParameterValue(US, "3.14159", "3.14159", "3.14159").toBigDecimal());
         assertArrayEquals(new BigDecimal[]{new BigDecimal("3.14159"), new BigDecimal("3.14159"), new BigDecimal("3.14159")}, new ParameterValue(US, "3.14159", "3.14159", "3.14159").to(BigDecimal[].class));
+    }
+
+    @Test
+    public void testBigDecimalPtBR() throws Exception {
+        final Locale PT_BR = new Locale("pt", "BR");
+        assertEquals(new BigDecimal(0d), new ParameterValue(PT_BR, "").toBigDecimal());
+        assertEquals(new BigDecimal(0d), new ParameterValue(PT_BR, " ").toBigDecimal());
+        assertEquals(new BigDecimal("3.14159"), new ParameterValue(PT_BR, "3,14159").toBigDecimal());
+        assertEquals(new BigDecimal("3.14159"), new ParameterValue(PT_BR, "3,14159", "3,14159", "3,14159").toBigDecimal());
+        assertArrayEquals(new BigDecimal[]{new BigDecimal("3.14159"), new BigDecimal("3.14159"), new BigDecimal("3.14159")}, new ParameterValue(PT_BR, "3,14159", "3,14159", "3,14159").to(BigDecimal[].class));
+    }
+
+    @Test
+    public void testBigDecimalFrench() throws Exception {
+        assertEquals(new BigDecimal(0d), new ParameterValue(Locale.FRENCH, "").toBigDecimal());
+        assertEquals(new BigDecimal(0d), new ParameterValue(Locale.FRENCH, " ").toBigDecimal());
+        // grouping separator for the French locale to be used should be \u00a0 (non-breaking space) not \u0020 (space)
+        final String frenchNumber = "3 987,14159".replaceAll(" ", "\u00A0");
+        assertEquals(new BigDecimal("3987.14159"), new ParameterValue(Locale.FRENCH, frenchNumber).toBigDecimal());
+        assertEquals(new BigDecimal("3987.14159"), new ParameterValue(Locale.FRENCH, frenchNumber, frenchNumber, frenchNumber).toBigDecimal());
+        assertArrayEquals(new BigDecimal[]{new BigDecimal("3987.14159"), new BigDecimal("3987.14159"), new BigDecimal("3987.14159")}, new ParameterValue(Locale.FRENCH, frenchNumber, frenchNumber, frenchNumber).to(BigDecimal[].class));
     }
 
     @Test
