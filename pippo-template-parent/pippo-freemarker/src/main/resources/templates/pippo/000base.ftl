@@ -83,11 +83,11 @@
         <span class="description">${statusMessage}</span> ${statusCode}
       </div>
       <#if message??>
-        <pre class="message"><#escape x as x?html>${message}</#escape></pre>
+        <pre class="message"><#noautoesc>${message?html}</#noautoesc></pre>
       </#if>
       <div class="text">${requestMethod} ${requestUri}</div>
       <#if stacktrace??>
-        <pre><#escape x as x?html>${stacktrace}</#escape></pre>
+        <pre><#noautoesc>${stacktrace?html}</#noautoesc></pre>
       <#else>
         <div class="frowny">:(</div>
       </#if>
