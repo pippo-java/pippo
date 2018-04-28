@@ -15,7 +15,7 @@
     <description>Freemarker template engine</description>
 
     <properties>
-        <freemarker.version>2.3.23</freemarker.version>
+        <freemarker.version>2.3.28</freemarker.version>
     </properties>
 
     <dependencies>
