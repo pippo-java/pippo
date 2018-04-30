@@ -80,7 +80,7 @@ public class ControllerRegistry {
      * @param packageNames
      */
     public void register(String... packageNames) {
-        List<Class<? extends Controller>> classes = getControllerClasses(packageNames);
+        Collection<Class<? extends Controller>> classes = getControllerClasses(packageNames);
         if (classes.isEmpty()) {
             log.warn("No annotated controllers found in package(s) '{}'", Arrays.toString(packageNames));
             return;
@@ -199,7 +199,7 @@ public class ControllerRegistry {
             for (String controllerPath : controllerPaths) {
                 if (methodPaths.length == 0) {
                     // controllerMethod does not specify a path, inherit from controller
-                    String fullPath = StringUtils.addStart(StringUtils.removeEnd(controllerPath, "/"), "/");
+                    String fullPath = StringUtils.addStart(controllerPath, "/");
 
                     // create the route handler
                     RouteHandler handler = new ControllerRouteHandler(application, method);
@@ -217,7 +217,7 @@ public class ControllerRegistry {
                         String path = Stream.of(StringUtils.removeEnd(controllerPath, "/"), StringUtils.removeStart(methodPath, "/"))
                             .filter(Objects::nonNull)
                             .collect(Collectors.joining("/"));
-                        String fullPath = StringUtils.addStart(StringUtils.removeEnd(path, "/"), "/");
+                        String fullPath = StringUtils.addStart(path, "/");
 
                         // create the route handler
                         RouteHandler handler = new ControllerRouteHandler(application, method);
@@ -243,21 +243,9 @@ public class ControllerRegistry {
      * @param packageNames
      * @return controller classes
      */
-    @SuppressWarnings("unchecked")
-    private List<Class<? extends Controller>> getControllerClasses(String... packageNames) {
+    private Collection<Class<? extends Controller>> getControllerClasses(String... packageNames) {
         log.debug("Discovering annotated controller in package(s) '{}'", Arrays.toString(packageNames));
-        Collection<Class<?>> allClasses = ClassUtils.getAnnotatedClasses(Path.class, packageNames);
-
-        List<Class<? extends Controller>> classes = new ArrayList<>();
-        for (Class<?> aClass : allClasses) {
-            if (Controller.class.isAssignableFrom(aClass)) {
-                classes.add((Class<? extends Controller>) aClass);
-            } else {
-                log.warn("Class '{}' is annotated with @Path but is not a Controller", aClass.getSimpleName());
-            }
-        }
-
-        return classes;
+        return ClassUtils.getSubTypesOf(Controller.class, packageNames);
     }
 
     /**
@@ -307,7 +295,7 @@ public class ControllerRegistry {
                 // create controller paths based on the parent paths
                 for (String parentPath : parentPaths) {
                     for (String path : controllerPath.value()) {
-                        paths.add(parentPath + path);
+                        paths.add(StringUtils.removeEnd(parentPath, "/") + "/" + StringUtils.removeStart(path, "/"));
                     }
                 }
             }
