@@ -35,34 +35,34 @@ public class ControllerRegistryTest {
     }
 
     @Test
-    public void test001() throws Exception {
+    public void testWithoutPath() throws Exception {
         controllerRegistry.register(WithoutPathController.class);
         assertThat(getUriPatterns(controllerRegistry), containsInAnyOrder(WithoutPathController.expectedUriPatterns()));
     }
 
     @Test
-    public void test002() throws Exception {
+    public void testWithPathWithoutValue() throws Exception {
         controllerRegistry.register(WithPathWithoutValueController.class);
         assertThat(getUriPatterns(controllerRegistry),
                 containsInAnyOrder(WithPathWithoutValueController.expectedUriPatterns()));
     }
 
     @Test
-    public void test003() throws Exception {
+    public void testWithPathWithSingleValue() throws Exception {
         controllerRegistry.register(WithPathWithSingleValueController.class);
         assertThat(getUriPatterns(controllerRegistry),
                 containsInAnyOrder(WithPathWithSingleValueController.expectedUriPatterns()));
     }
 
     @Test
-    public void test004() throws Exception {
+    public void testWithPathWithMultiValue() throws Exception {
         controllerRegistry.register(WithPathWithMultiValueController.class);
         assertThat(getUriPatterns(controllerRegistry),
                 containsInAnyOrder(WithPathWithMultiValueController.expectedUriPatterns()));
     }
 
     @Test
-    public void test005() throws Exception {
+    public void testRegisterPackage() throws Exception {
         controllerRegistry.register(WithoutPathController.class.getPackage());
         int expectedTotalRoutes = WithoutPathController.expectedUriPatterns().length
                 + WithPathWithoutValueController.expectedUriPatterns().length
@@ -73,7 +73,7 @@ public class ControllerRegistryTest {
     }
 
     @Test
-    public void test006() throws Exception {
+    public void testRegisterControllerClass() throws Exception {
         controllerRegistry.register(WithoutPathController.class, WithPathWithoutValueController.class,
                 WithPathWithSingleValueController.class, WithPathWithMultiValueController.class);
         int expectedTotalRoutes = WithoutPathController.expectedUriPatterns().length
@@ -84,7 +84,7 @@ public class ControllerRegistryTest {
     }
 
     @Test
-    public void test007() throws Exception {
+    public void testRegisterControllerInstance() throws Exception {
         controllerRegistry.register(new WithoutPathController(), new WithPathWithoutValueController(),
                 new WithPathWithSingleValueController(), new WithPathWithMultiValueController());
         int expectedTotalRoutes = WithoutPathController.expectedUriPatterns().length
@@ -95,20 +95,20 @@ public class ControllerRegistryTest {
     }
 
     @Test
-    public void test008() throws Exception {
+    public void testRegisterControllerWithoutRoute() throws Exception {
         controllerRegistry.register(new WithoutRouteController());
         assertEquals(0, controllerRegistry.getRoutes().size());
     }
 
     @Test
-    public void test009() throws Exception {
+    public void testRegisterPackageThatDoNotExist() throws Exception {
         controllerRegistry.register("ro.pippo.controller.nonexistent.package1",
                 "ro.pippo.controller.nonexistent.package2");
         assertEquals(0, controllerRegistry.getRoutes().size());
     }
 
     @Test
-    public void test010() throws Exception {
+    public void testRegisterComplexControllerWithInheritance() throws Exception {
         controllerRegistry.register(WithPathWithMultiValueAndInheritanceController.class);
         assertThat(getUriPatterns(controllerRegistry),
                 containsInAnyOrder(WithPathWithMultiValueAndInheritanceController.expectedUriPatterns()));
