@@ -38,6 +38,7 @@ import java.util.Collections;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.Objects;
+import java.util.function.Supplier;
 import java.util.jar.JarEntry;
 import java.util.jar.JarInputStream;
 import java.util.stream.Collectors;
@@ -123,6 +124,18 @@ public class ClassUtils {
         return Collections.unmodifiableCollection(classes);
     }
 
+    /**
+     * Gets all sub types in hierarchy of a given type.
+     */
+    public static <T> Collection<Class<? extends T>> getSubTypesOf(Class<T> type, String... packageNames) {
+        List<Class<? extends T>> classes = getClasses(packageNames).stream()
+                .filter(aClass -> type.isAssignableFrom(aClass))
+                .map(aClass -> (Class<? extends T>) aClass)
+                .collect(Collectors.toList()); // TODO: pass a Supplier to toList() to avoid map
+
+        return Collections.unmodifiableCollection(classes);
+    }
+
     public static Collection<Class<?>> getAnnotatedClasses(Class<? extends Annotation> annotationClass, String... packageNames) {
         List<Class<?>> classes = getClasses(packageNames).stream()
                 .filter(aClass -> aClass.isAnnotationPresent(annotationClass))
@@ -166,17 +179,17 @@ public class ClassUtils {
      * declared methods of the class or interface represented by this {@code
      * Class} object, including public, protected, default (package)
      * access, and private methods, <b>but excluding inherited methods</b>.
-     * 
+     *
      * <p>This method differs from {@link Class#getDeclaredMethods()} since it
      * does <b>not return bridge methods</b>, in other words, only the methods of
      * the class are returned. <b>If you just want the methods declared in
      * {@code clazz} use this method!</b></p>
-     * 
+     *
      * @param clazz Class
-     * 
+     *
      * @return the array of {@code Method} objects representing all the
      *          declared methods of this class
-     * 
+     *
      * @see Class#getDeclaredMethods()
      */
     public static List<Method> getDeclaredMethods(Class<?> clazz) {
@@ -185,7 +198,7 @@ public class ClassUtils {
                 .filter(method -> !method.isBridge())
                 .collect(Collectors.toList());
     }
-    
+
     public static <T extends Annotation> List<T> collectNestedAnnotation(Method method, Class<T> annotationClass) {
         List<T> list = new ArrayList<>();
         for (Annotation annotation : method.getDeclaredAnnotations()) {
