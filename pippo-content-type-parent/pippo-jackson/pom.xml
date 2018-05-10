@@ -4,13 +4,13 @@
     <parent>
         <groupId>ro.pippo</groupId>
         <artifactId>pippo-content-type-parent</artifactId>
-        <version>1.9.0</version>
+        <version>1.10.0-SNAPSHOT</version>
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
     <packaging>jar</packaging>
     <artifactId>pippo-jackson</artifactId>
-    <version>1.9.0</version>
+    <version>1.10.0-SNAPSHOT</version>
     <name>Pippo Jackson</name>
     <description>Jackson integration</description>
 

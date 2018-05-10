@@ -4,13 +4,13 @@
     <parent>
         <groupId>ro.pippo</groupId>
         <artifactId>pippo-server-parent</artifactId>
-        <version>1.9.0</version>
+        <version>1.10.0-SNAPSHOT</version>
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
     <packaging>jar</packaging>
     <artifactId>pippo-undertow</artifactId>
-    <version>1.9.0</version>
+    <version>1.10.0-SNAPSHOT</version>
     <name>Pippo Undertow</name>
     <description>Undertow embedded server</description>
 
