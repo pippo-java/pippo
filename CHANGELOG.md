@@ -85,7 +85,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 - [#368]: Hot deployment doesn't work in Jetty
 - [#381]: Error in Pippo-TJWS module
 
-#### Changed
+#### Changed 
 - Replace `ALL` route with `ANY` (deprecate `ALL`)
 - Update `Pebble` template engine to 2.4.0
 - Update `Jetty` to 9.4.6.v20170531
@@ -311,7 +311,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 - Move demo applications to pippo-demo repository
 
 #### Added
-- [#207]: Add PathRegexBuilder
+- [#207]: Add PathRegexBuilder 
 - [#211]: Add custom Filters, Extensions in PebbleEngine from Application
 - [#217]: Add convenience methods for setting date headers
 - [#218]: Add Response method to finalize a response and return the OutputStream for custom streaming
