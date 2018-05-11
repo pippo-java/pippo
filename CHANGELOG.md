@@ -12,6 +12,20 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 #### Removed
 
+### [1.9.0] - 2018-05-10
+
+#### Fixed
+- [#420]: Trailing slashes removed from registered routes
+
+#### Changed
+- [#418]: Convert to float, double and BigDecimal according Locale
+- [#419]: Uses Locale in request context
+- [#421]: Update to Freemarker 2.3.28
+
+#### Added
+
+#### Removed
+
 ### [1.8.0] - 2018-02-24
 
 #### Fixed
@@ -71,7 +85,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 - [#368]: Hot deployment doesn't work in Jetty
 - [#381]: Error in Pippo-TJWS module
 
-#### Changed 
+#### Changed
 - Replace `ALL` route with `ANY` (deprecate `ALL`)
 - Update `Pebble` template engine to 2.4.0
 - Update `Jetty` to 9.4.6.v20170531
@@ -297,7 +311,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 - Move demo applications to pippo-demo repository
 
 #### Added
-- [#207]: Add PathRegexBuilder 
+- [#207]: Add PathRegexBuilder
 - [#211]: Add custom Filters, Extensions in PebbleEngine from Application
 - [#217]: Add convenience methods for setting date headers
 - [#218]: Add Response method to finalize a response and return the OutputStream for custom streaming
@@ -450,7 +464,8 @@ Initial release.
 - Added [pippo-freemarker]
 - Added [pippo-jetty]
 
-[unreleased]: https://github.com/decebals/pippo/compare/release-1.8.0...HEAD
+[unreleased]: https://github.com/decebals/pippo/compare/release-1.9.0...HEAD
+[1.9.0]: https://github.com/decebals/pippo/compare/release-1.8.0...release-1.9.0
 [1.8.0]: https://github.com/decebals/pippo/compare/release-1.7.0...release-1.8.0
 [1.7.0]: https://github.com/decebals/pippo/compare/release-1.6.0...release-1.7.0
 [1.6.0]: https://github.com/decebals/pippo/compare/release-1.5.0...release-1.6.0
@@ -473,6 +488,10 @@ Initial release.
 [0.3.0]: https://github.com/decebals/pippo/compare/pippo-parent-0.2.0...pippo-parent-0.3.0
 [0.2.0]: https://github.com/decebals/pippo/compare/pippo-parent-0.1.0...pippo-parent-0.2.0
 
+[#421]: https://github.com/decebals/pippo/pull/421
+[#420]: https://github.com/decebals/pippo/pull/420
+[#419]: https://github.com/decebals/pippo/pull/419
+[#418]: https://github.com/decebals/pippo/pull/418
 [#412]: https://github.com/decebals/pippo/pull/412
 [#410]: https://github.com/decebals/pippo/issues/410
 [#408]: https://github.com/decebals/pippo/pull/408
