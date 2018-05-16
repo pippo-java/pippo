@@ -13,28 +13,32 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package ro.pippo.core;
+package ro.pippo.core.converters;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
-
-import ro.pippo.core.converters.Converter;
+import java.util.Locale;
 
 /**
- * Annotation that defines a request parameter name for mapping to a Java object.
+ * General purpose data type converter that converts an incoming
+ * {@code String[]} to an {@code Object} of type {@code T}.
  *
- * @author James Moger
+ * @param <T>
+ *            the desired result type
  */
-@Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.PARAMETER, ElementType.FIELD})
-public @interface ParamField {
+public interface Converter<T> {
 
-    String value();
+    /**
+     * Convert the specified input object into an output object of the specified
+     * type.
+     *
+     * @param values
+     *            The input value to be converted
+     *
+     * @return The converted value
+     */
+    public T getAsObject(String[] values);
 
-    String pattern() default "";
+    public void setPattern(String pattern);
 
-    Class<? extends Converter> converterClass() default Converter.class;
+    public void setLocale(Locale locale);
 
 }

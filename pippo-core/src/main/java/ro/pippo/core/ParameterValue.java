@@ -15,6 +15,7 @@
  */
 package ro.pippo.core;
 
+import ro.pippo.core.converters.Converter;
 import ro.pippo.core.util.StringUtils;
 
 import java.io.Serializable;
@@ -417,6 +418,17 @@ public class ParameterValue implements Serializable {
             return (T) array;
         } else {
             return (T) toObject(classOfT, pattern);
+        }
+    }
+
+    public <T> T convert(Class<? extends Converter<T>> converterClass, String pattern) {
+        try {
+            Converter<T> converter = converterClass.newInstance();
+            converter.setPattern(pattern);
+            converter.setLocale(locale);
+            return converter.getAsObject(values);
+        } catch (InstantiationException | IllegalAccessException e) {
+            throw new PippoRuntimeException(e, "Failed to convert");
         }
     }
 
