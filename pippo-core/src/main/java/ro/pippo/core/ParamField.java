@@ -20,8 +20,6 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-import ro.pippo.core.converters.Converter;
-
 /**
  * Annotation that defines a request parameter name for mapping to a Java object.
  *
@@ -35,6 +33,6 @@ public @interface ParamField {
 
     String pattern() default "";
 
-    Class<? extends Converter> converterClass() default Converter.class;
+    Class converterClass() default void.class;
 
 }

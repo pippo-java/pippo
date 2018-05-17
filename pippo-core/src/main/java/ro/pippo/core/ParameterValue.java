@@ -424,9 +424,7 @@ public class ParameterValue implements Serializable {
     public <T> T convert(Class<? extends Converter<T>> converterClass, String pattern) {
         try {
             Converter<T> converter = converterClass.newInstance();
-            converter.setPattern(pattern);
-            converter.setLocale(locale);
-            return converter.getAsObject(values);
+            return converter.getAsObject(values, locale, pattern);
         } catch (InstantiationException | IllegalAccessException e) {
             throw new PippoRuntimeException(e, "Failed to convert");
         }

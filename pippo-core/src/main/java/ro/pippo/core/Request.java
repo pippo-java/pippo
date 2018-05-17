@@ -256,7 +256,7 @@ public final class Request {
                 }
 
                 String pattern = (parameter != null) ? parameter.pattern() : null;
-                Class<? extends Converter> convertClass = (parameter != null && Converter.class != parameter.converterClass()) ? parameter.converterClass() : null;
+                Class<? extends Converter<?>> convertClass = (parameter != null && void.class != parameter.converterClass()) ? parameter.converterClass() : null;
 
                 try {
                     Class<?> fieldClass = field.getType();
@@ -292,7 +292,7 @@ public final class Request {
                             value = getParameters().get(parameterName).to(fieldClass, pattern);
                         }
                     } else {
-                        value = getParameters().get(parameterName).convert((Class<? extends Converter<T>>) convertClass, pattern);
+                        value = getParameters().get(parameterName).convert(convertClass, pattern);
                     }
                     field.set(entity, value);
                 } catch (IllegalAccessException e) {

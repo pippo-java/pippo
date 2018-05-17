@@ -32,13 +32,13 @@ public interface Converter<T> {
      *
      * @param values
      *            The input value to be converted
+     * @param locale
+     *            The locale
+     * @param pattern
+     *            The convertion pattern
      *
      * @return The converted value
      */
-    public T getAsObject(String[] values);
-
-    public void setPattern(String pattern);
-
-    public void setLocale(Locale locale);
+    public T getAsObject(String[] values, Locale locale, String pattern);
 
 }
