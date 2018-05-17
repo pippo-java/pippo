@@ -256,12 +256,12 @@ public final class Request {
                 }
 
                 String pattern = (parameter != null) ? parameter.pattern() : null;
-                Class<? extends Converter<?>> convertClass = (parameter != null && void.class != parameter.converterClass()) ? parameter.converterClass() : null;
+                Class<? extends Converter> converterClass = (parameter != null && void.class != parameter.converterClass()) ? parameter.converterClass() : null;
 
                 try {
                     Class<?> fieldClass = field.getType();
                     Object value;
-                    if (convertClass == null) {
+                    if (converterClass == null) {
                         if (Collection.class.isAssignableFrom(fieldClass)) {
                             Type parameterType = field.getGenericType();
                             if (!ParameterizedType.class.isAssignableFrom(parameterType.getClass())) {
@@ -292,7 +292,7 @@ public final class Request {
                             value = getParameters().get(parameterName).to(fieldClass, pattern);
                         }
                     } else {
-                        value = getParameters().get(parameterName).convert(convertClass, pattern);
+                        value = getParameters().get(parameterName).convert(converterClass, pattern);
                     }
                     field.set(entity, value);
                 } catch (IllegalAccessException e) {
