@@ -34,57 +34,56 @@ import com.codahale.metrics.graphite.GraphiteSender;
 import com.codahale.metrics.graphite.PickledGraphite;
 
 /**
- * Integration of Pippo Metrics with Graphite.
+ * Integration of Pippo Metrics with <a href="https://graphiteapp.org">Graphite</a>.
  *
  * @author James Moger
- *
  */
 @MetaInfServices
 public class Reporter implements MetricsReporter {
 
-	private final Logger log = LoggerFactory.getLogger(Reporter.class);
+    private final Logger log = LoggerFactory.getLogger(Reporter.class);
 
-	private GraphiteReporter reporter;
+    private GraphiteReporter reporter;
 
-	@Override
-	public void start(PippoSettings settings, MetricRegistry metricRegistry) {
-		if (settings.getBoolean("metrics.graphite.enabled", false)) {
+    @Override
+    public void start(PippoSettings settings, MetricRegistry metricRegistry) {
+        if (settings.getBoolean("metrics.graphite.enabled", false)) {
+            String hostname = settings.getLocalHostname();
+            String address = settings.getRequiredString("metrics.graphite.address");
+            int port = settings.getInteger("metrics.graphite.port", 2003);
+            boolean isPickled = settings.getBoolean("metrics.graphite.pickled", false);
+            long period = settings.getDurationInSeconds("metrics.graphite.period", 60);
 
-			final String hostname = settings.getLocalHostname();
-			final String address = settings.getRequiredString("metrics.graphite.address");
-			final int port = settings.getInteger("metrics.graphite.port", 2003);
-			final boolean isPickled = settings.getBoolean("metrics.graphite.pickled", false);
-			final long period = settings.getDurationInSeconds("metrics.graphite.period", 60);
+            InetSocketAddress graphiteAddress = new InetSocketAddress(address, port);
 
-			final InetSocketAddress graphiteAddress = new InetSocketAddress(address, port);
+            GraphiteSender sender;
+            if (isPickled) {
+                sender = new PickledGraphite(graphiteAddress);
+            } else {
+                sender = new Graphite(graphiteAddress);
+            }
 
-			final GraphiteSender sender;
-			if (isPickled) {
-				sender = new PickledGraphite(graphiteAddress);
-			} else {
-				sender = new Graphite(graphiteAddress);
-			}
+            reporter = GraphiteReporter.forRegistry(metricRegistry)
+                .prefixedWith(hostname)
+                .convertRatesTo(TimeUnit.SECONDS)
+                .convertDurationsTo(TimeUnit.MILLISECONDS)
+                .filter(MetricFilter.ALL)
+                .build(sender);
 
-			reporter = GraphiteReporter.forRegistry(metricRegistry).prefixedWith(hostname)
-					.convertRatesTo(TimeUnit.SECONDS).convertDurationsTo(TimeUnit.MILLISECONDS)
-					.filter(MetricFilter.ALL).build(sender);
+            reporter.start(period, TimeUnit.SECONDS);
 
-			reporter.start(period, TimeUnit.SECONDS);
+            log.debug("Started Graphite Metrics reporter for '{}', updating every {} seconds", hostname, period);
+        } else {
+            log.debug("Graphite Metrics reporter is disabled");
+        }
+    }
 
-			log.debug("Started Graphite Metrics reporter for '{}', updating every {} seconds", hostname, period);
+    @Override
+    public void close() throws IOException {
+        if (reporter != null) {
+            reporter.stop();
+            log.debug("Stopped Graphite Metrics reporter");
+        }
+    }
 
-		} else {
-			log.debug("Graphite Metrics reporter is disabled");
-		}
-	}
-
-	@Override
-	public void close() throws IOException {
-		if (reporter != null) {
-
-			reporter.stop();
-
-			log.debug("Stopped Graphite Metrics reporter");
-		}
-	}
 }

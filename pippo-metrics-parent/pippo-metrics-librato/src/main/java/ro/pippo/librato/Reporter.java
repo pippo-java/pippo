@@ -29,36 +29,35 @@ import com.codahale.metrics.MetricRegistry;
 import com.librato.metrics.LibratoReporter;
 
 /**
- * Integration of Pippo Metrics with Librato.
+ * Integration of Pippo Metrics with <a href="https://www.librato.com">Librato</a>.
  *
  * @author James Moger
- *
  */
 @MetaInfServices
 public class Reporter implements MetricsReporter {
 
-	private final Logger log = LoggerFactory.getLogger(Reporter.class);
+    private final Logger log = LoggerFactory.getLogger(Reporter.class);
 
-	@Override
-	public void start(PippoSettings settings, MetricRegistry metricRegistry) {
-		if (settings.getBoolean("metrics.librato.enabled", false)) {
+    @Override
+    public void start(PippoSettings settings, MetricRegistry metricRegistry) {
+        if (settings.getBoolean("metrics.librato.enabled", false)) {
+            String hostname = settings.getLocalHostname();
+            String username = settings.getRequiredString("metrics.librato.username");
+            String apiKey = settings.getRequiredString("metrics.librato.apikey");
+            long period = settings.getDurationInSeconds("metrics.librato.period", 60);
 
-			final String hostname = settings.getLocalHostname();
-			final String username = settings.getRequiredString("metrics.librato.username");
-			final String apiKey = settings.getRequiredString("metrics.librato.apikey");
-			final long period = settings.getDurationInSeconds("metrics.librato.period", 60);
+            LibratoReporter.Builder builder = LibratoReporter.builder(metricRegistry, username, apiKey, hostname);
+            LibratoReporter.enable(builder, period, TimeUnit.SECONDS);
 
-			LibratoReporter.enable(LibratoReporter.builder(metricRegistry, username, apiKey, hostname), period,
-					TimeUnit.SECONDS);
+            log.info("Started Librato Metrics reporter for '{}', updating every {} seconds", hostname, period);
+        } else {
+            log.debug("Librato Metrics reporter is disabled");
+        }
+    }
 
-			log.info("Started Librato Metrics reporter for '{}', updating every {} seconds", hostname, period);
+    @Override
+    public void close() throws IOException {
+        // do nothing
+    }
 
-		} else {
-			log.debug("Librato Metrics reporter is disabled");
-		}
-	}
-
-	@Override
-	public void close() throws IOException {
-	}
 }

@@ -32,56 +32,54 @@ import com.codahale.metrics.MetricFilter;
 import com.codahale.metrics.MetricRegistry;
 
 /**
- * Integration of Pippo Metrics with InfluxDB.
+ * Integration of Pippo Metrics with <a href="https://www.influxdata.com">InfluxDB</a>.
  *
  * @author James Moger
- *
  */
 @MetaInfServices
 public class Reporter implements MetricsReporter {
 
-	private final Logger log = LoggerFactory.getLogger(Reporter.class);
+    private final Logger log = LoggerFactory.getLogger(Reporter.class);
 
-	private InfluxdbReporter reporter;
+    private InfluxdbReporter reporter;
 
-	@Override
-	public void start(PippoSettings settings, MetricRegistry metricRegistry) {
-		if (settings.getBoolean("metrics.influxdb.enabled", false)) {
+    @Override
+    public void start(PippoSettings settings, MetricRegistry metricRegistry) {
+        if (settings.getBoolean("metrics.influxdb.enabled", false)) {
+            String hostname = settings.getLocalHostname();
+            String address = settings.getRequiredString("metrics.influxdb.address");
+            int port = settings.getInteger("metrics.influxdb.port", 8086);
+            String database = settings.getRequiredString("metrics.influxdb.database");
+            String username = settings.getRequiredString("metrics.influxdb.username");
+            String password = settings.getRequiredString("metrics.influxdb.password");
+            long period = settings.getDurationInSeconds("metrics.influxdb.period", 60);
 
-			final String hostname = settings.getLocalHostname();
-			final String address = settings.getRequiredString("metrics.influxdb.address");
-			final int port = settings.getInteger("metrics.influxdb.port", 8086);
-			final String database = settings.getRequiredString("metrics.influxdb.database");
-			final String username = settings.getRequiredString("metrics.influxdb.username");
-			final String password = settings.getRequiredString("metrics.influxdb.password");
-			final long period = settings.getDurationInSeconds("metrics.influxdb.period", 60);
+            try {
+                InfluxdbHttp influxdb = new InfluxdbHttp(address, port, database, username, password);
+                reporter = InfluxdbReporter.forRegistry(metricRegistry)
+                    .prefixedWith(hostname)
+                    .convertRatesTo(TimeUnit.SECONDS)
+                    .convertDurationsTo(TimeUnit.MILLISECONDS)
+                    .filter(MetricFilter.ALL)
+                    .build(influxdb);
 
-			try {
+                reporter.start(period, TimeUnit.SECONDS);
 
-				InfluxdbHttp influxdb = new InfluxdbHttp(address, port, database, username, password);
-				reporter = InfluxdbReporter.forRegistry(metricRegistry).prefixedWith(hostname)
-						.convertRatesTo(TimeUnit.SECONDS).convertDurationsTo(TimeUnit.MILLISECONDS)
-						.filter(MetricFilter.ALL).build(influxdb);
+                log.debug("Started InfluxDB Metrics reporter for '{}', updating every {} seconds", hostname, period);
+            } catch (Exception e) {
+                log.error("Failed to start InfluxDB reporter!", e);
+            }
+        } else {
+            log.debug("InfluxDB Metrics reporter is disabled");
+        }
+    }
 
-				reporter.start(period, TimeUnit.SECONDS);
+    @Override
+    public void close() throws IOException {
+        if (reporter != null) {
+            reporter.stop();
+            log.debug("Stopped InfluxDB Metrics reporter");
+        }
+    }
 
-				log.debug("Started InfluxDB Metrics reporter for '{}', updating every {} seconds", hostname, period);
-
-			} catch (Exception e) {
-				log.error("Failed to start InfluxDB reporter!", e);
-			}
-		} else {
-			log.debug("InfluxDB Metrics reporter is disabled");
-		}
-	}
-
-	@Override
-	public void close() throws IOException {
-		if (reporter != null) {
-
-			reporter.stop();
-
-			log.debug("Stopped InfluxDB Metrics reporter");
-		}
-	}
 }

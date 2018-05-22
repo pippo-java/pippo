@@ -32,49 +32,48 @@ import com.codahale.metrics.MetricRegistry;
 import com.codahale.metrics.ganglia.GangliaReporter;
 
 /**
- * Integration of Pippo Metrics with Ganglia.
+ * Integration of Pippo Metrics with <a href="http://ganglia.sourceforge.net">Ganglia</a>.
  *
  * @author James Moger
- *
  */
 @MetaInfServices
 public class Reporter implements MetricsReporter {
 
-	private final Logger log = LoggerFactory.getLogger(Reporter.class);
+    private final Logger log = LoggerFactory.getLogger(Reporter.class);
 
-	private GangliaReporter reporter;
+    private GangliaReporter reporter;
 
-	@Override
-	public void start(PippoSettings settings, MetricRegistry metricRegistry) {
-		if (settings.getBoolean("metrics.ganglia.enabled", false)) {
+    @Override
+    public void start(PippoSettings settings, MetricRegistry metricRegistry) {
+        if (settings.getBoolean("metrics.ganglia.enabled", false)) {
+            String hostname = settings.getLocalHostname();
+            String address = settings.getRequiredString("metrics.ganglia.address");
+            int port = settings.getInteger("metrics.ganglia.port", 8649);
+            long period = settings.getDurationInSeconds("metrics.ganglia.period", 60);
 
-			final String hostname = settings.getLocalHostname();
-			final String address = settings.getRequiredString("metrics.ganglia.address");
-			final int port = settings.getInteger("metrics.ganglia.port", 8649);
-			final long period = settings.getDurationInSeconds("metrics.ganglia.period", 60);
+            try {
+                GMetric ganglia = new GMetric(address, port, UDPAddressingMode.MULTICAST, 1);
+                reporter = GangliaReporter.forRegistry(metricRegistry)
+                    .convertRatesTo(TimeUnit.SECONDS)
+                    .convertDurationsTo(TimeUnit.MILLISECONDS)
+                    .build(ganglia);
+                reporter.start(period, TimeUnit.SECONDS);
 
-			try {
-				GMetric ganglia = new GMetric(address, port, UDPAddressingMode.MULTICAST, 1);
-				reporter = GangliaReporter.forRegistry(metricRegistry).convertRatesTo(TimeUnit.SECONDS)
-						.convertDurationsTo(TimeUnit.MILLISECONDS).build(ganglia);
-				reporter.start(period, TimeUnit.SECONDS);
+                log.info("Started Ganglia Metrics reporter for '{}', updating every {} seconds", hostname, period);
+            } catch (IOException e) {
+                log.error("Failed to start Ganglia reporter!", e);
+            }
+        } else {
+            log.debug("Ganglia Metrics reporter is disabled");
+        }
+    }
 
-				log.info("Started Ganglia Metrics reporter for '{}', updating every {} seconds", hostname, period);
+    @Override
+    public void close() throws IOException {
+        if (reporter != null) {
+            reporter.stop();
+            log.debug("Stopped Ganglia Metrics reporter");
+        }
+    }
 
-			} catch (IOException e) {
-				log.error("Failed to start Ganglia reporter!", e);
-			}
-
-		} else {
-			log.debug("Ganglia Metrics reporter is disabled");
-		}
-	}
-
-	@Override
-	public void close() throws IOException {
-		if (reporter != null) {
-			reporter.stop();
-			log.debug("Stopped Ganglia Metrics reporter");
-		}
-	}
 }
