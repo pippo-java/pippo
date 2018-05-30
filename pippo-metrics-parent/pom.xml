@@ -6,19 +6,20 @@
         <artifactId>pippo-parent</artifactId>
         <version>1.10.0-SNAPSHOT</version>
     </parent>
-    
+
     <groupId>ro.pippo</groupId>
     <artifactId>pippo-metrics-parent</artifactId>
     <version>1.10.0-SNAPSHOT</version>
     <packaging>pom</packaging>
-    
+
     <name>Pippo Metrics Parent</name>
-    
+
     <modules>
         <module>pippo-metrics</module>
         <module>pippo-metrics-ganglia</module>
         <module>pippo-metrics-graphite</module>
         <module>pippo-metrics-influxdb</module>
         <module>pippo-metrics-librato</module>
+        <module>pippo-metrics-prometheus</module>
     </modules>
 </project>
