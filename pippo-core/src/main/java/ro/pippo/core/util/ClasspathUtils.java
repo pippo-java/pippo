@@ -43,6 +43,7 @@ public class ClasspathUtils {
      */
     public static URL locateOnClasspath(String resourceName) {
         URL url = null;
+
         // attempt to load from the context classpath
         ClassLoader loader = Thread.currentThread().getContextClassLoader();
         if (loader != null) {
@@ -73,6 +74,7 @@ public class ClasspathUtils {
      */
     public static List<URL> getResources(String name) {
         List<URL> list = new ArrayList<>();
+
         try {
             ClassLoader loader = Thread.currentThread().getContextClassLoader();
             Enumeration<URL> resources = loader.getResources(name);
@@ -83,6 +85,7 @@ public class ClasspathUtils {
         } catch (IOException e) {
             throw new PippoRuntimeException(e);
         }
+
         return list;
     }
 
@@ -97,7 +100,9 @@ public class ClasspathUtils {
             Class.forName(className);
             return true;
         } catch (Exception e) {
+            // do nothing
         }
+
         return false;
     }
 

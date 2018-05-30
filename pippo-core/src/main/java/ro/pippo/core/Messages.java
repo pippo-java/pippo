@@ -148,8 +148,7 @@ public class Messages {
      * @param args
      * @return the message or the key if the key does not exist
      */
-    public String getWithDefault(String key, String defaultMessage,
-                                 RouteContext routeContext, Object... args) {
+    public String getWithDefault(String key, String defaultMessage, RouteContext routeContext, Object... args) {
         String language = languages.getLanguageOrDefault(routeContext);
         return getWithDefault(key, defaultMessage, language, args);
     }
@@ -273,8 +272,7 @@ public class Messages {
         // Load default messages
         Properties defaultMessages = loadMessages(String.format(name, ""));
         if (defaultMessages == null) {
-            log.error("Could not locate the default messages resource '{}', please create it.",
-                String.format(name, ""));
+            log.error("Could not locate the default messages resource '{}', please create it.", String.format(name, ""));
         } else {
             messageResources.put("", defaultMessages);
         }
