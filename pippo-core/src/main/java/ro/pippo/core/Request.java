@@ -17,6 +17,8 @@ package ro.pippo.core;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import ro.pippo.core.converters.Converter;
 import ro.pippo.core.route.RouteContext;
 import ro.pippo.core.route.RouteDispatcher;
 import ro.pippo.core.util.ClassUtils;
@@ -254,38 +256,43 @@ public final class Request {
                 }
 
                 String pattern = (parameter != null) ? parameter.pattern() : null;
+                Class<? extends Converter> converterClass = (parameter != null && void.class != parameter.converterClass()) ? parameter.converterClass() : null;
 
                 try {
                     Class<?> fieldClass = field.getType();
                     Object value;
-                    if (Collection.class.isAssignableFrom(fieldClass)) {
-                        Type parameterType = field.getGenericType();
-                        if (!ParameterizedType.class.isAssignableFrom(parameterType.getClass())) {
-                            throw new PippoRuntimeException("Please specify a generic parameter type for field '{}' {}",
-                                    field.getName(), fieldClass.getName());
-                        }
-                        ParameterizedType parameterizedType = (ParameterizedType) parameterType;
-                        Class<X> genericClass;
-                        try {
-                            genericClass = (Class<X>) parameterizedType.getActualTypeArguments()[0];
-                        } catch (ClassCastException e) {
-                            throw new PippoRuntimeException("Please specify a generic parameter type for field '{}' {}",
-                                    field.getName(), fieldClass.getName());
-                        }
+                    if (converterClass == null) {
+                        if (Collection.class.isAssignableFrom(fieldClass)) {
+                            Type parameterType = field.getGenericType();
+                            if (!ParameterizedType.class.isAssignableFrom(parameterType.getClass())) {
+                                throw new PippoRuntimeException("Please specify a generic parameter type for field '{}' {}",
+                                        field.getName(), fieldClass.getName());
+                            }
+                            ParameterizedType parameterizedType = (ParameterizedType) parameterType;
+                            Class<X> genericClass;
+                            try {
+                                genericClass = (Class<X>) parameterizedType.getActualTypeArguments()[0];
+                            } catch (ClassCastException e) {
+                                throw new PippoRuntimeException("Please specify a generic parameter type for field '{}' {}",
+                                        field.getName(), fieldClass.getName());
+                            }
 
-                        if (Set.class == fieldClass) {
-                            value = getParameters().get(parameterName).toSet(genericClass, pattern);
-                        } else if (List.class == fieldClass) {
-                            value = getParameters().get(parameterName).toList(genericClass, pattern);
-                        } else if (fieldClass.isInterface()) {
-                            throw new PippoRuntimeException("Field '{}' collection '{}' is not a supported type!",
-                                    field.getName(), fieldClass.getName());
+                            if (Set.class == fieldClass) {
+                                value = getParameters().get(parameterName).toSet(genericClass, pattern);
+                            } else if (List.class == fieldClass) {
+                                value = getParameters().get(parameterName).toList(genericClass, pattern);
+                            } else if (fieldClass.isInterface()) {
+                                throw new PippoRuntimeException("Field '{}' collection '{}' is not a supported type!",
+                                        field.getName(), fieldClass.getName());
+                            } else {
+                                Class<? extends Collection> collectionClass = (Class<? extends Collection>) fieldClass;
+                                value = getParameters().get(parameterName).toCollection(collectionClass, genericClass, pattern);
+                            }
                         } else {
-                            Class<? extends Collection> collectionClass = (Class<? extends Collection>) fieldClass;
-                            value = getParameters().get(parameterName).toCollection(collectionClass, genericClass, pattern);
+                            value = getParameters().get(parameterName).to(fieldClass, pattern);
                         }
                     } else {
-                        value = getParameters().get(parameterName).to(fieldClass, pattern);
+                        value = getParameters().get(parameterName).convert(converterClass, pattern);
                     }
                     field.set(entity, value);
                 } catch (IllegalAccessException e) {

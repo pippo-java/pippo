@@ -33,4 +33,6 @@ public @interface ParamField {
 
     String pattern() default "";
 
+    Class converterClass() default void.class;
+
 }
