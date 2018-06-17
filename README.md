@@ -108,6 +108,11 @@ My Maven `pom.xml` looks like:
     <artifactId>pippo-jackson</artifactId>
     <version>${pippo.version}</version>
 </dependency>
+<dependency>
+    <groupId>ro.pippo</groupId>
+    <artifactId>pippo-jetty</artifactId>
+    <version>${pippo.version}</version>
+</dependency>
 ```
 
 The last step it's to start __Pippo__ with your application as parameter:
