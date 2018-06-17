@@ -99,6 +99,12 @@ My Maven `pom.xml` looks like:
 
 <dependency>
     <groupId>ro.pippo</groupId>
+    <artifactId>pippo-jetty</artifactId>
+    <version>${pippo.version}</version>
+</dependency>
+
+<dependency>
+    <groupId>ro.pippo</groupId>
     <artifactId>pippo-freemarker</artifactId>
     <version>${pippo.version}</version>
 </dependency>
@@ -106,11 +112,6 @@ My Maven `pom.xml` looks like:
 <dependency>
     <groupId>ro.pippo</groupId>
     <artifactId>pippo-jackson</artifactId>
-    <version>${pippo.version}</version>
-</dependency>
-<dependency>
-    <groupId>ro.pippo</groupId>
-    <artifactId>pippo-jetty</artifactId>
     <version>${pippo.version}</version>
 </dependency>
 ```
