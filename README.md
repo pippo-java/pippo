@@ -1,4 +1,4 @@
-<img src="pippo-logo.svg" width="250"/>
+<img src="pippo-logo.png" width="250"/>
 
 Micro Java Web Framework
 =====================
