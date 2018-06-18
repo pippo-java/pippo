@@ -117,7 +117,14 @@ public class FileItem {
      * @throws IOException
      */
     public void write(File file) throws IOException {
-        IoUtils.copy(getInputStream(), file);
+        InputStream inputStream = null;
+        try {
+            inputStream = getInputStream();
+            IoUtils.copy(inputStream, file);
+        } finally {
+            if (inputStream != null)
+                inputStream.close();
+        }
     }
 
     /**
