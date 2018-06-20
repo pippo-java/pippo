@@ -1,3 +1,5 @@
+<img src="pippo-logo.svg" width="250"/>
+
 Micro Java Web Framework
 =====================
 [![Join the chat at https://gitter.im/decebals/pippo](https://badges.gitter.im/decebals/pippo.svg)](https://gitter.im/decebals/pippo?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
