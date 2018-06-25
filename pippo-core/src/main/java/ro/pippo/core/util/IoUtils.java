@@ -79,20 +79,14 @@ public class IoUtils {
     }
 
     public static long copy(InputStream input, File file) throws IOException {
-        FileOutputStream output = new FileOutputStream(file);
-        try {
+        try (FileOutputStream output = new FileOutputStream(file)) {
             return copy(input, output);
-        } finally {
-            close(output);
         }
     }
 
     public static void copy(String string, File file) throws IOException {
-        Writer writer = new BufferedWriter(new FileWriter(file));
-        try {
+        try (Writer writer = new BufferedWriter(new FileWriter(file))) {
             writer.write(string);
-        } finally {
-            close(writer);
         }
     }
 
