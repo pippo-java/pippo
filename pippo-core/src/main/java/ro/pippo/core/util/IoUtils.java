@@ -102,6 +102,28 @@ public class IoUtils {
     }
 
     /**
+     * Shortcut
+     * {@code
+     * getResourceAsString(getClass(), resource);
+     * }
+     */
+    public String getResourceAsString(String resource) throws IOException {
+        return getResourceAsString(getClass(), resource);
+    }
+
+    /**
+     * Retrieve {@link String} for the file located in resources.
+     * {@code
+     * String html = getResourceAsString(MyClass.class, "/index.html");
+     * }
+     */
+    public String getResourceAsString(Class<?> clazz, String resource) throws IOException {
+        try (InputStream inputStream = clazz.getResourceAsStream(resource)) {
+            return IoUtils.toString(inputStream);
+        }
+    }
+
+    /**
      * Silently closes a Closeable.
      *
      * @return the exception or null if no exception thrown
