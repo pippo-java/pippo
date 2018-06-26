@@ -45,14 +45,14 @@ import java.util.Set;
 import java.util.TreeSet;
 
 /**
- * {@code ControllerRouteHandler} executes controller methods.
+ * It's a {@link RouteHandler} that executes the controller's methods.
  *
  * @author Decebal Suiu
  * @author James Moger
  */
-public class ControllerRouteHandler implements RouteHandler {
+public class ControllerHandler implements RouteHandler {
 
-    private static final Logger log = LoggerFactory.getLogger(ControllerRouteHandler.class);
+    private static final Logger log = LoggerFactory.getLogger(ControllerHandler.class);
 
     private final Class<? extends Controller> controllerClass;
     private final Method controllerMethod;
@@ -69,7 +69,7 @@ public class ControllerRouteHandler implements RouteHandler {
     private Controller controller;
 
     @SuppressWarnings("unchecked")
-    public ControllerRouteHandler(ControllerApplication application, Method controllerMethod) {
+    public ControllerHandler(ControllerApplication application, Method controllerMethod) {
         this.application = application;
 
         this.controllerClass = (Class<? extends Controller>) controllerMethod.getDeclaringClass();

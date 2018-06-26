@@ -19,9 +19,12 @@ import ro.pippo.core.route.RouteContext;
 import ro.pippo.core.route.RouteHandler;
 
 /**
+ * An implementation of {@link RouteHandler} that do nothing.
+ * It's useful in tests.
+ *
  * @author Decebal Suiu
  */
-public class EmptyRouteHandler implements RouteHandler {
+public class EmptyHandler implements RouteHandler {
 
     @Override
     public void handle(RouteContext routeContext) {

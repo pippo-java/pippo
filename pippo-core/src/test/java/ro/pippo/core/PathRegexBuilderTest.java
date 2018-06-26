@@ -31,7 +31,7 @@ import static org.junit.Assert.*;
  */
 public class PathRegexBuilderTest {
 
-    private static final RouteHandler emptyRouteHandler = new EmptyRouteHandler();
+    private static final RouteHandler emptyHandler = new EmptyHandler();
 
     private DefaultRouter router;
 
@@ -55,7 +55,7 @@ public class PathRegexBuilderTest {
             )
             .build();
 
-        router.addRoute(Route.GET(regex, emptyRouteHandler));
+        router.addRoute(Route.GET(regex, emptyHandler));
         assertEquals(1, router.findRoutes("GET", uri).size());
     }
 
@@ -72,7 +72,7 @@ public class PathRegexBuilderTest {
             )
             .build();
 
-        router.addRoute(Route.GET(regex, emptyRouteHandler));
+        router.addRoute(Route.GET(regex, emptyHandler));
         assertEquals(1, router.findRoutes("GET", uri).size());
     }
 
@@ -90,7 +90,7 @@ public class PathRegexBuilderTest {
             )
             .build();
 
-        router.addRoute(Route.GET(regex, emptyRouteHandler));
+        router.addRoute(Route.GET(regex, emptyHandler));
         assertEquals(1, router.findRoutes("GET", uri).size());
     }
 
@@ -107,7 +107,7 @@ public class PathRegexBuilderTest {
             )
             .build();
 
-        router.addRoute(Route.GET(regex, emptyRouteHandler));
+        router.addRoute(Route.GET(regex, emptyHandler));
         assertTrue(router.findRoutes("GET", uri).isEmpty());
     }
 
@@ -125,7 +125,7 @@ public class PathRegexBuilderTest {
             )
             .build();
 
-        router.addRoute(Route.GET(regex, emptyRouteHandler));
+        router.addRoute(Route.GET(regex, emptyHandler));
         assertTrue(router.findRoutes("GET", uri).isEmpty());
     }
 
@@ -142,7 +142,7 @@ public class PathRegexBuilderTest {
             )
             .build();
 
-        router.addRoute(Route.GET(regex, emptyRouteHandler));
+        router.addRoute(Route.GET(regex, emptyHandler));
         assertEquals("aaa", router.findRoutes("GET", uri).get(0).getPathParameters().get("id"));
     }
 
@@ -159,7 +159,7 @@ public class PathRegexBuilderTest {
             )
             .build();
 
-        router.addRoute(Route.GET(regex, emptyRouteHandler));
+        router.addRoute(Route.GET(regex, emptyHandler));
         Map<String, String> parameterMap = router.findRoutes("GET", uri).get(0).getPathParameters();
         assertEquals("aaa", parameterMap.get("id"));
         assertEquals("bbb", parameterMap.get("pid"));
@@ -179,7 +179,7 @@ public class PathRegexBuilderTest {
             )
             .build();
 
-        router.addRoute(Route.GET(regex, emptyRouteHandler));
+        router.addRoute(Route.GET(regex, emptyHandler));
         Map<String, String> parameterMap = router.findRoutes("GET", uri).get(0).getPathParameters();
         assertEquals(2, parameterMap.size());
         assertEquals("aaa", parameterMap.get("id"));
@@ -201,7 +201,7 @@ public class PathRegexBuilderTest {
             )
             .build();
 
-        router.addRoute(Route.GET(regex, emptyRouteHandler));
+        router.addRoute(Route.GET(regex, emptyHandler));
         Map<String, String> parameterMap = router.findRoutes("GET", numUri).get(0).getPathParameters();
         assertEquals("123", parameterMap.get("id"));
         parameterMap = router.findRoutes("GET", uri).get(0).getPathParameters();
@@ -221,7 +221,7 @@ public class PathRegexBuilderTest {
             )
             .build();
 
-        router.addRoute(Route.GET(regex, emptyRouteHandler));
+        router.addRoute(Route.GET(regex, emptyHandler));
         Map<String, String> parameterMap = router.findRoutes("GET", uri).get(0).getPathParameters();
         assertEquals("aaa", parameterMap.get("user_id"));
     }

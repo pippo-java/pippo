@@ -163,7 +163,7 @@ public class ControllerRegistry {
         List<Route> controllerRoutes = createControllerRoutes(controllerMethods);
         for (Route controllerRoute : controllerRoutes) {
             if (controller != null) {
-                ((ControllerRouteHandler) controllerRoute.getRouteHandler()).setController(controller);
+                ((ControllerHandler) controllerRoute.getRouteHandler()).setController(controller);
                 controllerRoute.bind("__controller", controller);
             }
         }
@@ -202,7 +202,7 @@ public class ControllerRegistry {
                     String fullPath = StringUtils.addStart(controllerPath, "/");
 
                     // create the route handler
-                    RouteHandler handler = new ControllerRouteHandler(application, method);
+                    RouteHandler handler = new ControllerHandler(application, method);
 
                     // create the route
                     Route route = new Route(httpMethod, fullPath, handler)
@@ -220,7 +220,7 @@ public class ControllerRegistry {
                         String fullPath = StringUtils.addStart(path, "/");
 
                         // create the route handler
-                        RouteHandler handler = new ControllerRouteHandler(application, method);
+                        RouteHandler handler = new ControllerHandler(application, method);
 
                         // create the route
                         Route route = new Route(httpMethod, fullPath, handler)
