@@ -16,7 +16,9 @@
 package ro.pippo.metrics;
 
 import com.codahale.metrics.MetricRegistry;
+import com.codahale.metrics.SharedMetricRegistries;
 import com.codahale.metrics.Timer;
+import ro.pippo.core.Application;
 import ro.pippo.core.route.RouteContext;
 import ro.pippo.core.route.RouteHandler;
 
@@ -30,6 +32,14 @@ public class TimedHandler implements RouteHandler {
     final String timerName;
     final MetricRegistry metricRegistry;
     final RouteHandler routeHandler;
+
+    /**
+     * This constructor uses {@link SharedMetricRegistries#getDefault()} as metric registry.
+     * The default (global) metric registry is set in {@link MetricsInitializer#init(Application)}.
+     */
+    public TimedHandler(String timerName, RouteHandler routeHandler) {
+        this(timerName, SharedMetricRegistries.getDefault(), routeHandler);
+    }
 
     public TimedHandler(String timerName, MetricRegistry metricRegistry, RouteHandler routeHandler) {
         this.timerName = timerName;
