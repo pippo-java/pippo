@@ -25,14 +25,14 @@ import ro.pippo.core.route.RouteHandler;
  *
  * @author James Moger
  */
-public class CountedRouteHandler implements RouteHandler {
+public class CountedHandler implements RouteHandler {
 
     final String counterName;
     final boolean isActive;
     final MetricRegistry metricRegistry;
     final RouteHandler routeHandler;
 
-    public CountedRouteHandler(String counterName, boolean isActive, MetricRegistry metricRegistry, RouteHandler routeHandler) {
+    public CountedHandler(String counterName, boolean isActive, MetricRegistry metricRegistry, RouteHandler routeHandler) {
         this.counterName = counterName;
         this.isActive = isActive;
         this.metricRegistry = metricRegistry;

@@ -25,13 +25,13 @@ import ro.pippo.core.route.RouteHandler;
  *
  * @author James Moger
  */
-public class TimedRouteHandler implements RouteHandler {
+public class TimedHandler implements RouteHandler {
 
     final String timerName;
     final MetricRegistry metricRegistry;
     final RouteHandler routeHandler;
 
-    public TimedRouteHandler(String timerName, MetricRegistry metricRegistry, RouteHandler routeHandler) {
+    public TimedHandler(String timerName, MetricRegistry metricRegistry, RouteHandler routeHandler) {
         this.timerName = timerName;
         this.metricRegistry = metricRegistry;
         this.routeHandler = routeHandler;
