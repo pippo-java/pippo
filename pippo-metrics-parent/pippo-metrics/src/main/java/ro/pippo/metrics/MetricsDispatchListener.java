@@ -25,7 +25,7 @@ import ro.pippo.core.route.RoutePostDispatchListener;
 import ro.pippo.core.route.RoutePreDispatchListener;
 
 /**
- * {@code MetricsDispatchListener} collects general Request & Response metrics.
+ * Collects general {@link Request} and {@link Response} metrics.
  *
  * @author James Moger
  */

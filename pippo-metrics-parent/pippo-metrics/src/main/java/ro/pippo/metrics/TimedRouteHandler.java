@@ -21,6 +21,8 @@ import ro.pippo.core.route.RouteContext;
 import ro.pippo.core.route.RouteHandler;
 
 /**
+ * It's a decorator route handler that add a {@link Timer} metric.
+ *
  * @author James Moger
  */
 public class TimedRouteHandler implements RouteHandler {

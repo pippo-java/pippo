@@ -21,6 +21,8 @@ import ro.pippo.core.route.RouteContext;
 import ro.pippo.core.route.RouteHandler;
 
 /**
+ * It's a decorator route handler that add a {@link Meter} metric.
+ *
  * @author James Moger
  */
 public class MeteredRouteHandler implements RouteHandler {
@@ -40,11 +42,7 @@ public class MeteredRouteHandler implements RouteHandler {
         Meter meter = metricRegistry.meter(meterName);
         meter.mark();
 
-        try {
-            routeHandler.handle(routeContext);
-        } finally {
-
-        }
+        routeHandler.handle(routeContext);
     }
 
 }

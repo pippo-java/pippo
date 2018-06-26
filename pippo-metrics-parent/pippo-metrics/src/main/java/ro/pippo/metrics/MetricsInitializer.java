@@ -40,8 +40,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Pippo Metrics is the singleton for managing the MetricRegistry,
- * MetricReporters, and Metric route handlers.
+ * Manage the {@link MetricRegistry}, {@link MetricsReporter}s, and {@link Metric} route handlers.
  *
  * @author James Moger
  */
