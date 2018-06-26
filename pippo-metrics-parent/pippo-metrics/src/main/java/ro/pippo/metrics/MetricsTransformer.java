@@ -24,6 +24,7 @@ import ro.pippo.core.route.RouteContext;
 import ro.pippo.core.route.RouteHandler;
 import ro.pippo.core.route.RouteTransformer;
 import ro.pippo.core.util.LangUtils;
+import ro.pippo.core.util.StringUtils;
 
 import java.lang.reflect.Method;
 
@@ -51,7 +52,10 @@ public class MetricsTransformer implements RouteTransformer {
             }
         }
 
-        String metricName = MetricRegistry.name(method.getDeclaringClass(), method.getName());
+        String metricName = route.getName();
+        if (StringUtils.isNullOrEmpty(metricName)) {
+            metricName = MetricRegistry.name(method.getDeclaringClass(), method.getName());
+        }
 
         RouteHandler handler = null;
         if (method.isAnnotationPresent(Metered.class)) {
