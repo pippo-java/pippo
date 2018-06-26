@@ -32,7 +32,7 @@
             <version>${freemarker.version}</version>
         </dependency>
 
-        <!--  PrettyTime -->
+        <!-- PrettyTime -->
         <dependency>
             <groupId>org.ocpsoft.prettytime</groupId>
             <artifactId>prettytime</artifactId>
@@ -43,7 +43,6 @@
             <artifactId>metainf-services</artifactId>
             <scope>provided</scope>
         </dependency>
-
     </dependencies>
 
 </project>

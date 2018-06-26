@@ -15,7 +15,6 @@
     <description>JAXB integration</description>
 
     <dependencies>
-
         <dependency>
             <groupId>ro.pippo</groupId>
             <artifactId>pippo-core</artifactId>
@@ -27,7 +26,6 @@
             <artifactId>metainf-services</artifactId>
             <scope>provided</scope>
         </dependency>
-
     </dependencies>
 
 </project>

@@ -28,6 +28,6 @@
             <artifactId>pippo-session</artifactId>
             <version>${project.version}</version>
         </dependency>
-	</dependencies>
+    </dependencies>
 
 </project>

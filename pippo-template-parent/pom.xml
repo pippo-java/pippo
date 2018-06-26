@@ -6,14 +6,13 @@
         <artifactId>pippo-parent</artifactId>
         <version>1.10.0-SNAPSHOT</version>
     </parent>
-    
-    <groupId>ro.pippo</groupId>
+
     <artifactId>pippo-template-parent</artifactId>
     <version>1.10.0-SNAPSHOT</version>
     <packaging>pom</packaging>
-    
+
     <name>Pippo Template Parent</name>
-    
+
     <modules>
         <module>pippo-freemarker</module>
         <module>pippo-groovy</module>
@@ -22,4 +21,5 @@
         <module>pippo-trimou</module>
         <module>pippo-velocity</module>
     </modules>
+
 </project>

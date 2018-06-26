@@ -43,7 +43,6 @@
             <artifactId>metainf-services</artifactId>
             <scope>provided</scope>
         </dependency>
-
     </dependencies>
 
 </project>
