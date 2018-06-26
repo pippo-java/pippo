@@ -26,6 +26,6 @@ import com.codahale.metrics.MetricRegistry;
  */
 public interface MetricsReporter extends Closeable {
 
-	void start(PippoSettings pippoSettings, MetricRegistry metricRegistry);
+    void start(PippoSettings pippoSettings, MetricRegistry metricRegistry);
 
 }
