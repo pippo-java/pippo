@@ -21,8 +21,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * An annotation for marking a controller method to be Metered for metrics
- * collection.
+ * An annotation for marking a controller method or a route handler to be {@code Metered} for metrics collection.
  *
  * A meter measures the rate of events over time (e.g., “requests per second”).
  * In addition to the mean rate, meters also track 1-, 5-, and 15-minute moving averages.

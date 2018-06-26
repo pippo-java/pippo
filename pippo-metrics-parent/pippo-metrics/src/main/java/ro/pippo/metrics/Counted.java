@@ -21,8 +21,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * An annotation for marking a controller method to be Counted for metrics
- * collection.
+ * An annotation for marking a controller method or a route handler to be {@code Counted} for metrics collection.
  *
  * A counter increments on method execution and optionally decrements at execution completion.
  *

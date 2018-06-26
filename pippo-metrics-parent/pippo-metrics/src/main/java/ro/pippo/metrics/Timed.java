@@ -21,11 +21,9 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * An annotation for marking a controller method to be Timed for metrics
- * collection.
+ * An annotation for marking a controller method or a route handler to be {@code Timed} for metrics collection.
  *
- * A timer measures both the rate that a particular piece of code is called
- * and the distribution of its duration.
+ * A timer measures both the rate that a particular piece of code is called and the distribution of its duration.
  *
  * If no name is specified, the controller classname and method name are used.
  *
