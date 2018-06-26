@@ -61,7 +61,7 @@ public class MetricsTransformer implements RouteTransformer {
             if (!metered.value().isEmpty()) {
                 metricName = metered.value();
             }
-            handler = new MeteredRouteHandler(metricName, route.getRouteHandler(), metricRegistry);
+            handler = new MeteredRouteHandler(metricName, metricRegistry, route.getRouteHandler());
         } else if (method.isAnnotationPresent(Timed.class)) {
             log.debug("Found '{}' annotation on method '{}'", Timed.class.getSimpleName(), LangUtils.toString(method));
             // route handler is Timed
@@ -69,7 +69,7 @@ public class MetricsTransformer implements RouteTransformer {
             if (!timed.value().isEmpty()) {
                 metricName = timed.value();
             }
-            handler = new TimedRouteHandler(metricName, route.getRouteHandler(), metricRegistry);
+            handler = new TimedRouteHandler(metricName, metricRegistry, route.getRouteHandler());
         } else if (method.isAnnotationPresent(Counted.class)) {
             log.debug("Found '{}' annotation on method '{}'", Counted.class.getSimpleName(), LangUtils.toString(method));
             // route handler is Counted
@@ -77,7 +77,7 @@ public class MetricsTransformer implements RouteTransformer {
             if (!counted.value().isEmpty()) {
                 metricName = counted.value();
             }
-            handler = new CountedRouteHandler(metricName, counted.active(), route.getRouteHandler(), metricRegistry);
+            handler = new CountedRouteHandler(metricName, counted.active(), metricRegistry, route.getRouteHandler());
         }
 
         if (handler != null) {

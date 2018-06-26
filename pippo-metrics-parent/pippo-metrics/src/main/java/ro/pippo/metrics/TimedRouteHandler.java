@@ -28,13 +28,13 @@ import ro.pippo.core.route.RouteHandler;
 public class TimedRouteHandler implements RouteHandler {
 
     final String timerName;
-    final RouteHandler routeHandler;
     final MetricRegistry metricRegistry;
+    final RouteHandler routeHandler;
 
-    public TimedRouteHandler(String timerName, RouteHandler routeHandler, MetricRegistry metricRegistry) {
+    public TimedRouteHandler(String timerName, MetricRegistry metricRegistry, RouteHandler routeHandler) {
         this.timerName = timerName;
-        this.routeHandler = routeHandler;
         this.metricRegistry = metricRegistry;
+        this.routeHandler = routeHandler;
     }
 
     @Override

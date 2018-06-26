@@ -29,14 +29,14 @@ public class CountedRouteHandler implements RouteHandler {
 
     final String counterName;
     final boolean isActive;
-    final RouteHandler routeHandler;
     final MetricRegistry metricRegistry;
+    final RouteHandler routeHandler;
 
-    public CountedRouteHandler(String counterName, boolean isActive, RouteHandler routeHandler, MetricRegistry metricRegistry) {
+    public CountedRouteHandler(String counterName, boolean isActive, MetricRegistry metricRegistry, RouteHandler routeHandler) {
         this.counterName = counterName;
         this.isActive = isActive;
-        this.routeHandler = routeHandler;
         this.metricRegistry = metricRegistry;
+        this.routeHandler = routeHandler;
     }
 
     @Override

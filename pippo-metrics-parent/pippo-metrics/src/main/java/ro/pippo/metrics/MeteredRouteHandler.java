@@ -28,13 +28,13 @@ import ro.pippo.core.route.RouteHandler;
 public class MeteredRouteHandler implements RouteHandler {
 
     final String meterName;
-    final RouteHandler routeHandler;
     final MetricRegistry metricRegistry;
+    final RouteHandler routeHandler;
 
-    public MeteredRouteHandler(String meterName, RouteHandler routeHandler, MetricRegistry metricRegistry) {
+    public MeteredRouteHandler(String meterName, MetricRegistry metricRegistry, RouteHandler routeHandler) {
         this.meterName = meterName;
-        this.routeHandler = routeHandler;
         this.metricRegistry = metricRegistry;
+        this.routeHandler = routeHandler;
     }
 
     @Override
