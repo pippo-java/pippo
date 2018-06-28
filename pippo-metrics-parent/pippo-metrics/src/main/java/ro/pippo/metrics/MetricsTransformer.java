@@ -24,6 +24,7 @@ import ro.pippo.core.route.RouteContext;
 import ro.pippo.core.route.RouteHandler;
 import ro.pippo.core.route.RouteTransformer;
 import ro.pippo.core.util.LangUtils;
+import ro.pippo.core.util.StringUtils;
 
 import java.lang.reflect.Method;
 
@@ -51,32 +52,21 @@ public class MetricsTransformer implements RouteTransformer {
             }
         }
 
-        String metricName = MetricRegistry.name(method.getDeclaringClass(), method.getName());
-
         RouteHandler handler = null;
         if (method.isAnnotationPresent(Metered.class)) {
             log.debug("Found '{}' annotation on method '{}'", Metered.class.getSimpleName(), LangUtils.toString(method));
-            // route handler is Metered
             Metered metered = method.getAnnotation(Metered.class);
-            if (!metered.value().isEmpty()) {
-                metricName = metered.value();
-            }
+            String metricName = !metered.value().isEmpty() ? metered.value() : getMetricName(route, method);
             handler = new MeteredHandler(metricName, metricRegistry, route.getRouteHandler());
         } else if (method.isAnnotationPresent(Timed.class)) {
             log.debug("Found '{}' annotation on method '{}'", Timed.class.getSimpleName(), LangUtils.toString(method));
-            // route handler is Timed
             Timed timed = method.getAnnotation(Timed.class);
-            if (!timed.value().isEmpty()) {
-                metricName = timed.value();
-            }
+            String metricName = !timed.value().isEmpty() ? timed.value() : getMetricName(route, method);
             handler = new TimedHandler(metricName, metricRegistry, route.getRouteHandler());
         } else if (method.isAnnotationPresent(Counted.class)) {
             log.debug("Found '{}' annotation on method '{}'", Counted.class.getSimpleName(), LangUtils.toString(method));
-            // route handler is Counted
             Counted counted = method.getAnnotation(Counted.class);
-            if (!counted.value().isEmpty()) {
-                metricName = counted.value();
-            }
+            String metricName = !counted.value().isEmpty() ? counted.value() : getMetricName(route, method);
             handler = new CountedHandler(metricName, counted.active(), metricRegistry, route.getRouteHandler());
         }
 
@@ -85,6 +75,15 @@ public class MetricsTransformer implements RouteTransformer {
         }
 
         return route;
+    }
+
+    private String getMetricName(Route route, Method method) {
+        String metricName = route.getName();
+        if (StringUtils.isNullOrEmpty(metricName)) {
+            metricName = MetricRegistry.name(method.getDeclaringClass(), method.getName());
+        }
+
+        return metricName;
     }
 
 }

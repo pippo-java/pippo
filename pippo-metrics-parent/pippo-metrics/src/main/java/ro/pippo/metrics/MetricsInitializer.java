@@ -15,6 +15,7 @@
  */
 package ro.pippo.metrics;
 
+import com.codahale.metrics.SharedMetricRegistries;
 import com.codahale.metrics.jmx.JmxReporter;
 import com.codahale.metrics.Metric;
 import com.codahale.metrics.MetricRegistry;
@@ -60,6 +61,9 @@ public class MetricsInitializer implements Initializer {
             metricRegistry = new MetricRegistry();
 //            application.getLocals().put("metricRegistry", metricRegistry);
         }
+
+        // set created metricRegistry as default
+        SharedMetricRegistries.setDefault("pippo", metricRegistry);
 
         // init reporters
         reporters = new ArrayList<>();

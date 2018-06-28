@@ -17,6 +17,8 @@ package ro.pippo.metrics;
 
 import com.codahale.metrics.Meter;
 import com.codahale.metrics.MetricRegistry;
+import com.codahale.metrics.SharedMetricRegistries;
+import ro.pippo.core.Application;
 import ro.pippo.core.route.RouteContext;
 import ro.pippo.core.route.RouteHandler;
 
@@ -30,6 +32,14 @@ public class MeteredHandler implements RouteHandler {
     final String meterName;
     final MetricRegistry metricRegistry;
     final RouteHandler routeHandler;
+
+    /**
+     * This constructor uses {@link SharedMetricRegistries#getDefault()} as metric registry.
+     * The default (global) metric registry is set in {@link MetricsInitializer#init(Application)}.
+     */
+    public MeteredHandler(String meterName, RouteHandler routeHandler) {
+        this(meterName, SharedMetricRegistries.getDefault(), routeHandler);
+    }
 
     public MeteredHandler(String meterName, MetricRegistry metricRegistry, RouteHandler routeHandler) {
         this.meterName = meterName;
