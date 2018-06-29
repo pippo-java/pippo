@@ -29,7 +29,6 @@ import ro.pippo.core.route.Router;
 import freemarker.template.SimpleScalar;
 import freemarker.template.TemplateMethodModelEx;
 import freemarker.template.TemplateModel;
-import freemarker.template.TemplateModelException;
 
 /**
  * Base class for handling classpath resource url generation from a Freemarker template.

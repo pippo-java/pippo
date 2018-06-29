@@ -26,7 +26,6 @@ import freemarker.template.SimpleDate;
 import freemarker.template.SimpleScalar;
 import freemarker.template.TemplateMethodModelEx;
 import freemarker.template.TemplateModel;
-import freemarker.template.TemplateModelException;
 
 /**
  * FormatTime method for producing locale-aware dates in a Freemarker template.

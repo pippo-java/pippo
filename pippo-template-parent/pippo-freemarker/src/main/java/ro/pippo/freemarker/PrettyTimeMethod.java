@@ -26,7 +26,6 @@ import freemarker.template.SimpleDate;
 import freemarker.template.SimpleScalar;
 import freemarker.template.TemplateMethodModelEx;
 import freemarker.template.TemplateModel;
-import freemarker.template.TemplateModelException;
 
 /**
  * PrettyTime method for producing locale-aware relative dates in a Freemarker
