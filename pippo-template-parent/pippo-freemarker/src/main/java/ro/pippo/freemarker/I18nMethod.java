@@ -27,8 +27,7 @@ import freemarker.template.TemplateModel;
 import freemarker.template.TemplateModelException;
 
 /**
- * Internationalization (i18n) method for accessing localized messages in a
- * Freemarker template.
+ * Internationalization (i18n) method for accessing localized messages in a Freemarker template.
  *
  * @author James Moger
  */
@@ -56,7 +55,7 @@ public class I18nMethod implements TemplateMethodModelEx {
                 if (o instanceof SimpleScalar) {
                     objects.add(((SimpleScalar) o).getAsString());
                 } else if (o instanceof SimpleNumber) {
-                    objects.add(((SimpleNumber) o).toString());
+                    objects.add(o.toString());
                 } else if (o instanceof StringModel) {
                     objects.add(((StringModel) o).getWrappedObject());
                 }

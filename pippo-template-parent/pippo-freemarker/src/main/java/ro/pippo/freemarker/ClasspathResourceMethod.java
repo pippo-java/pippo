@@ -42,9 +42,7 @@ abstract class ClasspathResourceMethod<T extends ClasspathResourceHandler> imple
     public final Logger log = LoggerFactory.getLogger(getClass());
 
     final Router router;
-
     final Class<T> resourceHandlerClass;
-
     final AtomicReference<String> urlPattern;
 
     public ClasspathResourceMethod(Router router, Class<T> resourceHandlerClass) {
@@ -54,7 +52,7 @@ abstract class ClasspathResourceMethod<T extends ClasspathResourceHandler> imple
     }
 
     @Override
-    public TemplateModel exec(List args) throws TemplateModelException {
+    public TemplateModel exec(List args) {
         if (urlPattern.get() == null) {
             String pattern = router.uriPatternFor(resourceHandlerClass);
             if (pattern == null) {
@@ -69,6 +67,7 @@ abstract class ClasspathResourceMethod<T extends ClasspathResourceHandler> imple
         Map<String, Object> parameters = new HashMap<>();
         parameters.put(ClasspathResourceHandler.PATH_PARAMETER, path);
         String url = router.uriFor(urlPattern.get(), parameters);
+
         return new SimpleScalar(url);
     }
 

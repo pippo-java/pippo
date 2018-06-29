@@ -73,10 +73,10 @@ public class FreemarkerTemplateEngine extends AbstractTemplateEngine {
         configuration.setNumberFormat("0.######"); // now it will print 1000000
 
         if (pippoSettings.isDev()) {
-            configuration.setTemplateUpdateDelay(0); // disable cache
+            configuration.setTemplateUpdateDelayMilliseconds(0); // disable cache
         } else {
             // never update the templates in production or while testing...
-            configuration.setTemplateUpdateDelay(Integer.MAX_VALUE);
+            configuration.setTemplateUpdateDelayMilliseconds(Integer.MAX_VALUE);
 
             // Hold 20 templates as strong references as recommended by:
             // http://freemarker.sourceforge.net/docs/pgui_config_templateloading.html

@@ -43,7 +43,7 @@ public class PrettyTimeMethod implements TemplateMethodModelEx {
     }
 
     @Override
-    public TemplateModel exec(List args) throws TemplateModelException {
+    public TemplateModel exec(List args) {
         Date date = getFormattableObject(args.get(0));
         String result = prettyTime.format(date);
 

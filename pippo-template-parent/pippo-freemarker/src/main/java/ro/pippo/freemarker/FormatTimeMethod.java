@@ -43,7 +43,7 @@ public class FormatTimeMethod implements TemplateMethodModelEx {
     }
 
     @Override
-    public TemplateModel exec(List args) throws TemplateModelException {
+    public TemplateModel exec(List args) {
         Date date = getFormattableObject(args.get(0));
         int type = parseStyle(args.get(1).toString());
         DateFormat df;
