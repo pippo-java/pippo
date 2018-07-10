@@ -12,6 +12,26 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 #### Removed
 
+### [1.10.0] - 2018-07-10
+
+#### Fixed
+- [#433]: FileItem's input stream is closed properly now
+
+#### Changed
+- Use try-with-resources in IoUtils
+- Update Dropwizard's metric to 4.0.2
+- Update Undertow to 1.4.25.Final
+- Update Pebble template engine to 2.6.1
+- Rename `CountedRouteHandler` to `CountedHandler`, `MeteredRouteHandler` to `MeteredHandler`, `TimedRouteHandler` to `TimedHandler`
+- [#433]: Call SharedMetricRegistries.setDefault in MetricsInitializer
+
+#### Added
+- [#427]: Add option converterClass to `@ParamField`
+- [#428]: Add support for Prometheus (metrics)
+- Add `getResourceAsString` method in IoUtils
+
+#### Removed
+
 ### [1.9.0] - 2018-05-10
 
 #### Fixed
@@ -464,7 +484,8 @@ Initial release.
 - Added [pippo-freemarker]
 - Added [pippo-jetty]
 
-[unreleased]: https://github.com/decebals/pippo/compare/release-1.9.0...HEAD
+[unreleased]: https://github.com/decebals/pippo/compare/release-1.10.0...HEAD
+[1.10.0]: https://github.com/decebals/pippo/compare/release-1.9.0...release-1.10.0
 [1.9.0]: https://github.com/decebals/pippo/compare/release-1.8.0...release-1.9.0
 [1.8.0]: https://github.com/decebals/pippo/compare/release-1.7.0...release-1.8.0
 [1.7.0]: https://github.com/decebals/pippo/compare/release-1.6.0...release-1.7.0
@@ -488,6 +509,10 @@ Initial release.
 [0.3.0]: https://github.com/decebals/pippo/compare/pippo-parent-0.2.0...pippo-parent-0.3.0
 [0.2.0]: https://github.com/decebals/pippo/compare/pippo-parent-0.1.0...pippo-parent-0.2.0
 
+[#435]: https://github.com/pippo-java/pippo/pull/435
+[#433]: https://github.com/pippo-java/pippo/pull/433
+[#428]: https://github.com/pippo-java/pippo/pull/428
+[#427]: https://github.com/pippo-java/pippo/pull/427
 [#421]: https://github.com/decebals/pippo/pull/421
 [#420]: https://github.com/decebals/pippo/pull/420
 [#419]: https://github.com/decebals/pippo/pull/419
