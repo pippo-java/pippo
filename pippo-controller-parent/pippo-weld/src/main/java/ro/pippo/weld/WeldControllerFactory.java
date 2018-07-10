@@ -27,12 +27,12 @@ public class WeldControllerFactory implements ControllerFactory {
     private WeldContainer weldContainer;
 
     public WeldControllerFactory(WeldContainer weldContainer){
-    	this.weldContainer = weldContainer;
+        this.weldContainer = weldContainer;
     }
 
-	@Override
-	public <T extends Controller> T createController(Class<T> controllerClass) {
-		return weldContainer.instance().select(controllerClass).get();
-	}
+    @Override
+    public <T extends Controller> T createController(Class<T> controllerClass) {
+        return weldContainer.instance().select(controllerClass).get();
+    }
 
 }

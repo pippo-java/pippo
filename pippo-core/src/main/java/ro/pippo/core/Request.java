@@ -403,8 +403,8 @@ public final class Request {
      * It's wrapper over {@link HttpServletRequest#getLocale}.
      */
     public Locale getLocale() {
-		return httpServletRequest.getLocale();
-	}
+        return httpServletRequest.getLocale();
+    }
 
     public String getBody() {
         if (body == null) {
@@ -631,7 +631,7 @@ public final class Request {
     }
 
     private ParameterValue buildParameterValue(final String... values) {
-    	return new ParameterValue(getLocale(), values);
+        return new ParameterValue(getLocale(), values);
     }
 
     @Override

@@ -30,9 +30,9 @@ import com.thoughtworks.xstream.XStream;
 @MetaInfServices
 public class XstreamEngine implements ContentTypeEngine {
 
-	@Override
-	public void init(Application application) {
-	}
+    @Override
+    public void init(Application application) {
+    }
 
     @Override
     public String getContentType() {
@@ -48,14 +48,14 @@ public class XstreamEngine implements ContentTypeEngine {
         return xstream;
     }
 
-	@Override
-	public String toString(Object object) {
+    @Override
+    public String toString(Object object) {
         return xstream().toXML(object);
-	}
+    }
 
-	@Override
-	public <T> T fromString(String content, Class<T> classOfT) {
-		return (T) xstream().fromXML(content);
-	}
+    @Override
+    public <T> T fromString(String content, Class<T> classOfT) {
+        return (T) xstream().fromXML(content);
+    }
 
 }

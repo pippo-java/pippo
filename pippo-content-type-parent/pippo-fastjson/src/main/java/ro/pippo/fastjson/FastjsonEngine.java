@@ -31,23 +31,23 @@ import com.alibaba.fastjson.JSON;
 @MetaInfServices
 public class FastjsonEngine implements ContentTypeEngine {
 
-	@Override
-	public void init(Application application) {
-	}
+    @Override
+    public void init(Application application) {
+    }
 
     @Override
     public String getContentType() {
         return HttpConstants.ContentType.APPLICATION_JSON;
     }
 
-	@Override
-	public String toString(Object object) {
-		return JSON.toJSONString(object, SerializerFeature.UseISO8601DateFormat);
-	}
+    @Override
+    public String toString(Object object) {
+        return JSON.toJSONString(object, SerializerFeature.UseISO8601DateFormat);
+    }
 
-	@Override
-	public <T> T fromString(String content, Class<T> classOfT) {
-		return JSON.parseObject(content, classOfT);
-	}
+    @Override
+    public <T> T fromString(String content, Class<T> classOfT) {
+        return JSON.parseObject(content, classOfT);
+    }
 
 }
