@@ -27,7 +27,7 @@ import java.lang.management.ManagementFactory;
 
 /**
  * Returns a thread dump (thread states) as response.
- * If the thread dump is not supported then the status code returned is 501 (not implemented).
+ * If the thread dump is not supported then the status code returned is 500 (internal error).
  *
  * @author Decebal Suiu
  */
