@@ -45,11 +45,16 @@ public class SystemInfoHandler implements RouteHandler {
     public void handle(RouteContext routeContext) {
         Response response = routeContext.getResponse().noCache().text();
 
+        Map<String, String> props = new HashMap<>();
+        for (String name : System.getProperties().stringPropertyNames()) {
+            props.put(name, System.getProperty(name));
+        }
+
         try (BufferedWriter writer = new BufferedWriter(response.getWriter())) {
-            writeSystemProperties(writer);
+            writeSystemProperties(props, writer);
             writer.newLine();
 
-            writeEnv(writer);
+            writeEnv(System.getenv(), writer);
 
             writer.flush();
         } catch (IOException e) {
@@ -57,19 +62,14 @@ public class SystemInfoHandler implements RouteHandler {
         }
     }
 
-    protected void writeSystemProperties(BufferedWriter writer) throws IOException {
+    protected void writeSystemProperties(Map<String, String> props, BufferedWriter writer) throws IOException {
         writeBanner("System properties", writer);
-
-        Map<String, String> props = new HashMap<>();
-        for (String name : System.getProperties().stringPropertyNames()) {
-            props.put(name, System.getProperty(name));
-        }
         writeProperties(props, writer);
     }
 
-    protected void writeEnv(BufferedWriter writer) throws IOException {
+    protected void writeEnv(Map<String, String> env, BufferedWriter writer) throws IOException {
         writeBanner("Environment", writer);
-        writeProperties(System.getenv(), writer);
+        writeProperties(env, writer);
     }
 
     protected void writeBanner(String banner, BufferedWriter writer) throws IOException {
