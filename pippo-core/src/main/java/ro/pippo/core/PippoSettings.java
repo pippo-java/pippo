@@ -20,16 +20,19 @@ import org.slf4j.LoggerFactory;
 import ro.pippo.core.util.ClasspathUtils;
 import ro.pippo.core.util.StringUtils;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.net.InetAddress;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
 import java.net.UnknownHostException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -208,7 +211,8 @@ public class PippoSettings {
 
     private synchronized Properties loadProperties(URL propertiesUrl) {
         final Properties properties = new Properties();
-        try (InputStream is = propertiesUrl.openStream()) {
+        try (BufferedReader is =  new BufferedReader(
+                new InputStreamReader(propertiesUrl.openStream(), StandardCharsets.UTF_8))) {
             log.debug("loading {}", propertiesUrl);
             Properties props = new Properties();
             props.load(is);
