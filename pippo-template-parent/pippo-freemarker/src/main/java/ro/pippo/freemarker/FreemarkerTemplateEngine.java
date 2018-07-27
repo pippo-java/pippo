@@ -25,6 +25,7 @@ import ro.pippo.core.Application;
 import ro.pippo.core.PippoConstants;
 import ro.pippo.core.PippoRuntimeException;
 import ro.pippo.core.PippoSettings;
+import ro.pippo.core.TemplateEngine;
 import ro.pippo.core.route.Router;
 import ro.pippo.core.util.StringUtils;
 
@@ -35,7 +36,7 @@ import java.util.Map;
 /**
  * @author Decebal Suiu
  */
-@MetaInfServices
+@MetaInfServices(TemplateEngine.class)
 public class FreemarkerTemplateEngine extends AbstractTemplateEngine {
 
     public static final String FTL = "ftl";

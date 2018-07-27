@@ -25,6 +25,7 @@ import ro.pippo.core.AbstractTemplateEngine;
 import ro.pippo.core.Application;
 import ro.pippo.core.PippoRuntimeException;
 import ro.pippo.core.PippoSettings;
+import ro.pippo.core.TemplateEngine;
 import ro.pippo.core.util.StringUtils;
 
 import java.io.IOException;
@@ -36,7 +37,7 @@ import java.util.Map;
  *
  * @author James Moger
  */
-@MetaInfServices
+@MetaInfServices(TemplateEngine.class)
 public class GroovyTemplateEngine extends AbstractTemplateEngine {
 
     private static final Logger log = LoggerFactory.getLogger(GroovyTemplateEngine.class);
