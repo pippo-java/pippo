@@ -18,6 +18,8 @@ package ro.pippo.core;
 import ro.pippo.core.route.RouteContext;
 import ro.pippo.core.route.RouteHandler;
 
+import java.util.Map;
+
 /**
  * A very simple route handler that renders a template.
  * <p>
@@ -30,14 +32,24 @@ import ro.pippo.core.route.RouteHandler;
 public class TemplateHandler implements RouteHandler {
 
     protected final String template;
+    protected final Map<String, Object> model;
 
     public TemplateHandler(String template) {
+        this(template, null);
+    }
+
+    public TemplateHandler(String template, Map<String, Object> model) {
         this.template = template;
+        this.model = model;
     }
 
     @Override
     public void handle(RouteContext routeContext) {
-        routeContext.render(template);
+        if (model == null || model.isEmpty()) {
+            routeContext.render(template);
+        } else {
+            routeContext.render(template, model);
+        }
     }
 
 }
