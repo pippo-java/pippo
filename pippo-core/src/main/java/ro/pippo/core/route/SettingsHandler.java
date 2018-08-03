@@ -39,7 +39,7 @@ public class SettingsHandler implements RouteHandler {
     private static final Logger log = LoggerFactory.getLogger(SettingsHandler.class);
 
     private boolean maskingPassword = true;
-    private String passwordToken;
+    private String settingNamePasswordToken;
 
     public SettingsHandler() {
         this("password");
@@ -49,8 +49,8 @@ public class SettingsHandler implements RouteHandler {
         this.maskingPassword = maskingPassword;
     }
 
-    public SettingsHandler(String passwordToken) {
-        this.passwordToken = passwordToken;
+    public SettingsHandler(String settingNamePasswordToken) {
+        this.settingNamePasswordToken = settingNamePasswordToken;
     }
 
     @Override
@@ -80,11 +80,11 @@ public class SettingsHandler implements RouteHandler {
     protected void writeSettings(Map<String, String> settings, BufferedWriter writer) throws IOException {
         Set<String> names = new TreeSet<>(settings.keySet());
         for (String name : names) {
-            String value = settings.get(name);
-            if (maskingPassword && value.contains(passwordToken)) {
-                value = "**********";
+            if (maskingPassword && name.contains(settingNamePasswordToken)) {
+                writer.write(name + " = **********");
+            } else {
+                writer.write(name + " = " + settings.get(name));
             }
-            writer.write(name + " = " + value);
             writer.newLine();
         }
     }
