@@ -30,7 +30,7 @@ import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -59,6 +59,8 @@ public class DirectoryHandler implements RouteHandler {
     private String directoryTemplate;
     private boolean chunked;
 
+    private Comparator<DirEntry> comparator;
+
     public DirectoryHandler(String urlPath, File directory) {
         this.urlPath = urlPath;
         String normalizedPath = getNormalizedPath(urlPath);
@@ -69,6 +71,8 @@ public class DirectoryHandler implements RouteHandler {
         }
 
         this.directory = directory.getAbsoluteFile();
+
+        comparator = new DirectoryBeforeComparator();
     }
 
     public DirectoryHandler(String urlPath, String directory) {
@@ -119,6 +123,16 @@ public class DirectoryHandler implements RouteHandler {
 
     public DirectoryHandler setChunkedTransfer(boolean chunked) {
         this.chunked = chunked;
+
+        return this;
+    }
+
+    public Comparator<DirEntry> getComparator() {
+        return comparator;
+    }
+
+    public DirectoryHandler setComparator(Comparator<DirEntry> comparator) {
+        this.comparator = comparator;
 
         return this;
     }
@@ -207,7 +221,10 @@ public class DirectoryHandler implements RouteHandler {
                 + StringUtils.addStart(file.getName(), "/");
             list.add(new DirEntry(fileUrl, file));
         }
-        Collections.sort(list);
+
+        if (comparator != null) {
+            list.sort(comparator);
+        }
 
         if (!directory.equals(dir)) {
             File upDir = new File(dir, "../");
@@ -334,7 +351,7 @@ public class DirectoryHandler implements RouteHandler {
         return sb.toString();
     }
 
-    public static class DirEntry implements Comparable<DirEntry> {
+    public static class DirEntry {
 
         private final String url;
         private final File file;
@@ -372,9 +389,21 @@ public class DirectoryHandler implements RouteHandler {
             return file.isDirectory();
         }
 
+    }
+
+    public static class DirectoryBeforeComparator implements Comparator<DirEntry> {
+
         @Override
-        public int compareTo(DirEntry o) {
-            return getName().toLowerCase().compareTo(o.getName().toLowerCase());
+        public int compare(DirEntry o1, DirEntry o2) {
+            if (o1.isDirectory() && !o2.isDirectory()) {
+                return -1;
+            }
+
+            if (!o1.isDirectory() && o2.isDirectory()) {
+                return 1;
+            }
+
+            return o1.file.compareTo(o2.file);
         }
 
     }
