@@ -15,6 +15,14 @@
  */
 package ro.pippo.pebble;
 
+import com.mitchellbosecke.pebble.error.PebbleException;
+import com.mitchellbosecke.pebble.extension.AbstractExtension;
+import com.mitchellbosecke.pebble.extension.Filter;
+import com.mitchellbosecke.pebble.extension.escaper.SafeString;
+import com.mitchellbosecke.pebble.template.EvaluationContext;
+import com.mitchellbosecke.pebble.template.PebbleTemplate;
+import ro.pippo.core.PippoRuntimeException;
+
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -26,22 +34,13 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-import com.mitchellbosecke.pebble.extension.escaper.SafeString;
-import ro.pippo.core.PippoRuntimeException;
-
-import com.mitchellbosecke.pebble.extension.AbstractExtension;
-import com.mitchellbosecke.pebble.extension.Filter;
-import com.mitchellbosecke.pebble.template.EvaluationContext;
-
 public class FormatTimeExtension extends AbstractExtension {
-
-    public FormatTimeExtension() {
-    }
 
     @Override
     public Map<String, Filter> getFilters() {
         Map<String, Filter> filters = new HashMap<>();
         filters.put("formatTime", new FormatTimeFilter());
+
         return filters;
     }
 
@@ -54,16 +53,16 @@ public class FormatTimeExtension extends AbstractExtension {
             List<String> names = new ArrayList<>();
             names.add("format");
             names.add(EXISTING_FORMAT);
+
             return names;
         }
 
         @Override
-        public Object apply(Object input, Map<String, Object> args) {
+        public Object apply(Object input, Map<String, Object> args, PebbleTemplate self, EvaluationContext context, int lineNumber) throws PebbleException {
             if (input == null) {
                 return null;
             }
 
-            EvaluationContext context = (EvaluationContext) args.get("_context");
             Locale locale = context.getLocale();
 
             DateFormat existingFormat;
@@ -93,7 +92,6 @@ public class FormatTimeExtension extends AbstractExtension {
         }
 
         private Date getDateObject(Object value) {
-
             if (value instanceof Date) {
                 return (Date) value;
             } else if (value instanceof Calendar) {
@@ -118,5 +116,7 @@ public class FormatTimeExtension extends AbstractExtension {
                 return -1;
             }
         }
+
     }
+
 }

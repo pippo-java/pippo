@@ -15,8 +15,6 @@
  */
 package ro.pippo.pebble;
 
-import com.google.common.base.Strings;
-import com.google.common.collect.Lists;
 import com.mitchellbosecke.pebble.PebbleEngine;
 import com.mitchellbosecke.pebble.error.LoaderException;
 import com.mitchellbosecke.pebble.error.PebbleException;
@@ -38,6 +36,7 @@ import ro.pippo.core.route.Router;
 import ro.pippo.core.util.StringUtils;
 
 import java.io.Writer;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -63,7 +62,7 @@ public class PebbleTemplateEngine extends AbstractTemplateEngine {
         Router router = getRouter();
         PippoSettings pippoSettings = getPippoSettings();
 
-        List<Loader<?>> loaders = Lists.newArrayList();
+        List<Loader<?>> loaders = new ArrayList<>();
         PippoTemplateLoader templateLoader = new PippoTemplateLoader();
 
         templateLoader.setCharset(PippoConstants.UTF8);
@@ -177,7 +176,7 @@ public class PebbleTemplateEngine extends AbstractTemplateEngine {
     private PebbleTemplate getTemplate(String templateName, String localePart) throws PebbleException {
         PebbleTemplate template = null;
         try {
-            if (Strings.isNullOrEmpty(localePart)) {
+            if (StringUtils.isNullOrEmpty(localePart)) {
                 template = engine.getTemplate(templateName);
             } else {
                 String localizedName = StringUtils.removeEnd(templateName, "." +

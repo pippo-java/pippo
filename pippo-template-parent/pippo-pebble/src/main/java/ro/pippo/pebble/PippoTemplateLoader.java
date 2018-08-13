@@ -15,6 +15,11 @@
  */
 package ro.pippo.pebble;
 
+import com.mitchellbosecke.pebble.error.LoaderException;
+import com.mitchellbosecke.pebble.loader.ClasspathLoader;
+import ro.pippo.core.PippoRuntimeException;
+import ro.pippo.core.util.ClasspathUtils;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -22,23 +27,12 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.net.URL;
 
-import ro.pippo.core.PippoRuntimeException;
-import ro.pippo.core.util.ClasspathUtils;
-
-import com.mitchellbosecke.pebble.error.LoaderException;
-import com.mitchellbosecke.pebble.loader.ClasspathLoader;
-
 class PippoTemplateLoader extends ClasspathLoader {
-
-    public PippoTemplateLoader() {
-    }
 
     @Override
     public Reader getReader(String templateName) throws LoaderException {
-
-        StringBuilder path = new StringBuilder("");
+        StringBuilder path = new StringBuilder();
         if (getPrefix() != null) {
-
             path.append(getPrefix());
 
             if (!getPrefix().endsWith(String.valueOf('/'))) {
@@ -51,13 +45,13 @@ class PippoTemplateLoader extends ClasspathLoader {
         if (resource.charAt(0) == '/') {
             location = resource.substring(1);
         }
-        URL url = ClasspathUtils.locateOnClasspath(location);
 
+        URL url = ClasspathUtils.locateOnClasspath(location);
         if (url == null) {
             throw new LoaderException(null, "Could not find template \"" + location + "\"");
         }
 
-        Reader reader = null;
+        Reader reader;
         try {
             InputStream is = url.openStream();
             InputStreamReader isr = new InputStreamReader(is, getCharset());

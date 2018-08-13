@@ -15,20 +15,18 @@
  */
 package ro.pippo.pebble;
 
+import com.mitchellbosecke.pebble.extension.AbstractExtension;
+import com.mitchellbosecke.pebble.extension.Function;
+import com.mitchellbosecke.pebble.extension.escaper.SafeString;
+import com.mitchellbosecke.pebble.template.EvaluationContext;
+import com.mitchellbosecke.pebble.template.PebbleTemplate;
+import ro.pippo.core.Messages;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-
-import com.mitchellbosecke.pebble.extension.escaper.SafeString;
-import com.mitchellbosecke.pebble.template.EvaluationContext;
-
-import ro.pippo.core.Messages;
-
-import com.google.common.collect.Lists;
-import com.mitchellbosecke.pebble.extension.AbstractExtension;
-import com.mitchellbosecke.pebble.extension.Function;
 
 public class I18nExtension extends AbstractExtension {
 
@@ -42,6 +40,7 @@ public class I18nExtension extends AbstractExtension {
     public Map<String, Function> getFunctions() {
         Map<String, Function> functions = new HashMap<>();
         functions.put("i18n", new I18nFunction());
+
         return functions;
     }
 
@@ -58,18 +57,18 @@ public class I18nExtension extends AbstractExtension {
             names.add("arg3");
             names.add("arg4");
             names.add("arg5");
+
             return names;
         }
 
         @Override
-        public Object execute(Map<String, Object> args) {
+        public Object execute(Map<String, Object> args, PebbleTemplate self, EvaluationContext context, int lineNumber) {
             String messageKey = (String) args.get("key");
 
-            EvaluationContext context = (EvaluationContext) args.get("_context");
             Locale locale = context.getLocale();
             String requestLang = locale.toLanguageTag();
 
-            List<Object> messageArgs = Lists.newArrayList();
+            List<Object> messageArgs = new ArrayList<>();
             for (int i = 1; i <= 5; i++) {
                 if (args.containsKey("arg" + i)) {
                     Object object = args.get("arg" + i);
@@ -78,6 +77,7 @@ public class I18nExtension extends AbstractExtension {
             }
 
             String messageValue = messages.get(messageKey, requestLang, messageArgs.toArray());
+
             return new SafeString(messageValue);
         }
 

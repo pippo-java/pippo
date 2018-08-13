@@ -15,14 +15,13 @@
  */
 package ro.pippo.pebble;
 
-import java.util.HashMap;
-import java.util.Map;
-
+import com.mitchellbosecke.pebble.extension.AbstractExtension;
+import com.mitchellbosecke.pebble.extension.Function;
 import ro.pippo.core.route.Router;
 import ro.pippo.core.route.WebjarsResourceHandler;
 
-import com.mitchellbosecke.pebble.extension.AbstractExtension;
-import com.mitchellbosecke.pebble.extension.Function;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Extension for handling webjar resource url generation from a Pebble template.
@@ -41,6 +40,7 @@ public class WebjarsAtExtension extends AbstractExtension {
     public Map<String, Function> getFunctions() {
         Map<String, Function> functions = new HashMap<>();
         functions.put("webjarsAt", function);
+
         return functions;
     }
 
@@ -49,6 +49,7 @@ public class WebjarsAtExtension extends AbstractExtension {
         protected WebjarResourceFunction(Router router) {
             super(router, WebjarsResourceHandler.class);
         }
+
     }
 
 }

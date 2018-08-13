@@ -15,14 +15,13 @@
  */
 package ro.pippo.pebble;
 
-import java.util.HashMap;
-import java.util.Map;
-
+import com.mitchellbosecke.pebble.extension.AbstractExtension;
+import com.mitchellbosecke.pebble.extension.Function;
 import ro.pippo.core.route.PublicResourceHandler;
 import ro.pippo.core.route.Router;
 
-import com.mitchellbosecke.pebble.extension.AbstractExtension;
-import com.mitchellbosecke.pebble.extension.Function;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Extension for handling public resource url generation from a Pebble template.
@@ -41,6 +40,7 @@ public class PublicAtExtension extends AbstractExtension {
     public Map<String, Function> getFunctions() {
         Map<String, Function> functions = new HashMap<>();
         functions.put("publicAt", function);
+
         return functions;
     }
 
@@ -49,6 +49,7 @@ public class PublicAtExtension extends AbstractExtension {
         protected PublicResourceFunction(Router router) {
             super(router, PublicResourceHandler.class);
         }
+
     }
 
 }
