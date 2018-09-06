@@ -102,13 +102,13 @@ public class IoUtils {
     }
 
     /**
-     * Shortcut
+     * Shortcut to
      * {@code
      * getResourceAsString(getClass(), resource);
      * }
      */
-    public String getResourceAsString(String resource) throws IOException {
-        return getResourceAsString(getClass(), resource);
+    public static String getResourceAsString(String resource) throws IOException {
+        return getResourceAsString(IoUtils.class, resource);
     }
 
     /**
@@ -117,7 +117,7 @@ public class IoUtils {
      * String html = getResourceAsString(MyClass.class, "/index.html");
      * }
      */
-    public String getResourceAsString(Class<?> clazz, String resource) throws IOException {
+    public static String getResourceAsString(Class<?> clazz, String resource) throws IOException {
         try (InputStream inputStream = clazz.getResourceAsStream(resource)) {
             return IoUtils.toString(inputStream);
         }
