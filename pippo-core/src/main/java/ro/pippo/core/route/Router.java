@@ -97,7 +97,6 @@ public interface Router {
     /**
      * Generate an URI string for a route (referenced by an uriPattern) with some parameters.
      * For example:
-     * <p/>
      * <pre>
      * // add a route
      * GET("/user", routeContext -> {...});
