@@ -25,6 +25,7 @@ import ro.pippo.core.util.IoUtils;
 import ro.pippo.core.util.MimeTypes;
 import ro.pippo.core.util.StringUtils;
 
+import javax.servlet.ServletOutputStream;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 import java.io.File;
@@ -1146,7 +1147,7 @@ public final class Response {
         return finalizeListeners;
     }
 
-    public OutputStream getOutputStream() {
+    public ServletOutputStream getOutputStream() {
         checkCommitted();
         finalizeResponse();
 
