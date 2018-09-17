@@ -33,8 +33,8 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.PrintWriter;
 import java.io.StringWriter;
-import java.io.Writer;
 import java.nio.charset.StandardCharsets;
 import java.util.Collection;
 import java.util.Date;
@@ -1162,7 +1162,7 @@ public final class Response {
         }
     }
 
-    public Writer getWriter() {
+    public PrintWriter getWriter() {
         checkCommitted();
         finalizeResponse();
 
