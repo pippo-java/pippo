@@ -1168,7 +1168,7 @@ public final class Response {
         finalizeResponse();
 
         if (getContentType() == null) {
-            contentType(HttpConstants.ContentType.APPLICATION_OCTET_STREAM);
+            contentType(HttpConstants.ContentType.TEXT_HTML);
         }
 
         try {
