@@ -18,13 +18,11 @@ package ro.pippo.pac4j;
 import org.pac4j.core.context.Cookie;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.context.session.SessionStore;
-import org.pac4j.core.exception.TechnicalException;
 import ro.pippo.core.ParameterValue;
 import ro.pippo.core.Request;
 import ro.pippo.core.Response;
 import ro.pippo.core.route.RouteContext;
 
-import java.io.IOException;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
@@ -104,11 +102,7 @@ public class PippoWebContext implements WebContext {
 
     @Override
     public void writeResponseContent(String contentToWrite) {
-        try {
-            getResponse().getWriter().write(contentToWrite);
-        } catch (IOException e) {
-            throw new TechnicalException("error writing content out", e);
-        }
+        getResponse().getWriter().write(contentToWrite);
     }
 
     @Override

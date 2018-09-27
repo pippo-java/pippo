@@ -22,7 +22,6 @@ import ro.pippo.core.Response;
 import ro.pippo.core.route.RouteContext;
 import ro.pippo.core.route.RouteHandler;
 
-import java.io.OutputStream;
 import java.lang.management.ManagementFactory;
 
 /**
@@ -51,8 +50,7 @@ public class ThreadDumpHandler implements RouteHandler {
         Response response = routeContext.getResponse().noCache().text();
 
         if (threadDump != null) {
-            OutputStream output = response.getOutputStream();
-            threadDump.dump(output);
+            threadDump.dump(response.getOutputStream());
         } else {
             response.internalError().send("Sorry your runtime environment does not allow to dump threads");
         }
