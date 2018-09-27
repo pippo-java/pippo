@@ -101,6 +101,12 @@ public final class HttpConstants {
         public static final String HOST = "Host";
         public static final String LAST_MODIFIED = "Last-Modified";
         public static final String LOCATION = "Location";
+        public static final String ACCESS_CONTROL_ALLOW_ORIGIN = "Access-Control-Allow-Origin";
+        public static final String ACCESS_CONTROL_ALLOW_METHODS = "Access-Control-Allow-Methods";
+        public static final String ACCESS_CONTROL_ALLOW_HEADERS = "Access-Control-Allow-Headers";
+        public static final String ACCESS_CONTROL_EXPOSE_HEADERS = "Access-Control-Expose-Headers";
+        public static final String ACCESS_CONTROL_MAX_AGE = "Access-Control-Max-Age";
+        public static final String ACCESS_CONTROL_ALLOW_CREDENTIALS = "Access-Control-Allow-Credentials";
 
         private Header() {
             // restrict instantiation
