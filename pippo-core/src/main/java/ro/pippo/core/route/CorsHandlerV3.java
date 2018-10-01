@@ -32,7 +32,7 @@ import ro.pippo.core.util.StringUtils;
  * For more details see: https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS
  * </p>
  */
-public class CorsHandlerV2 implements RouteHandler<RouteContext> {
+public class CorsHandlerV3 implements RouteHandler<RouteContext> {
 
     private String allowOrigin;
 
@@ -53,7 +53,7 @@ public class CorsHandlerV2 implements RouteHandler<RouteContext> {
      * @param allowOrigin
      *            origin, eg: http://pippo.ro
      */
-    public CorsHandlerV2(String allowOrigin) {
+    public CorsHandlerV3(String allowOrigin) {
         if (StringUtils.isNullOrEmpty(allowOrigin)) {
             throw new PippoRuntimeException("allowOrigin cannot be blank");
         }
@@ -101,8 +101,9 @@ public class CorsHandlerV2 implements RouteHandler<RouteContext> {
      * @param exposeHeaders
      *            headers names, comma-separated
      */
-    public void setExposeHeaders(String exposeHeaders) {
+    public CorsHandlerV3 exposeHeaders(String exposeHeaders) {
         this.exposeHeaders = exposeHeaders;
+        return this;
     }
 
     /**
@@ -114,8 +115,9 @@ public class CorsHandlerV2 implements RouteHandler<RouteContext> {
      * @param maxAgeInSeconds
      *            max age in seconds
      */
-    public void setMaxAge(int maxAgeInSeconds) {
+    public CorsHandlerV3 maxAge(int maxAgeInSeconds) {
         this.maxAge = maxAgeInSeconds;
+        return this;
     }
 
     /**
@@ -125,8 +127,9 @@ public class CorsHandlerV2 implements RouteHandler<RouteContext> {
      * @param allowCredentials
      *            true to expose, false otherwise
      */
-    public void setAllowCredentials(boolean allowCredentials) {
+    public CorsHandlerV3 allowCredentials(boolean allowCredentials) {
         this.allowCredentials = allowCredentials;
+        return this;
     }
 
     /**
@@ -138,8 +141,9 @@ public class CorsHandlerV2 implements RouteHandler<RouteContext> {
      * @param allowMethods
      *            http methods names, comma-separated
      */
-    public void setAllowMethods(String allowMethods) {
+    public CorsHandlerV3 allowMethods(String allowMethods) {
         this.allowMethods = allowMethods;
+        return this;
     }
 
     /**
@@ -151,8 +155,9 @@ public class CorsHandlerV2 implements RouteHandler<RouteContext> {
      * @param allowHeaders
      *            headers names, comma-separated
      */
-    public void setAllowHeaders(String allowHeaders) {
+    public CorsHandlerV3 allowHeaders(String allowHeaders) {
         this.allowHeaders = allowHeaders;
+        return this;
     }
 
 }

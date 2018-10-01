@@ -29,13 +29,15 @@ import ro.pippo.core.util.StringUtils;
 /**
  * Define how CORS requests are handled.
  *
- * <p>The Cross-Origin Resource Sharing standard works by adding new HTTP headers
+ * <p>
+ * The Cross-Origin Resource Sharing standard works by adding new HTTP headers
  * that allow servers to describe the set of origins that are permitted to read
- * that information using a web browser.</p>
+ * that information using a web browser.
+ * </p>
  *
- * <p>For more details see: https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS</p>
- *
- * <p>Based on: https://github.com/pac4j/pac4j/blob/3806174df54b939ed2785ee493f63b9851fcd03e/pac4j-core/src/main/java/org/pac4j/core/authorization/authorizer/CorsAuthorizer.java</p>
+ * <p>
+ * For more details see: https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS
+ * </p>
  */
 public class CorsHandler implements RouteHandler<RouteContext> {
 
@@ -67,8 +69,9 @@ public class CorsHandler implements RouteHandler<RouteContext> {
         this.allowCredentials = builder.allowCredentials;
         this.allowMethods = join(builder.allowMethods);
         this.allowHeaders = join(builder.allowHeaders);
-        log.info(String.format("CorsHandler [allowOrigin=%s, allowMethods=%s, allowHeaders=%s, exposeHeaders=%s, maxAge=%s, allowCredentials=%s]", allowOrigin, allowMethods, allowHeaders,
-                exposeHeaders, maxAge, allowCredentials));
+        log.info(String.format(
+                "CorsHandler [allowOrigin=%s, allowMethods=%s, allowHeaders=%s, exposeHeaders=%s, maxAge=%s, allowCredentials=%s]",
+                allowOrigin, allowMethods, allowHeaders, exposeHeaders, maxAge, allowCredentials));
     }
 
     @Override
@@ -106,7 +109,8 @@ public class CorsHandler implements RouteHandler<RouteContext> {
     }
 
     private String join(Set<String> values) {
-        final String value = values.stream().filter(v -> !StringUtils.isNullOrEmpty(v)).collect(Collectors.joining(", "));
+        final String value = values.stream().filter(v -> !StringUtils.isNullOrEmpty(v))
+                .collect(Collectors.joining(", "));
         return StringUtils.isNullOrEmpty(value) ? null : value;
     }
 
@@ -132,7 +136,9 @@ public class CorsHandler implements RouteHandler<RouteContext> {
         }
 
         /**
-         * <b>Required!</b> The {@code Access-Control-Allow-Origin} response header indicates whether the response can be shared with requesting code from the given origin.
+         * <b>Required!</b> The {@code Access-Control-Allow-Origin} response header
+         * indicates whether the response can be shared with requesting code from the
+         * given origin.
          *
          * @param origin
          *            origin, eg: http://pippo.ro
@@ -145,7 +151,8 @@ public class CorsHandler implements RouteHandler<RouteContext> {
         }
 
         /**
-         * The {@code Access-Control-Expose-Headers} response header indicates which headers can be exposed as part of the response by listing their names.
+         * The {@code Access-Control-Expose-Headers} response header indicates which
+         * headers can be exposed as part of the response by listing their names.
          *
          * @param header
          *            header name
@@ -157,8 +164,10 @@ public class CorsHandler implements RouteHandler<RouteContext> {
         }
 
         /**
-         * The {@code Access-Control-Max-Age} response header indicates how long the results of a preflight request (that is the information contained in the {@code Access-Control-Allow-Methods} and
-         * {@code Access-Control-Allow-Headers} headers) can be cached.
+         * The {@code Access-Control-Max-Age} response header indicates how long the
+         * results of a preflight request (that is the information contained in the
+         * {@code Access-Control-Allow-Methods} and {@code Access-Control-Allow-Headers}
+         * headers) can be cached.
          *
          * @param maxAgeInSeconds
          *            max age in seconds
@@ -171,7 +180,8 @@ public class CorsHandler implements RouteHandler<RouteContext> {
         }
 
         /**
-         * The Access-Control-Allow-Credentials response header indicates whether or not the response to the request can be exposed to the page.
+         * The Access-Control-Allow-Credentials response header indicates whether or not
+         * the response to the request can be exposed to the page.
          *
          * @param allowCredentials
          *            true to expose, false otherwise
@@ -184,7 +194,9 @@ public class CorsHandler implements RouteHandler<RouteContext> {
         }
 
         /**
-         * The Access-Control-Allow-Methods response header specifies the method or methods allowed when accessing the resource in response to a preflight request.
+         * The Access-Control-Allow-Methods response header specifies the method or
+         * methods allowed when accessing the resource in response to a preflight
+         * request.
          *
          * @param method
          *            http method
@@ -197,8 +209,10 @@ public class CorsHandler implements RouteHandler<RouteContext> {
         }
 
         /**
-         * The {@code Access-Control-Allow-Headers} response header is used in response to a preflight request which includes the {@code Access-Control-Request-Headers} to indicate which HTTP headers
-         * can be used during the actual request.
+         * The {@code Access-Control-Allow-Headers} response header is used in response
+         * to a preflight request which includes the
+         * {@code Access-Control-Request-Headers} to indicate which HTTP headers can be
+         * used during the actual request.
          *
          * @param header
          *            http header
