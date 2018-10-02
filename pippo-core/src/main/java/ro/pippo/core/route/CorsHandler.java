@@ -15,13 +15,6 @@
  */
 package ro.pippo.core.route;
 
-import java.util.HashSet;
-import java.util.Set;
-import java.util.stream.Collectors;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import ro.pippo.core.HttpConstants;
 import ro.pippo.core.PippoRuntimeException;
 import ro.pippo.core.Response;
@@ -42,8 +35,6 @@ import ro.pippo.core.util.StringUtils;
  */
 public class CorsHandler implements RouteHandler<RouteContext> {
 
-    private static final Logger log = LoggerFactory.getLogger(CorsHandler.class);
-
     private String allowOrigin;
 
     private String exposeHeaders;
@@ -56,23 +47,18 @@ public class CorsHandler implements RouteHandler<RouteContext> {
 
     private String allowHeaders;
 
-    public static Builder builder() {
-        return new Builder();
-    }
-
-    private CorsHandler(Builder builder) {
-        this.allowOrigin = join(builder.allowOrigins);
-        if (this.allowOrigin == null) {
+    /**
+     * The {@code Access-Control-Allow-Origin} response header indicates whether the
+     * response can be shared with requesting code from the given origin.
+     *
+     * @param allowOrigin
+     *            origin, eg: http://pippo.ro
+     */
+    public CorsHandler(String allowOrigin) {
+        if (StringUtils.isNullOrEmpty(allowOrigin)) {
             throw new PippoRuntimeException("allowOrigin cannot be blank");
         }
-        this.exposeHeaders = join(builder.exposeHeaders);
-        this.maxAge = builder.maxAge;
-        this.allowCredentials = builder.allowCredentials;
-        this.allowMethods = join(builder.allowMethods);
-        this.allowHeaders = join(builder.allowHeaders);
-        log.info(String.format(
-                "CorsHandler [allowOrigin=%s, allowMethods=%s, allowHeaders=%s, exposeHeaders=%s, maxAge=%s, allowCredentials=%s]",
-                allowOrigin, allowMethods, allowHeaders, exposeHeaders, maxAge, allowCredentials));
+        this.allowOrigin = allowOrigin;
     }
 
     @Override
@@ -111,122 +97,70 @@ public class CorsHandler implements RouteHandler<RouteContext> {
         context.next();
     }
 
-    private String join(Set<String> values) {
-        final String value = values.stream().filter(v -> !StringUtils.isNullOrEmpty(v))
-                .collect(Collectors.joining(", "));
-        return StringUtils.isNullOrEmpty(value) ? null : value;
+    /**
+     * The {@code Access-Control-Expose-Headers} response header indicates which
+     * headers can be exposed as part of the response by listing their names.
+     *
+     * @param exposeHeaders
+     *            headers names, comma-separated
+     */
+    public CorsHandler exposeHeaders(String exposeHeaders) {
+        this.exposeHeaders = exposeHeaders;
+        return this;
     }
 
-    public static class Builder {
+    /**
+     * The {@code Access-Control-Max-Age} response header indicates how long the
+     * results of a preflight request (that is the information contained in the
+     * {@code Access-Control-Allow-Methods} and {@code Access-Control-Allow-Headers}
+     * headers) can be cached.
+     *
+     * @param maxAgeInSeconds
+     *            max age in seconds
+     */
+    public CorsHandler maxAge(int maxAgeInSeconds) {
+        this.maxAge = maxAgeInSeconds;
+        return this;
+    }
 
-        private Set<String> allowOrigins = new HashSet<>();
-        private Set<String> exposeHeaders = new HashSet<>();
-        private int maxAge = -1;
-        private boolean allowCredentials;
-        private Set<String> allowMethods = new HashSet<>();
-        private Set<String> allowHeaders = new HashSet<>();
+    /**
+     * The Access-Control-Allow-Credentials response header indicates whether or not
+     * the response to the request can be exposed to the page.
+     *
+     * @param allowCredentials
+     *            true to expose, false otherwise
+     */
+    public CorsHandler allowCredentials(boolean allowCredentials) {
+        this.allowCredentials = allowCredentials;
+        return this;
+    }
 
-        private Builder() {
-        }
+    /**
+     * The Access-Control-Allow-Methods response header specifies the method or
+     * methods allowed when accessing the resource in response to a preflight
+     * request.
+     *
+     *
+     * @param allowMethods
+     *            http methods names, comma-separated
+     */
+    public CorsHandler allowMethods(String allowMethods) {
+        this.allowMethods = allowMethods;
+        return this;
+    }
 
-        /**
-         * Creates an instance of CorsHandler.
-         *
-         * @return instance of CorsHandler
-         */
-        public CorsHandler build() {
-            return new CorsHandler(this);
-        }
-
-        /**
-         * <b>Required!</b> The {@code Access-Control-Allow-Origin} response header
-         * indicates whether the response can be shared with requesting code from the
-         * given origin.
-         *
-         * @param origin
-         *            origin, eg: http://pippo.ro
-         *
-         * @return this
-         */
-        public Builder addAllowOrigin(String origin) {
-            this.allowOrigins.add(origin);
-            return this;
-        }
-
-        /**
-         * The {@code Access-Control-Expose-Headers} response header indicates which
-         * headers can be exposed as part of the response by listing their names.
-         *
-         * @param header
-         *            header name
-         * @return this
-         */
-        public Builder addExposeHeader(String header) {
-            this.exposeHeaders.add(header);
-            return this;
-        }
-
-        /**
-         * The {@code Access-Control-Max-Age} response header indicates how long the
-         * results of a preflight request (that is the information contained in the
-         * {@code Access-Control-Allow-Methods} and {@code Access-Control-Allow-Headers}
-         * headers) can be cached.
-         *
-         * @param maxAgeInSeconds
-         *            max age in seconds
-         *
-         * @return this
-         */
-        public Builder setMaxAge(int maxAgeInSeconds) {
-            this.maxAge = maxAgeInSeconds;
-            return this;
-        }
-
-        /**
-         * The Access-Control-Allow-Credentials response header indicates whether or not
-         * the response to the request can be exposed to the page.
-         *
-         * @param allowCredentials
-         *            true to expose, false otherwise
-         *
-         * @return this
-         */
-        public Builder allowCredentials(boolean allowCredentials) {
-            this.allowCredentials = allowCredentials;
-            return this;
-        }
-
-        /**
-         * The Access-Control-Allow-Methods response header specifies the method or
-         * methods allowed when accessing the resource in response to a preflight
-         * request.
-         *
-         * @param method
-         *            http method
-         *
-         * @return this
-         */
-        public Builder addAllowMethod(String method) {
-            this.allowMethods.add(method);
-            return this;
-        }
-
-        /**
-         * The {@code Access-Control-Allow-Headers} response header is used in response
-         * to a preflight request which includes the
-         * {@code Access-Control-Request-Headers} to indicate which HTTP headers can be
-         * used during the actual request.
-         *
-         * @param header
-         *            http header
-         *
-         * @return this
-         */
-        public Builder addAllowHeader(String header) {
-            this.allowHeaders.add(header);
-            return this;
-        }
-
+    /**
+     * The {@code Access-Control-Allow-Headers} response header is used in response
+     * to a preflight request which includes the
+     * {@code Access-Control-Request-Headers} to indicate which HTTP headers can be
+     * used during the actual request.
+     *
+     * @param allowHeaders
+     *            headers names, comma-separated
+     */
+    public CorsHandler allowHeaders(String allowHeaders) {
+        this.allowHeaders = allowHeaders;
+        return this;
     }
 
 }
