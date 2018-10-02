@@ -24,6 +24,7 @@ import org.slf4j.LoggerFactory;
 
 import ro.pippo.core.HttpConstants;
 import ro.pippo.core.PippoRuntimeException;
+import ro.pippo.core.Response;
 import ro.pippo.core.util.StringUtils;
 
 /**
@@ -76,32 +77,34 @@ public class CorsHandler implements RouteHandler<RouteContext> {
 
     @Override
     public void handle(RouteContext context) {
-        context.getResponse().header(HttpConstants.Header.ACCESS_CONTROL_ALLOW_ORIGIN, allowOrigin);
+        final Response response = context.getResponse();
+
+        response.header(HttpConstants.Header.ACCESS_CONTROL_ALLOW_ORIGIN, allowOrigin);
 
         if (exposeHeaders != null) {
-            context.getResponse().header(HttpConstants.Header.ACCESS_CONTROL_EXPOSE_HEADERS, exposeHeaders);
+            response.header(HttpConstants.Header.ACCESS_CONTROL_EXPOSE_HEADERS, exposeHeaders);
         }
 
         if (maxAge != -1) {
-            context.getResponse().header(HttpConstants.Header.ACCESS_CONTROL_MAX_AGE, "" + maxAge);
+            response.header(HttpConstants.Header.ACCESS_CONTROL_MAX_AGE, "" + maxAge);
         }
 
         // According to the documentation only if true is what needs to be set
         // https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Access-Control-Allow-Credentials#Directives
         if (allowCredentials) {
-            context.getResponse().header(HttpConstants.Header.ACCESS_CONTROL_ALLOW_CREDENTIALS, "true");
+            response.header(HttpConstants.Header.ACCESS_CONTROL_ALLOW_CREDENTIALS, "true");
         }
 
         if (allowMethods != null) {
-            context.getResponse().header(HttpConstants.Header.ACCESS_CONTROL_ALLOW_METHODS, allowMethods);
+            response.header(HttpConstants.Header.ACCESS_CONTROL_ALLOW_METHODS, allowMethods);
         }
 
         if (allowHeaders != null) {
-            context.getResponse().header(HttpConstants.Header.ACCESS_CONTROL_ALLOW_HEADERS, allowHeaders);
+            response.header(HttpConstants.Header.ACCESS_CONTROL_ALLOW_HEADERS, allowHeaders);
         }
 
         if (context.getRequestMethod().equals("OPTIONS")) {
-            context.getResponse().accepted();
+            response.accepted();
             return;
         }
 
