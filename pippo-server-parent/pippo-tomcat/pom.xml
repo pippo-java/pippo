@@ -14,7 +14,7 @@
     <description>Tomcat Embedded Web Server</description>
 
     <properties>
-        <tomcat.version>8.0.33</tomcat.version>
+        <tomcat.version>8.5.34</tomcat.version>
     </properties>
 
     <dependencies>
@@ -27,12 +27,6 @@
         <dependency>
             <groupId>org.apache.tomcat.embed</groupId>
             <artifactId>tomcat-embed-core</artifactId>
-            <version>${tomcat.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.apache.tomcat.embed</groupId>
-            <artifactId>tomcat-embed-logging-juli</artifactId>
             <version>${tomcat.version}</version>
         </dependency>
 
