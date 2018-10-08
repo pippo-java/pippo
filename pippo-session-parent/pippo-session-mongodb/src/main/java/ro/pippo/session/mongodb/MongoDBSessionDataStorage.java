@@ -27,10 +27,7 @@ import static com.mongodb.client.model.Updates.set;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
 import org.bson.Document;
-import ro.pippo.session.SerializationSessionDataTranscoder;
-import ro.pippo.session.SessionData;
-import ro.pippo.session.SessionDataStorage;
-import ro.pippo.session.SessionDataTranscoder;
+import ro.pippo.session.*;
 
 /**
  * SessionDataStorage implementation with MongoDB.
@@ -126,7 +123,7 @@ public class MongoDBSessionDataStorage implements SessionDataStorage {
 
     @Override
     public SessionData create() {
-        return new SessionData();
+        return new DefaultSessionData();
     }
 
     @Override

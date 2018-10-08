@@ -28,112 +28,31 @@ import java.util.concurrent.TimeUnit;
  *
  * @author Decebal Suiu
  */
-public class SessionData implements Serializable {
+public interface SessionData extends Serializable {
 
-    public static final int DEFAULT_MAX_INACTIVE_INTERVAL_SECONDS = 30 * 60; // 30 minutes
+    int DEFAULT_MAX_INACTIVE_INTERVAL_SECONDS = 30 * 60; // 30 minutes
 
-    private String id;
-    private Map<String, Object> attributes;
+    String getId();
 
-    private long creationTime;
-    private long lastAccessedTime;
-    private int maxInactiveInterval;
+    <T> T get(String name);
 
-    public SessionData() {
-        id = UUID.randomUUID().toString().replace("-", "");
-        attributes = new HashMap<>();
-        creationTime = lastAccessedTime = System.currentTimeMillis();
-        maxInactiveInterval = DEFAULT_MAX_INACTIVE_INTERVAL_SECONDS;
-    }
+    Set<String> getNames();
 
-    public String getId() {
-        return id;
-    }
+    void put(String name, Object value);
 
-    @SuppressWarnings("unchecked")
-    public <T> T get(String name) {
-        return (T) attributes.get(name);
-    }
+    <T> T remove(String name);
 
-    public Set<String> getNames() {
-        return attributes.keySet();
-    }
+    long getCreationTime();
 
-    public void put(String name, Object value) {
-        if (value == null) {
-            remove(name);
-        } else {
-            attributes.put(name, value);
-        }
-    }
+    void setCreationTime(long creationTime);
 
-    public <T> T remove(String name) {
-        T t = get(name);
-        attributes.remove(name);
+    long getLastAccessedTime();
 
-        return t;
-    }
+    void setLastAccessedTime(long lastAccessedTime);
 
-    public long getCreationTime() {
-        return creationTime;
-    }
+    void setMaxInactiveInterval(int interval);
 
-    public void setCreationTime(long creationTime) {
-        this.creationTime = creationTime;
-    }
+    int getMaxInactiveInterval();
 
-    public long getLastAccessedTime() {
-        return lastAccessedTime;
-    }
-
-    public void setLastAccessedTime(long lastAccessedTime) {
-        this.lastAccessedTime = lastAccessedTime;
-    }
-
-    public void setMaxInactiveInterval(int interval) {
-        this.maxInactiveInterval = interval;
-    }
-
-    public int getMaxInactiveInterval() {
-        return maxInactiveInterval;
-    }
-
-    public boolean isExpired() {
-        return isExpired(System.currentTimeMillis());
-    }
-
-    boolean isExpired(long now) {
-        if (maxInactiveInterval < 0) {
-            return false;
-        }
-
-        return now - TimeUnit.SECONDS.toMillis(maxInactiveInterval) >= lastAccessedTime;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        SessionData that = (SessionData) o;
-
-        return id.equals(that.id);
-    }
-
-    @Override
-    public int hashCode() {
-        return id.hashCode();
-    }
-
-    @Override
-    public String toString() {
-        return "SessionData{" +
-            "id='" + id + '\'' +
-            ", creationTime=" + creationTime +
-            ", lastAccessedTime=" + lastAccessedTime +
-            ", maxInactiveInterval=" + maxInactiveInterval +
-            ", attributes=" + attributes +
-            '}';
-    }
-
+    boolean isExpired();
 }

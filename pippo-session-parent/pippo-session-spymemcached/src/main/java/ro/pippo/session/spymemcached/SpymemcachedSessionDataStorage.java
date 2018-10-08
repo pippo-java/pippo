@@ -16,6 +16,7 @@
 package ro.pippo.session.spymemcached;
 
 import net.spy.memcached.MemcachedClient;
+import ro.pippo.session.DefaultSessionData;
 import ro.pippo.session.SessionData;
 import ro.pippo.session.SessionDataStorage;
 
@@ -55,7 +56,7 @@ public class SpymemcachedSessionDataStorage implements SessionDataStorage {
 
     @Override
     public SessionData create() {
-        return new SessionData();
+        return new DefaultSessionData();
     }
 
     @Override

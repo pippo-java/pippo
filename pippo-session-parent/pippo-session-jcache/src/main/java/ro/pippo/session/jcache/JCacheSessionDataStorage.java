@@ -21,6 +21,8 @@ import javax.cache.Caching;
 import javax.cache.configuration.MutableConfiguration;
 import javax.cache.expiry.Duration;
 import javax.cache.expiry.TouchedExpiryPolicy;
+
+import ro.pippo.session.DefaultSessionData;
 import ro.pippo.session.SessionData;
 import ro.pippo.session.SessionDataStorage;
 
@@ -81,7 +83,7 @@ public class JCacheSessionDataStorage implements SessionDataStorage {
 
     @Override
     public SessionData create() {
-        return new SessionData();
+        return new DefaultSessionData();
     }
 
     @Override

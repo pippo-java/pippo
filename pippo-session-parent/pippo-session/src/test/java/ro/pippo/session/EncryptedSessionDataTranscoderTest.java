@@ -29,7 +29,7 @@ public class EncryptedSessionDataTranscoderTest {
     @Test
     public void test() {
         System.out.println("encode");
-        SessionData sessionData = new SessionData();
+        SessionData sessionData = new DefaultSessionData();
         String sessionId = sessionData.getId();
         sessionData.put("KEY", "VALUE");
         EncryptedSessionDataTranscoder instance = new EncryptedSessionDataTranscoder.Builder().secretKey("PasswordPassword").build();
