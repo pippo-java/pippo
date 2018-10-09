@@ -34,7 +34,7 @@ import ro.pippo.session.SessionDataStorage;
 public class JCacheSessionDataStorage implements SessionDataStorage {
 
     private static final String SESSION_NAME = "session";
-    private static final long IDLE_TIME = SessionData.DEFAULT_MAX_INACTIVE_INTERVAL_SECONDS;
+    private static final long IDLE_TIME = DefaultSessionData.DEFAULT_MAX_INACTIVE_INTERVAL_SECONDS;
     private final Cache<String, SessionData> sessions;
 
     /**

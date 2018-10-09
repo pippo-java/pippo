@@ -27,7 +27,7 @@ import ro.pippo.session.SessionDataStorage;
  */
 public class SpymemcachedSessionDataStorage implements SessionDataStorage {
 
-    private static final int IDLE_TIME = SessionData.DEFAULT_MAX_INACTIVE_INTERVAL_SECONDS;
+    private static final int IDLE_TIME = DefaultSessionData.DEFAULT_MAX_INACTIVE_INTERVAL_SECONDS;
     private final MemcachedClient sessions;
     private final int idleTime;
 

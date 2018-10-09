@@ -26,7 +26,7 @@ import ro.pippo.session.*;
  */
 public class JedisSessionDataStorage implements SessionDataStorage {
 
-    private static final int IDLE_TIME = SessionData.DEFAULT_MAX_INACTIVE_INTERVAL_SECONDS;
+    private static final int IDLE_TIME = DefaultSessionData.DEFAULT_MAX_INACTIVE_INTERVAL_SECONDS;
     private final JedisPool sessions;
     private final int idleTime;
     private final SessionDataTranscoder transcoder;

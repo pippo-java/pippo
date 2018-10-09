@@ -37,7 +37,7 @@ import ro.pippo.session.*;
 public class MongoDBSessionDataStorage implements SessionDataStorage {
 
     private static final String SESSION_NAME = "session";
-    private static final int IDLE_TIME = SessionData.DEFAULT_MAX_INACTIVE_INTERVAL_SECONDS;
+    private static final int IDLE_TIME = DefaultSessionData.DEFAULT_MAX_INACTIVE_INTERVAL_SECONDS;
     private static final String SESSION_ID = "_id";
     private static final String SESSION_DATA = "session_data";
     private static final String SESSION_TTL = "creation_time";

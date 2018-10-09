@@ -31,7 +31,7 @@ import java.util.concurrent.TimeUnit;
  */
 public class DefaultSessionData implements SessionData
 {
-    private static int DEFAULT_MAX_INACTIVE_INTERVAL_SECONDS = 30 * 60; // 30 minutes
+    public static int DEFAULT_MAX_INACTIVE_INTERVAL_SECONDS = 30 * 60; // 30 minutes
 
     private String id;
     private Map<String, Object> attributes;
