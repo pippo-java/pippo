@@ -27,10 +27,7 @@ import static com.mongodb.client.model.Updates.set;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
 import org.bson.Document;
-import ro.pippo.session.SerializationSessionDataTranscoder;
-import ro.pippo.session.SessionData;
-import ro.pippo.session.SessionDataStorage;
-import ro.pippo.session.SessionDataTranscoder;
+import ro.pippo.session.*;
 
 /**
  * SessionDataStorage implementation with MongoDB.
@@ -40,7 +37,7 @@ import ro.pippo.session.SessionDataTranscoder;
 public class MongoDBSessionDataStorage implements SessionDataStorage {
 
     private static final String SESSION_NAME = "session";
-    private static final int IDLE_TIME = SessionData.DEFAULT_MAX_INACTIVE_INTERVAL_SECONDS;
+    private static final int IDLE_TIME = DefaultSessionData.DEFAULT_MAX_INACTIVE_INTERVAL_SECONDS;
     private static final String SESSION_ID = "_id";
     private static final String SESSION_DATA = "session_data";
     private static final String SESSION_TTL = "creation_time";
@@ -126,7 +123,7 @@ public class MongoDBSessionDataStorage implements SessionDataStorage {
 
     @Override
     public SessionData create() {
-        return new SessionData();
+        return new DefaultSessionData();
     }
 
     @Override

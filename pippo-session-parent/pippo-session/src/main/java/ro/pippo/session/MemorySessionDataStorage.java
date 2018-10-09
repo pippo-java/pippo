@@ -31,7 +31,7 @@ public class MemorySessionDataStorage implements SessionDataStorage {
 
     @Override
     public SessionData create() {
-        return new SessionData();
+        return new DefaultSessionData();
     }
 
     @Override

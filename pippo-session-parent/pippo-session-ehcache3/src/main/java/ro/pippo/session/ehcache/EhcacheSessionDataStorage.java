@@ -17,6 +17,7 @@ package ro.pippo.session.ehcache;
 
 import org.ehcache.Cache;
 import org.ehcache.CacheManager;
+import ro.pippo.session.DefaultSessionData;
 import ro.pippo.session.SessionData;
 import ro.pippo.session.SessionDataStorage;
 
@@ -44,7 +45,7 @@ public class EhcacheSessionDataStorage implements SessionDataStorage {
 
     @Override
     public SessionData create() {
-        return new SessionData();
+        return new DefaultSessionData();
     }
 
     @Override

@@ -17,10 +17,7 @@ package ro.pippo.session.jedis;
 
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
-import ro.pippo.session.SerializationSessionDataTranscoder;
-import ro.pippo.session.SessionData;
-import ro.pippo.session.SessionDataStorage;
-import ro.pippo.session.SessionDataTranscoder;
+import ro.pippo.session.*;
 
 /**
  * SessionDataStorage implementation with Jedis.
@@ -29,7 +26,7 @@ import ro.pippo.session.SessionDataTranscoder;
  */
 public class JedisSessionDataStorage implements SessionDataStorage {
 
-    private static final int IDLE_TIME = SessionData.DEFAULT_MAX_INACTIVE_INTERVAL_SECONDS;
+    private static final int IDLE_TIME = DefaultSessionData.DEFAULT_MAX_INACTIVE_INTERVAL_SECONDS;
     private final JedisPool sessions;
     private final int idleTime;
     private final SessionDataTranscoder transcoder;
@@ -69,7 +66,7 @@ public class JedisSessionDataStorage implements SessionDataStorage {
 
     @Override
     public SessionData create() {
-        return new SessionData();
+        return new DefaultSessionData();
     }
 
     @Override

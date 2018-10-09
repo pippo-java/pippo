@@ -17,6 +17,7 @@ package ro.pippo.session.hazelcast;
 
 import com.hazelcast.core.HazelcastInstance;
 import com.hazelcast.core.IMap;
+import ro.pippo.session.DefaultSessionData;
 import ro.pippo.session.SessionData;
 import ro.pippo.session.SessionDataStorage;
 
@@ -64,7 +65,7 @@ public class HazelcastSessionDataStorage implements SessionDataStorage {
 
     @Override
     public SessionData create() {
-        return new SessionData();
+        return new DefaultSessionData();
     }
 
     @Override

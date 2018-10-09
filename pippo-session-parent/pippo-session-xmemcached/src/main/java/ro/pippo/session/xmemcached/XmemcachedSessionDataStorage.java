@@ -20,6 +20,7 @@ import net.rubyeye.xmemcached.MemcachedClient;
 import net.rubyeye.xmemcached.exception.MemcachedException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import ro.pippo.session.DefaultSessionData;
 import ro.pippo.session.SessionData;
 import ro.pippo.session.SessionDataStorage;
 
@@ -31,7 +32,7 @@ import ro.pippo.session.SessionDataStorage;
 public class XmemcachedSessionDataStorage implements SessionDataStorage {
 
     private static final Logger log = LoggerFactory.getLogger(XmemcachedSessionDataStorage.class);
-    private static final int IDLE_TIME = SessionData.DEFAULT_MAX_INACTIVE_INTERVAL_SECONDS;
+    private static final int IDLE_TIME = DefaultSessionData.DEFAULT_MAX_INACTIVE_INTERVAL_SECONDS;
     private final MemcachedClient sessions;
     private final int idleTime;
 
@@ -61,7 +62,7 @@ public class XmemcachedSessionDataStorage implements SessionDataStorage {
 
     @Override
     public SessionData create() {
-        return new SessionData();
+        return new DefaultSessionData();
     }
 
     @Override
