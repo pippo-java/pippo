@@ -30,8 +30,6 @@ import java.util.concurrent.TimeUnit;
  */
 public interface SessionData extends Serializable {
 
-    int DEFAULT_MAX_INACTIVE_INTERVAL_SECONDS = 30 * 60; // 30 minutes
-
     String getId();
 
     <T> T get(String name);

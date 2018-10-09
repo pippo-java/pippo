@@ -24,7 +24,11 @@ import javax.sql.DataSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ro.pippo.core.PippoRuntimeException;
-import ro.pippo.session.*;
+import ro.pippo.session.SerializationSessionDataTranscoder;
+import ro.pippo.session.SessionDataStorage;
+import ro.pippo.session.SessionDataTranscoder;
+import ro.pippo.session.SessionData;
+import ro.pippo.session.DefaultSessionData;
 
 /**
  * SessionDataStorage implementation with JDBC.
