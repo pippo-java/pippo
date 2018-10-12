@@ -12,6 +12,29 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 #### Removed
 
+### [1.11.0] - 2018-10-05
+
+#### Fixed
+- [#436]: The PippoSettings file is now read with UTF-8 as the default encoding
+- [#438]: Incorrect service file name for template engines
+
+#### Changed
+- [#443]: Make methods statics in `IoUtils`
+- [#446]: Upgrade `jackson` to latest version (2.9.6)
+- [#447]: Upgrade `guice` to latest version (4.2.0)
+- [#459]: Update Pebble template engine to 3.0.5
+- [#460]: Update Tomcat to 8.5.34
+
+#### Added
+- [#437]: Add useful handlers for admin
+- Add model field in `TemplateHandler`
+- Add masking password feature in `SettingsHandler`
+- [#439]: Add `DirEntry` comparator in `DirectoryHandler`
+- [#452]: Add new headers
+- [#456]: Add `CorsHandler` for Cross-origin resource sharing
+
+#### Removed
+
 ### [1.10.0] - 2018-07-10
 
 #### Fixed
@@ -28,7 +51,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 #### Added
 - [#427]: Add option converterClass to `@ParamField`
 - [#428]: Add support for Prometheus (metrics)
-- Add `getResourceAsString` method in IoUtils
+- Add `getResourceAsString` method in `IoUtils`
 
 #### Removed
 
@@ -484,7 +507,8 @@ Initial release.
 - Added [pippo-freemarker]
 - Added [pippo-jetty]
 
-[unreleased]: https://github.com/decebals/pippo/compare/release-1.10.0...HEAD
+[unreleased]: https://github.com/decebals/pippo/compare/release-1.11.0...HEAD
+[1.11.0]: https://github.com/decebals/pippo/compare/release-1.10.0...release-1.11.0
 [1.10.0]: https://github.com/decebals/pippo/compare/release-1.9.0...release-1.10.0
 [1.9.0]: https://github.com/decebals/pippo/compare/release-1.8.0...release-1.9.0
 [1.8.0]: https://github.com/decebals/pippo/compare/release-1.7.0...release-1.8.0
@@ -509,6 +533,17 @@ Initial release.
 [0.3.0]: https://github.com/decebals/pippo/compare/pippo-parent-0.2.0...pippo-parent-0.3.0
 [0.2.0]: https://github.com/decebals/pippo/compare/pippo-parent-0.1.0...pippo-parent-0.2.0
 
+[#460]: https://github.com/pippo-java/pippo/issues/460
+[#459]: https://github.com/pippo-java/pippo/issues/459
+[#456]: https://github.com/pippo-java/pippo/pull/456
+[#452]: https://github.com/pippo-java/pippo/pull/452
+[#447]: https://github.com/pippo-java/pippo/pull/447
+[#446]: https://github.com/pippo-java/pippo/pull/446
+[#443]: https://github.com/pippo-java/pippo/pull/443
+[#439]: https://github.com/pippo-java/pippo/issues/439
+[#438]: https://github.com/pippo-java/pippo/issues/438
+[#437]: https://github.com/pippo-java/pippo/pull/437
+[#436]: https://github.com/pippo-java/pippo/pull/436
 [#435]: https://github.com/pippo-java/pippo/pull/435
 [#433]: https://github.com/pippo-java/pippo/pull/433
 [#428]: https://github.com/pippo-java/pippo/pull/428
