@@ -434,6 +434,14 @@ public final class Request {
         return httpServletRequest.getHeaders(name);
     }
 
+    /**
+     * Wrapper function to get all request header names
+     * @return the enumerator for request headers
+     */
+    public Enumeration<String> getHeaderNames() {
+        return httpServletRequest.getHeaderNames();
+    }
+
     public boolean isSecure() {
         return httpServletRequest.isSecure();
     }
