@@ -8,7 +8,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 - [#458]: Java deserialization vulnerability in SerializationSessionDataTranscoder.decode()
 
 #### Changed
-- [#466]: Updated `FastJson` tp latest version 1.2.51
+- [#466]: Updated `FastJSON` to latest version 1.2.51
 
 #### Added
 
