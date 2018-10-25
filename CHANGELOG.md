@@ -7,6 +7,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 #### Fixed
 
 #### Changed
+- [#466]: Updated `FastJson` to latest version 1.2.51
 
 #### Added
 
