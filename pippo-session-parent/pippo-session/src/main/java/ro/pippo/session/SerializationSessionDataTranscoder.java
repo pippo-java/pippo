@@ -48,7 +48,7 @@ public class SerializationSessionDataTranscoder implements SessionDataTranscoder
     public SessionData decode(String data) {
         byte[] bytes = Base64.getDecoder().decode(data);
         try (ByteArrayInputStream inputStream = new ByteArrayInputStream(bytes);
-                ObjectInputStream objectInputStream = new ObjectInputStream(inputStream)) {
+             FilteringObjectInputStream objectInputStream = new FilteringObjectInputStream(inputStream)) {
             return (SessionData) objectInputStream.readObject();
         } catch (IOException | ClassNotFoundException e) {
             throw new PippoRuntimeException(e, "Cannot deserialize session. A new one will be created.");
