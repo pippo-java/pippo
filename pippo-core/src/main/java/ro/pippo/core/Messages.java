@@ -339,14 +339,16 @@ public class Messages {
      * Attempts to load a message resource.
      */
     private Properties loadMessages(String fileOrUrl) {
-        URL url = ClasspathUtils.locateOnClasspath(fileOrUrl);
-        if (url != null) {
-            try (InputStreamReader reader = new InputStreamReader(url.openStream(), StandardCharsets.UTF_8)) {
-                Properties messages = new Properties();
-                messages.load(reader);
-                return messages;
-            } catch (IOException e) {
-                log.error("Failed to load {}", fileOrUrl, e);
+        List<URL> urls = ClasspathUtils.getResources(fileOrUrl);
+        for (URL url: urls) {
+            if (url != null) {
+                try (InputStreamReader reader = new InputStreamReader(url.openStream(), StandardCharsets.UTF_8)) {
+                    Properties messages = new Properties();
+                    messages.load(reader);
+                    return messages;
+                } catch (IOException e) {
+                    log.error("Failed to load {}", fileOrUrl, e);
+                }
             }
         }
 
