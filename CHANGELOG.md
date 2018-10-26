@@ -535,8 +535,10 @@ Initial release.
 [0.3.0]: https://github.com/decebals/pippo/compare/pippo-parent-0.2.0...pippo-parent-0.3.0
 [0.2.0]: https://github.com/decebals/pippo/compare/pippo-parent-0.1.0...pippo-parent-0.2.0
 
+[#466]: https://github.com/pippo-java/pippo/issues/466
 [#460]: https://github.com/pippo-java/pippo/issues/460
 [#459]: https://github.com/pippo-java/pippo/issues/459
+[#458]: https://github.com/pippo-java/pippo/issues/458
 [#456]: https://github.com/pippo-java/pippo/pull/456
 [#452]: https://github.com/pippo-java/pippo/pull/452
 [#447]: https://github.com/pippo-java/pippo/pull/447

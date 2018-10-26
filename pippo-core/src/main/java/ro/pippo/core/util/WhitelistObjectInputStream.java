@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package ro.pippo.session;
+package ro.pippo.core.util;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -21,16 +21,19 @@ import java.io.InvalidClassException;
 import java.io.ObjectInputStream;
 import java.io.ObjectStreamClass;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Properties;
 
 import static ro.pippo.core.util.StringUtils.isNullOrEmpty;
 
 /**
  * @author idealzh
  */
-public class FilteringObjectInputStream extends ObjectInputStream {
-    private ArrayList whiteClassNames = new ArrayList<String>();
+public class WhitelistObjectInputStream extends ObjectInputStream {
+    private static List<String> whiteClassNames = new ArrayList<String>();
 
-    public FilteringObjectInputStream(InputStream in) throws IOException {
+    public WhitelistObjectInputStream(InputStream in) throws IOException {
         super(in);
 
         whiteClassNames.add("ro.pippo.session.DefaultSessionData");
@@ -49,10 +52,32 @@ public class FilteringObjectInputStream extends ObjectInputStream {
     }
 
     private boolean isWhiteListed(String className) {
-        if (className == null) return false;
         for (Object name : whiteClassNames) {
             if (name.equals(className)) return true;
         }
         return false;
+    }
+
+    /**
+     * Load the whitelist from the properties file
+     */
+    static void loadWhitelist() {
+        Properties whitelistProperties = new Properties();
+        InputStream stream = null;
+        try {
+            stream =  WhitelistObjectInputStream.class.getResourceAsStream("src/main/resources/pippo/whitelist-serialization.txt");
+            whitelistProperties.load(stream);
+        } catch (IOException e) {
+            throw new RuntimeException("Error loading the whitelist-serialization.properties file", e);
+        } finally {
+            if (stream != null) {
+                try {
+                    stream.close();
+                } catch (IOException e) {
+                    throw new RuntimeException("Error closing the resource-serialization.properties file", e);
+                }
+            }
+        }
+        Collections.addAll(whiteClassNames, whitelistProperties.getProperty("whitelist").split(","));
     }
 }
