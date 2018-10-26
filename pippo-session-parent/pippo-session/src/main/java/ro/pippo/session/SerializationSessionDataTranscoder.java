@@ -16,11 +16,11 @@
 package ro.pippo.session;
 
 import ro.pippo.core.PippoRuntimeException;
+import ro.pippo.core.util.WhitelistObjectInputStream;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.Base64;
 
@@ -48,7 +48,7 @@ public class SerializationSessionDataTranscoder implements SessionDataTranscoder
     public SessionData decode(String data) {
         byte[] bytes = Base64.getDecoder().decode(data);
         try (ByteArrayInputStream inputStream = new ByteArrayInputStream(bytes);
-                ObjectInputStream objectInputStream = new ObjectInputStream(inputStream)) {
+             WhitelistObjectInputStream objectInputStream = new WhitelistObjectInputStream(inputStream)) {
             return (SessionData) objectInputStream.readObject();
         } catch (IOException | ClassNotFoundException e) {
             throw new PippoRuntimeException(e, "Cannot deserialize session. A new one will be created.");
