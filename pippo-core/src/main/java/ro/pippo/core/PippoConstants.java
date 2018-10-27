@@ -23,6 +23,8 @@ public final class PippoConstants {
 
     public static final String LOCATION_OF_PIPPO_BUILTIN_PROPERTIES = "pippo/pippo-builtin.properties";
 
+    public static final String LOCATION_OF_PIPPO_WHITELIST_SERIALIZATION = "/pippo/whitelist-serialization.txt";
+
     public static final String LOCATION_OF_PIPPO_CLASSPATH_PROPERTIES = "conf/application.properties";
 
     public static final String APPLICATION_PROPERTIES = "application.properties";

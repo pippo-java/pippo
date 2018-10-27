@@ -1,0 +1,7 @@
+# Java
+java.util.ArrayList
+java.util.HashMap
+
+# Pippo
+ro.pippo.session.DefaultSessionData
+ro.pippo.core.Flash

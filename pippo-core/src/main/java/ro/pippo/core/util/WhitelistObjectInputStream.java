@@ -15,69 +15,90 @@
  */
 package ro.pippo.core.util;
 
+import ro.pippo.core.PippoConstants;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InvalidClassException;
 import java.io.ObjectInputStream;
 import java.io.ObjectStreamClass;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
-import java.util.Properties;
-
-import static ro.pippo.core.util.StringUtils.isNullOrEmpty;
 
 /**
+ * When deserializing objects, first check that the class being deserialized is in the allowed whitelist.
+ *
  * @author idealzh
  */
 public class WhitelistObjectInputStream extends ObjectInputStream {
-    private static List<String> whiteClassNames = new ArrayList<String>();
+
+    private static List<String> whiteClassNames;
+
+    static {
+        loadWhitelist(WhitelistObjectInputStream.class.getResourceAsStream(PippoConstants.LOCATION_OF_PIPPO_WHITELIST_SERIALIZATION));
+    }
 
     public WhitelistObjectInputStream(InputStream in) throws IOException {
         super(in);
-
-        whiteClassNames.add("ro.pippo.session.DefaultSessionData");
-        whiteClassNames.add("java.util.HashMap");
-        whiteClassNames.add("ro.pippo.core.Flash");
-        whiteClassNames.add("java.util.ArrayList");
     }
 
     protected Class<?> resolveClass(ObjectStreamClass descriptor) throws ClassNotFoundException, IOException {
         String className = descriptor.getName();
-        if (isNullOrEmpty(className) && !isWhiteListed(className)) {
-            throw new InvalidClassException("Unauthorized deserialization attempt", descriptor.getName());
-        } else {
-            return super.resolveClass(descriptor);
+        if (!isWhiteListed(className)) {
+            throw new InvalidClassException("Unauthorized deserialization attempt", className);
         }
+
+        return super.resolveClass(descriptor);
     }
 
     private boolean isWhiteListed(String className) {
-        for (Object name : whiteClassNames) {
-            if (name.equals(className)) return true;
+        for (String name : whiteClassNames) {
+            if (name.equals(className)) {
+                return true;
+            }
         }
+
         return false;
     }
 
     /**
-     * Load the whitelist from the properties file
+     * Load the whitelist from an {@link InputStream}.
+     * The content of the {@code InputStream} is in format:
+     * {@code
+     * # Java
+     * java.util.ArrayList
+     * java.util.HashMap
+     *
+     * # Pippo
+     * ro.pippo.session.DefaultSessionData
+     * ro.pippo.core.Flash
+     * }
+     *
+     * A line that starts with {@code #} is a comment and will be ignored.
      */
-    static void loadWhitelist() {
-        Properties whitelistProperties = new Properties();
-        InputStream stream = null;
+    private static void loadWhitelist(InputStream input) {
+        String content;
         try {
-            stream =  WhitelistObjectInputStream.class.getResourceAsStream("src/main/resources/pippo/whitelist-serialization.txt");
-            whitelistProperties.load(stream);
+            content = IoUtils.toString(input);
         } catch (IOException e) {
-            throw new RuntimeException("Error loading the whitelist-serialization.properties file", e);
-        } finally {
-            if (stream != null) {
-                try {
-                    stream.close();
-                } catch (IOException e) {
-                    throw new RuntimeException("Error closing the resource-serialization.properties file", e);
-                }
-            }
+            throw new RuntimeException("Error loading the whitelist input", e);
         }
-        Collections.addAll(whiteClassNames, whitelistProperties.getProperty("whitelist").split(","));
+
+        whiteClassNames = new ArrayList<>();
+
+        String[] lines = content.split("[\\r\\n]+");
+        for (String line : lines) {
+            if (line.startsWith("#")) {
+                // it's a comment; ignore line
+                continue;
+            }
+
+            addWhiteClassName(line);
+        }
     }
+
+    private static void addWhiteClassName(String className) {
+        whiteClassNames.add(className);
+    }
+
 }
