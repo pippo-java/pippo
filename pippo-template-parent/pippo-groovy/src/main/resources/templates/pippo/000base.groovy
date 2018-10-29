@@ -1,3 +1,5 @@
+package templates.pippo
+
 yieldUnescaped '<!DOCTYPE html>'
 html {
     head {

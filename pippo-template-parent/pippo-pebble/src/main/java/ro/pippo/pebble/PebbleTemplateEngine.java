@@ -81,7 +81,8 @@ public class PebbleTemplateEngine extends AbstractTemplateEngine {
             .extension(new PrettyTimeExtension())
             .extension(new AngularJSExtension())
             .extension(new WebjarsAtExtension(router))
-            .extension(new PublicAtExtension(router));
+            .extension(new PublicAtExtension(router))
+            .extension(new RouteExtension(application.getRouter()));
 
         if (pippoSettings.isDev()) {
             // do not cache templates in dev mode
