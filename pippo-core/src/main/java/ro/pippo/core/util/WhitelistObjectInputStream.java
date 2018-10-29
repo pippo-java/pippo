@@ -24,6 +24,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectStreamClass;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Pattern;
 
 /**
  * When deserializing objects, first check that the class being deserialized is in the allowed whitelist.
@@ -33,7 +34,7 @@ import java.util.List;
 public class WhitelistObjectInputStream extends ObjectInputStream {
 
     private static List<String> whiteClassNames;
-    private static List<String> whitePackageNames;
+    private static List<Pattern> whiteRegExp;
 
     static {
         loadWhitelist(WhitelistObjectInputStream.class.getResourceAsStream(PippoConstants.LOCATION_OF_PIPPO_WHITELIST_SERIALIZATION));
@@ -45,7 +46,7 @@ public class WhitelistObjectInputStream extends ObjectInputStream {
 
     protected Class<?> resolveClass(ObjectStreamClass descriptor) throws ClassNotFoundException, IOException {
         String className = descriptor.getName();
-        if ((!isWhiteListed(className)) && (!isWhiteListedPackageName(className))) {
+        if ((!isWhiteListed(className)) && (!isWhiteListedRegex(className))) {
             throw new InvalidClassException("Unauthorized deserialization attempt", className);
         }
 
@@ -62,9 +63,9 @@ public class WhitelistObjectInputStream extends ObjectInputStream {
         return false;
     }
 
-    private boolean isWhiteListedPackageName(String className) {
-        for (String packageName : whitePackageNames) {
-            if (className.startsWith(packageName)) {
+    private boolean isWhiteListedRegex(String className) {
+        for (Pattern pattern : whiteRegExp) {
+            if (pattern.matcher(className).matches()) {
                 return true;
             }
         }
@@ -79,9 +80,8 @@ public class WhitelistObjectInputStream extends ObjectInputStream {
      * # Java
      * java.util.ArrayList
      * java.util.HashMap
-     * # all class names in java.lang (please be aware of the trailing dot (.) aignalling that the whole package and
-     * # its sub-packages shall be whitelisted)
-     * java.lang.
+     * A regular expression whitelisting the whole java.lang package and its sub-packages.
+     * /java.lang.* /
      *
      * # Pippo
      * ro.pippo.session.DefaultSessionData
@@ -89,7 +89,7 @@ public class WhitelistObjectInputStream extends ObjectInputStream {
      * }
      *
      * A line that starts with {@code #} is a comment and will be ignored.
-     * A line that ends with a dot (.) whitelists a complete package and its sub-packages.
+     * A line that starts and ends with {@code /} is interpreted as a regular expression.
      */
     private static void loadWhitelist(InputStream input) {
         String content;
@@ -106,8 +106,8 @@ public class WhitelistObjectInputStream extends ObjectInputStream {
             if (line.startsWith("#")) {
                 // it's a comment; ignore line
                 continue;
-            } else if (line.endsWith(".")) {
-                addWhitePackageName(line);
+            } else if (line.startsWith("/") && (line.endsWith("/"))) {
+                addWhiteRegExp(Pattern.compile(line.substring(1, line.length() - 2)));
             }
 
             addWhiteClassName(line);
@@ -118,8 +118,24 @@ public class WhitelistObjectInputStream extends ObjectInputStream {
         whiteClassNames.add(className);
     }
 
-    private static void addWhitePackageName(String packageName) {
-        whitePackageNames.add(packageName);
+    private static void addWhiteRegExp(Pattern pattern) {
+        whiteRegExp.add(pattern);
+    }
+
+    /**
+     * Returns the whitelisted class names.
+     * @return the whitelisted class names.
+     */
+    public static List<String> getWhitelistedClassNames() {
+        return whiteClassNames;
+    }
+
+    /**
+     * Returns the whitelisted regular expressions.
+     * @return the whitelisted regular expressions.
+     */
+    public static List<Pattern> getWhitelistedRegExp() {
+        return whiteRegExp;
     }
 
 }
