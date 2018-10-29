@@ -33,6 +33,7 @@ import java.util.List;
 public class WhitelistObjectInputStream extends ObjectInputStream {
 
     private static List<String> whiteClassNames;
+    private static List<String> whitePackageNames;
 
     static {
         loadWhitelist(WhitelistObjectInputStream.class.getResourceAsStream(PippoConstants.LOCATION_OF_PIPPO_WHITELIST_SERIALIZATION));
@@ -44,7 +45,7 @@ public class WhitelistObjectInputStream extends ObjectInputStream {
 
     protected Class<?> resolveClass(ObjectStreamClass descriptor) throws ClassNotFoundException, IOException {
         String className = descriptor.getName();
-        if (!isWhiteListed(className)) {
+        if ((!isWhiteListed(className)) && (!isWhiteListedPackageName(className))) {
             throw new InvalidClassException("Unauthorized deserialization attempt", className);
         }
 
@@ -61,6 +62,16 @@ public class WhitelistObjectInputStream extends ObjectInputStream {
         return false;
     }
 
+    private boolean isWhiteListedPackageName(String className) {
+        for (String packageName : whitePackageNames) {
+            if (className.startsWith(packageName)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     /**
      * Load the whitelist from an {@link InputStream}.
      * The content of the {@code InputStream} is in format:
@@ -68,6 +79,9 @@ public class WhitelistObjectInputStream extends ObjectInputStream {
      * # Java
      * java.util.ArrayList
      * java.util.HashMap
+     * # all class names in java.lang (please be aware of the trailing dot (.) aignalling that the whole package and
+     * # its sub-packages shall be whitelisted)
+     * java.lang.
      *
      * # Pippo
      * ro.pippo.session.DefaultSessionData
@@ -75,6 +89,7 @@ public class WhitelistObjectInputStream extends ObjectInputStream {
      * }
      *
      * A line that starts with {@code #} is a comment and will be ignored.
+     * A line that ends with a dot (.) whitelists a complete package and its sub-packages.
      */
     private static void loadWhitelist(InputStream input) {
         String content;
@@ -91,6 +106,8 @@ public class WhitelistObjectInputStream extends ObjectInputStream {
             if (line.startsWith("#")) {
                 // it's a comment; ignore line
                 continue;
+            } else if (line.endsWith(".")) {
+                addWhitePackageName(line);
             }
 
             addWhiteClassName(line);
@@ -99,6 +116,10 @@ public class WhitelistObjectInputStream extends ObjectInputStream {
 
     private static void addWhiteClassName(String className) {
         whiteClassNames.add(className);
+    }
+
+    private static void addWhitePackageName(String packageName) {
+        whitePackageNames.add(packageName);
     }
 
 }
