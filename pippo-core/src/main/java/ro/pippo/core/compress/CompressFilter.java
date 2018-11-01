@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016 the original author or authors.
+ * Copyright (C) 2018 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,9 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package ro.pippo.core.gzip;
+package ro.pippo.core.compress;
 
-import ro.pippo.core.util.StringUtils;
+import ro.pippo.core.util.HttpUtils;
 
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
@@ -25,16 +25,16 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpServletResponseWrapper;
 import java.io.IOException;
 
 /**
- * {@code GZipFilter} will check the need of GZIP compression in request’s headers ‘Accept-Encoding: gzip’.
- * Then, this filter uses two classes {@code GZipResponseWrapper} and {@code GZipResponseStream}
- * to compress the data in response.
+ * {@code CompressFilter} will check the need of compression in request’s headers ‘Accept-Encoding’,
+ *  and chooses the {@link HttpServletResponseWrapper} to compress the data in response.
  *
  * @author Decebal Suiu
  */
-public class GZipFilter implements Filter {
+public class CompressFilter implements Filter {
 
     @Override
     public void init(FilterConfig filterConfig) {
@@ -47,26 +47,16 @@ public class GZipFilter implements Filter {
         HttpServletRequest request = (HttpServletRequest) servletRequest;
         HttpServletResponse response = (HttpServletResponse) servletResponse;
 
-        if (acceptsGZipEncoding(request)) {
-            GZipResponseWrapper wrappedResponse = new GZipResponseWrapper(response);
-            chain.doFilter(request, wrappedResponse);
-            wrappedResponse.finish();
-        } else {
-            chain.doFilter(request, response);
+        HttpServletResponseWrapper wrappedResponse = HttpUtils.getHttpResponseWrapper(response, request);
+        chain.doFilter(request, wrappedResponse);
+        if (wrappedResponse instanceof CompressedResponseWrapper) {
+            ((CompressedResponseWrapper) wrappedResponse).finish();
         }
     }
 
     @Override
     public void destroy() {
         // do nothing
-    }
-
-    protected boolean acceptsGZipEncoding(HttpServletRequest request) {
-        String acceptEncoding = request.getHeader("accept-encoding");
-
-        return !StringUtils.isNullOrEmpty(acceptEncoding) && (
-            acceptEncoding.contains("gzip") || acceptEncoding.contains("*")
-        );
     }
 
 }

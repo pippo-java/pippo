@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016 the original author or authors.
+ * Copyright (C) 2018 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package ro.pippo.core.gzip;
+package ro.pippo.core.compress;
+
 
 import ro.pippo.core.util.IoUtils;
 
@@ -25,19 +26,13 @@ import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.nio.charset.StandardCharsets;
 
-/**
- * @author Decebal Suiu
- */
-public class GZipResponseWrapper extends HttpServletResponseWrapper {
+public abstract class CompressedResponseWrapper extends HttpServletResponseWrapper {
 
-    private HttpServletResponse response;
     private ServletOutputStream stream;
     private PrintWriter writer;
 
-    public GZipResponseWrapper(HttpServletResponse response) {
+    public CompressedResponseWrapper(HttpServletResponse response) {
         super(response);
-
-        this.response = response;
     }
 
     @Override
@@ -84,8 +79,5 @@ public class GZipResponseWrapper extends HttpServletResponseWrapper {
         IoUtils.close(stream);
     }
 
-    private ServletOutputStream createOutputStream() throws IOException {
-        return new GZipResponseStream(response);
-    }
-
+    public abstract ServletOutputStream createOutputStream() throws IOException;
 }

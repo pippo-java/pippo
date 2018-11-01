@@ -17,7 +17,7 @@ package ro.pippo.core;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import ro.pippo.core.gzip.GZipResponseWrapper;
+import ro.pippo.core.compress.CompressedResponseWrapper;
 import ro.pippo.core.route.RouteContext;
 import ro.pippo.core.route.RouteDispatcher;
 import ro.pippo.core.util.DateUtils;
@@ -33,7 +33,6 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.nio.charset.StandardCharsets;
@@ -1101,7 +1100,7 @@ public final class Response {
                 httpServletResponse.flushBuffer();
             }
 
-            finishGZip();
+            finish();
         } catch (IOException e) {
             throw new PippoRuntimeException(e);
         }
@@ -1129,13 +1128,12 @@ public final class Response {
         }
     }
 
-    /*
-     * Finish the GZip response.
+    /**
+     * Finish the Compressed response
      */
-    private void finishGZip() {
-        if (httpServletResponse instanceof GZipResponseWrapper) {
-            GZipResponseWrapper responseWrapper = (GZipResponseWrapper) httpServletResponse;
-            responseWrapper.finish();
+    private void finish() {
+        if (httpServletResponse instanceof CompressedResponseWrapper) {
+            ((CompressedResponseWrapper) httpServletResponse).finish();
         }
     }
 

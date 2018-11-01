@@ -17,7 +17,7 @@ package ro.pippo.core;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import ro.pippo.core.gzip.GZipRequestResponseFactory;
+import ro.pippo.core.compress.CompressedRequestResponseFactory;
 import ro.pippo.core.route.DefaultRouter;
 import ro.pippo.core.route.ResourceRouting;
 import ro.pippo.core.route.Route;
@@ -279,8 +279,7 @@ public class Application implements ResourceRouting {
      * @return
      */
     protected RequestResponseFactory createRequestResponseFactory() {
-//        return new RequestResponseFactory(this);
-        return new GZipRequestResponseFactory(this);
+        return new CompressedRequestResponseFactory(this);
     }
 
     /**

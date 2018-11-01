@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016 the original author or authors.
+ * Copyright (C) 2018 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,32 +13,34 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package ro.pippo.core.gzip;
+package ro.pippo.core.compress.deflate;
+
+import ro.pippo.core.HttpConstants;
 
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.util.zip.GZIPOutputStream;
+import java.util.zip.DeflaterOutputStream;
 
-/**
- * @author Decebal Suiu
- */
-public class GZipResponseStream extends ServletOutputStream {
+public class DeflaterResponseStream extends ServletOutputStream {
+
+    private static final String CONTENT_ENCODING = "deflate";
 
     private HttpServletResponse response;
-
-    private ByteArrayOutputStream byteArrayOutputStream;
-    private GZIPOutputStream gzipOutputStream;
+    public ByteArrayOutputStream byteArrayOutputStream;
+    public DeflaterOutputStream deflaterOutputStream;
     private boolean closed;
 
-    public GZipResponseStream(HttpServletResponse response) throws IOException {
+    public DeflaterResponseStream(HttpServletResponse response) throws IOException {
         super();
-
         this.response = response;
+        init();
+    }
 
+    public void init() throws IOException {
         byteArrayOutputStream = new ByteArrayOutputStream();
-        gzipOutputStream = new GZIPOutputStream(byteArrayOutputStream);
+        deflaterOutputStream = new DeflaterOutputStream(byteArrayOutputStream);
     }
 
     @Override
@@ -47,12 +49,12 @@ public class GZipResponseStream extends ServletOutputStream {
             throw new IOException("This output stream has already been closed");
         }
 
-        gzipOutputStream.finish();
+        deflaterOutputStream.finish();
 
         byte[] bytes = byteArrayOutputStream.toByteArray();
 
-        response.addHeader("Content-Length", Integer.toString(bytes.length));
-        response.addHeader("Content-Encoding", "gzip");
+        response.addHeader(HttpConstants.Header.CONTENT_LENGTH, Integer.toString(bytes.length));
+        response.addHeader(HttpConstants.Header.CONTENT_ENCODING, getContentEncoding());
 
         ServletOutputStream outputStream = response.getOutputStream();
         outputStream.write(bytes);
@@ -68,7 +70,7 @@ public class GZipResponseStream extends ServletOutputStream {
             throw new IOException("Cannot flush a closed output stream");
         }
 
-        gzipOutputStream.flush();
+        deflaterOutputStream.flush();
     }
 
     @Override
@@ -77,7 +79,7 @@ public class GZipResponseStream extends ServletOutputStream {
             throw new IOException("Cannot write to a closed output stream");
         }
 
-        gzipOutputStream.write((byte) b);
+        deflaterOutputStream.write((byte) b);
     }
 
     @Override
@@ -91,7 +93,11 @@ public class GZipResponseStream extends ServletOutputStream {
             throw new IOException("Cannot write to a closed output stream");
         }
 
-        gzipOutputStream.write(b, off, len);
+        deflaterOutputStream.write(b, off, len);
+    }
+
+    public String getContentEncoding() {
+        return CONTENT_ENCODING;
     }
 
 }
