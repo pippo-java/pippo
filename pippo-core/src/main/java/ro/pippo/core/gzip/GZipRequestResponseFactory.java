@@ -20,6 +20,7 @@ import ro.pippo.core.Request;
 import ro.pippo.core.RequestResponse;
 import ro.pippo.core.RequestResponseFactory;
 import ro.pippo.core.Response;
+import ro.pippo.core.util.StringUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -53,7 +54,9 @@ public class GZipRequestResponseFactory extends RequestResponseFactory {
     protected boolean acceptsGZipEncoding(HttpServletRequest httpServletRequest) {
         String acceptEncoding = httpServletRequest.getHeader("accept-encoding");
 
-        return acceptEncoding != null && acceptEncoding.contains("gzip");
+        return !StringUtils.isNullOrEmpty(acceptEncoding) && (
+            acceptEncoding.contains("gzip") || acceptEncoding.contains("*")
+        );
     }
 
 }

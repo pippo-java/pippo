@@ -15,6 +15,8 @@
  */
 package ro.pippo.core.gzip;
 
+import ro.pippo.core.util.StringUtils;
+
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
 import javax.servlet.FilterConfig;
@@ -62,7 +64,9 @@ public class GZipFilter implements Filter {
     protected boolean acceptsGZipEncoding(HttpServletRequest request) {
         String acceptEncoding = request.getHeader("accept-encoding");
 
-        return acceptEncoding != null && acceptEncoding.contains("gzip");
+        return !StringUtils.isNullOrEmpty(acceptEncoding) && (
+            acceptEncoding.contains("gzip") || acceptEncoding.contains("*")
+        );
     }
 
 }

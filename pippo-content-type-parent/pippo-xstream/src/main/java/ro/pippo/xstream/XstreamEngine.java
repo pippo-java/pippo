@@ -15,6 +15,7 @@
  */
 package ro.pippo.xstream;
 
+import com.thoughtworks.xstream.security.NoTypePermission;
 import org.kohsuke.MetaInfServices;
 import ro.pippo.core.Application;
 import ro.pippo.core.ContentTypeEngine;
@@ -48,6 +49,9 @@ public class XstreamEngine implements ContentTypeEngine {
         xstream.autodetectAnnotations(true);
         // prevent xstream from creating complex XML graphs
         xstream.setMode(XStream.NO_REFERENCES);
+
+        // clear out existing permissions and set own ones
+        xstream.addPermission(NoTypePermission.NONE);
 
         //setup security
         xstream.allowTypes((String[]) WhitelistObjectInputStream.getWhitelistedClassNames().toArray());

@@ -22,8 +22,8 @@ import java.io.InputStream;
 import java.io.InvalidClassException;
 import java.io.ObjectInputStream;
 import java.io.ObjectStreamClass;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.regex.Pattern;
 
 /**
@@ -33,8 +33,8 @@ import java.util.regex.Pattern;
  */
 public class WhitelistObjectInputStream extends ObjectInputStream {
 
-    private static List<String> whiteClassNames;
-    private static List<Pattern> whiteRegExp;
+    private static Set<String> whiteClassNames;
+    private static Set<Pattern> whiteRegEx;
 
     static {
         loadWhitelist(WhitelistObjectInputStream.class.getResourceAsStream(PippoConstants.LOCATION_OF_PIPPO_WHITELIST_SERIALIZATION));
@@ -46,25 +46,23 @@ public class WhitelistObjectInputStream extends ObjectInputStream {
 
     protected Class<?> resolveClass(ObjectStreamClass descriptor) throws ClassNotFoundException, IOException {
         String className = descriptor.getName();
-        if ((!isWhiteListed(className)) && (!isWhiteListedRegex(className))) {
+        if (!isWhiteClass(className)) {
             throw new InvalidClassException("Unauthorized deserialization attempt", className);
         }
 
         return super.resolveClass(descriptor);
     }
 
-    private boolean isWhiteListed(String className) {
+    private boolean isWhiteClass(String className) {
+        // check in list with white classes
         for (String name : whiteClassNames) {
             if (name.equals(className)) {
                 return true;
             }
         }
 
-        return false;
-    }
-
-    private boolean isWhiteListedRegex(String className) {
-        for (Pattern pattern : whiteRegExp) {
+        // check in list with white regex
+        for (Pattern pattern : whiteRegEx) {
             if (pattern.matcher(className).matches()) {
                 return true;
             }
@@ -80,8 +78,8 @@ public class WhitelistObjectInputStream extends ObjectInputStream {
      * # Java
      * java.util.ArrayList
      * java.util.HashMap
-     * A regular expression whitelisting the whole java.lang package and its sub-packages.
-     * /java.lang.* /
+     * # A regular expression whitelisting the whole "java.lang" package and its sub-packages
+     * >java.lang.*
      *
      * # Pippo
      * ro.pippo.session.DefaultSessionData
@@ -89,7 +87,7 @@ public class WhitelistObjectInputStream extends ObjectInputStream {
      * }
      *
      * A line that starts with {@code #} is a comment and will be ignored.
-     * A line that starts and ends with {@code /} is interpreted as a regular expression.
+     * A line that starts with {@code >} is interpreted as a regular expression.
      */
     private static void loadWhitelist(InputStream input) {
         String content;
@@ -99,18 +97,24 @@ public class WhitelistObjectInputStream extends ObjectInputStream {
             throw new RuntimeException("Error loading the whitelist input", e);
         }
 
-        whiteClassNames = new ArrayList<>();
+        whiteClassNames = new HashSet<>();
+        whiteRegEx = new HashSet<>();
 
         String[] lines = content.split("[\\r\\n]+");
         for (String line : lines) {
+            // check for comment
             if (line.startsWith("#")) {
                 // it's a comment; ignore line
                 continue;
-            } else if (line.startsWith("/") && (line.endsWith("/"))) {
-                addWhiteRegExp(Pattern.compile(line.substring(1, line.length() - 2)));
             }
 
-            addWhiteClassName(line);
+            if (line.startsWith(">")) {
+                // it's a regexp
+                addWhiteRegEx(line.substring(1).trim());
+            } else {
+                // it's a regular (full) class name
+                addWhiteClassName(line.trim());
+            }
         }
     }
 
@@ -118,24 +122,26 @@ public class WhitelistObjectInputStream extends ObjectInputStream {
         whiteClassNames.add(className);
     }
 
-    private static void addWhiteRegExp(Pattern pattern) {
-        whiteRegExp.add(pattern);
+    private static void addWhiteRegEx(String regex) {
+        whiteRegEx.add(Pattern.compile(regex));
     }
 
     /**
-     * Returns the whitelisted class names.
-     * @return the whitelisted class names.
+     * Returns the white class names.
+     *
+     * @return the white class names.
      */
-    public static List<String> getWhitelistedClassNames() {
-        return whiteClassNames;
+    public static String[] getWhiteClassNames() {
+        return whiteClassNames.toArray(new String[0]);
     }
 
     /**
-     * Returns the whitelisted regular expressions.
-     * @return the whitelisted regular expressions.
+     * Returns the white regular expressions.
+     *
+     * @return the white regular expressions.
      */
-    public static List<Pattern> getWhitelistedRegExp() {
-        return whiteRegExp;
+    public static Pattern[] getWhiteRegEx() {
+        return whiteRegEx.toArray(new Pattern[0]);
     }
 
 }
