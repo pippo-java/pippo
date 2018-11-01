@@ -55,7 +55,7 @@ public class GZipRequestResponseFactory extends RequestResponseFactory {
         String acceptEncoding = httpServletRequest.getHeader("accept-encoding");
 
         return !StringUtils.isNullOrEmpty(acceptEncoding) && (
-            acceptEncoding.contains("gzip")  || acceptEncoding.contains("*")
+            acceptEncoding.contains("gzip") || acceptEncoding.contains("*")
         );
     }
 
