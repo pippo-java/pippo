@@ -65,7 +65,7 @@ public class GZipFilter implements Filter {
         String acceptEncoding = request.getHeader("accept-encoding");
 
         return !StringUtils.isNullOrEmpty(acceptEncoding) && (
-            acceptEncoding.contains("gzip")  || acceptEncoding.contains("*")
+            acceptEncoding.contains("gzip") || acceptEncoding.contains("*")
         );
     }
 
