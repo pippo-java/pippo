@@ -34,7 +34,6 @@ import org.kohsuke.MetaInfServices;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ro.pippo.core.AbstractWebServer;
-import ro.pippo.core.Application;
 import ro.pippo.core.PippoFilter;
 import ro.pippo.core.PippoRuntimeException;
 import ro.pippo.core.PippoServletContextListener;
@@ -48,7 +47,6 @@ import javax.net.ssl.TrustManager;
 import javax.net.ssl.TrustManagerFactory;
 import javax.servlet.DispatcherType;
 import javax.servlet.MultipartConfigElement;
-import javax.servlet.ServletException;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
@@ -154,7 +152,7 @@ public class UndertowServer extends AbstractWebServer<UndertowSettings> {
         return builder.build();
     }
 
-    protected HttpHandler createContextHandler(HttpHandler pippoHandler) throws ServletException {
+    protected HttpHandler createContextHandler(HttpHandler pippoHandler) {
         String contextPath = getSettings().getContextPath();
 
         // create a handler than redirects non-contact requests to the context
@@ -171,7 +169,7 @@ public class UndertowServer extends AbstractWebServer<UndertowSettings> {
         return new UndertowWebSocketFilter();
     }
 
-    protected DeploymentManager createPippoDeploymentManager() throws ServletException {
+    protected DeploymentManager createPippoDeploymentManager() {
         DeploymentInfo info = Servlets.deployment();
         info.setDeploymentName("Pippo");
         info.setClassLoader(this.getClass().getClassLoader());
@@ -201,14 +199,6 @@ public class UndertowServer extends AbstractWebServer<UndertowSettings> {
         deploymentManager.deploy();
 
         return deploymentManager;
-    }
-
-    private MultipartConfigElement createMultipartConfigElement() {
-        Application application = getApplication();
-        String location = application.getUploadLocation();
-        long maxFileSize = application.getMaximumUploadSize();
-
-        return new MultipartConfigElement(location, maxFileSize, -1L, 0);
     }
 
     private void addPippoFilter(DeploymentInfo info) {

@@ -15,6 +15,7 @@
  */
 package ro.pippo.core;
 
+import javax.servlet.MultipartConfigElement;
 import java.util.EventListener;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -120,6 +121,14 @@ public abstract class AbstractWebServer<T extends WebServerSettings> implements 
      */
     protected PippoFilter createPippoFilter() {
         return new PippoFilter();
+    }
+
+    protected MultipartConfigElement createMultipartConfigElement() {
+        Application application = getApplication();
+        String location = application.getUploadLocation();
+        long maxFileSize = application.getMaximumUploadSize();
+
+        return new MultipartConfigElement(location, maxFileSize, -1L, 0);
     }
 
 }
