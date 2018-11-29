@@ -33,6 +33,7 @@ import ro.pippo.core.websocket.WebSocketHandler;
 import java.io.IOException;
 import java.net.SocketTimeoutException;
 import java.nio.ByteBuffer;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -48,6 +49,7 @@ public class UndertowWebSocketAdapter extends AbstractReceiveListener implements
     private static final Logger log = LoggerFactory.getLogger(UndertowWebSocketAdapter.class);
 
     private static List<WebSocketConnection> connections = new CopyOnWriteArrayList<>();
+    private static List<WebSocketConnection> connectionsReadOnly = Collections.unmodifiableList(connections);
 
     private final WebSocketHandler handler;
     private final Map<String, String> pathParameters;
@@ -67,7 +69,9 @@ public class UndertowWebSocketAdapter extends AbstractReceiveListener implements
 
         connection = new UndertowWebSocketConnection(exchange, channel);
         connections.add(connection);
-        context = new WebSocketContext(connections, connection, pathParameters);
+        channel.addCloseTask(ch -> connections.remove(connection));
+
+        context = new WebSocketContext(connectionsReadOnly, connection, pathParameters);
 
         handler.onOpen(context);
     }
@@ -75,7 +79,6 @@ public class UndertowWebSocketAdapter extends AbstractReceiveListener implements
     @Override
     protected void onCloseMessage(CloseMessage cm, WebSocketChannel channel) {
         handler.onClose(context, cm.getCode(), cm.getReason());
-        connections.remove(connection);
     }
 
     @Override
