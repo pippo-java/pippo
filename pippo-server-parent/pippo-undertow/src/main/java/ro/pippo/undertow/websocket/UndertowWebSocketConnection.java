@@ -45,13 +45,7 @@ public class UndertowWebSocketConnection implements WebSocketConnection {
 
     @Override
     public void close(int code, String reason) {
-        channel.setCloseCode(code);
-        channel.setCloseReason(reason);
-        try {
-            channel.sendClose();
-        } catch (IOException e) {
-            throw new PippoRuntimeException(e);
-        }
+        WebSockets.sendClose(code, reason, channel, null);
     }
 
     @Override
