@@ -5,12 +5,20 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 ### [Unreleased][unreleased]
 
 #### Fixed
-- [#458]: Java deserialization vulnerability in SerializationSessionDataTranscoder.decode()
+- [#454]: Lead to RCE when unmarshal xml data with XStream
+- [#458]: Java deserialization vulnerability in `SerializationSessionDataTranscoder.decode()`
+- [#463]: Resolve undertow settings not getting picked
+- [#483]: Use `WebSockets.sendClose` to send close code/reason
+- [#485]: Use undertow channel tasks to remove closed/broken connections
 
 #### Changed
-- [#466]: Updated `FastJSON` to latest version 1.2.51
+- [#465]: Made `SessionData` an interface, and introduced `DefaultSessionData`
+- [#467]: Updated `FastJSON` to latest version 1.2.51
 
 #### Added
+- [#260]: Add `route` method helper in templates (only for Pebble engine)
+- [#468]: Add wrapper method in `Request` to get header names
+- [#474]: Send `gzip` response when `Accept-Encoding:*` is present
 
 #### Removed
 
@@ -535,11 +543,18 @@ Initial release.
 [0.3.0]: https://github.com/decebals/pippo/compare/pippo-parent-0.2.0...pippo-parent-0.3.0
 [0.2.0]: https://github.com/decebals/pippo/compare/pippo-parent-0.1.0...pippo-parent-0.2.0
 
-[#466]: https://github.com/pippo-java/pippo/issues/466
+[#485]: https://github.com/pippo-java/pippo/pull/485
+[#483]: https://github.com/pippo-java/pippo/pull/483
+[#474]: https://github.com/pippo-java/pippo/pull/474
+[#468]: https://github.com/pippo-java/pippo/pull/468
+[#467]: https://github.com/pippo-java/pippo/issues/466
+[#465]: https://github.com/pippo-java/pippo/pull/465
+[#463]: https://github.com/pippo-java/pippo/pull/463
 [#460]: https://github.com/pippo-java/pippo/issues/460
 [#459]: https://github.com/pippo-java/pippo/issues/459
 [#458]: https://github.com/pippo-java/pippo/issues/458
 [#456]: https://github.com/pippo-java/pippo/pull/456
+[#454]: https://github.com/pippo-java/pippo/pull/454
 [#452]: https://github.com/pippo-java/pippo/pull/452
 [#447]: https://github.com/pippo-java/pippo/pull/447
 [#446]: https://github.com/pippo-java/pippo/pull/446
@@ -612,6 +627,7 @@ Initial release.
 [#288]: https://github.com/decebals/pippo/issues/288
 [#265]: https://github.com/decebals/pippo/issues/265
 [#262]: https://github.com/decebals/pippo/issues/262
+[#260]: https://github.com/pippo-java/pippo/issues/260
 [#258]: https://github.com/decebals/pippo/issues/258
 [#253]: https://github.com/decebals/pippo/issues/253
 [#245]: https://github.com/decebals/pippo/issues/245
