@@ -4,11 +4,11 @@
     <parent>
         <groupId>ro.pippo</groupId>
         <artifactId>pippo-session-parent</artifactId>
-        <version>1.12.0</version>
+        <version>1.13.0-SNAPSHOT</version>
     </parent>
 
     <artifactId>pippo-session-jedis</artifactId>
-    <version>1.12.0</version>
+    <version>1.13.0-SNAPSHOT</version>
     <packaging>jar</packaging>
     <name>Pippo Session Jedis</name>
     <url>http://maven.apache.org</url>
