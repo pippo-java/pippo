@@ -4,13 +4,13 @@
     <parent>
         <groupId>ro.pippo</groupId>
         <artifactId>pippo-session-parent</artifactId>
-        <version>1.12.0-SNAPSHOT</version>
+        <version>1.12.0</version>
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
     <packaging>jar</packaging>
     <artifactId>pippo-session</artifactId>
-    <version>1.12.0-SNAPSHOT</version>
+    <version>1.12.0</version>
     <name>Pippo Session</name>
     <description>Pippo Session</description>
 
