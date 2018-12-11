@@ -10,6 +10,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 - [#463]: Resolve undertow settings not getting picked
 - [#483]: Use `WebSockets.sendClose` to send close code/reason
 - [#485]: Use undertow channel tasks to remove closed/broken connections
+- [#486]: Resolve xxe vulnerabilities
 
 #### Changed
 - [#465]: Made `SessionData` an interface, and introduced `DefaultSessionData`
@@ -543,6 +544,7 @@ Initial release.
 [0.3.0]: https://github.com/decebals/pippo/compare/pippo-parent-0.2.0...pippo-parent-0.3.0
 [0.2.0]: https://github.com/decebals/pippo/compare/pippo-parent-0.1.0...pippo-parent-0.2.0
 
+[#486]: https://github.com/pippo-java/pippo/issues/486
 [#485]: https://github.com/pippo-java/pippo/pull/485
 [#483]: https://github.com/pippo-java/pippo/pull/483
 [#474]: https://github.com/pippo-java/pippo/pull/474
