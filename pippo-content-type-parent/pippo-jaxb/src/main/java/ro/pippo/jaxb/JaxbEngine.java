@@ -25,6 +25,9 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
+import javax.xml.stream.XMLInputFactory;
+import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.XMLStreamReader;
 import java.io.StringReader;
 import java.io.StringWriter;
 
@@ -69,10 +72,16 @@ public class JaxbEngine implements ContentTypeEngine {
     public <T> T fromString(String content, Class<T> classOfT) {
         try (StringReader reader = new StringReader(content)) {
             JAXBContext jaxbContext = JAXBContext.newInstance(classOfT);
-            Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
 
-            return (T) jaxbUnmarshaller.unmarshal(reader);
-        } catch (JAXBException e) {
+            XMLInputFactory xmlInputFactory = XMLInputFactory.newFactory();
+            xmlInputFactory.setProperty(XMLInputFactory.IS_SUPPORTING_EXTERNAL_ENTITIES, false);
+            xmlInputFactory.setProperty(XMLInputFactory.SUPPORT_DTD, true);
+            XMLStreamReader xmlStreamReader = xmlInputFactory.createXMLStreamReader(reader);
+
+            Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
+
+            return (T) unmarshaller.unmarshal(xmlStreamReader);
+        } catch (JAXBException | XMLStreamException e) {
             throw new PippoRuntimeException(e, "Failed to deserialize content to '{}'", classOfT.getName());
         }
     }
