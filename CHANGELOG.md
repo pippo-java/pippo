@@ -5,6 +5,16 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 ### [Unreleased][unreleased]
 
 #### Fixed
+
+#### Changed
+
+#### Added
+
+#### Removed
+
+### [1.12.0] - 2018-12-12
+
+#### Fixed
 - [#454]: Lead to RCE when unmarshal xml data with XStream
 - [#458]: Java deserialization vulnerability in `SerializationSessionDataTranscoder.decode()`
 - [#463]: Resolve undertow settings not getting picked
@@ -518,7 +528,8 @@ Initial release.
 - Added [pippo-freemarker]
 - Added [pippo-jetty]
 
-[unreleased]: https://github.com/decebals/pippo/compare/release-1.11.0...HEAD
+[unreleased]: https://github.com/decebals/pippo/compare/release-1.12.0...HEAD
+[1.12.0]: https://github.com/decebals/pippo/compare/release-1.11.0...release-1.12.0
 [1.11.0]: https://github.com/decebals/pippo/compare/release-1.10.0...release-1.11.0
 [1.10.0]: https://github.com/decebals/pippo/compare/release-1.9.0...release-1.10.0
 [1.9.0]: https://github.com/decebals/pippo/compare/release-1.8.0...release-1.9.0
