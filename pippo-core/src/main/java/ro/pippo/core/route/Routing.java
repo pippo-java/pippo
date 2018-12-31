@@ -27,60 +27,92 @@ public interface Routing {
     void addRouteGroup(RouteGroup routeGroup);
 
     default Route GET(String uriPattern, RouteHandler routeHandler) {
+        return GET(uriPattern, null, routeHandler );
+    }
+
+    default Route GET(String uriPattern, String name, RouteHandler routeHandler) {
         if (routeHandler instanceof ResourceHandler) {
             throw new PippoRuntimeException("Please use 'addResourceRoute()'");
         }
 
-        Route route = Route.GET(uriPattern, routeHandler);
+        Route route = Route.GET(uriPattern, name, routeHandler);
         addRoute(route);
 
         return route;
     }
 
     default Route POST(String uriPattern, RouteHandler routeHandler) {
-        Route route = Route.POST(uriPattern, routeHandler);
+        return POST(uriPattern, null, routeHandler);
+    }
+
+    default Route POST(String uriPattern, String name, RouteHandler routeHandler) {
+        Route route = Route.POST(uriPattern, name, routeHandler);
         addRoute(route);
 
         return route;
     }
 
     default Route DELETE(String uriPattern, RouteHandler routeHandler) {
-        Route route = Route.DELETE(uriPattern, routeHandler);
+        return DELETE(uriPattern, null, routeHandler);
+    }
+
+    default Route DELETE(String uriPattern, String name, RouteHandler routeHandler) {
+        Route route = Route.DELETE(uriPattern, name, routeHandler);
         addRoute(route);
 
         return route;
     }
 
     default Route HEAD(String uriPattern, RouteHandler routeHandler) {
-        Route route = Route.HEAD(uriPattern, routeHandler);
+        return HEAD(uriPattern, null, routeHandler);
+    }
+
+    default Route HEAD(String uriPattern, String name, RouteHandler routeHandler) {
+        Route route = Route.HEAD(uriPattern, name, routeHandler);
         addRoute(route);
 
         return route;
     }
 
     default Route PUT(String uriPattern, RouteHandler routeHandler) {
-        Route route = Route.PUT(uriPattern, routeHandler);
+        return PUT(uriPattern, null, routeHandler);
+    }
+
+    default Route PUT(String uriPattern, String name, RouteHandler routeHandler) {
+        Route route = Route.PUT(uriPattern, name, routeHandler);
         addRoute(route);
 
         return route;
     }
 
     default Route PATCH(String uriPattern, RouteHandler routeHandler) {
-        Route route = Route.PATCH(uriPattern, routeHandler);
+        return PATCH(uriPattern, null, routeHandler);
+    }
+
+    default Route PATCH(String uriPattern, String name, RouteHandler routeHandler) {
+        Route route = Route.PATCH(uriPattern, name, routeHandler);
         addRoute(route);
 
         return route;
     }
 
     default Route CONNECT(String uriPattern, RouteHandler routeHandler) {
-        Route route = Route.CONNECT(uriPattern, routeHandler);
+        return CONNECT(uriPattern, null, routeHandler);
+    }
+
+    default Route CONNECT(String uriPattern, String name, RouteHandler routeHandler) {
+        Route route = Route.CONNECT(uriPattern, name, routeHandler);
         addRoute(route);
 
         return route;
     }
 
     default Route OPTIONS(String uriPattern, RouteHandler routeHandler) {
-        Route route = Route.OPTIONS(uriPattern, routeHandler);
+        return OPTIONS(uriPattern, null, routeHandler);
+    }
+
+    default Route OPTIONS(String uriPattern, String name, RouteHandler routeHandler) {
+        Route route = Route.OPTIONS(uriPattern, name, routeHandler);
         addRoute(route);
 
         return route;
