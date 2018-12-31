@@ -38,8 +38,13 @@ public class Route {
     private Map<String, Object> attributes;
 
     public Route(String requestMethod, String uriPattern, RouteHandler routeHandler) {
+        this(requestMethod, null, uriPattern, routeHandler);
+    }
+
+    public Route(String requestMethod, String name, String uriPattern, RouteHandler routeHandler) {
         this.requestMethod = requestMethod;
         this.uriPattern = uriPattern;
+        this.name = name;
         setRouteHandler(routeHandler);
 
         attributes = new HashMap<>();
@@ -64,11 +69,35 @@ public class Route {
      * Create a {@code GET} route.
      *
      * @param uriPattern
+     * @param name
+     * @param routeHandler
+     * @return
+     */
+    public static Route GET(String uriPattern, String name, RouteHandler routeHandler) {
+        return new Route(HttpConstants.Method.GET, name, uriPattern, routeHandler);
+    }
+
+    /**
+     * Create a {@code GET} route.
+     *
+     * @param uriPattern
      * @param routeHandler
      * @return
      */
     public static Route GET(String uriPattern, RouteHandler routeHandler) {
         return new Route(HttpConstants.Method.GET, uriPattern, routeHandler);
+    }
+
+    /**
+     * Create a {@code POST} route.
+     *
+     * @param uriPattern
+     * @param name
+     * @param routeHandler
+     * @return
+     */
+    public static Route POST(String uriPattern, String name, RouteHandler routeHandler) {
+        return new Route(HttpConstants.Method.POST, name, uriPattern, routeHandler);
     }
 
     /**
@@ -86,11 +115,35 @@ public class Route {
      * Create a {@code DELETE} route.
      *
      * @param uriPattern
+     * @param name
+     * @param routeHandler
+     * @return
+     */
+    public static Route DELETE(String uriPattern, String name, RouteHandler routeHandler) {
+        return new Route(HttpConstants.Method.DELETE, name, uriPattern, routeHandler);
+    }
+
+    /**
+     * Create a {@code DELETE} route.
+     *
+     * @param uriPattern
      * @param routeHandler
      * @return
      */
     public static Route DELETE(String uriPattern, RouteHandler routeHandler) {
         return new Route(HttpConstants.Method.DELETE, uriPattern, routeHandler);
+    }
+
+    /**
+     * Create a {@code HEAD} route.
+     *
+     * @param uriPattern
+     * @param name
+     * @param routeHandler
+     * @return
+     */
+    public static Route HEAD(String uriPattern, String name, RouteHandler routeHandler) {
+        return new Route(HttpConstants.Method.HEAD, name, uriPattern, routeHandler);
     }
 
     /**
@@ -108,11 +161,35 @@ public class Route {
      * Create a {@code PUT} route.
      *
      * @param uriPattern
+     * @param name
+     * @param routeHandler
+     * @return
+     */
+    public static Route PUT(String uriPattern, String name, RouteHandler routeHandler) {
+        return new Route(HttpConstants.Method.PUT, name, uriPattern, routeHandler);
+    }
+
+    /**
+     * Create a {@code PUT} route.
+     *
+     * @param uriPattern
      * @param routeHandler
      * @return
      */
     public static Route PUT(String uriPattern, RouteHandler routeHandler) {
         return new Route(HttpConstants.Method.PUT, uriPattern, routeHandler);
+    }
+
+    /**
+     * Create a {@code PATCH} route.
+     *
+     * @param uriPattern
+     * @param name
+     * @param routeHandler
+     * @return
+     */
+    public static Route PATCH(String uriPattern, String name, RouteHandler routeHandler) {
+        return new Route(HttpConstants.Method.PATCH, name, uriPattern, routeHandler);
     }
 
     /**
@@ -130,11 +207,35 @@ public class Route {
      * Create an {@code OPTIONS} route.
      *
      * @param uriPattern
+     * @param name
+     * @param routeHandler
+     * @return
+     */
+    public static Route OPTIONS(String uriPattern, String name, RouteHandler routeHandler) {
+        return new Route(HttpConstants.Method.OPTIONS, name, uriPattern, routeHandler);
+    }
+
+    /**
+     * Create an {@code OPTIONS} route.
+     *
+     * @param uriPattern
      * @param routeHandler
      * @return
      */
     public static Route OPTIONS(String uriPattern, RouteHandler routeHandler) {
         return new Route(HttpConstants.Method.OPTIONS, uriPattern, routeHandler);
+    }
+
+    /**
+     * Create an {@code CONNECT} route.
+     *
+     * @param uriPattern
+     * @param name
+     * @param routeHandler
+     * @return
+     */
+    public static Route CONNECT(String uriPattern, String name, RouteHandler routeHandler) {
+        return new Route(HttpConstants.Method.CONNECT, name, uriPattern, routeHandler);
     }
 
     /**
