@@ -102,7 +102,7 @@ public class MongoDBSessionDataStorage implements SessionDataStorage {
      * Create TTL index
      *
      * @param idleTime idle time in seconds
-     * @see https://docs.mongodb.com/manual/core/index-ttl/
+     * @see <a href="https://docs.mongodb.com/manual/core/index-ttl/">Mongo docs</a>
      */
     private void createIndex(long idleTime) {
         try {

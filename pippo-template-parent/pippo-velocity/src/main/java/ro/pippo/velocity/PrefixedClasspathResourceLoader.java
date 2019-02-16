@@ -21,7 +21,7 @@ import org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader;
 import java.io.InputStream;
 
 /**
- * @see http://stackoverflow.com/a/9693749/390044
+ * @see <a href="http://stackoverflow.com/a/9693749/390044">Stack Overflow</a>
  *
  * @author Decebal Suiu
  */
