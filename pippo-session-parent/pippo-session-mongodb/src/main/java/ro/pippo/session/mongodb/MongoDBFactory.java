@@ -50,7 +50,7 @@ public class MongoDBFactory {
      * @param hosts list of hosts of the form
      * "mongodb://[username:password@]host1[:port1][,host2[:port2],...[,hostN[:portN]]][/[database][?options]]"
      * @return MongoDB client
-     * @see https://docs.mongodb.com/manual/reference/connection-string/
+     * @see <a href="https://docs.mongodb.com/manual/reference/connection-string/">Mongo docs</a>
      */
     public static MongoClient create(String hosts) {
         MongoClientURI connectionString = new MongoClientURI(hosts);

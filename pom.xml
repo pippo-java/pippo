@@ -46,6 +46,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <java.version>1.8</java.version>
         <jaxb.version>2.3.1</jaxb.version>
+        <xml.bind.version>2.3.0.1</xml.bind.version>
 
         <servlet.version>3.0.1</servlet.version>
         <slf4j.version>1.7.7</slf4j.version>
