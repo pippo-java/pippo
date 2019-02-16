@@ -27,9 +27,9 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
- * The Languages class manages the language and Locale of a Request & Response
+ * The Languages class manages the language and Locale of a Request &amp; Response
  * cycle. It can optionally persist a Language preference as a cookie.
- * <p/>
+ * <p>
  * This class is based on LangImpl.java from the Ninja Web Framework.
  *
  * @author James Moger
@@ -96,7 +96,6 @@ public class Languages {
      * For example, this application may have Portuguese (pt) as a registered
      * language but not Brazilian Portuguese (pt-BR). In this case, pt-BR would
      * be supported because of the pt registration.
-     * </p>
      *
      * @param language
      * @return true if the language is supported
@@ -115,7 +114,6 @@ public class Languages {
      * (messages_pt-BR.properties). In this case, pt-BR is not a registered
      * language, though it may be a supported language by the 'pt' language
      * component.
-     * </p>
      *
      * @param language
      * @return true if the language is registered
@@ -149,7 +147,6 @@ public class Languages {
      * <p>
      * If the language does not match a registered language or language
      * component an exception is thrown.
-     * </p>
      *
      * @param language
      * @param routeContext
@@ -166,7 +163,7 @@ public class Languages {
     }
 
     /**
-     * Returns the language for the request. This process considers Request &
+     * Returns the language for the request. This process considers Request &amp;
      * Response cookies, the Request ACCEPT_LANGUAGE header, and finally the
      * application default language.
      *
@@ -203,7 +200,7 @@ public class Languages {
     }
 
     /**
-     * Returns the Java Locale for the Request & Response cycle. If the language
+     * Returns the Java Locale for the Request &amp; Response cycle. If the language
      * specified in the Request/Response cycle can not be mapped to a Java
      * Locale, the default language Locale is returned.
      *

@@ -24,10 +24,9 @@ import com.google.common.base.Joiner;
  * <p>
  * AngularJS helper allows you to use the double-brace markup for both Trimou
  * and AngularJS.
- * </p>
- * <code>
+ * <pre>
  * {{ng foo bar | filter | whatever}}
- * </code>
+ * </pre>
  *
  * @author James Moger
  *

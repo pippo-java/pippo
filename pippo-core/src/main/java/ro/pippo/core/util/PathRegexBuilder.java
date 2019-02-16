@@ -21,7 +21,6 @@ import java.util.List;
 
 /**
  * An utility class that help you to create complex regex paths using only includes and excludes.
- * <p/>
  * <pre>
  * private String securePaths() {
  *     return new PathRegexBuilder()

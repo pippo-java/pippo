@@ -28,7 +28,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * MimeTypes utils adapted from Play 1.2.4 & Ninja Web Framework
+ * MimeTypes utils adapted from Play 1.2.4 &amp; Ninja Web Framework
  */
 public class MimeTypes {
 
@@ -58,7 +58,7 @@ public class MimeTypes {
     }
 
     /**
-     * Returns the mimetype from a file name.<br/>
+     * Returns the mimetype from a file name.<br>
      *
      * @param filename        the file name
      * @param defaultMimeType the default mime type to return when no matching mimetype is
@@ -85,7 +85,7 @@ public class MimeTypes {
 
     /**
      * Returns the content-type from a file name. If none is found returning
-     * application/octet-stream<br/>
+     * application/octet-stream<br>
      * For a text-based content-type, also return the encoding suffix eg.
      * <em>"text/plain; charset=utf-8"</em>
      *
@@ -97,7 +97,7 @@ public class MimeTypes {
     }
 
     /**
-     * Returns the content-type from a file name.<br/>
+     * Returns the content-type from a file name.<br>
      * For a text-based content-type, also return the encoding suffix eg.
      * <em>"text/plain; charset=utf-8"</em>
      *

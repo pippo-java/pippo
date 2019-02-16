@@ -38,7 +38,7 @@ import java.util.TreeMap;
 /**
  * Loads and caches message resource files based on the registered languages in
  * application.properties.
- * <p/>
+ * <p>
  * This class is based on MessagesImpl.java from the Ninja Web Framework.
  *
  * @author James Moger
@@ -58,7 +58,7 @@ public class Messages {
 
     /**
      * Gets the requested localized message.
-     * <p/>
+     * <p>
      * <p>
      * The current Request and Response are used to help determine the messages
      * resource to use.
@@ -71,11 +71,9 @@ public class Messages {
      * <p>
      * The message can be formatted with optional arguments using the
      * {@link java.text.MessageFormat} syntax.
-     * </p>
      * <p>
      * If the key does not exist in the messages resource, then the key name is
      * returned.
-     * </p>
      *
      * @param key
      * @param routeContext
@@ -89,7 +87,7 @@ public class Messages {
 
     /**
      * Gets the requested localized message.
-     * <p/>
+     * <p>
      * <ol>
      * <li>Exact locale match, return the registered locale message
      * <li>Language match but not a locale match, return the registered language
@@ -99,11 +97,9 @@ public class Messages {
      * <p>
      * The message can be formatted with optional arguments using the
      * {@link java.text.MessageFormat} syntax.
-     * </p>
      * <p>
      * If the key does not exist in the messages resource, then the key name is
      * returned.
-     * </p>
      *
      * @param key
      * @param language
@@ -123,7 +119,7 @@ public class Messages {
 
     /**
      * Gets the requested localized message.
-     * <p/>
+     * <p>
      * <p>
      * The current Request and Response are used to help determine the messages
      * resource to use.
@@ -136,11 +132,9 @@ public class Messages {
      * <p>
      * The message can be formatted with optional arguments using the
      * {@link java.text.MessageFormat} syntax.
-     * </p>
      * <p>
      * If the key does not exist in the messages resource, then the key name is
      * returned.
-     * </p>
      *
      * @param key
      * @param defaultMessage
@@ -155,7 +149,7 @@ public class Messages {
 
     /**
      * Gets the requested localized message.
-     * <p/>
+     * <p>
      * <p>
      * The current Request and Response are used to help determine the messages
      * resource to use.
@@ -168,7 +162,6 @@ public class Messages {
      * <p>
      * The message can be formatted with optional arguments using the
      * {@link java.text.MessageFormat} syntax.
-     * </p>
      *
      * @param key
      * @param defaultMessage
@@ -196,7 +189,6 @@ public class Messages {
      * messages
      * <li>Return the default messages
      * </ol>
-     * </p>
      *
      * @param routeContext
      * @return all localized messages
@@ -356,7 +348,7 @@ public class Messages {
     /**
      * Retrieves the messages from an arbitrary one or two component language
      * String ("en-US", or "en" or "de"...).
-     * <p/>
+     * <p>
      *
      * @param language A one or two component language code such as "en", "en-US", or
      *                 "en-US,en;q=0.8,de;q=0.6".

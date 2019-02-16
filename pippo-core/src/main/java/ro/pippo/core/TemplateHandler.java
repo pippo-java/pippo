@@ -25,7 +25,6 @@ import java.util.Map;
  * <p>
  * This handler can be useful for designs which blend server-side page
  * generation with client-side applications.
- * </p>
  *
  * @author James Moger
  */

@@ -108,7 +108,7 @@ public class ContentTypeEngines {
     /**
      * Returns the first matching content type engine for a content type suffix (json, xml, yaml), a
      * simple content type (application/json) or a complex accept header like:
-     * <p/>
+     * <p>
      * <pre>
      * text/html,application/xhtml+xml,application/xml;q=0.9,image/webp
      * </pre>
@@ -152,7 +152,7 @@ public class ContentTypeEngines {
     /**
      * Cleans a complex content-type or accept header value by removing the
      * quality scores.
-     * <p/>
+     * <p>
      * <pre>
      * text/html,application/xhtml+xml,application/xml;q=0.9,image/webp
      * </pre>

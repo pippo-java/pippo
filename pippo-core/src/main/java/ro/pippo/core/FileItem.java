@@ -39,7 +39,7 @@ public class FileItem {
     /**
      * Gets the name of this part
      *
-     * @return The name of this part as a <tt>String</tt>
+     * @return The name of this part as a <code>String</code>
      */
     public String getName() {
         return  part.getName();
@@ -87,11 +87,11 @@ public class FileItem {
     }
 
     /**
-     * Gets the content of this part as an <tt>InputStream</tt>
+     * Gets the content of this part as an <code>InputStream</code>
      *
-     * @return The content of this file as an <tt>InputStream</tt>
+     * @return The content of this file as an <code>InputStream</code>
      * @throws IOException If an error occurs in retrieving the content
-     * as an <tt>InputStream</tt>
+     * as an <code>InputStream</code>
      */
     public InputStream getInputStream() throws IOException {
         return part.getInputStream();

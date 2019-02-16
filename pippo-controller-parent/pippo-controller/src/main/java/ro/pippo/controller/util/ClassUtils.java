@@ -180,10 +180,11 @@ public class ClassUtils {
      * Class} object, including public, protected, default (package)
      * access, and private methods, <b>but excluding inherited methods</b>.
      *
-     * <p>This method differs from {@link Class#getDeclaredMethods()} since it
+     * <p>
+     * This method differs from {@link Class#getDeclaredMethods()} since it
      * does <b>not return bridge methods</b>, in other words, only the methods of
      * the class are returned. <b>If you just want the methods declared in
-     * {@code clazz} use this method!</b></p>
+     * {@code clazz} use this method!</b>
      *
      * @param clazz Class
      *

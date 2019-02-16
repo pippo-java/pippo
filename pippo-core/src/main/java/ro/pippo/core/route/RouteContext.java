@@ -92,7 +92,8 @@ public interface RouteContext {
 
     /**
      * Renders a template and writes the output directly to the response.
-     * <p>This method commits the response.</p>
+     * <p>
+     * This method commits the response.
      *
      * @param templateName
      */
@@ -100,7 +101,8 @@ public interface RouteContext {
 
     /**
      * Renders a template and writes the output directly to the response.
-     * <p>This method commits the response.</p>
+     * <p>
+     * This method commits the response.
      *
      * @param templateName
      * @param model

@@ -37,7 +37,7 @@ public class DateUtils {
 
     /**
      * Can be used to format a date into http header compatible strings.
-     * <p/>
+     * <p>
      * It can be used to generate something like: Date: Wed, 05 Sep 2012
      * 09:16:19 GMT Expires: Thu, 01 Jan 1970 00:00:00 GMT
      *
@@ -52,7 +52,7 @@ public class DateUtils {
     /**
      * Can be used to format a unix timestamp into http header compatible
      * strings.
-     * <p/>
+     * <p>
      * It can be used to generate something like: Date: Wed, 05 Sep 2012
      * 09:16:19 GMT Expires: Thu, 01 Jan 1970 00:00:00 GMT
      *
@@ -67,7 +67,7 @@ public class DateUtils {
     /**
      * Can be used to parse http times. For instance something like a http
      * header Date: Tue, 26 Mar 2013 13:47:13 GMT
-     * <p/>
+     * <p>
      * INFO: consider the JodaTime based
      * DateUtil.parseHttpDateFormatToDateTime(...) version
      *

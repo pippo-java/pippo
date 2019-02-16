@@ -295,7 +295,7 @@ public class ParameterValue implements Serializable {
      *
      * @param classOfT
      * @param pattern  optional pattern for interpreting the underlying request
-     *                 string value. (used for date & time conversions)
+     *                 string value. (used for date &amp; time conversions)
      * @return a set of the values
      */
     public <T> Set<T> toSet(Class<T> classOfT, String pattern) {
@@ -393,7 +393,7 @@ public class ParameterValue implements Serializable {
      *
      * @param classOfT
      * @param pattern  optional pattern for interpreting the underlying request
-     *                 string value. (used for date & time conversions)
+     *                 string value. (used for date &amp; time conversions)
      * @return an object
      */
     @SuppressWarnings("unchecked")
@@ -437,7 +437,7 @@ public class ParameterValue implements Serializable {
      * @param collectionClass
      * @param classOfT
      * @param pattern  optional pattern for interpreting the underlying request
-     *                 string value. (used for date & time conversions)
+     *                 string value. (used for date &amp; time conversions)
      * @return a collection of the values
      */
     @SuppressWarnings("unchecked")

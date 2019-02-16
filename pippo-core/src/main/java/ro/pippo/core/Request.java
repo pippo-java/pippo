@@ -104,7 +104,7 @@ public final class Request {
     }
 
     /**
-     * Returns all query&post parameters.
+     * Returns all query&amp;post parameters.
      */
     public Map<String, ParameterValue> getQueryParameters() {
         return parameters;
@@ -447,7 +447,7 @@ public final class Request {
     }
 
     /**
-     * Returns the url with the protocol, application path, & resource path. The
+     * Returns the url with the protocol, application path, &amp; resource path. The
      * query string is omitted.
      *
      * @return the url
@@ -457,7 +457,7 @@ public final class Request {
     }
 
     /**
-     * Returns the container uri with the application path & resource path. The
+     * Returns the container uri with the application path &amp; resource path. The
      * protocol and query string are omitted.
      *
      * @return the container uri

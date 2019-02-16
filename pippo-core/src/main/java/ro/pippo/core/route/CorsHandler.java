@@ -27,11 +27,8 @@ import ro.pippo.core.util.StringUtils;
  * The Cross-Origin Resource Sharing standard works by adding new HTTP headers
  * that allow servers to describe the set of origins that are permitted to read
  * that information using a web browser.
- * </p>
- *
  * <p>
  * For more details see: https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS
- * </p>
  */
 public class CorsHandler implements RouteHandler<RouteContext> {
 

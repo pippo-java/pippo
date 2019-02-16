@@ -99,14 +99,14 @@ public interface Router {
      * For example:
      * <pre>
      * // add a route
-     * GET("/user", routeContext -> {...});
+     * GET("/user", routeContext -&gt; {...});
      *
      * // get an uri string for the above route
-     * Map<String, Object> parameters = new HashMap<>();
+     * Map&lt;String, Object&gt; parameters = new HashMap&lt;&gt;();
      * parameters.put("admin", true);
      * parameters.put("company", "Home Office")
      * String uri = uriFor("/user", parameters);
-     * // the result is "/user?admin=true&company=Home+Office"
+     * // the result is "/user?admin=true&amp;company=Home+Office"
      * </pre>
      * The parameters values are automatically encoded by this method.
      *

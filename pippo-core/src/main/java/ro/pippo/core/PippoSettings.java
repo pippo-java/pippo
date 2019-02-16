@@ -55,20 +55,15 @@ import java.util.concurrent.TimeUnit;
  * <li>from the application classpath (conf/application.properties)
  * <li>using the built-in Pippo properties
  * </ol>
- * </p>
  * <p>
  * A settings file located on the filesystem is automatically reloaded, if
  * modified, on the next setting lookup.
- * </p>
  * <p>
  * All settings support runtime-mode configuration allowing you to specify the
  * same setting with mode-dependent values.
- * </p>
  * <p>
  * Settings without a mode prefix are the shared for all modes unless explicitly
  * overridden by a mode-specific setting.
- * </p>
- * <p/>
  * <pre>
  * example.value = my example value
  * %prod.example.value = my production value
@@ -79,7 +74,6 @@ import java.util.concurrent.TimeUnit;
  * using the <i>include=</i> setting. The <i>include=</i> setting is a
  * comma-delimited field allowing importing settings from multiple sources.
  * Inclusions may be recursive.
- * </p>
  *
  * @author James Moger
  */
@@ -262,7 +256,6 @@ public class PippoSettings {
      * <p>
      * "Include" properties are the base properties which are overwritten by
      * the provided properties.
-     * </p>
      *
      * @param baseDir
      * @param properties
@@ -277,7 +270,6 @@ public class PippoSettings {
      * Recursively read "override" properties files.
      * <p>
      * "Override" properties overwrite the provided properties.
-     * </p>
      *
      * @param baseDir
      * @param properties
@@ -356,7 +348,6 @@ public class PippoSettings {
      * All values support the standard ${name} syntax but also support
      * the @{name} syntax to cope with build systems with aggressive
      * token filtering.
-     * </p>
      */
     protected void loadInterpolationValues() {
         // System properties may be accessed using ${name} or @{name}
@@ -767,7 +758,7 @@ public class PippoSettings {
 
     /**
      * Gets the duration setting and converts it to milliseconds.
-     * <p/>
+     * <p>
      * The setting must be use one of the following conventions:
      * <ul>
      * <li> n MILLISECONDS
@@ -786,7 +777,7 @@ public class PippoSettings {
 
     /**
      * Gets the duration setting and converts it to milliseconds.
-     * <p/>
+     * <p>
      * The setting must be use one of the following conventions:
      * <ul>
      * <li>n MILLISECONDS
@@ -809,7 +800,7 @@ public class PippoSettings {
 
     /**
      * Gets the duration setting and converts it to seconds.
-     * <p/>
+     * <p>
      * The setting must be use one of the following conventions:
      * <ul>
      * <li>n MILLISECONDS
@@ -828,7 +819,7 @@ public class PippoSettings {
 
     /**
      * Gets the duration setting and converts it to seconds.
-     * <p/>
+     * <p>
      * The setting must be use one of the following conventions:
      * <ul>
      * <li>n MILLISECONDS
@@ -851,7 +842,7 @@ public class PippoSettings {
 
     /**
      * Gets the duration setting and converts it to minutes.
-     * <p/>
+     * <p>
      * The setting must be use one of the following conventions:
      * <ul>
      * <li> n MILLISECONDS
@@ -870,7 +861,7 @@ public class PippoSettings {
 
     /**
      * Gets the duration setting and converts it to minutes.
-     * <p/>
+     * <p>
      * The setting must be use one of the following conventions:
      * <ul>
      * <li>n MILLISECONDS
@@ -893,7 +884,7 @@ public class PippoSettings {
 
     /**
      * Gets the duration setting and converts it to hours.
-     * <p/>
+     * <p>
      * The setting must be use one of the following conventions:
      * <ul>
      * <li> n MILLISECONDS
@@ -912,7 +903,7 @@ public class PippoSettings {
 
     /**
      * Gets the duration setting and converts it to hours.
-     * <p/>
+     * <p>
      * The setting must be use one of the following conventions:
      * <ul>
      * <li>n MILLISECONDS
@@ -935,7 +926,7 @@ public class PippoSettings {
 
     /**
      * Gets the duration setting and converts it to days.
-     * <p/>
+     * <p>
      * The setting must be use one of the following conventions:
      * <ul>
      * <li> n MILLISECONDS
@@ -954,7 +945,7 @@ public class PippoSettings {
 
     /**
      * Gets the duration setting and converts it to days.
-     * <p/>
+     * <p>
      * The setting must be use one of the following conventions:
      * <ul>
      * <li>n MILLISECONDS

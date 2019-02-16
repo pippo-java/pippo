@@ -27,16 +27,14 @@ import ro.pippo.core.Messages;
 /**
  * <p>
  * Using the i18n helper:
- * </p>
- * <code>
+ * <pre>
  * {{i18n "my.key"}}
- * </code>
+ * </pre>
  * <p>
  * Passing arguments to the MessageFormat string formatter:
- * </p>
- * <code>
+ * <pre>
  * {{i18n "hello.world" "Frank"}}
- * </code>
+ * </pre>
  *
  * @author James Moger
  */

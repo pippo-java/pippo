@@ -25,7 +25,8 @@ import java.util.regex.PatternSyntaxException;
  */
 public class StringUtils {
 
-    private StringUtils() {}
+    private StringUtils() {
+    }
 
     public static boolean isNullOrEmpty(String s) {
         return s == null || s.trim().isEmpty();
@@ -53,13 +54,14 @@ public class StringUtils {
     }
 
     /**
-     * <p>Removes a substring only if it is at the start of a source string,
-     * otherwise returns the source string.</p>
-     * <p/>
-     * <p>A {@code null} source string will return {@code null}.
+     * <p>
+     * Removes a substring only if it is at the start of a source string,
+     * otherwise returns the source string.
+     * <p>
+     * A {@code null} source string will return {@code null}.
      * An empty ("") source string will return the empty string.
-     * A {@code null} search string will return the source string.</p>
-     * <p/>
+     * A {@code null} search string will return the source string.
+     * <p>
      * <pre>
      * StringUtils.removeStart(null, *)      = null
      * StringUtils.removeStart("", *)        = ""
@@ -86,13 +88,12 @@ public class StringUtils {
     }
 
     /**
-     * <p>Removes a substring only if it is at the end of a source string,
-     * otherwise returns the source string.</p>
-     * <p/>
-     * <p>A {@code null} source string will return {@code null}.
+     * Removes a substring only if it is at the end of a source string,
+     * otherwise returns the source string.
+     * <p>
+     * A {@code null} source string will return {@code null}.
      * An empty ("") source string will return the empty string.
-     * A {@code null} search string will return the source string.</p>
-     * <p/>
+     * A {@code null} search string will return the source string.
      * <pre>
      * StringUtils.removeEnd(null, *)      = null
      * StringUtils.removeEnd("", *)        = ""
@@ -121,13 +122,13 @@ public class StringUtils {
     }
 
     /**
-     * <p>Adds a substring only if the source string does not already start with the substring,
-     * otherwise returns the source string.</p>
-     * <p/>
-     * <p>A {@code null} source string will return {@code null}.
+     * <p>
+     * Adds a substring only if the source string does not already start with the substring,
+     * otherwise returns the source string.
+     * <p>
+     * A {@code null} source string will return {@code null}.
      * An empty ("") source string will return the empty string.
-     * A {@code null} search string will return the source string.</p>
-     * <p/>
+     * A {@code null} search string will return the source string.
      * <pre>
      * StringUtils.addStart(null, *)      = *
      * StringUtils.addStart("", *)        = *
@@ -157,13 +158,14 @@ public class StringUtils {
     }
 
     /**
-     * <p>Adds a substring only if the source string does not already end with the substring,
-     * otherwise returns the source string.</p>
-     * <p/>
-     * <p>A {@code null} source string will return {@code null}.
+     * <p>
+     * Adds a substring only if the source string does not already end with the substring,
+     * otherwise returns the source string.
+     * <p>
+     * A {@code null} source string will return {@code null}.
      * An empty ("") source string will return the empty string.
-     * A {@code null} search string will return the source string.</p>
-     * <p/>
+     * A {@code null} search string will return the source string.
+     * <p>
      * <pre>
      * StringUtils.addEnd(null, *)      = *
      * StringUtils.addEnd("", *)        = *

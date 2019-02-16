@@ -37,14 +37,14 @@ public @interface Counted {
 
     /**
      * Determines the behavior of the counter.
-     * <p/>
+     * <p>
      * if false (default), the counter will continuously increment and will
      * indicate the number of times this method has been executed.
-     * <p/>
+     * <p>
      * if true, the counter will be incremented before the method is executed
      * and will be decremented when method execution has completed - regardless
      * of thrown exceptions.
-     * <p/>
+     * <p>
      * This is useful for determining the realtime execution status of a method.
      */
     boolean active() default false;

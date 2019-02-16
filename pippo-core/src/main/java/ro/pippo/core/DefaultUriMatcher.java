@@ -181,7 +181,7 @@ public class DefaultUriMatcher implements UriMatcher {
 
     /**
      * Transforms an url pattern like "/{name}/id/*" into a regex like "/([^/]*)/id/*."
-     * <p/>
+     * <p>
      * Also handles regular expressions if defined inside routes:
      * For instance "/users/{username: [a-zA-Z][a-zA-Z_0-9]}" becomes
      * "/users/([a-zA-Z][a-zA-Z_0-9])"
@@ -242,9 +242,9 @@ public class DefaultUriMatcher implements UriMatcher {
 
     /**
      * Extracts the name of the parameters from a route
-     * <p/>
+     * <p>
      * /{my_id}/{my_name}
-     * <p/>
+     * <p>
      * would return a List with "my_id" and "my_name"
      *
      * @param uriPattern

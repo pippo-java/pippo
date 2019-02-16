@@ -36,12 +36,12 @@ import java.util.Properties;
 
 /**
  * RESTEasy TJWS is a 100KB Servlet 2.5 container.
- * <p/>
+ * <p>
  * Not all Pippo features are available in Servlet 2.5, specifically
  * file uploading and servlet filters.
- * <p/>
+ * <p>
  * TjwsServer uses PippoServlet.
- *
+ * <p>
  * TjwsServer doesn't support {@link ServletContextListener}.
  *
  * @author James Moger

@@ -27,14 +27,13 @@ public interface WebServer<T extends WebServerSettings> {
      * See also {@link WebServerInitializer}.
      *
      * <pre>
-     * {@code
+     * <code>
      * MyApplication application = (MyApplication) servletContext.getAttribute(PIPPO_APPLICATION);
-     * }
+     * </code>
      * </pre>
      *
      * A possible scenario: I want to add support for Jersey in my application.
      * <pre>
-     * {@code
      *
      * public class MyApplication extends Application {
      *
@@ -46,10 +45,10 @@ public interface WebServer<T extends WebServerSettings> {
      *
      * }
      *
-     * @MetaInfServices
+     * &#064;MetaInfServices
      * public class JerseyInitializer implements WebServerInitializer {
      *
-     *     @Override
+     *     &#064;Override
      *     public void init(ServletContext servletContext) {
      *         // get the resourceConfig via application
      *         MyApplication application = (MyApplication) servletContext.getAttribute(PIPPO_APPLICATION);
@@ -61,7 +60,7 @@ public interface WebServer<T extends WebServerSettings> {
      *         jerseyServlet.addMapping("/api/*");
      *     }
      *
-     *     @Override
+     *     &#064;Override
      *     public void destroy(ServletContext servletContext) {
      *         // do nothing for now
      *     }

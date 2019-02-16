@@ -107,7 +107,7 @@ public abstract class AbstractWebServer<T extends WebServerSettings> implements 
 
     /**
      * Override this method if you want to customize the {@link PippoFilter}.
-     * <p/>
+     * <p>
      * <pre>
      * protected PippoFilter createPippoFilter() {
      *     PippoFilter pippoFilter = super.createPippoFilter();

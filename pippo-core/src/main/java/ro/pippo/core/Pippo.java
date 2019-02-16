@@ -87,16 +87,12 @@ public class Pippo implements ResourceRouting, ReloadWatcher.Listener {
      * Entry point for a custom WebServer.
      * The idea is to create a custom WebServer if you want to override some aspects (method) of that server or
      * if you want free access to the servlet container (Jetty, Tomcat, ...).
-     *
      * <p>
-     * Show below the code for a <@code>JettyServer</@code> with persistent sessions.
-     * </p>
-     *
+     * Show below the code for a <code>JettyServer</code> with persistent sessions.
      * <pre>
-     * <@code>
      * public class MyJettyServer extends JettyServer {
      *
-     *     @Override
+     *     &#064;Override
      *     protected ServletContextHandler createPippoHandler() {
      *         ServletContextHandler handler = super.createPippoHandler();
      *
@@ -122,7 +118,6 @@ public class Pippo implements ResourceRouting, ReloadWatcher.Listener {
      *     }
      *
      * }
-     * </@code>
      * </pre>
      *
      * @param server

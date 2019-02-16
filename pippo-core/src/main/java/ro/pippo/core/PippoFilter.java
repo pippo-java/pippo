@@ -185,17 +185,17 @@ public class PippoFilter implements Filter {
      * Please note that you must subclass {@code PippoFilter.init(FilterConfig)} and set your filter path
      * before you call {@code super.init(filterConfig)}.
      * For example:
-     * {@code
+     * <pre>
      * class MyPippoFilter extends PippoFilter {
      *
-     *     @Override
+     *     &#064;Override
      *     public void init(FilterConfig filterConfig) throws ServletException {
      *         setFilterPath("/*");
      *         super.init(filterConfig);
      *     }
      *
      * }
-     * }
+     * </pre>
      *
      * @param urlPattern
      */

@@ -462,7 +462,7 @@ public class ControllerHandler implements RouteHandler {
     /*
      * Cleans a complex content-type or accept header value by removing the
      * quality scores.
-     * <p/>
+     * <p>
      * <pre>
      * text/html,application/xhtml+xml,application/xml;q=0.9,image/webp
      * </pre>

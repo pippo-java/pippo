@@ -23,15 +23,14 @@ import com.jayway.restassured.RestAssured;
  * <p>
  * PippoTest will start your Pippo application on a dynamically assigned port
  * in TEST mode for execution of your unit tests.
- * </p>
  * <pre>
  * // one Pippo instance for EACH test
- * @Rule
+ * &#064;Rule
  * public PippoRule pippoRule = new PippoRule(new PippoApplication());
  *
  * // or
  * // one Pippo instance for ALL tests
- * @ClassRule
+ * &#064;ClassRule
  * public static PippoRule pippoRule = new PippoRule(new PippoApplication());
  * </pre>
  *

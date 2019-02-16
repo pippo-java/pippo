@@ -18,7 +18,7 @@ package ro.pippo.core.route;
 import java.io.File;
 
 /**
- * An extension of <@link>Routing</@link> that add support for <@code>Resource</@code>.
+ * An extension of {@link Routing} that add support for <code>Resource</code>.
  *
  * @author Decebal Suiu
  */

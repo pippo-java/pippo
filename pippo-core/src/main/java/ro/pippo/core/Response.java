@@ -80,7 +80,6 @@ public final class Response {
      * for the current request/response cycle.
      * <p>
      * All bound objects are made available to the template engine during parsing.
-     * </p>
      *
      * @return the bound objects map
      */
@@ -410,7 +409,8 @@ public final class Response {
      * {@link ro.pippo.core.Response#redirectToContextPath(String)} method.
      * If you want an application-relative redirect, use the
      * {@link ro.pippo.core.Response#redirectToApplicationPath(String)} method.
-     * <p>This method commits the response.</p>
+     * <p>
+     * This method commits the response.
      *
      * @param location
      *            Where to redirect
@@ -430,7 +430,8 @@ public final class Response {
      * Redirects the browser to a path relative to the application context. For
      * example, redirectToContextPath("/contacts") might redirect the browser to
      * http://localhost/myContext/contacts
-     * <p>This method commits the response.</p>
+     * <p>
+     * This method commits the response.
      *
      * @param path
      */
@@ -447,7 +448,8 @@ public final class Response {
      * Redirects the browser to a path relative to the Pippo application root. For
      * example, redirectToApplicationPath("/contacts") might redirect the browser to
      * http://localhost/myContext/myApp/contacts
-     * <p>This method commits the response.</p>
+     * <p>
+     * This method commits the response.
      *
      * @param path
      */
@@ -462,7 +464,8 @@ public final class Response {
 
     /**
      * A permanent (3XX status code) redirect.
-     * <p>This method commits the response.</p>
+     * <p>
+     * This method commits the response.
      *
      * @param location
      * @param statusCode
@@ -489,7 +492,6 @@ public final class Response {
      * contain an entity corresponding to the requested resource. In a POST
      * request the response will contain an entity describing or containing the
      * result of the action.
-     * </p>
      *
      */
     public Response ok() {
@@ -502,7 +504,6 @@ public final class Response {
      * Set the response status to CREATED (201).
      * <p>
      * The request has been fulfilled and resulted in a new resource being created.
-     * </p>
      *
      */
     public Response created() {
@@ -517,7 +518,6 @@ public final class Response {
      * The request has been accepted for processing, but the processing has not
      * been completed. The request might or might not eventually be acted upon,
      * as it might be disallowed when processing actually takes place.
-     * </p>
      *
      */
     public Response accepted() {
@@ -531,7 +531,6 @@ public final class Response {
      * <p>
      * The server cannot or will not process the request due to something that
      * is perceived to be a client error.
-     * </p>
      *
      */
     public Response badRequest() {
@@ -547,7 +546,6 @@ public final class Response {
      * required and has failed or has not yet been provided. The response must
      * include a WWW-Authenticate header field containing a challenge applicable
      * to the requested resource.
-     * </p>
      */
     public Response unauthorized() {
         status(HttpConstants.StatusCode.UNAUTHORIZED);
@@ -561,7 +559,6 @@ public final class Response {
      * Reserved for future use. The original intention was that this code might
      * be used as part of some form of digital cash or micropayment scheme, but
      * that has not happened, and this code is not usually used.
-     * </p>
      */
     public Response paymentRequired() {
         status(HttpConstants.StatusCode.PAYMENT_REQUIRED);
@@ -575,7 +572,6 @@ public final class Response {
      * The request was a valid request, but the server is refusing to respond to
      * it. Unlike a 401 Unauthorized response, authenticating will make no
      * difference.
-     * </p>
      *
      */
     public Response forbidden() {
@@ -589,7 +585,6 @@ public final class Response {
      * <p>
      * The requested resource could not be found but may be available again in
      * the future. Subsequent requests by the client are permissible.
-     * </p>
      *
      */
     public Response notFound() {
@@ -604,7 +599,6 @@ public final class Response {
      * A request was made of a resource using a request method not supported
      * by that resource; for example, using GET on a form which requires data
      * to be presented via POST, or using PUT on a read-only resource.
-     * </p>
      *
      */
     public Response methodNotAllowed() {
@@ -618,7 +612,6 @@ public final class Response {
      * <p>
      * Indicates that the request could not be processed because of conflict in
      * the request, such as an edit conflict in the case of multiple updates.
-     * </p>
      *
      */
     public Response conflict() {
@@ -635,7 +628,6 @@ public final class Response {
      * intentionally removed and the resource should be purged. Upon receiving a
      * 410 status code, the client should not request the resource again in the
      * future.
-     * </p>
      *
      */
     public Response gone() {
@@ -649,7 +641,6 @@ public final class Response {
      * <p>
      * A generic error message, given when an unexpected condition was
      * encountered and no more specific message is suitable.
-     * </p>
      *
      */
     public Response internalError() {
@@ -664,7 +655,6 @@ public final class Response {
      * The server either does not recognize the request method, or it lacks the
      * ability to fulfil the request. Usually this implies future availability
      * (e.g., a new feature of a web-service API).
-     * </p>
      *
      */
     public Response notImplemented() {
@@ -678,7 +668,6 @@ public final class Response {
      * <p>
      * The server is currently unavailable (because it is overloaded or down
      * for maintenance). Generally, this is a temporary state.
-     * </p>
      */
     public Response overloaded() {
         status(HttpConstants.StatusCode.OVERLOADED);
@@ -691,7 +680,6 @@ public final class Response {
      * <p>
      * The server is currently unavailable (because it is overloaded or down
      * for maintenance). Generally, this is a temporary state.
-     * </p>
      */
     public Response serviceUnavailable() {
         status(HttpConstants.StatusCode.SERVICE_UNAVAILABLE);
@@ -748,7 +736,6 @@ public final class Response {
      * <p>
      * The Accept header is preferred for negotiation but the Content-Type
      * header may also be used if an agreeable engine can not be determined.
-     * </p>
      * <p>
      * If no Content-Type can not be negotiated then the response will not be
      * modified. This behavior allows specification of a default Content-Type
@@ -827,7 +814,8 @@ public final class Response {
 
     /**
      * Writes the string content directly to the response.
-     * <p>This method commits the response.</p>
+     * <p>
+     * This method commits the response.
      *
      * @param content
      */
@@ -840,7 +828,8 @@ public final class Response {
     /**
      * Replaces '{}' in the format string with the supplied arguments and
      * writes the string content directly to the response.
-     * <p>This method commits the response.</p>
+     * <p>
+     * This method commits the response.
      *
      * @param format
      * @param args
@@ -854,7 +843,8 @@ public final class Response {
     /**
      * Serializes the object as JSON using the registered <code>application/json</code>
      * ContentTypeEngine and writes it to the response.
-     * <p>This method commits the response.</p>
+     * <p>
+     * This method commits the response.
      *
      * @param object
      */
@@ -865,7 +855,8 @@ public final class Response {
     /**
      * Serializes the object as XML using the registered <code>application/xml</code>
      * ContentTypeEngine and writes it to the response.
-     * <p>This method commits the response.</p>
+     * <p>
+     * This method commits the response.
      *
      * @param object
      */
@@ -876,7 +867,8 @@ public final class Response {
     /**
      * Serializes the object as YAML using the registered <code>application/x-yaml</code>
      * ContentTypeEngine and writes it to the response.
-     * <p>This method commits the response.</p>
+     * <p>
+     * This method commits the response.
      *
      * @param object
      */
@@ -887,7 +879,8 @@ public final class Response {
     /**
      * Serializes the object as plain text using the registered <code>text/plain</code>
      * ContentTypeEngine and writes it to the response.
-     * <p>This method commits the response.</p>
+     * <p>
+     * This method commits the response.
      *
      * @param object
      */
@@ -898,7 +891,8 @@ public final class Response {
     /**
      * Serializes the object using the registered ContentTypeEngine matching
      * the pre-specified content-type.
-     * <p>This method commits the response.</p>
+     * <p>
+     * This method commits the response.
      *
      * @param object
      */
@@ -926,7 +920,8 @@ public final class Response {
 
     /**
      * Copies the input stream to the response output stream and closes the input stream upon completion.
-     * <p>This method commits the response.</p>
+     * <p>
+     * This method commits the response.
      *
      * @param input
      */
@@ -948,7 +943,8 @@ public final class Response {
 
     /**
      * Writes the specified file directly to the response.
-     * <p>This method commits the response.</p>
+     * <p>
+     * This method commits the response.
      *
      * @param file
      */
@@ -963,7 +959,8 @@ public final class Response {
 
     /**
      * Copies the input stream to the response output stream as a download and closes the input stream upon completion.
-     * <p>This method commits the response.</p>
+     * <p>
+     * This method commits the response.
      *
      * @param filename
      * @param input
@@ -1005,7 +1002,8 @@ public final class Response {
 
     /**
      * Renders a template and writes the output directly to the response.
-     * <p>This method commits the response.</p>
+     * <p>
+     * This method commits the response.
      *
      * @param templateName
      */
@@ -1015,7 +1013,8 @@ public final class Response {
 
     /**
      * Renders a template and writes the output directly to the response.
-     * <p>This method commits the response.</p>
+     * <p>
+     * This method commits the response.
      *
      * @param templateName
      * @param model

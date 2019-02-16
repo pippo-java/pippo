@@ -23,7 +23,6 @@ import ro.pippo.core.route.RouteContext;
  * {@link ErrorHandler} can register custom {@link ExceptionHandler}s and will handle an exception
  * with a matching {@code ExceptionHandler}, if found. Otherwise {@code ErrorHandler} will fallback
  * to itself to handle the exception.
- * </p>
  *
  * @author Decebal Suiu
  */

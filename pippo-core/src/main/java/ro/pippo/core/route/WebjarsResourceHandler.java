@@ -109,7 +109,7 @@ public class WebjarsResourceHandler extends ClasspathResourceHandler {
      * for all Webjars on the classpath.
      * <p>
      * This allows specifications of a path like "jquery/jquery.min.js" which will be substituted
-     * at runtime as "jquery/1.11.1/jquery.min.js".</p>
+     * at runtime as "jquery/1.11.1/jquery.min.js".
      *
      * @return a map of path pathAliases
      */

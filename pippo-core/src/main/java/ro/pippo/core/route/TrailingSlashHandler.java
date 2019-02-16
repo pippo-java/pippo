@@ -32,7 +32,6 @@ import ro.pippo.core.util.StringUtils;
  * Note:
  * For GET requests a temporary redirect (302) is fine, but for other request methods like POST or PUT
  * the browser will send the second request with the GET method.
- * </p>
  *
  * @author Decebal Suiu
  */

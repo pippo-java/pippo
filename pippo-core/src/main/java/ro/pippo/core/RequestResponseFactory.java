@@ -19,7 +19,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 /**
- * Helps in creating <code>Request<code/> and <code>Response<code/> objects.
+ * Helps in creating <code>Request</code> and <code>Response</code> objects.
  * Here you can wrap/customize HttpServletRequest or HttpServletResponse.
  *
  * @author Decebal Suiu
