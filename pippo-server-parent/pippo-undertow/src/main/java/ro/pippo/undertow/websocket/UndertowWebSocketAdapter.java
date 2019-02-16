@@ -64,16 +64,16 @@ public class UndertowWebSocketAdapter extends AbstractReceiveListener implements
 
     @Override
     public void onConnect(WebSocketHttpExchange exchange, WebSocketChannel channel) {
-        channel.getReceiveSetter().set(this);
-        channel.resumeReceives();
-
         connection = new UndertowWebSocketConnection(exchange, channel);
         connections.add(connection);
-        channel.addCloseTask(ch -> connections.remove(connection));
 
         context = new WebSocketContext(connectionsReadOnly, connection, pathParameters);
 
         handler.onOpen(context);
+
+        channel.addCloseTask(ch -> connections.remove(connection));
+        channel.getReceiveSetter().set(this);
+        channel.resumeReceives();
     }
 
     @Override
