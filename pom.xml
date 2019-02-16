@@ -93,6 +93,7 @@
                             <value>bar</value>
                         </property>
                     </javaApiLinks>
+                    <doclint>none</doclint>
                 </configuration>
             </plugin>
 
