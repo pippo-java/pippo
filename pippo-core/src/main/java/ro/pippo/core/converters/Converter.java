@@ -27,18 +27,17 @@ import java.util.Locale;
 public interface Converter<T> {
 
     /**
-     * Convert the specified input object into an output object of the specified
-     * type.
+     * Convert the specified input object into an output object of the specified type.
      *
      * @param values
      *            The input value to be converted
      * @param locale
      *            The locale
      * @param pattern
-     *            The convertion pattern
+     *            The conversion pattern
      *
      * @return The converted value
      */
-    public T getAsObject(String[] values, Locale locale, String pattern);
+    T getAsObject(String[] values, Locale locale, String pattern);
 
 }
