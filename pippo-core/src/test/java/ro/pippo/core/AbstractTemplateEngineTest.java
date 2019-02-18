@@ -21,7 +21,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 import ro.pippo.core.route.RouteContext;
 import ro.pippo.core.route.Router;
 
@@ -31,7 +31,7 @@ import java.util.Map;
 
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.*;
-import static org.mockito.Matchers.any;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.anyString;
 import static org.mockito.Mockito.eq;
 import static org.mockito.Mockito.mock;
@@ -179,7 +179,7 @@ public class AbstractTemplateEngineTest {
     @Test
     public void shouldReturnDefaultTemplateFileExtensionIfNotConfiguredInSettings() {
         when(mockPippoSettings.getString(anyString(), anyString()))
-            .then(args -> args.getArgumentAt(1, String.class));
+            .then(args -> args.getArgument(1));
 
         templateEngine.init(mockApplication);
 
@@ -208,7 +208,7 @@ public class AbstractTemplateEngineTest {
     @Test
     public void shouldReturnDefaultTemplatePathPrefixIfNotConfiguredInSettings() {
         when(mockPippoSettings.getString(anyString(), anyString()))
-            .then(args -> args.getArgumentAt(1, String.class));
+            .then(args -> args.getArgument(1));
 
         templateEngine.init(mockApplication);
 

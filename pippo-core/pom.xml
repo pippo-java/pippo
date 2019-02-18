@@ -56,4 +56,20 @@
         </resources>
     </build>
 
+    <profiles>
+        <profile>
+            <id>jdk11-build</id>
+            <activation>
+                <jdk>[9,)</jdk>
+            </activation>
+            <dependencies>
+                <!-- Jaxb -->
+                <dependency>
+                    <groupId>javax.xml.bind</groupId>
+                    <artifactId>jaxb-api</artifactId>
+                    <version>${jaxb.version}</version>
+                </dependency>
+            </dependencies>
+        </profile>
+    </profiles>
 </project>
