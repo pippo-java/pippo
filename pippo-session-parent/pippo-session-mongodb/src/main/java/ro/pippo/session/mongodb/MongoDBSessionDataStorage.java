@@ -18,16 +18,22 @@ package ro.pippo.session.mongodb;
 import com.mongodb.MongoException;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
-import static com.mongodb.client.model.Filters.eq;
 import com.mongodb.client.model.IndexOptions;
-import static com.mongodb.client.model.Projections.include;
 import com.mongodb.client.model.UpdateOptions;
-import static com.mongodb.client.model.Updates.combine;
-import static com.mongodb.client.model.Updates.set;
+import org.bson.Document;
+import ro.pippo.session.DefaultSessionData;
+import ro.pippo.session.SerializationSessionDataTranscoder;
+import ro.pippo.session.SessionData;
+import ro.pippo.session.SessionDataStorage;
+import ro.pippo.session.SessionDataTranscoder;
+
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
-import org.bson.Document;
-import ro.pippo.session.*;
+
+import static com.mongodb.client.model.Filters.eq;
+import static com.mongodb.client.model.Projections.include;
+import static com.mongodb.client.model.Updates.combine;
+import static com.mongodb.client.model.Updates.set;
 
 /**
  * SessionDataStorage implementation with MongoDB.
@@ -51,7 +57,7 @@ public class MongoDBSessionDataStorage implements SessionDataStorage {
      *
      * @param database MongoDB database object
      * @see #MongoDBSessionDataStorage(com.mongodb.client.MongoDatabase,
-     * java.lang.String, long, ro.pippo.session.mongodb.SessionDataTranscoder)
+     * java.lang.String, long, ro.pippo.session.SessionDataTranscoder)
      */
     public MongoDBSessionDataStorage(MongoDatabase database) {
         this(database, SESSION_NAME, IDLE_TIME, new SerializationSessionDataTranscoder());
@@ -64,7 +70,7 @@ public class MongoDBSessionDataStorage implements SessionDataStorage {
      * @param database MongoDB database object
      * @param idleTime idle time of the session in seconds
      * @see #MongoDBSessionDataStorage(com.mongodb.client.MongoDatabase,
-     * java.lang.String, long, ro.pippo.session.mongodb.SessionDataTranscoder)
+     * java.lang.String, long, ro.pippo.session.SessionDataTranscoder)
      */
     public MongoDBSessionDataStorage(MongoDatabase database, int idleTime) {
         this(database, SESSION_NAME, idleTime, new SerializationSessionDataTranscoder());
@@ -77,7 +83,7 @@ public class MongoDBSessionDataStorage implements SessionDataStorage {
      * @param database MongoDB database object
      * @param collection name of collection to manage the session
      * @see #MongoDBSessionDataStorage(com.mongodb.client.MongoDatabase,
-     * java.lang.String, long, ro.pippo.session.mongodb.SessionDataTranscoder)
+     * java.lang.String, long, ro.pippo.session.SessionDataTranscoder)
      */
     public MongoDBSessionDataStorage(MongoDatabase database, String collection) {
         this(database, collection, IDLE_TIME, new SerializationSessionDataTranscoder());
