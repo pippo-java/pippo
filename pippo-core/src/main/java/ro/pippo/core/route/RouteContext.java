@@ -146,7 +146,11 @@ public interface RouteContext {
 
     RouteContext html();
 
+    RouteContext protobuf();
+
     RouteContext negotiateContentType();
+
+    RouteContext contentType(String contentType);
 
     RouteContext status(int code);
 

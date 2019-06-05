@@ -20,6 +20,7 @@
         <module>pippo-gson</module>
         <module>pippo-jackson</module>
         <module>pippo-jaxb</module>
+        <module>pippo-protobuf</module>
         <module>pippo-snakeyaml</module>
         <module>pippo-xstream</module>
     </modules>

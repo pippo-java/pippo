@@ -68,4 +68,13 @@ public abstract class JacksonBaseEngine implements ContentTypeEngine {
         }
     }
 
+    @Override
+    public byte[] toByteArray(Object object) {
+        try {
+            return objectMapper.writeValueAsBytes(object);
+        } catch (JsonProcessingException e) {
+            throw new PippoRuntimeException(e, "Error serializing object to {}", getContentType());
+        }
+    }
+
 }

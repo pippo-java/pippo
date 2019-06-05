@@ -64,6 +64,11 @@ public class GsonEngine implements ContentTypeEngine {
         return gson().fromJson(content, classOfT);
     }
 
+    @Override
+    public byte[] toByteArray(Object object) {
+        return gson().toJson(object).getBytes();
+    }
+
     private Gson gson() {
         return new GsonBuilder()
             .registerTypeAdapter(Date.class, new ISO8601DateTimeTypeAdapter())

@@ -55,4 +55,9 @@ public class TextPlainEngine implements ContentTypeEngine {
             classOfT.getName());
     }
 
+    @Override
+    public byte[] toByteArray(Object object) {
+        return object.toString().getBytes();
+    }
+
 }

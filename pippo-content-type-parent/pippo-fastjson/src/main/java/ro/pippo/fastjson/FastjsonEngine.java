@@ -42,12 +42,19 @@ public class FastjsonEngine implements ContentTypeEngine {
 
     @Override
     public String toString(Object object) {
-        return JSON.toJSONString(object, SerializerFeature.UseISO8601DateFormat);
+        return JSON.toJSONString(object,
+            SerializerFeature.UseISO8601DateFormat);
     }
 
     @Override
     public <T> T fromString(String content, Class<T> classOfT) {
         return JSON.parseObject(content, classOfT);
+    }
+
+    @Override
+    public byte[] toByteArray(Object object) {
+        return JSON.toJSONBytes(object,
+            SerializerFeature.UseISO8601DateFormat);
     }
 
 }

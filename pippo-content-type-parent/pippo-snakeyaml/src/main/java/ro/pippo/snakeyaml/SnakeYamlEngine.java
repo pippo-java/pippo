@@ -48,4 +48,9 @@ public class SnakeYamlEngine implements ContentTypeEngine {
         return (T) new Yaml().load(content);
     }
 
+    @Override
+    public byte[] toByteArray(Object object) {
+        return new Yaml().dump(object).getBytes();
+    }
+
 }

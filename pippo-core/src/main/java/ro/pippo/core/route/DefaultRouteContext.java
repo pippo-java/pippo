@@ -346,8 +346,22 @@ public class DefaultRouteContext implements RouteContext {
     }
 
     @Override
+    public RouteContext protobuf(){
+        response.protobuf();
+
+        return this;
+    }
+
+    @Override
     public RouteContext negotiateContentType() {
         response.contentType(request);
+
+        return this;
+    }
+
+    @Override
+    public RouteContext contentType(String contentType) {
+        response.contentType(contentType);
 
         return this;
     }
