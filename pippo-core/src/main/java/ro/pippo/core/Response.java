@@ -33,7 +33,6 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.nio.charset.StandardCharsets;
@@ -1093,8 +1092,14 @@ public final class Response {
 
         try {
             if (content != null) {
-                contentLength(content.toString().getBytes().length);
-                httpServletResponse.getWriter().append(content);
+                if (getCharacterEncoding() == null) {
+                    characterEncoding(StandardCharsets.UTF_8.name());
+                }
+                byte[] encoded = content.toString().getBytes(getCharacterEncoding());
+                contentLength(encoded.length);
+                ServletOutputStream outputStream = httpServletResponse.getOutputStream();
+                outputStream.write(encoded);
+                outputStream.close();
             }
             log.trace("Response committed");
             if (chunked) {
