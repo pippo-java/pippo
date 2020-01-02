@@ -259,7 +259,7 @@ public class JettyServer extends AbstractWebServer<JettySettings> {
             throws IOException, ServletException {
 
             if (isMultipartRequest(request)) {
-                baseRequest.setAttribute(Request.__MULTIPART_CONFIG_ELEMENT, multipartConfig);
+                baseRequest.setAttribute(Request.MULTIPART_CONFIG_ELEMENT, multipartConfig);
             }
 
             super.doHandle(target, baseRequest, request, response);
