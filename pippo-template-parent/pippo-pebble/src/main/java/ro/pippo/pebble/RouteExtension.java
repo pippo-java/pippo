@@ -22,6 +22,7 @@ import com.mitchellbosecke.pebble.template.PebbleTemplate;
 import ro.pippo.core.route.Router;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -90,9 +91,13 @@ public class RouteExtension extends AbstractExtension {
         }
 
         @Override
+        @SuppressWarnings("unchecked")
         public Object execute(Map<String, Object> args, PebbleTemplate self, EvaluationContext context, int lineNumber) {
             String nameOrUriPattern = (String) args.get("nameOrUriPattern");
             Map<String, Object> parameters = (Map<String, Object>) args.get("parameters");
+            if (parameters == null) {
+                parameters = Collections.emptyMap();
+            }
 
             return router.uriFor(nameOrUriPattern, parameters);
         }
