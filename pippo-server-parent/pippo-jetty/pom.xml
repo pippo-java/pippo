@@ -15,7 +15,7 @@
     <description>Jetty embedded server</description>
 
     <properties>
-        <jetty.version>9.4.14.v20181114</jetty.version>
+        <jetty.version>9.4.24.v20191120</jetty.version>
     </properties>
 
     <dependencies>
