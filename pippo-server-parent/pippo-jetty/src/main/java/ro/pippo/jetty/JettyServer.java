@@ -42,7 +42,6 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.EnumSet;
 import java.util.concurrent.TimeUnit;
@@ -137,15 +136,14 @@ public class JettyServer extends AbstractWebServer<JettySettings> {
             log.debug("Defer interpretation of {} URL '{}' to Jetty", name, path);
             return path;
         } catch (MalformedURLException e) {
-            //Expected. We've got a path and not a URL
-            Path p = Paths.get(path);
+            // Expected. We've got a path and not a URL
             if (Files.exists(Paths.get(path))) {
-                //Jetty knows how to find files on the file system
+                // Jetty knows how to find files on the file system
                 log.debug("Located {} '{}' on file system", name, path);
                 return path;
             } else {
-                //Maybe it's a resource on the Classpath. Jetty needs that converted to a URL.
-                //(e.g. "jar:file:/path/to/my.jar!<path>")
+                // Maybe it's a resource on the Classpath. Jetty needs that converted to a URL.
+                // (e.g. "jar:file:/path/to/my.jar!<path>")
                 URL url = JettyServer.class.getResource(path);
                 if (url != null) {
                     log.debug("Located {} '{}' on Classpath", name, path);
@@ -210,7 +208,7 @@ public class JettyServer extends AbstractWebServer<JettySettings> {
      * Check the existence of {@code org.eclipse.jetty.websocket} as dependency
      * and add {@link ro.pippo.jetty.websocket.JettyWebSocketFilter} instead of {@link PippoFilter}.
      *
-     * @return
+     * @return PippoFilter
      */
     @Override
     protected PippoFilter createPippoFilter() {
@@ -230,7 +228,6 @@ public class JettyServer extends AbstractWebServer<JettySettings> {
         }
     }
 
-
     private void addPippoFilter(ServletContextHandler handler) {
         if (pippoFilterPath == null) {
             pippoFilterPath = "/*"; // default value
@@ -244,7 +241,7 @@ public class JettyServer extends AbstractWebServer<JettySettings> {
     }
 
     /**
-     * Inject a MultipartConfig in a filter.
+     * Inject a {@code MultipartConfig} in a filter.
      */
     private static class PippoHandler extends ServletContextHandler {
 
