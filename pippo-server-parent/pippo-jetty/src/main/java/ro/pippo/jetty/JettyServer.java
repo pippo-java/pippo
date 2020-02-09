@@ -216,7 +216,7 @@ public class JettyServer extends AbstractWebServer<JettySettings> {
     protected PippoFilter createPippoFilter() {
         try {
             // try to load a class from jetty.websocket
-            Class.forName("org.eclipse.jetty.websocket.api.WebSocketListener");
+            Class.forName("org.eclipse.jetty.websocket.server.WebSocketServerFactory");
         } catch (ClassNotFoundException e) {
             return super.createPippoFilter();
         }
