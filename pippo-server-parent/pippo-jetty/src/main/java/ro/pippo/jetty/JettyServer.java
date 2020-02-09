@@ -162,7 +162,9 @@ public class JettyServer extends AbstractWebServer<JettySettings> {
         if (keyStoreFile == null) {
             return new ServerConnector(server);
         }
-        SslContextFactory sslContextFactory = new SslContextFactory(asJettyFriendlyPath(keyStoreFile, "Keystore file"));
+
+        SslContextFactory sslContextFactory = new SslContextFactory.Server();
+        sslContextFactory.setKeyStorePath(asJettyFriendlyPath(keyStoreFile, "Keystore file"));
 
         if (getSettings().getKeystorePassword() != null) {
             sslContextFactory.setKeyStorePassword(getSettings().getKeystorePassword());
