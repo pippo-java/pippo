@@ -66,4 +66,9 @@ public class XstreamEngine implements ContentTypeEngine {
         return (T) xstream().fromXML(content);
     }
 
+    @Override
+    public byte[] toByteArray(Object object) {
+        return xstream().toXML(object).getBytes();
+    }
+
 }

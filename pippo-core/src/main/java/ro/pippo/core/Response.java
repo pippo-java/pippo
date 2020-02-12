@@ -28,14 +28,7 @@ import ro.pippo.core.util.StringUtils;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.io.PrintWriter;
-import java.io.StringWriter;
+import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.util.Collection;
 import java.util.Date;
@@ -826,6 +819,13 @@ public final class Response {
     }
 
     /**
+     * Sets the Response content-type to application/protobuf.
+     */
+    public Response protobuf() {
+        return contentType(HttpConstants.ContentType.APPLICATION_PROTOBUF);
+    }
+
+    /**
      * Writes the string content directly to the response.
      * <p>This method commits the response.</p>
      *
@@ -921,7 +921,16 @@ public final class Response {
         }
 
         header(HttpConstants.Header.CONTENT_TYPE, contentTypeEngine.getContentType());
-        send(contentTypeEngine.toString(object));
+
+        try {
+            byte[] byteArr = contentTypeEngine.toByteArray(object);
+            contentLength(byteArr.length);
+            send(new BufferedInputStream(new ByteArrayInputStream(byteArr)));
+        } catch (IOException e) {
+            log.error(e.getMessage());
+            log.warn("Sending ContentType toString instead...");
+            send(contentTypeEngine.toString(object));
+        }
     }
 
     /**

@@ -13,21 +13,31 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package ro.pippo.core;
+package ro.pippo.protobuf;
 
+import org.kohsuke.MetaInfServices;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import ro.pippo.core.Application;
+import ro.pippo.core.Initializer;
 
 /**
- * @author James Moger
+ * @author Denys Vitali
  */
-public interface ContentTypeEngine {
 
-    void init(Application application);
+@MetaInfServices
+public class ProtobufInitializer implements Initializer {
 
-    String getContentType();
+    private static final Logger log = LoggerFactory.getLogger(ProtobufInitializer.class);
 
-    String toString(Object object);
+    @Override
+    public void init(Application application) {
+        application.registerContentTypeEngine(ProtobufEngine.class);
+    }
 
-    <T> T fromString(String content, Class<T> classOfT);
+    @Override
+    public void destroy(Application application) {
+    }
 
-    byte[] toByteArray(Object object);
 }

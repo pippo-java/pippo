@@ -219,6 +219,11 @@ public class CsvEngine implements ContentTypeEngine {
         }
     }
 
+    @Override
+    public byte[] toByteArray(Object object) {
+        return toString(object).getBytes();
+    }
+
     public String objectToString(Object object) {
         if (object == null) {
             return null;

@@ -28,6 +28,7 @@ import javax.xml.bind.Unmarshaller;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
+import java.io.ByteArrayOutputStream;
 import java.io.StringReader;
 import java.io.StringWriter;
 
@@ -83,6 +84,23 @@ public class JaxbEngine implements ContentTypeEngine {
             return (T) unmarshaller.unmarshal(xmlStreamReader);
         } catch (JAXBException | XMLStreamException e) {
             throw new PippoRuntimeException(e, "Failed to deserialize content to '{}'", classOfT.getName());
+        }
+    }
+
+    @Override
+    public byte[] toByteArray(Object object) {
+        try {
+            JAXBContext jaxbContext = JAXBContext.newInstance(object.getClass());
+            Marshaller jaxbMarshaller = jaxbContext.createMarshaller();
+            jaxbMarshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, prettyPrint);
+
+            ByteArrayOutputStream writer = new ByteArrayOutputStream();
+            jaxbMarshaller.marshal(object, writer);
+
+            return writer.toByteArray();
+        } catch (JAXBException e) {
+            throw new PippoRuntimeException(e,
+                "Failed to serialize '{}' to XML'", object.getClass().getName());
         }
     }
 
