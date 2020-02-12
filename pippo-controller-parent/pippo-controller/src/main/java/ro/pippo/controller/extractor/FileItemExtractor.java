@@ -18,7 +18,10 @@ package ro.pippo.controller.extractor;
 import org.kohsuke.MetaInfServices;
 import ro.pippo.controller.MethodParameter;
 import ro.pippo.core.FileItem;
+import ro.pippo.core.PippoRuntimeException;
 import ro.pippo.core.route.RouteContext;
+import ro.pippo.core.util.LangUtils;
+import ro.pippo.core.util.StringUtils;
 
 /**
  * @author Decebal Suiu
@@ -34,9 +37,25 @@ public class FileItemExtractor implements MethodParameterExtractor {
 
     @Override
     public Object extract(MethodParameter parameter, RouteContext routeContext) {
-        String name = parameter.getParameterName();
+        Param annotation = parameter.getAnnotation(Param.class);
+        String name = getParameterName(parameter, annotation);
 
         return routeContext.getRequest().getFile(name);
+    }
+
+    private String getParameterName(MethodParameter parameter, Param annotation) {
+        String name = annotation.value();
+        if (StringUtils.isNullOrEmpty(name)) {
+            name = parameter.getParameterName();
+        }
+
+        if (name == null) {
+            throw new PippoRuntimeException(
+                "Method '{}' parameter {} does not specify a name!",
+                LangUtils.toString(parameter.getMethod()), parameter.getParameterIndex());
+        }
+
+        return name;
     }
 
 }

@@ -44,7 +44,7 @@
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
             <version>1.18.6</version>
-            <scope>test</scope>
+            <scope>provided</scope> <!-- https://projectlombok.org/setup/maven -->
         </dependency>
 
         <dependency>
