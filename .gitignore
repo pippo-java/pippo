@@ -6,3 +6,6 @@ target/
 **/.classpath
 nbactions.xml
 nb-configuration.xml
+
+# IDE - VSCode
+.factorypath

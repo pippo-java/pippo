@@ -17,6 +17,7 @@ package ro.pippo.controller.extractor;
 
 import org.kohsuke.MetaInfServices;
 import ro.pippo.controller.MethodParameter;
+import ro.pippo.core.FileItem;
 import ro.pippo.core.ParameterValue;
 import ro.pippo.core.PippoRuntimeException;
 import ro.pippo.core.route.RouteContext;
@@ -52,6 +53,8 @@ public class ParamExtractor implements MethodParameterExtractor {
             Class<?> objectType = parameter.getParameterGenericType();
 
             return parameterValue.toCollection(collectionType, objectType, pattern);
+        } else if (FileItem.class.isAssignableFrom(parameterType)) {
+            return routeContext.getRequest().getFile(name);
         }
 
         return parameterValue.to(parameterType, pattern);
