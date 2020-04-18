@@ -30,9 +30,7 @@ import java.util.UUID;
 public class CryptoUtils {
 
     public static final String HMAC_MD5 = "HmacMD5";
-
     public static final String HMAC_SHA1 = "HmacSHA1";
-
     public static final String HMAC_SHA256 = "HmacSHA256";
 
     private CryptoUtils() {}
@@ -56,12 +54,13 @@ public class CryptoUtils {
             Mac mac = Mac.getInstance(algorithm);
             mac.init(key);
 
-            byte[] bytes = mac.doFinal(message.getBytes(StandardCharsets.US_ASCII));
+            byte[] bytes = mac.doFinal(message.getBytes(StandardCharsets.UTF_8));
 
             digest = toHex(bytes);
-        } catch (InvalidKeyException e) {
-        } catch (NoSuchAlgorithmException e) {
+        } catch (InvalidKeyException | NoSuchAlgorithmException e) {
+            // do nothing
         }
+
         return digest;
     }
 
@@ -87,6 +86,7 @@ public class CryptoUtils {
             MessageDigest md = MessageDigest.getInstance("SHA-256");
             md.update(bytes, 0, bytes.length);
             byte[] digest = md.digest();
+
             return toHex(digest);
         } catch (NoSuchAlgorithmException t) {
             throw new RuntimeException(t);
@@ -115,6 +115,7 @@ public class CryptoUtils {
             MessageDigest md = MessageDigest.getInstance("SHA-1");
             md.update(bytes, 0, bytes.length);
             byte[] digest = md.digest();
+
             return toHex(digest);
         } catch (NoSuchAlgorithmException t) {
             throw new RuntimeException(t);
@@ -143,6 +144,7 @@ public class CryptoUtils {
             MessageDigest md = MessageDigest.getInstance("MD5");
             md.update(bytes, 0, bytes.length);
             byte[] digest = md.digest();
+
             return toHex(digest);
         } catch (NoSuchAlgorithmException t) {
             throw new RuntimeException(t);
@@ -151,13 +153,14 @@ public class CryptoUtils {
 
     public static String toHex(byte[] bytes) {
         StringBuilder hash = new StringBuilder();
-        for (int i = 0; i < bytes.length; i++) {
-            String hex = Integer.toHexString(0xFF & bytes[i]);
+        for (byte aByte : bytes) {
+            String hex = Integer.toHexString(0xFF & aByte);
             if (hex.length() == 1) {
                 hash.append('0');
             }
             hash.append(hex);
         }
+
         return hash.toString();
     }
 
