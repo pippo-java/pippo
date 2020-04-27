@@ -100,7 +100,7 @@ public class ClassUtils {
                     log.debug(packageUrl.getProtocol());
 //                    try {
                         classes.addAll(
-                            getAllFiles(packageUrl, ".class").stream()
+                            getClassFiles(packageUrl).stream()
                             .map(filePath -> {
                                 filePath = filePath.replace(File.separatorChar, '.').replaceFirst(".class$", "");
                                 return packagePrefix + filePath.split(packagePrefix, 2)[1];
@@ -126,10 +126,10 @@ public class ClassUtils {
         return Collections.unmodifiableCollection(classes);
     }
 
-    private static List<String> getAllFiles(URL packageUrl, String endsWith) {
+    private static List<String> getClassFiles(URL packageUrl) {
         try (Stream<Path> walk = Files.walk(Paths.get(packageUrl.toURI()))) {
             List<String> result = walk.map(p -> p.toString())
-                    .filter(p -> p.endsWith(endsWith))
+                    .filter(p -> p.endsWith(".class"))
                     .collect(Collectors.toList());
             return result;
         } catch (IOException | URISyntaxException e) {
