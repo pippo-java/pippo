@@ -19,29 +19,30 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ro.pippo.core.PippoRuntimeException;
 
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Enumeration;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
-import java.util.function.Supplier;
+import java.util.Set;
 import java.util.jar.JarEntry;
 import java.util.jar.JarInputStream;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * Class reflection utility methods.
@@ -68,7 +69,7 @@ public class ClassUtils {
      * @return a collection of classes
      */
     public static Collection<Class<?>> getClasses(String... packageNames) {
-        List<Class<?>> classes = new ArrayList<>();
+        Set<Class<?>> classes = new HashSet<>();
         for (String packageName : packageNames) {
             final String packagePath = packageName.replace('.', '/');
             final String packagePrefix = packageName + '.';
@@ -97,31 +98,43 @@ public class ClassUtils {
                 } else {
                     log.debug("Scanning filesystem {} for classes", packageUrl);
                     log.debug(packageUrl.getProtocol());
-                    try (InputStream is = packageUrl.openStream()) {
-                        Objects.requireNonNull(is, String.format("Package url %s stream is null!", packageUrl));
-                        try (BufferedReader reader = new BufferedReader(new InputStreamReader(is, StandardCharsets.UTF_8))) {
-                            classes.addAll(reader.lines()
-                                    .filter(line -> line != null && line.endsWith(".class"))
-                                    .map(line -> {
-                                        String className = line.replace(".class", "").replace('/', '.');
-                                        try {
-                                            return getClass(packagePrefix + className);
-                                        } catch (Exception e) {
-                                            log.error("Failed to find {}", line, e);
-                                        }
-
-                                        return null;
-                                    })
-                                    .collect(Collectors.toList()));
-                        }
-                    } catch (IOException e) {
-                        throw new PippoRuntimeException("Failed to get classes for package '{}'", e, packageName);
-                    }
+//                    try {
+                        classes.addAll(
+                            getAllFiles(packageUrl, ".class").stream()
+                            .map(filePath -> {
+                                filePath = filePath.replace(File.separatorChar, '.').replaceFirst(".class$", "");
+                                return packagePrefix + filePath.split(packagePrefix, 2)[1];
+                            })
+                            .map(className -> {
+                                try {
+                                    return getClass(className);
+                                } catch (Exception e) {
+                                    log.error("Failed to find {}", className, e);
+                                }
+                                return null;
+                            })
+                            .collect(Collectors.toList())
+                        );
+//                    } catch (Exception e) {
+//                        throw new PippoRuntimeException(e, "Failed to get classes for package '{}'", packageName);
+//                    }
                 }
             }
         }
 
+        // TODO: why unmodifiableCollection ?!
         return Collections.unmodifiableCollection(classes);
+    }
+
+    private static List<String> getAllFiles(URL packageUrl, String endsWith) {
+        try (Stream<Path> walk = Files.walk(Paths.get(packageUrl.toURI()))) {
+            List<String> result = walk.map(p -> p.toString())
+                    .filter(p -> p.endsWith(endsWith))
+                    .collect(Collectors.toList());
+            return result;
+        } catch (IOException | URISyntaxException e) {
+            throw new PippoRuntimeException(e, "Failed to get file paths for the '{}' directory", packageUrl.toString());
+        }
     }
 
     /**
