@@ -256,7 +256,7 @@ public class PippoFilter implements Filter {
         filterPath = urlPattern.substring(1, urlPattern.length() - 1);
     }
 
-    private void createApplication(FilterConfig filterConfig) throws ServletException {
+    protected void createApplication(FilterConfig filterConfig) throws ServletException {
         String applicationClassName = filterConfig.getInitParameter(APPLICATION_CLASS_PARAM);
         if (applicationClassName == null) {
             log.error("Filter init param '{}' is missing", APPLICATION_CLASS_PARAM);
