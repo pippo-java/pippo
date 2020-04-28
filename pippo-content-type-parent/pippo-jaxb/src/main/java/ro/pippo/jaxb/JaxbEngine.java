@@ -44,6 +44,8 @@ public class JaxbEngine implements ContentTypeEngine {
     @Override
     public void init(Application application) {
         prettyPrint = application.getPippoSettings().isDev();
+        // JAXBContext is thread-safe - it is possible to cache by class
+        // https://javaee.github.io/jaxb-v2/doc/user-guide/ch03.html#other-miscellaneous-topics-performance-and-thread-safety
     }
 
     @Override
