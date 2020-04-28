@@ -76,54 +76,55 @@ public class ClassUtils {
             List<URL> packageUrls = getResources(packagePath);
             for (URL packageUrl : packageUrls) {
                 if (packageUrl.getProtocol().equals("jar")) {
-                    log.debug("Scanning jar {} for classes", packageUrl);
-                    try {
-                        String jar = packageUrl.toString().substring("jar:".length()).split("!")[0];
-                        File file = new File(new URI(jar));
-                        try (JarInputStream is = new JarInputStream(new FileInputStream(file))) {
-                            JarEntry entry;
-                            while ((entry = is.getNextJarEntry()) != null) {
-                                if (!entry.isDirectory() && entry.getName().endsWith(".class")) {
-                                    String className = entry.getName().replace(".class", "").replace('/', '.');
-                                    if (className.startsWith(packagePrefix)) {
-                                        Class<?> aClass = getClass(className);
-                                        classes.add(aClass);
-                                    }
-                                }
-                            }
-                        }
-                    } catch (URISyntaxException | IOException e) {
-                        throw new PippoRuntimeException("Failed to get classes for package '{}'", e, packageName);
-                    }
+                    log.debug("Scanning jar '{}' for classes", packageUrl);
+                    classes.addAll(getClassesFromJar(packageUrl, packagePrefix));
                 } else {
-                    log.debug("Scanning filesystem {} for classes", packageUrl);
-                    log.debug(packageUrl.getProtocol());
-//                    try {
-                        classes.addAll(
-                            getClassFiles(packageUrl).stream()
-                            .map(filePath -> {
-                                filePath = filePath.replace(File.separatorChar, '.').replaceFirst(".class$", "");
-                                return packagePrefix + filePath.split(packagePrefix, 2)[1];
-                            })
-                            .map(className -> {
-                                try {
-                                    return getClass(className);
-                                } catch (Exception e) {
-                                    log.error("Failed to find {}", className, e);
-                                }
-                                return null;
-                            })
-                            .collect(Collectors.toList())
-                        );
-//                    } catch (Exception e) {
-//                        throw new PippoRuntimeException(e, "Failed to get classes for package '{}'", packageName);
-//                    }
+                    log.debug("Scanning filesystem '{}' for classes (protocol = {})", packageUrl, packageUrl.getProtocol());
+                    classes.addAll(getClassesFromFileSystem(packageUrl, packagePrefix));
                 }
             }
         }
-
-        // TODO: why unmodifiableCollection ?!
         return Collections.unmodifiableCollection(classes);
+    }
+
+    private static Set<Class<?>> getClassesFromJar(URL packageUrl, String packagePrefix) {
+        try {
+            String jar = packageUrl.toString().substring("jar:".length()).split("!")[0];
+            File file = new File(new URI(jar));
+            Set<Class<?>> classes = new HashSet<>();
+            try (JarInputStream is = new JarInputStream(new FileInputStream(file))) {
+                JarEntry entry;
+                while ((entry = is.getNextJarEntry()) != null) {
+                    if (!entry.isDirectory() && entry.getName().endsWith(".class")) {
+                        String className = entry.getName().replace(".class", "").replace('/', '.');
+                        if (className.startsWith(packagePrefix)) {
+                            Class<?> aClass = ClassUtils.getClass(className);
+                            classes.add(aClass);
+                        }
+                    }
+                }
+            }
+            return classes;
+        } catch (URISyntaxException | IOException e) {
+            throw new PippoRuntimeException(e, "Failed to get classes for package '{}'", packagePrefix);
+        }
+    }
+
+    private static Set<Class<?>> getClassesFromFileSystem(URL packageUrl, String packagePrefix) {
+        return getClassFiles(packageUrl).stream()
+            .map(filePath -> {
+                filePath = filePath.replace(File.separatorChar, '.').replaceFirst(".class$", "");
+                return packagePrefix + filePath.split(packagePrefix, 2)[1];
+            })
+            .map(className -> {
+                try {
+                    return ClassUtils.getClass(className);
+                } catch (Exception e) {
+                    log.error("Failed to find {}", className, e);
+                }
+                return null;
+            })
+            .collect(Collectors.toSet());
     }
 
     private static List<String> getClassFiles(URL packageUrl) {
