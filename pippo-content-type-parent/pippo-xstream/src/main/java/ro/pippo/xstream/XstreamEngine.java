@@ -32,6 +32,9 @@ public class XstreamEngine implements ContentTypeEngine {
 
     @Override
     public void init(Application application) {
+        // XStream - it may be shared across multiple threads allowing objects to be serialized/deserialized concurrently,
+        // unless you enable the auto-detection to process annotations on-the-fly - which is our case with `autodetectAnnotations(true)`
+        // https://x-stream.github.io/faq.html#Scalability_Thread_safety
     }
 
     @Override
