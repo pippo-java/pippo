@@ -31,6 +31,8 @@ public class SnakeYamlEngine implements ContentTypeEngine {
 
     @Override
     public void init(Application application) {
+        // Yaml - The implementation is not thread-safe. Different threads may not call the same instance. Threads must have separate Yaml instances.
+        // https://bitbucket.org/asomov/snakeyaml/wiki/Documentation#markdown-header-threading
     }
 
     @Override
@@ -45,7 +47,7 @@ public class SnakeYamlEngine implements ContentTypeEngine {
 
     @Override
     public <T> T fromString(String content, Class<T> classOfT) {
-        return (T) new Yaml().load(content);
+        return new Yaml().loadAs(content, classOfT);
     }
 
 }
