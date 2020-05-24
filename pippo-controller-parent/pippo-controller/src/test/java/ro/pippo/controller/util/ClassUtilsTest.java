@@ -83,7 +83,6 @@ public class ClassUtilsTest {
         assertEquals(5, classes.size());
     }
 
-    // aqui
     @Test
     public void test_getClassesFromFileSystem_withoutSubpackage() throws MalformedURLException {
         // Given (Input): Test preparation like creating data or configure mocks
