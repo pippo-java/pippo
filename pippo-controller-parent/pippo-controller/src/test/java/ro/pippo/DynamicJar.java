@@ -18,16 +18,19 @@ package ro.pippo;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.file.Path;
+import java.util.Enumeration;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.jar.Attributes;
 import java.util.jar.JarEntry;
+import java.util.jar.JarFile;
 import java.util.jar.JarOutputStream;
 import java.util.jar.Manifest;
 
@@ -86,6 +89,24 @@ public class DynamicJar {
     }
 
     /**
+     * Path of the folder where the JAR file is located.
+     * It can be useful when using the {@link #extract()} option.
+     * @see #baseDirPath()
+     */
+    public URL baseDirURL() throws MalformedURLException {
+        return path.getParent().toUri().toURL();
+    }
+
+    /**
+     * Path of the folder where the JAR file is located.
+     * It can be useful when using the {@link #extract()} option.
+     * @see #baseDirURL()
+     */
+    public Path baseDirPath() {
+        return path.getParent();
+    }
+
+    /**
      * Main-class.
      */
     public String mainClass() {
@@ -108,6 +129,7 @@ public class DynamicJar {
         private String mainClass;
         private Map<String, String> manifestAttributes = new LinkedHashMap<>();
         private Set<JavaFileObject> classes = new LinkedHashSet<>();
+        private boolean extract = false;
 
         /**
          * Instantiate a build to create a JAR file.
@@ -159,7 +181,17 @@ public class DynamicJar {
         }
 
         /**
-         * Build a JAR file.
+         * Extract the JAR file in the same folder (and keep the original JAR file).
+         * @see DynamicJar#baseDirPath()
+         * @see DynamicJar#baseDirURL()
+         */
+        public Builder extract() {
+            extract = true;
+            return this;
+        }
+
+        /**
+         * Build the JAR file.
          */
         public DynamicJar build() throws IOException {
             try (OutputStream outputStream = new FileOutputStream(path.toFile())) {
@@ -177,6 +209,10 @@ public class DynamicJar {
                 }
             }
 
+            if (extract) {
+                extract(path , path.getParent());
+            }
+
             return new DynamicJar(this);
         }
 
@@ -190,6 +226,19 @@ public class DynamicJar {
                 map.putAll(manifestAttributes);
             }
             return DynamicJar.createManifest(map);
+        }
+
+        private void extract(Path jarPath, Path destDir) throws IOException {
+            JarFile jar = new JarFile(jarPath.toFile());
+            Enumeration<JarEntry> enumEntries = jar.entries();
+            while (enumEntries.hasMoreElements()) {
+                JarEntry entry = enumEntries.nextElement();
+                File f = destDir.resolve(entry.getName()).toFile();
+                f.getParentFile().mkdirs();
+                InputStream is = jar.getInputStream(entry);
+                FileOutputStream fos = new FileOutputStream(f);
+                IoUtils.copy(is, fos);
+            }
         }
 
     }

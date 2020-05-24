@@ -73,21 +73,8 @@ public class ClassUtilsTest {
     @Test
     public void test_getClassesFromFileSystem_withSubpackage() throws MalformedURLException {
         // Given (Input): Test preparation like creating data or configure mocks
-        PowerMockito.spy(ClassUtils.class);
-
         final String packageString = "ro.pippo.controller.util.data";
-        final String packageStringMod = packageString.replace('.', '/');
-
-        Answer<Class<?>> answer = invocation -> getClassMock(
-                (String) invocation.getArguments()[0],
-                new URLClassLoader(new URL[] { dynamicJar.folder() })
-            );
-
-        PowerMockito.doAnswer(answer).when(ClassUtils.class);
-        ClassUtils.getClass(Mockito.anyString()); // This line must be immediately below the line above. This is ugly!
-
-        List<URL> urls = Collections.singletonList(dynamicJar.baseDirPath().resolve(packageStringMod).toUri().toURL());
-        PowerMockito.when(ClassUtils.getResources(packageStringMod)).thenReturn(urls);
+        mockClassUtils(packageString, false);
 
         // When (Action): Call the method or action that you like to test
         Collection<Class<?>> classes = ClassUtils.getClasses(packageString);
@@ -100,21 +87,8 @@ public class ClassUtilsTest {
     @Test
     public void test_getClassesFromFileSystem_withoutSubpackage() throws MalformedURLException {
         // Given (Input): Test preparation like creating data or configure mocks
-        PowerMockito.spy(ClassUtils.class);
-
         final String packageString = "ro.pippo.controller.util.data.package2";
-        final String packageStringMod = packageString.replace('.', '/');
-
-        Answer<Class<?>> answer = invocation -> getClassMock(
-                (String) invocation.getArguments()[0],
-                new URLClassLoader(new URL[] { dynamicJar.folder() })
-            );
-
-        PowerMockito.doAnswer(answer).when(ClassUtils.class);
-        ClassUtils.getClass(Mockito.anyString()); // This line must be immediately below the line above. This is ugly!
-
-        List<URL> urls = Collections.singletonList(dynamicJar.baseDirPath().resolve(packageStringMod).toUri().toURL());
-        PowerMockito.when(ClassUtils.getResources(packageStringMod)).thenReturn(urls);
+        mockClassUtils(packageString, false);
 
         // When (Action): Call the method or action that you like to test
         Collection<Class<?>> classes = ClassUtils.getClasses(packageString);
@@ -126,21 +100,8 @@ public class ClassUtilsTest {
     @Test
     public void test_getClassesFromJar_withSubpackage() throws IOException {
         // Given (Input): Test preparation like creating data or configure mocks
-        PowerMockito.spy(ClassUtils.class);
-
         final String packageString = "ro.pippo.controller.util.data";
-        final String packageStringMod = packageString.replace('.', '/');
-
-        Answer<Class<?>> answer = invocation -> getClassMock(
-                (String) invocation.getArguments()[0],
-                new URLClassLoader(new URL[] { dynamicJar.url() })
-            );
-
-        PowerMockito.doAnswer(answer).when(ClassUtils.class);
-        ClassUtils.getClass(Mockito.anyString()); // This line must be immediately below the line above. This is ugly!
-
-        List<URL> urls = Collections.singletonList(new URL("jar:" + dynamicJar.url() + "!/" + packageString));
-        PowerMockito.when(ClassUtils.getResources(packageStringMod)).thenReturn(urls);
+        mockClassUtils(packageString, true);
 
         // When (Action): Call the method or action that you like to test
         Collection<Class<?>> classes = ClassUtils.getClasses(packageString);
@@ -152,27 +113,37 @@ public class ClassUtilsTest {
     @Test
     public void test_getClassesFromJar_withoutSubpackage() throws MalformedURLException {
         // Given (Input): Test preparation like creating data or configure mocks
-        PowerMockito.spy(ClassUtils.class);
-
         final String packageString = "ro.pippo.controller.util.data.package2";
-        final String packageStringMod = packageString.replace('.', '/');
-
-        Answer<Class<?>> answer = invocation -> getClassMock(
-                (String) invocation.getArguments()[0],
-                new URLClassLoader(new URL[] { dynamicJar.url() })
-            );
-
-        PowerMockito.doAnswer(answer).when(ClassUtils.class);
-        ClassUtils.getClass(Mockito.anyString()); // This line must be immediately below the line above. This is ugly!
-
-        List<URL> urls = Collections.singletonList(new URL("jar:" + dynamicJar.url() + "!/" + packageString));
-        PowerMockito.when(ClassUtils.getResources(packageStringMod)).thenReturn(urls);
+        mockClassUtils(packageString, true);
 
         // When (Action): Call the method or action that you like to test
         Collection<Class<?>> classes = ClassUtils.getClasses(packageString);
 
         // Then (Output): Execute assertions to verify the correct output or behavior of the action
         assertEquals(2, classes.size());
+    }
+
+    private void mockClassUtils(String packageString, boolean jar) throws MalformedURLException {
+        PowerMockito.spy(ClassUtils.class);
+
+        Answer<Class<?>> answer = invocation -> getClassMock(
+                (String) invocation.getArguments()[0],
+                new URLClassLoader(new URL[] { jar ? dynamicJar.url() : dynamicJar.baseDirURL() })
+            );
+
+        PowerMockito.doAnswer(answer).when(ClassUtils.class);
+        ClassUtils.getClass(Mockito.anyString()); // This line must be immediately below the line above. This is ugly!
+
+        final String packageStringPathStyle = packageString.replace('.', '/');
+
+        final List<URL> urls;
+        if (jar) {
+            urls = Collections.singletonList(new URL("jar:" + dynamicJar.url() + "!/" + packageString));
+        } else {
+            urls = Collections.singletonList(dynamicJar.baseDirPath().resolve(packageStringPathStyle).toUri().toURL());
+        }
+
+        PowerMockito.when(ClassUtils.getResources(packageStringPathStyle)).thenReturn(urls);
     }
 
     private <T> Class<T> getClassMock(String className, ClassLoader classLoader) {
