@@ -34,10 +34,7 @@ import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Set;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 /**
  * Register annotated controller routes.
@@ -67,11 +64,11 @@ public class ControllerRegistry {
      * @param packages
      */
     public void register(Package... packages) {
-        List<String> packageNames = Arrays.stream(packages)
+        String[] packageNames = Arrays.stream(packages)
             .map(Package::getName)
-            .collect(Collectors.toList());
+            .toArray(String[]::new);
 
-        register(packageNames.toArray(new String[packageNames.size()]));
+        register(packageNames);
     }
 
     /**
@@ -195,11 +192,31 @@ public class ControllerRegistry {
                 // add an empty string to allow controllerPaths iteration
                 controllerPaths.add("");
             }
+            if (methodPaths.length == 0) {
+                // add an empty string to allow method iteration
+                methodPaths = new String[]{""};
+            }
 
             for (String controllerPath : controllerPaths) {
-                if (methodPaths.length == 0) {
-                    // controllerMethod does not specify a path, inherit from controller
-                    String fullPath = StringUtils.addStart(controllerPath, "/");
+                // controllerMethod specifies one or more paths, concatenate with controller paths
+                for (String methodPath : methodPaths) {
+                    String fullPath = null;
+                    boolean isPathEmpty = controllerPath.isEmpty();
+                    boolean isMethodPathEmpty = methodPath.isEmpty();
+                    if (isPathEmpty && isMethodPathEmpty) {
+                        // not sure if this is correct behavior
+                        // maintaining the same behavior as of now
+                        fullPath = "/";
+                    } else if (isPathEmpty) {
+                        fullPath = StringUtils.addStart(methodPath, "/");
+                    } else if (isMethodPathEmpty) {
+                        fullPath = StringUtils.addStart(controllerPath, "/");
+                    } else {
+                        fullPath = String.join("/",
+                            StringUtils.removeEnd(StringUtils.addStart(controllerPath, "/"), "/"),
+                            StringUtils.removeStart(methodPath, "/")
+                        );
+                    }
 
                     // create the route handler
                     RouteHandler handler = new ControllerHandler(application, method);
@@ -211,25 +228,6 @@ public class ControllerRegistry {
 
                     // add the route to the list of routes
                     routes.add(route);
-                } else {
-                    // controllerMethod specifies one or more paths, concatenate with controller paths
-                    for (String methodPath : methodPaths) {
-                        String path = Stream.of(StringUtils.removeEnd(controllerPath, "/"), StringUtils.removeStart(methodPath, "/"))
-                            .filter(Objects::nonNull)
-                            .collect(Collectors.joining("/"));
-                        String fullPath = StringUtils.addStart(path, "/");
-
-                        // create the route handler
-                        RouteHandler handler = new ControllerHandler(application, method);
-
-                        // create the route
-                        Route route = new Route(httpMethod, fullPath, handler)
-                            .bind("__controllerClass", controllerClass)
-                            .bind("__controllerMethod", method);
-
-                        // add the route to the list of routes
-                        routes.add(route);
-                    }
                 }
             }
         }
