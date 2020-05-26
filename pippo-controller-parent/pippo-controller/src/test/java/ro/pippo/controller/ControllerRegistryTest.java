@@ -15,19 +15,20 @@
  */
 package ro.pippo.controller;
 
-import static org.hamcrest.collection.IsIterableContainingInAnyOrder.containsInAnyOrder;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertThat;
-
-import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
+import ro.pippo.core.route.Route;
+
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.collection.IsIterableContainingInAnyOrder.containsInAnyOrder;
+import static org.junit.Assert.assertEquals;
 
 /**
  * @author Dwouglas Mhagnum
@@ -80,10 +81,11 @@ public class ControllerRegistryTest {
     public void testRegisterPackage() throws Exception {
         controllerRegistry.register(WithoutPathController.class.getPackage());
         int expectedTotalRoutes = WithoutPathController.expectedUriPatterns().length
-                + WithPathWithoutValueController.expectedUriPatterns().length
-                + WithPathWithSingleValueController.expectedUriPatterns().length
-                + WithPathWithMultiValueController.expectedUriPatterns().length
-                + WithPathWithMultiValueAndInheritanceController.expectedUriPatterns().length;
+            + WithPathWithoutValueController.expectedUriPatterns().length
+            + WithPathWithSingleValueController.expectedUriPatterns().length
+            + WithPathWithMultiValueController.expectedUriPatterns().length
+            + WithPathWithMultiValueAndInheritanceController.expectedUriPatterns().length
+            + WithPathButWithEmptyMethodPathController.expectedUriPatterns().length;
         assertEquals(expectedTotalRoutes, controllerRegistry.getRoutes().size());
     }
 
@@ -127,6 +129,13 @@ public class ControllerRegistryTest {
         controllerRegistry.register(WithPathWithMultiValueAndInheritanceController.class);
         assertThat(getUriPatterns(controllerRegistry),
                 containsInAnyOrder(WithPathWithMultiValueAndInheritanceController.expectedUriPatterns()));
+    }
+
+    @Test
+    public void testRegisterControllerWithMethodPath() throws Exception {
+        controllerRegistry.register(new WithPathButWithEmptyMethodPathController());
+        assertThat(getUriPatterns(controllerRegistry),
+            containsInAnyOrder(WithPathButWithEmptyMethodPathController.expectedUriPatterns()));
     }
 
     public static class WithoutPathController extends Controller {
@@ -272,6 +281,17 @@ public class ControllerRegistryTest {
 
     }
 
+    @Path({"/example1", "/", "example2", "/example3/"})
+    public static class WithPathButWithEmptyMethodPathController extends Controller {
+        @GET("")
+        public void empty() {
+        }
+
+        public static String[] expectedUriPatterns() {
+            return new String[]{"/example1", "/", "/example2", "/example3/"};
+        }
+    }
+
     @Path({ "/", "/root7" })
     public static class WithPathWithMultiValueAndInheritanceController extends ControllerAbstract {
 
@@ -318,7 +338,7 @@ public class ControllerRegistryTest {
     }
 
     private List<String> getUriPatterns(ControllerRegistry controllerRegistry) {
-        return controllerRegistry.getRoutes().stream().map(r -> r.getUriPattern()).collect(Collectors.toList());
+        return controllerRegistry.getRoutes().stream().map(Route::getUriPattern).collect(Collectors.toList());
     }
 
 }
