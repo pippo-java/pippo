@@ -15,20 +15,7 @@
  */
 package ro.pippo.controller.util;
 
-import static org.junit.Assert.assertEquals;
-
-import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.net.URLClassLoader;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-
-import javax.tools.JavaFileObject;
-
+import com.google.testing.compile.JavaFileObjects;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -39,17 +26,28 @@ import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PowerMockIgnore;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
-
-import com.google.testing.compile.JavaFileObjects;
-
 import ro.pippo.DynamicJar;
 import ro.pippo.core.PippoRuntimeException;
+
+import javax.tools.JavaFileObject;
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLClassLoader;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+
+import static org.junit.Assert.assertEquals;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest(value = {ClassUtils.class})
 @PowerMockIgnore({
     "com.sun.tools.*",
     "javax.tools.*",
+    "jdk.internal.reflect.*",
 })
 public class ClassUtilsTest {
 
