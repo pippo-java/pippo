@@ -45,8 +45,15 @@ import java.util.Locale;
 @MetaInfServices
 public class GsonEngine implements ContentTypeEngine {
 
+    private Gson gson;
+
     @Override
     public void init(Application application) {
+        this.gson = new GsonBuilder()
+            .registerTypeAdapter(Date.class, new ISO8601DateTimeTypeAdapter())
+            .registerTypeAdapter(Time.class, new ISO8601TimeTypeAdapter())
+            .registerTypeAdapter(java.sql.Date.class, new ISO8601DateTypeAdapter())
+            .create();
     }
 
     @Override
@@ -56,20 +63,12 @@ public class GsonEngine implements ContentTypeEngine {
 
     @Override
     public String toString(Object object) {
-        return gson().toJson(object);
+        return gson.toJson(object);
     }
 
     @Override
     public <T> T fromString(String content, Class<T> classOfT) {
-        return gson().fromJson(content, classOfT);
-    }
-
-    private Gson gson() {
-        return new GsonBuilder()
-            .registerTypeAdapter(Date.class, new ISO8601DateTimeTypeAdapter())
-            .registerTypeAdapter(Time.class, new ISO8601TimeTypeAdapter())
-            .registerTypeAdapter(java.sql.Date.class, new ISO8601DateTypeAdapter())
-            .create();
+        return gson.fromJson(content, classOfT);
     }
 
     public static class ISO8601DateTypeAdapter implements JsonSerializer<java.sql.Date>, JsonDeserializer<java.sql.Date> {

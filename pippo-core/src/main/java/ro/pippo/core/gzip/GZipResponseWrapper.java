@@ -81,7 +81,6 @@ public class GZipResponseWrapper extends HttpServletResponseWrapper {
 
     public void finish() {
         IoUtils.close(writer);
-        IoUtils.close(stream);
     }
 
     private ServletOutputStream createOutputStream() throws IOException {
