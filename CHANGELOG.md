@@ -5,6 +5,16 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 ### [Unreleased][unreleased]
 
 #### Fixed
+
+#### Changed
+
+#### Added
+
+#### Removed
+
+### [1.13.0] - 2020-05-29
+
+#### Fixed
 - [#457]: Closing the writer will close the stream as well
 - [#496]: Do not call `channel.resumeReceives()` until `handler.onOpen()` called
 - [#528]: NPE when use the route function in Pebble
@@ -545,7 +555,8 @@ Initial release.
 - Added [pippo-freemarker]
 - Added [pippo-jetty]
 
-[unreleased]: https://github.com/decebals/pippo/compare/release-1.12.0...HEAD
+[unreleased]: https://github.com/decebals/pippo/compare/release-1.13.0...HEAD
+[1.13.0]: https://github.com/decebals/pippo/compare/release-1.12.0...release-1.13.0
 [1.12.0]: https://github.com/decebals/pippo/compare/release-1.11.0...release-1.12.0
 [1.11.0]: https://github.com/decebals/pippo/compare/release-1.10.0...release-1.11.0
 [1.10.0]: https://github.com/decebals/pippo/compare/release-1.9.0...release-1.10.0
