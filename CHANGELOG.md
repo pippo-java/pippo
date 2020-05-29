@@ -21,6 +21,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 - [#510]: Upgrade FastJSON to 1.2.57
 - [#532]: Improved `FileItemExtractor`
 - [#535]: `ContentTypeEngine` improvement
+- [#538]: Make `PippoFilter.createApplication` protected
 - [#539]: Update JUnit to 4.13
 
 #### Added
@@ -574,6 +575,7 @@ Initial release.
 [#544]: https://github.com/pippo-java/pippo/pull/544
 [#542]: https://github.com/pippo-java/pippo/pull/542
 [#539]: https://github.com/pippo-java/pippo/pull/539
+[#538]: https://github.com/pippo-java/pippo/issues/538
 [#535]: https://github.com/pippo-java/pippo/pull/535
 [#532]: https://github.com/pippo-java/pippo/pull/532
 [#530]: https://github.com/pippo-java/pippo/issues/530
