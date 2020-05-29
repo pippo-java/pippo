@@ -5,10 +5,26 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 ### [Unreleased][unreleased]
 
 #### Fixed
+- [#457]: Closing the writer will close the stream as well
+- [#496]: Do not call `channel.resumeReceives()` until `handler.onOpen()` called
+- [#528]: NPE when use the route function in Pebble
+- [#522]: `CryptoUtils.hmacDigest` unsafe with non-ascii inputs
+- [#523]: Fix Character Encoding/Content-Length Bug in `Response.commit(CharSequence)`
+- [#530]: Controllers are not being located in subpackages/addControllers
+- [#542]: Close `gzipOutputStream` after the usage
+- [#544]: Handle non-empty Path and empty method path
 
 #### Changed
+- [#491]: Update Undertow to 1.4.27.Final
+- [#492]: Update Tomcat to 8.5.38
+- [#494]: Update Jetty to 9.4.14.v20181114
+- [#510]: Upgrade FastJSON to 1.2.57
+- [#532]: Improved `FileItemExtractor`
+- [#535]: `ContentTypeEngine` improvement
+- [#539]: Update JUnit to 4.13
 
 #### Added
+- [#499]: Feature/java 11 build 
 
 #### Removed
 
@@ -24,7 +40,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 #### Changed
 - [#465]: Made `SessionData` an interface, and introduced `DefaultSessionData`
-- [#467]: Updated `FastJSON` to latest version 1.2.51
+- [#467]: Updated `FastJSON` to 1.2.51
 
 #### Added
 - [#260]: Add `route` method helper in templates (only for Pebble engine)
@@ -555,6 +571,21 @@ Initial release.
 [0.3.0]: https://github.com/decebals/pippo/compare/pippo-parent-0.2.0...pippo-parent-0.3.0
 [0.2.0]: https://github.com/decebals/pippo/compare/pippo-parent-0.1.0...pippo-parent-0.2.0
 
+[#544]: https://github.com/pippo-java/pippo/pull/544
+[#542]: https://github.com/pippo-java/pippo/pull/542
+[#539]: https://github.com/pippo-java/pippo/pull/539
+[#535]: https://github.com/pippo-java/pippo/pull/535
+[#532]: https://github.com/pippo-java/pippo/pull/532
+[#530]: https://github.com/pippo-java/pippo/issues/530
+[#528]: https://github.com/pippo-java/pippo/issues/528
+[#523]: https://github.com/pippo-java/pippo/issues/523
+[#522]: https://github.com/pippo-java/pippo/issues/522
+[#510]: https://github.com/pippo-java/pippo/pull/510
+[#499]: https://github.com/pippo-java/pippo/pull/499
+[#496]: https://github.com/pippo-java/pippo/issues/496
+[#494]: https://github.com/pippo-java/pippo/pull/494
+[#492]: https://github.com/pippo-java/pippo/pull/492
+[#491]: https://github.com/pippo-java/pippo/pull/491
 [#486]: https://github.com/pippo-java/pippo/issues/486
 [#485]: https://github.com/pippo-java/pippo/pull/485
 [#483]: https://github.com/pippo-java/pippo/pull/483
@@ -566,6 +597,7 @@ Initial release.
 [#460]: https://github.com/pippo-java/pippo/issues/460
 [#459]: https://github.com/pippo-java/pippo/issues/459
 [#458]: https://github.com/pippo-java/pippo/issues/458
+[#457]: https://github.com/pippo-java/pippo/pull/457
 [#456]: https://github.com/pippo-java/pippo/pull/456
 [#454]: https://github.com/pippo-java/pippo/pull/454
 [#452]: https://github.com/pippo-java/pippo/pull/452
