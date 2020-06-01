@@ -12,6 +12,17 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 #### Removed
 
+### [1.13.1] - 2020-06-01
+
+#### Fixed
+- [#545]: Error after I upgraded from `1.12.0` to `1.13.0`
+
+#### Changed
+
+#### Added
+
+#### Removed
+
 ### [1.13.0] - 2020-05-29
 
 #### Fixed
@@ -555,7 +566,8 @@ Initial release.
 - Added [pippo-freemarker]
 - Added [pippo-jetty]
 
-[unreleased]: https://github.com/decebals/pippo/compare/release-1.13.0...HEAD
+[unreleased]: https://github.com/decebals/pippo/compare/release-1.13.1...HEAD
+[1.13.1]: https://github.com/decebals/pippo/compare/release-1.13.0...release-1.13.1
 [1.13.0]: https://github.com/decebals/pippo/compare/release-1.12.0...release-1.13.0
 [1.12.0]: https://github.com/decebals/pippo/compare/release-1.11.0...release-1.12.0
 [1.11.0]: https://github.com/decebals/pippo/compare/release-1.10.0...release-1.11.0
@@ -583,6 +595,7 @@ Initial release.
 [0.3.0]: https://github.com/decebals/pippo/compare/pippo-parent-0.2.0...pippo-parent-0.3.0
 [0.2.0]: https://github.com/decebals/pippo/compare/pippo-parent-0.1.0...pippo-parent-0.2.0
 
+[#545]: https://github.com/pippo-java/pippo/issues/545
 [#544]: https://github.com/pippo-java/pippo/pull/544
 [#542]: https://github.com/pippo-java/pippo/pull/542
 [#539]: https://github.com/pippo-java/pippo/pull/539
