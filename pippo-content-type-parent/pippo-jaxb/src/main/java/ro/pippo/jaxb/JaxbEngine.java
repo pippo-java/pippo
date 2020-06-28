@@ -34,12 +34,7 @@ import java.io.StringWriter;
 /**
  * An XmlEngine based on JAXB.
  *
- * <p>
- *
- * </p>
- *
  * @author James Moger
- * @author Dwouglas Mhagnum
  *
  * @see https://docs.oracle.com/javase/8/docs/technotes/guides/security/jaxp/jaxp.html#jaxp-properties-for-processing-limits
  * @see https://cheatsheetseries.owasp.org/cheatsheets/XML_External_Entity_Prevention_Cheat_Sheet.html
@@ -109,17 +104,13 @@ public class JaxbEngine implements ContentTypeEngine {
         XMLInputFactory xmlInputFactory = XMLInputFactory.newFactory();
 
         xmlInputFactory.setProperty(XMLInputFactory.IS_SUPPORTING_EXTERNAL_ENTITIES, false);
-        xmlInputFactory.setProperty(XMLInputFactory.SUPPORT_DTD, true);
-
-        // xmlInputFactory.setProperty(Constants.IGNORE_EXTERNAL_DTD, true);
-        xmlInputFactory.setProperty("http://java.sun.com/xml/stream/properties/ignore-external-dtd", true);
+        xmlInputFactory.setProperty(XMLInputFactory.SUPPORT_DTD, false);
 
         return xmlInputFactory;
     }
 
     /**
-     * Allows the user to set specific feature/property on the underlying
-     * implementation.
+     * Allows the user to set specific feature/property to the parser.
      *
      * @param name  The name of the property
      * @param value The value of the property

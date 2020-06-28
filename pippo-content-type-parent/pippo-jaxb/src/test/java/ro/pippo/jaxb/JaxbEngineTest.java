@@ -16,17 +16,19 @@
 package ro.pippo.jaxb;
 
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.isA;
 import static org.hamcrest.Matchers.startsWith;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThrows;
 
 import java.io.IOException;
-import java.util.Locale;
 
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.TestRule;
+import org.junit.rules.TestWatcher;
+import org.junit.runner.Description;
 
 import com.sun.org.apache.xerces.internal.impl.Constants;
 
@@ -40,39 +42,19 @@ public class JaxbEngineTest {
 
     private JaxbEngine jaxbEngine;
 
+    @Rule
+    public TestRule watcher = new TestWatcher() {
+       protected void starting(Description description) {
+          System.out.println(String.format("[%s] Starting test: %s", this.getClass().getName(), description.getMethodName()));
+       }
+    };
+
     @Before
     public void setUp() {
-        System.out.println("vvvvvvvvvvvvvvvvvvvvvvv");
-
-        Locale.setDefault(Locale.US);
-
-//        String SECURITY_MANAGER = "http://apache.org/xml/properties/security-manager";
-//        System.out.println("SECURITY_MANAGER: " + System.getProperty(SECURITY_MANAGER));
-//        System.out.println("SECURITY_MANAGER: " + System.getSecurityManager());
-
-        // com.sun.org.apache.xalan.internal.utils.XMLSecurityManager.Limit
-        // com.sun.org.apache.xerces.internal.util.SecurityManager
-
-        // Fix for Issue#586.  This limits entity expansion up to 100000 and nodes up to 3000.
-        // setProperty(SECURITY_MANAGER, new org.apache.xerces.util.SecurityManager());
-
-        // https://stackoverflow.com/questions/42991043/error-xml-sax-saxparseexception-while-parsing-a-xml-file-using-wikixmlj#43005865
-        // -DentityExpansionLimit=2147480000 -DtotalEntitySizeLimit=2147480000 -Djdk.xml.totalEntitySizeLimit=2147480000
-
-        // for QuadraticBlowupAttack
-        // System.out.println("default jdk.xml.totalEntitySizeLimit: " + System.getProperty("jdk.xml.totalEntitySizeLimit"));
-        // System.setProperty("jdk.xml.totalEntitySizeLimit", Integer.toString(Integer.MAX_VALUE));
-
-        // Se extrapolar o jdk.xml.totalEntitySizeLimit , cai em:
-        // Message: JAXP00010007: The total number of nodes in entity references is "3,000,001" that is over the limit "3,000,000" set by "FEATURE_SECURE_PROCESSING".
-        // Que é controlado pelo jdk.xml.entityReplacementLimit
-        // System.setProperty("jdk.xml.entityReplacementLimit", Integer.toString(Integer.MAX_VALUE));
-
         jaxbEngine = new JaxbEngine();
 
+        // JDK property to allow printing out information from the limit analyzer
         jaxbEngine.setProperty(Constants.JDK_ENTITY_COUNT_INFO, "yes");
-
-        System.out.println("^^^^^^^^^^^^^^^^^^^^^^^");
     }
 
     @Test
@@ -99,16 +81,11 @@ public class JaxbEngineTest {
     public void test_fromString_BillionLaughsAttack() throws IOException {
         String payload = IoUtils.getResourceAsString("/attack_BillionLaughsAttack.xml");
 
-        JaxbEngine jaxbEngine = new JaxbEngine();
-
         PippoRuntimeException exception = assertThrows(PippoRuntimeException.class, () -> {
             jaxbEngine.fromString(payload, Person.class);
         });
 
         assertThat(exception.getMessage(), startsWith("Failed to deserialize content to '"));
-
-        Throwable rootCause = getRootCause(exception);
-        assertThat(rootCause.getMessage(), containsString("JAXP00010001:"));
     }
 
     @Test
@@ -120,17 +97,6 @@ public class JaxbEngineTest {
         });
 
         assertThat(exception.getMessage(), startsWith("Failed to deserialize content to '"));
-
-        Throwable rootCause = getRootCause(exception);
-        assertThat(rootCause.getMessage(), containsString("JAXP00010004:"));
-    }
-
-    // TODO: move to an ExceptionUtils? Where?
-    private Throwable getRootCause(Throwable t) {
-        if (t.getCause() == null) {
-            return t;
-        }
-        return getRootCause(t.getCause());
     }
 
 }
