@@ -34,12 +34,25 @@ import java.io.StringWriter;
 /**
  * An XmlEngine based on JAXB.
  *
+ * <p>
+ *
+ * </p>
+ *
  * @author James Moger
+ * @author Dwouglas Mhagnum
+ *
+ * @see https://docs.oracle.com/javase/8/docs/technotes/guides/security/jaxp/jaxp.html#jaxp-properties-for-processing-limits
+ * @see https://cheatsheetseries.owasp.org/cheatsheets/XML_External_Entity_Prevention_Cheat_Sheet.html
  */
 @MetaInfServices
 public class JaxbEngine implements ContentTypeEngine {
 
     boolean prettyPrint;
+    private final XMLInputFactory xmlInputFactory;
+
+    public JaxbEngine() {
+        xmlInputFactory = buildXMLInputFactory();
+    }
 
     @Override
     public void init(Application application) {
@@ -65,7 +78,7 @@ public class JaxbEngine implements ContentTypeEngine {
 
             return writer.toString();
         } catch (JAXBException e) {
-            throw new PippoRuntimeException(e, "Failed to serialize '{}' to XML'", object.getClass().getName());
+            throw new PippoRuntimeException(e, "Failed to serialize '{}' to XML", object.getClass().getName());
         }
     }
 
@@ -75,9 +88,6 @@ public class JaxbEngine implements ContentTypeEngine {
         try (StringReader reader = new StringReader(content)) {
             JAXBContext jaxbContext = JAXBContext.newInstance(classOfT);
 
-            XMLInputFactory xmlInputFactory = XMLInputFactory.newFactory();
-            xmlInputFactory.setProperty(XMLInputFactory.IS_SUPPORTING_EXTERNAL_ENTITIES, false);
-            xmlInputFactory.setProperty(XMLInputFactory.SUPPORT_DTD, true);
             XMLStreamReader xmlStreamReader = xmlInputFactory.createXMLStreamReader(reader);
 
             Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
@@ -86,6 +96,36 @@ public class JaxbEngine implements ContentTypeEngine {
         } catch (JAXBException | XMLStreamException e) {
             throw new PippoRuntimeException(e, "Failed to deserialize content to '{}'", classOfT.getName());
         }
+    }
+
+    /**
+     * Create a new instance of the factory with some configurations.
+     *
+     * @return the factory implementation
+     *
+     * @see XMLInputFactory#newFactory()
+     */
+    protected XMLInputFactory buildXMLInputFactory() {
+        XMLInputFactory xmlInputFactory = XMLInputFactory.newFactory();
+
+        xmlInputFactory.setProperty(XMLInputFactory.IS_SUPPORTING_EXTERNAL_ENTITIES, false);
+        xmlInputFactory.setProperty(XMLInputFactory.SUPPORT_DTD, true);
+
+        // xmlInputFactory.setProperty(Constants.IGNORE_EXTERNAL_DTD, true);
+        xmlInputFactory.setProperty("http://java.sun.com/xml/stream/properties/ignore-external-dtd", true);
+
+        return xmlInputFactory;
+    }
+
+    /**
+     * Allows the user to set specific feature/property on the underlying
+     * implementation.
+     *
+     * @param name  The name of the property
+     * @param value The value of the property
+     */
+    void setProperty(String name, Object value) {
+        xmlInputFactory.setProperty(name, value);
     }
 
 }
