@@ -23,6 +23,9 @@ import static org.junit.Assert.assertThrows;
 
 import java.io.IOException;
 
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
+
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -97,6 +100,14 @@ public class JaxbEngineTest {
         });
 
         assertThat(exception.getMessage(), startsWith("Failed to deserialize content to '"));
+    }
+
+    @XmlRootElement(name = "PERSON")
+    public static class Person {
+
+        @XmlElement(name = "NAME")
+        public String name;
+
     }
 
 }
