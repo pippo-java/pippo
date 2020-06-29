@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+
+<!DOCTYPE PERSON [
+    <!ELEMENT PERSON (NAME)>
+    <!ELEMENT NAME (#PCDATA)>
+]>
+
+<PERSON>
+    <NAME>Pippo</NAME>
+</PERSON>
