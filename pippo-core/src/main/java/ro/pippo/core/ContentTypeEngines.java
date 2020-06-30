@@ -99,7 +99,7 @@ public class ContentTypeEngines {
             setContentTypeEngine(engine);
             return engine;
         } else {
-            log.debug("'{}' content engine already registered, ignoring '{}'", engine.getContentType(),
+            log.info("'{}' content engine already registered, ignoring '{}'", engine.getContentType(),
                 engineClass.getName());
             return null;
         }
@@ -146,7 +146,7 @@ public class ContentTypeEngines {
         engines.put(engine.getContentType(), engine);
         suffixes.put(suffix.toLowerCase(), engine);
 
-        log.debug("'{}' content engine is '{}'", engine.getContentType(), engine.getClass().getName());
+        log.info("'{}' content engine is '{}'", engine.getContentType(), engine.getClass().getName());
     }
 
     /**
