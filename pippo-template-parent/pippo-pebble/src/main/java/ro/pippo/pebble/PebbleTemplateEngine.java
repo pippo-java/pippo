@@ -67,7 +67,9 @@ public class PebbleTemplateEngine extends AbstractTemplateEngine {
 
         templateLoader.setCharset(PippoConstants.UTF8);
         templateLoader.setPrefix(getTemplatePathPrefix());
-        templateLoader.setSuffix("." + getFileExtension());
+        if (pippoSettings.getBoolean("pebble.suffix.enabled", true)) {
+            templateLoader.setSuffix("." + getFileExtension());
+        }
         loaders.add(templateLoader);
 
         PebbleEngine.Builder builder = new PebbleEngine.Builder()
