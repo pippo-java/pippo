@@ -67,7 +67,9 @@ public class PebbleTemplateEngine extends AbstractTemplateEngine {
 
         templateLoader.setCharset(PippoConstants.UTF8);
         templateLoader.setPrefix(getTemplatePathPrefix());
-        templateLoader.setSuffix("." + getFileExtension());
+        if (pippoSettings.getBoolean("pebble.suffix.enabled", true)) {
+            templateLoader.setSuffix("." + getFileExtension());
+        }
         loaders.add(templateLoader);
 
         PebbleEngine.Builder builder = new PebbleEngine.Builder()
@@ -82,7 +84,7 @@ public class PebbleTemplateEngine extends AbstractTemplateEngine {
             .extension(new AngularJSExtension())
             .extension(new WebjarsAtExtension(router))
             .extension(new PublicAtExtension(router))
-            .extension(new RouteExtension(application.getRouter()));
+            .extension(new RouteExtension(router));
 
         if (pippoSettings.isDev()) {
             // do not cache templates in dev mode
