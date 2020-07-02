@@ -107,15 +107,8 @@ public class PebbleTemplateEngine extends AbstractTemplateEngine {
 
     @Override
     public void renderString(String templateContent, Map<String, Object> model, Writer writer) {
-        String language = (String) model.get(PippoConstants.REQUEST_PARAMETER_LANG);
-
-        if (StringUtils.isNullOrEmpty(language)) {
-            language = getLanguageOrDefault(language);
-        }
-        Locale locale = (Locale) model.get(PippoConstants.REQUEST_PARAMETER_LOCALE);
-        if (locale == null) {
-            locale = getLocaleOrDefault(language);
-        }
+        String language = getLanguage(model);
+        Locale locale = getLocale(model, language);
 
         try {
             PebbleEngine stringEngine = new PebbleEngine.Builder()
@@ -134,16 +127,8 @@ public class PebbleTemplateEngine extends AbstractTemplateEngine {
 
     @Override
     public void renderResource(String templateName, Map<String, Object> model, Writer writer) {
-        String language = (String) model.get(PippoConstants.REQUEST_PARAMETER_LANG);
-
-        if (StringUtils.isNullOrEmpty(language)) {
-            language = getLanguageOrDefault(language);
-        }
-
-        Locale locale = (Locale) model.get(PippoConstants.REQUEST_PARAMETER_LOCALE);
-        if (locale == null) {
-            locale = getLocaleOrDefault(language);
-        }
+        String language = getLanguage(model);
+        Locale locale = getLocale(model, language);
 
         try {
             PebbleTemplate template = null;
@@ -189,6 +174,26 @@ public class PebbleTemplateEngine extends AbstractTemplateEngine {
         }
 
         return template;
+    }
+
+    protected String getLanguage(Map<String, Object> model) {
+        String language = (String) model.get(PippoConstants.REQUEST_PARAMETER_LANG);
+
+        if (StringUtils.isNullOrEmpty(language)) {
+            language = getLanguageOrDefault(language);
+        }
+
+        return language;
+    }
+
+    protected Locale getLocale(Map<String, Object> model, String language) {
+        Locale locale = (Locale) model.get(PippoConstants.REQUEST_PARAMETER_LOCALE);
+
+        if (locale == null) {
+            locale = getLocaleOrDefault(language);
+        }
+
+        return locale;
     }
 
 }
