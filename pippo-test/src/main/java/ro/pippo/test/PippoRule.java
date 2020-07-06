@@ -71,24 +71,24 @@ public class PippoRule implements TestRule {
 
             @Override
             public void evaluate() throws Throwable {
-                startPippo(pippo);
+                startPippo();
 
                 try {
                     statement.evaluate();
                 } finally {
-                    stopPippo(pippo);
+                    stopPippo();
                 }
             }
 
         };
     }
 
-    protected void startPippo(Pippo pippo) {
+    public void startPippo() {
         pippo.start();
         initRestAssured();
     }
 
-    protected void stopPippo(Pippo pippo) {
+    public void stopPippo() {
         pippo.stop();
     }
 
