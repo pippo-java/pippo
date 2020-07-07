@@ -37,38 +37,21 @@ import ro.pippo.core.PippoRuntimeException;
 import ro.pippo.core.Response;
 
 /**
- * @author Dwouglas Mhagnum
+ * The following error must be thrown if the test is performed with the JRE
+ * instead of the JDK:
+ * {@literal java.lang.IllegalStateException: Could not initialize plugin: interface org.mockito.plugins.MockMaker (alternate: null)}
  *
- *         Se tiver o erro
- *         {@literal java.lang.IllegalStateException: Could not initialize plugin: interface org.mockito.plugins.MockMaker (alternate: null)}
- *         executando esse teste, verifique se não o está rodando com a JRE ao
- *         invés da JDK.
+ * @author Dwouglas Mhagnum
  */
-// @RunWith(MockitoJUnitRunner.class) // TODO: precisa ?
 public class CorsHandlerTest {
 
-    // private Application application;
     private RouteContext routeContext;
-    // private CorsHandler corsHandler;
     private Response response;
 
     @Before
     public void setUp() {
-        // Application application = Mockito.mock(Application.class);
         Application application = new Application();
 
-//         Request request = Mockito.mock(Request.class);
-//        HttpServletRequest servletRequest = Mockito.mock(HttpServletRequest.class);
-//        Request request = new Request(servletRequest, application);
-
-//         Response response = Mockito.mock(Response.class);
-//        HttpServletResponse servletResponse = mock(HttpServletResponse.class);
-//        Response response = new Response(servletResponse, application);
-
-        // routeContext = new DefaultRouteContext(application, request, response,
-        // Collections.emptyList());
-//        routeContext = new DefaultRouteContext(application, request, response, Collections.emptyList());
-//         routeContext = Mockito.mock(DefaultRouteContext.class);
         routeContext = Mockito.mock(RouteContext.class);
 
         HttpServletResponse servletResponse = mock(HttpServletResponse.class);
@@ -130,8 +113,6 @@ public class CorsHandlerTest {
 
         Mockito.verify(routeContext, Mockito.times(1)).next();
         Mockito.verify(response, Mockito.never()).accepted();
-
-        System.out.println(corsHandler.details());
     }
 
     @Test
