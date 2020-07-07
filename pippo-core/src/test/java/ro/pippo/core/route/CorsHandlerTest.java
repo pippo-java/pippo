@@ -16,29 +16,24 @@
 package ro.pippo.core.route;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThrows;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
-
+import static ro.pippo.core.HttpConstants.Header.ACCESS_CONTROL_ALLOW_CREDENTIALS;
+import static ro.pippo.core.HttpConstants.Header.ACCESS_CONTROL_ALLOW_HEADERS;
+import static ro.pippo.core.HttpConstants.Header.ACCESS_CONTROL_ALLOW_METHODS;
 import static ro.pippo.core.HttpConstants.Header.ACCESS_CONTROL_ALLOW_ORIGIN;
 import static ro.pippo.core.HttpConstants.Header.ACCESS_CONTROL_EXPOSE_HEADERS;
 import static ro.pippo.core.HttpConstants.Header.ACCESS_CONTROL_MAX_AGE;
-import static ro.pippo.core.HttpConstants.Header.ACCESS_CONTROL_ALLOW_CREDENTIALS;
-import static ro.pippo.core.HttpConstants.Header.ACCESS_CONTROL_ALLOW_METHODS;
-import static ro.pippo.core.HttpConstants.Header.ACCESS_CONTROL_ALLOW_HEADERS;
 
-import java.util.Collections;
-
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.mockito.Mockito;
-import org.mockito.junit.MockitoJUnitRunner;
 
 import ro.pippo.core.Application;
-import ro.pippo.core.Request;
+import ro.pippo.core.PippoRuntimeException;
 import ro.pippo.core.Response;
 
 /**
@@ -85,10 +80,8 @@ public class CorsHandlerTest {
     public void test_OnlyHeaderAllowOrigin() {
         // arrange
         String originExpected = "http://fake.address.com";
-        // String exposeHeadersExpected = "fake1,fake2,fake3";
 
         CorsHandler corsHandler = new CorsHandler(originExpected);
-        // corsHandler.exposeHeaders(exposeHeadersExpected);
 
         doReturn("GET").when(routeContext).getRequestMethod();
 
@@ -97,7 +90,6 @@ public class CorsHandlerTest {
 
         // assert
         assertEquals(originExpected, response.getHeader(ACCESS_CONTROL_ALLOW_ORIGIN));
-        // assertEquals(exposeHeadersExpected, response.getHeader(ACCESS_CONTROL_EXPOSE_HEADERS));
         Mockito.verify(routeContext, Mockito.times(1)).next();
         Mockito.verify(response, Mockito.never()).accepted();
     }
@@ -106,14 +98,18 @@ public class CorsHandlerTest {
     public void test_AllHeaders() {
         // arrange
         String originExpected = "http://fake.address.com";
-        String exposeHeadersExpected = "fake1,fake2,fake3";
+        String exposeHeadersExpected = "h-fake1,h-fake2,h-fake3";
         String allowCredentialsExpected = "true";
         String maxAgeExpected = "3600";
+        String allowMethodsExpected = "put,delete";
+        String allowHeadersExpected = "h-fake3,h-fake4";
 
         CorsHandler corsHandler = new CorsHandler(originExpected);
         corsHandler.exposeHeaders(exposeHeadersExpected);
         corsHandler.allowCredentials(Boolean.valueOf(allowCredentialsExpected));
         corsHandler.maxAge(Integer.valueOf(maxAgeExpected));
+        corsHandler.allowMethods(allowMethodsExpected);
+        corsHandler.allowHeaders(allowHeadersExpected);
 
         doReturn("GET").when(routeContext).getRequestMethod();
 
@@ -125,9 +121,56 @@ public class CorsHandlerTest {
         assertEquals(exposeHeadersExpected, response.getHeader(ACCESS_CONTROL_EXPOSE_HEADERS));
         assertEquals(allowCredentialsExpected, response.getHeader(ACCESS_CONTROL_ALLOW_CREDENTIALS));
         assertEquals(maxAgeExpected, response.getHeader(ACCESS_CONTROL_MAX_AGE));
+        assertEquals(allowMethodsExpected, response.getHeader(ACCESS_CONTROL_ALLOW_METHODS));
+        assertEquals(allowHeadersExpected, response.getHeader(ACCESS_CONTROL_ALLOW_HEADERS));
+
+        assertEquals(
+                "CorsHandler [allowOrigin=http://fake.address.com, allowMethods=put,delete, allowHeaders=h-fake3,h-fake4, exposeHeaders=h-fake1,h-fake2,h-fake3, maxAge=3600, allowCredentials=true]",
+                corsHandler.details());
 
         Mockito.verify(routeContext, Mockito.times(1)).next();
         Mockito.verify(response, Mockito.never()).accepted();
+
+        System.out.println(corsHandler.details());
+    }
+
+    @Test
+    public void test_RequestMethodOptions() {
+        // arrange
+        String originExpected = "*";
+
+        CorsHandler corsHandler = new CorsHandler(originExpected);
+
+        doReturn("OPTIONS").when(routeContext).getRequestMethod();
+
+        // act
+        corsHandler.handle(routeContext);
+
+        // assert
+        assertEquals(originExpected, response.getHeader(ACCESS_CONTROL_ALLOW_ORIGIN));
+        Mockito.verify(routeContext, Mockito.never()).next();
+        Mockito.verify(response, Mockito.times(1)).accepted();
+    }
+
+    @Test
+    public void test_InvalidAllowOrigin() {
+        final String expected = "allowOrigin cannot be blank";
+
+        {
+            PippoRuntimeException exception = assertThrows(PippoRuntimeException.class, () -> {
+                new CorsHandler("    ");
+            });
+
+            assertEquals(expected, exception.getMessage());
+        }
+
+        {
+            PippoRuntimeException exception = assertThrows(PippoRuntimeException.class, () -> {
+                new CorsHandler(null);
+            });
+
+            assertEquals(expected, exception.getMessage());
+        }
     }
 
 }
