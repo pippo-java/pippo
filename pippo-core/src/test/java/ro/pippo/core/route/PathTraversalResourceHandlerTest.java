@@ -15,7 +15,6 @@
  */
 package ro.pippo.core.route;
 
-import org.junit.Assert;
 import org.junit.Test;
 
 import java.net.URISyntaxException;
@@ -32,12 +31,12 @@ public class PathTraversalResourceHandlerTest {
         ClasspathResourceHandler handler = new ClasspathResourceHandler("/", "/public");
 
         URL resourceUrl = handler.getResourceUrl("VISIBLE");
-        Assert.assertNotNull(resourceUrl);
+        assertNotNull(resourceUrl);
         Path visibleFile = Paths.get(resourceUrl.toURI());
-        Assert.assertNotNull(visibleFile);
+        assertNotNull(visibleFile);
         Path basePath = visibleFile.getParent();
         URL url = handler.getResourceUrl("../HIDDEN");
-        Assert.assertNotNull(url);
+        assertNotNull(url);
         assertTrue("Path traversal security issue", Paths.get(url.toURI()).startsWith(basePath));
     }
 
@@ -54,12 +53,12 @@ public class PathTraversalResourceHandlerTest {
         PublicResourceHandler handler = new PublicResourceHandler();
 
         URL resourceUrl = handler.getResourceUrl("VISIBLE");
-        Assert.assertNotNull(resourceUrl);
+        assertNotNull(resourceUrl);
         Path visibleFile = Paths.get(resourceUrl.toURI());
-        Assert.assertNotNull(visibleFile);
+        assertNotNull(visibleFile);
         Path basePath = visibleFile.getParent();
         URL url = handler.getResourceUrl("../HIDDEN");
-        Assert.assertNotNull(url);
+        assertNotNull(url);
         assertTrue("Path traversal security issue", Paths.get(url.toURI()).startsWith(basePath));
     }
 
