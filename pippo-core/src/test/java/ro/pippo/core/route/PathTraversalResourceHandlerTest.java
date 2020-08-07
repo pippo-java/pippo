@@ -34,10 +34,9 @@ public class PathTraversalResourceHandlerTest {
         assertNotNull(resourceUrl);
         Path visibleFile = Paths.get(resourceUrl.toURI());
         assertNotNull(visibleFile);
-        Path basePath = visibleFile.getParent();
+
         URL url = handler.getResourceUrl("../HIDDEN");
-        assertNotNull(url);
-        assertTrue("Path traversal security issue", Paths.get(url.toURI()).startsWith(basePath));
+        assertNull(url);
     }
 
     @Test
@@ -56,10 +55,9 @@ public class PathTraversalResourceHandlerTest {
         assertNotNull(resourceUrl);
         Path visibleFile = Paths.get(resourceUrl.toURI());
         assertNotNull(visibleFile);
-        Path basePath = visibleFile.getParent();
+
         URL url = handler.getResourceUrl("../HIDDEN");
-        assertNotNull(url);
-        assertTrue("Path traversal security issue", Paths.get(url.toURI()).startsWith(basePath));
+        assertNull(url);
     }
 
 }
