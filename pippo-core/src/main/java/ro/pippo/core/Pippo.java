@@ -24,6 +24,7 @@ import ro.pippo.core.route.Route;
 import ro.pippo.core.route.RouteGroup;
 import ro.pippo.core.util.ServiceLocator;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
@@ -40,7 +41,6 @@ public class Pippo implements ResourceRouting, ReloadWatcher.Listener {
     private Application application;
     private WebServer server;
     private volatile boolean running;
-    private volatile boolean reloading;
 
     private ReloadWatcher reloadWatcher;
 
@@ -57,14 +57,14 @@ public class Pippo implements ResourceRouting, ReloadWatcher.Listener {
 
     public Application getApplication() {
         if (application == null) {
-            initReloading();
-            if (reloading) {
+            if (isReloadEnabled()) {
                 log.info("Reload enabled");
-                application = createApplication();
+                application = createReloadableApplication();
             } else {
                 log.debug("Create a default application");
                 application = new Application();
             }
+            log.debug("Created application {}", application);
         }
 
         return application;
@@ -156,7 +156,7 @@ public class Pippo implements ResourceRouting, ReloadWatcher.Listener {
         server.start();
         running = true;
 
-        if (reloading) {
+        if (isReloadEnabled()) {
             startReloadWatcher();
         }
     }
@@ -167,7 +167,7 @@ public class Pippo implements ResourceRouting, ReloadWatcher.Listener {
             return;
         }
 
-        if (reloading) {
+        if (isReloadEnabled()) {
             stopReloadWatcher();
         }
 
@@ -229,6 +229,8 @@ public class Pippo implements ResourceRouting, ReloadWatcher.Listener {
 
     @Override
     public void onEvent(ReloadWatcher.Event event, Path dir, Path path) {
+        log.debug("Receiving {} for {}", event, dir +  File.separator + path);
+
         stop();
 
         // TODO: very important (I cannot delete this block)
@@ -238,7 +240,7 @@ public class Pippo implements ResourceRouting, ReloadWatcher.Listener {
             // ignore
         }
 
-        application = createApplication();
+        application = createReloadableApplication();
         getServer().getPippoFilter().setApplication(application);
 
         start();
@@ -248,7 +250,31 @@ public class Pippo implements ResourceRouting, ReloadWatcher.Listener {
         Runtime.getRuntime().addShutdownHook(new Thread(Pippo.this::stop));
     }
 
-    private Application createApplication() {
+    protected Application createReloadableApplication() {
+        ClassLoader classLoader = createReloadClassLoader();
+
+        Application application = ServiceLocator.locate(Application.class, classLoader);
+        if (application != null) {
+            return application;
+        }
+
+        String applicationClassName = System.getProperty(PippoConstants.SYSTEM_PROPERTY_APPLICATION_CLASS_NAME);
+        if (applicationClassName == null) {
+            throw new PippoRuntimeException("Cannot find the application class name");
+        }
+        log.debug("Application class name is '{}'", applicationClassName);
+
+        try {
+            Class<?> applicationClass = classLoader.loadClass(applicationClassName);
+            application = (Application) applicationClass.newInstance();
+        } catch (InstantiationException | ClassNotFoundException | IllegalAccessException e) {
+            throw new PippoRuntimeException(e);
+        }
+
+        return application;
+    }
+
+    protected ClassLoader createReloadClassLoader() {
         String targetClasses = System.getProperty(PippoConstants.SYSTEM_PROPERTY_RELOAD_TARGET_CLASSES, "target/classes");
         log.debug("Target classes is '{}'", targetClasses);
         String rootPackageName = System.getProperty(PippoConstants.SYSTEM_PROPERTY_RELOAD_ROOT_PACKAGE_NAME, "");
@@ -270,35 +296,22 @@ public class Pippo implements ResourceRouting, ReloadWatcher.Listener {
             }
 
         };
+        log.debug("Created {}", classLoader);
 
-        Application application = ServiceLocator.locate(Application.class, classLoader);
-        if (application != null) {
-            return application;
-        }
-
-        String applicationClassName = System.getProperty(PippoConstants.SYSTEM_PROPERTY_APPLICATION_CLASS_NAME);
-        if (applicationClassName == null) {
-            throw new PippoRuntimeException("Cannot find the application class name");
-        }
-        log.debug("Application class name is '{}'", applicationClassName);
-
-        try {
-            Class<?> applicationClass = classLoader.loadClass(applicationClassName);
-            application = (Application) applicationClass.newInstance();
-        } catch (InstantiationException | ClassNotFoundException | IllegalAccessException e) {
-            throw new RuntimeException(e);
-        }
-
-        return application;
+        return classLoader;
     }
 
-    private void initReloading() {
-        String reloadEnabled = System.getProperty(PippoConstants.SYSTEM_PROPERTY_RELOAD_ENABLED);
-        if (reloadEnabled != null) {
-            reloading = Boolean.parseBoolean(reloadEnabled);
+    protected boolean isReloadEnabled() {
+        boolean reloadEnabled;
+
+        String property = System.getProperty(PippoConstants.SYSTEM_PROPERTY_RELOAD_ENABLED);
+        if (property != null) {
+            reloadEnabled = Boolean.parseBoolean(property);
         } else {
-            reloading = RuntimeMode.DEV == RuntimeMode.getCurrent();
+            reloadEnabled = RuntimeMode.PROD != RuntimeMode.getCurrent();
         }
+
+        return reloadEnabled;
     }
 
 }
