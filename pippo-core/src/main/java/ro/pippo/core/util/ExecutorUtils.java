@@ -24,23 +24,30 @@ import java.util.concurrent.ThreadFactory;
 public class ExecutorUtils {
 
     public static ThreadFactory defaultThreadFactoryWithPrefix(String prefix) {
-        return new PrefixingDefaultThreadFactory(prefix);
+        return defaultThreadFactoryWithPrefix(prefix, false);
+    }
+
+    public static ThreadFactory defaultThreadFactoryWithPrefix(String prefix, boolean daemon) {
+        return new PrefixingDefaultThreadFactory(prefix, daemon);
     }
 
     private static class PrefixingDefaultThreadFactory implements ThreadFactory {
 
         private final String prefix;
         private final ThreadFactory defaultThreadFactory;
+        private final boolean daemon;
 
-        public PrefixingDefaultThreadFactory(String prefix) {
+        public PrefixingDefaultThreadFactory(String prefix, boolean daemon) {
             this.defaultThreadFactory = Executors.defaultThreadFactory();
             this.prefix = prefix;
+            this.daemon = daemon;
         }
 
         @Override
         public Thread newThread(Runnable r) {
             Thread thread = defaultThreadFactory.newThread(r);
             thread.setName(prefix + thread.getName());
+            thread.setDaemon(daemon);
 
             return thread;
         }
