@@ -295,7 +295,7 @@ public class Pippo implements ResourceRouting, ReloadWatcher.Listener {
     private void initReloading() {
         String reloadEnabled = System.getProperty(PippoConstants.SYSTEM_PROPERTY_RELOAD_ENABLED);
         if (reloadEnabled != null) {
-            reloading = Boolean.valueOf(reloadEnabled);
+            reloading = Boolean.parseBoolean(reloadEnabled);
         } else {
             reloading = RuntimeMode.DEV == RuntimeMode.getCurrent();
         }
