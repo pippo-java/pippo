@@ -163,4 +163,10 @@ public class CorsHandler implements RouteHandler<RouteContext> {
         return this;
     }
 
+    public String details() {
+        return String.format(
+                "CorsHandler [allowOrigin=%s, allowMethods=%s, allowHeaders=%s, exposeHeaders=%s, maxAge=%s, allowCredentials=%s]",
+                allowOrigin, allowMethods, allowHeaders, exposeHeaders, maxAge, allowCredentials);
+    }
+
 }

@@ -22,9 +22,7 @@ import java.net.URL;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 public class PathTraversalResourceHandlerTest {
 
@@ -36,15 +34,13 @@ public class PathTraversalResourceHandlerTest {
         assertNotNull(resourceUrl);
         Path visibleFile = Paths.get(resourceUrl.toURI());
         assertNotNull(visibleFile);
-        Path basePath = visibleFile.getParent();
+
         URL url = handler.getResourceUrl("../HIDDEN");
-        if (url != null) {
-            assertTrue("Path traversal security issue", Paths.get(url.toURI()).startsWith(basePath));
-        }
+        assertNull(url);
     }
 
     @Test
-    public void webjarResourceHandlerTest() throws URISyntaxException {
+    public void webjarResourceHandlerTest() {
         WebjarsResourceHandler handler = new WebjarsResourceHandler();
 
         URL url = handler.getResourceUrl("../../../HIDDEN");
@@ -59,11 +55,9 @@ public class PathTraversalResourceHandlerTest {
         assertNotNull(resourceUrl);
         Path visibleFile = Paths.get(resourceUrl.toURI());
         assertNotNull(visibleFile);
-        Path basePath = visibleFile.getParent();
+
         URL url = handler.getResourceUrl("../HIDDEN");
-        if (url != null) {
-            assertTrue("Path traversal security issue", Paths.get(url.toURI()).startsWith(basePath));
-        }
+        assertNull(url);
     }
 
 }
