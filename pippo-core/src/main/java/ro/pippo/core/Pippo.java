@@ -40,9 +40,11 @@ public class Pippo implements ResourceRouting, ReloadWatcher.Listener {
 
     private Application application;
     private WebServer server;
-    private volatile boolean running;
 
     private ReloadWatcher reloadWatcher;
+
+    private volatile boolean running;
+    private volatile boolean reloading;
 
     public Pippo() {
         addShutdownHook();
@@ -156,7 +158,7 @@ public class Pippo implements ResourceRouting, ReloadWatcher.Listener {
         server.start();
         running = true;
 
-        if (isReloadEnabled()) {
+        if (isReloadEnabled() && !reloading) {
             startReloadWatcher();
         }
     }
@@ -167,7 +169,7 @@ public class Pippo implements ResourceRouting, ReloadWatcher.Listener {
             return;
         }
 
-        if (isReloadEnabled()) {
+        if (isReloadEnabled() && !reloading) {
             stopReloadWatcher();
         }
 
@@ -231,19 +233,14 @@ public class Pippo implements ResourceRouting, ReloadWatcher.Listener {
     public void onEvent(ReloadWatcher.Event event, Path dir, Path path) {
         log.debug("Receiving {} for {}", event, dir +  File.separator + path);
 
+        reloading = true;
         stop();
-
-        // TODO: very important (I cannot delete this block)
-        try {
-            Thread.sleep(5 * 1000);
-        } catch (InterruptedException e) {
-            // ignore
-        }
 
         application = createReloadableApplication();
         getServer().getPippoFilter().setApplication(application);
 
         start();
+        reloading = false;
     }
 
     private void addShutdownHook() {
