@@ -64,7 +64,6 @@ public class JettyServer extends AbstractWebServer<JettySettings> {
 
         ServerConnector serverConnector = createServerConnector(server);
         serverConnector.setIdleTimeout(TimeUnit.HOURS.toMillis(1));
-        serverConnector.setSoLingerTime(-1);
         serverConnector.setHost(getSettings().getHost());
         serverConnector.setPort(getSettings().getPort());
 
