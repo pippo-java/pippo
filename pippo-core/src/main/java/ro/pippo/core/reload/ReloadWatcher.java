@@ -17,6 +17,7 @@ package ro.pippo.core.reload;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import ro.pippo.core.util.ExecutorUtils;
 
 import java.io.IOException;
 import java.nio.file.FileSystems;
@@ -36,6 +37,7 @@ import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
+import java.util.concurrent.ThreadFactory;
 
 import static java.nio.file.LinkOption.NOFOLLOW_LINKS;
 import static java.nio.file.StandardWatchEventKinds.ENTRY_CREATE;
@@ -238,7 +240,8 @@ public class ReloadWatcher implements Runnable {
         public ReloadWatcher build(Listener listener) {
             ReloadWatcher watcher = new ReloadWatcher(dirPaths, listener);
             if (executorService == null) {
-                executorService = Executors.newSingleThreadExecutor();
+                ThreadFactory threadFactory = ExecutorUtils.defaultThreadFactoryWithPrefix("reload-watcher" + "-");
+                executorService = Executors.newSingleThreadExecutor(threadFactory);
             }
             watcher.executorService = executorService;
 
