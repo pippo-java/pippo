@@ -248,27 +248,7 @@ public class Pippo implements ResourceRouting, ReloadWatcher.Listener {
     }
 
     protected Application createReloadableApplication() {
-        ClassLoader classLoader = createReloadClassLoader();
-
-        Application application = ServiceLocator.locate(Application.class, classLoader);
-        if (application != null) {
-            return application;
-        }
-
-        String applicationClassName = System.getProperty(PippoConstants.SYSTEM_PROPERTY_APPLICATION_CLASS_NAME);
-        if (applicationClassName == null) {
-            throw new PippoRuntimeException("Cannot find the application class name");
-        }
-        log.debug("Application class name is '{}'", applicationClassName);
-
-        try {
-            Class<?> applicationClass = classLoader.loadClass(applicationClassName);
-            application = (Application) applicationClass.newInstance();
-        } catch (InstantiationException | ClassNotFoundException | IllegalAccessException e) {
-            throw new PippoRuntimeException(e);
-        }
-
-        return application;
+        return createReloadableApplication(createReloadClassLoader());
     }
 
     protected ClassLoader createReloadClassLoader() {
@@ -296,6 +276,28 @@ public class Pippo implements ResourceRouting, ReloadWatcher.Listener {
         log.debug("Created {}", classLoader);
 
         return classLoader;
+    }
+
+    protected Application createReloadableApplication(ClassLoader classLoader) {
+        Application application = ServiceLocator.locate(Application.class, classLoader);
+        if (application != null) {
+            return application;
+        }
+
+        String applicationClassName = System.getProperty(PippoConstants.SYSTEM_PROPERTY_APPLICATION_CLASS_NAME);
+        if (applicationClassName == null) {
+            throw new PippoRuntimeException("Cannot find the application class name");
+        }
+        log.debug("Application class name is '{}'", applicationClassName);
+
+        try {
+            Class<?> applicationClass = classLoader.loadClass(applicationClassName);
+            application = (Application) applicationClass.newInstance();
+        } catch (InstantiationException | ClassNotFoundException | IllegalAccessException e) {
+            throw new PippoRuntimeException(e);
+        }
+
+        return application;
     }
 
     protected boolean isReloadEnabled() {
