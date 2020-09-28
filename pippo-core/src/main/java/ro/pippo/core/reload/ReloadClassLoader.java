@@ -15,6 +15,8 @@
  */
 package ro.pippo.core.reload;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import ro.pippo.core.util.IoUtils;
 
 import java.io.IOException;
@@ -23,10 +25,13 @@ import java.io.InputStream;
 /**
  * A {@link ClassLoader} that loads classes from files.
  * It's used for reloading mechanism.
+ * The strategy used by this class loader is parent last (or child first).
  *
  * @author Decebal Suiu
  */
 public abstract class ReloadClassLoader extends ClassLoader {
+
+    private static final Logger log = LoggerFactory.getLogger(ReloadClassLoader.class);
 
     private final String rootPackageName;
 
@@ -42,9 +47,12 @@ public abstract class ReloadClassLoader extends ClassLoader {
 
     @Override
     public Class<?> loadClass(String className, boolean resolve) throws ClassNotFoundException {
+        log.trace("Loading class {}", className);
         if (isTarget(className)) {
+            log.trace("It's in target");
             Class<?> clazz = findLoadedClass(className);
             if (clazz != null) {
+                log.trace("It's already loaded class");
                 return clazz;
             }
 
@@ -62,13 +70,15 @@ public abstract class ReloadClassLoader extends ClassLoader {
 
             clazz = defineClass(className, resolve);
             if (clazz != null) {
+                log.debug("Class {} loaded", className);
                 return clazz;
             }
         }
 
+        log.trace("Load class using parent class loader");
+
         return super.loadClass(className, resolve);
     }
-
 
     protected Class<?> defineClass(String className, boolean resolve) {
         String path = className.replace('.', '/') + ".class";
