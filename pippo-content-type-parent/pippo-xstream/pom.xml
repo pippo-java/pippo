@@ -15,7 +15,7 @@
     <description>XStream integration</description>
 
     <properties>
-        <xstream.version>1.4.11.1</xstream.version>
+        <xstream.version>1.4.13-java7</xstream.version>
     </properties>
 
     <dependencies>
