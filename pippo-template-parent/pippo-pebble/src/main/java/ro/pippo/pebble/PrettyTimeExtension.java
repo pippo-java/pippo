@@ -23,6 +23,7 @@ import com.mitchellbosecke.pebble.template.EvaluationContext;
 import com.mitchellbosecke.pebble.template.PebbleTemplate;
 import org.ocpsoft.prettytime.PrettyTime;
 
+import java.time.ZonedDateTime;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
@@ -79,6 +80,8 @@ public class PrettyTimeExtension extends AbstractExtension {
                 return ((Calendar) value).getTime();
             } else if (value instanceof Long) {
                 return new Date((Long) value);
+            } else if (value instanceof ZonedDateTime) {
+                return Date.from(((ZonedDateTime) value).toInstant());
             } else {
                 throw new RuntimeException("Formattable object for PrettyTime not found!");
             }
