@@ -15,7 +15,7 @@
     <description>Pippo SnakeYAML integration</description>
 
     <properties>
-        <snakeyaml.version>1.17</snakeyaml.version>
+        <snakeyaml.version>1.26</snakeyaml.version>
     </properties>
 
     <dependencies>
