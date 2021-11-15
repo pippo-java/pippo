@@ -69,6 +69,7 @@ public class TomcatServer extends AbstractWebServer<TomcatSettings> {
         wrapper.setName(name);
         wrapper.setLoadOnStartup(1);
         wrapper.setServlet(pippoServlet);
+        wrapper.setMultipartConfigElement(createMultipartConfigElement());
         context.addChild(wrapper);
         context.addServletMapping(pippoFilterPath, name);
 
