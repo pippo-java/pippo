@@ -5,10 +5,26 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 ### [Unreleased][unreleased]
 
 #### Fixed
+- [#560]: Hot reloading does not work
+- Enable reloading by default only in DEV mode
 
 #### Changed
+- Update slf4j to 1.7.25
+- [#550]: JaxbEngine improvements
+- [#552]: ContentTypeEngines: Change the log level from debug to info
+- [#553]: PippoRule: Make methods startPippo and stopPippo public
+- Update JUnit to 4.13.1
+- Update Jetty to 9.4.35
+- Update Tomcat to 8.5.61
+- Update Snakeyaml to 1.26
 
 #### Added
+- [#555]: Add possibility to disable suffix for Pebble loader
+- [#558]: Add method CorsHandler.details
+- [#559]: Add http status constant TOO_MANY_REQUESTS = 429
+- Use a ThreadFactory with a prefix for ReloadWatcher executor
+- Improve reload configurability
+- Add support for ZonedDateTime in Pebble's PrettyTimeExtension
 
 #### Removed
 
@@ -595,6 +611,13 @@ Initial release.
 [0.3.0]: https://github.com/decebals/pippo/compare/pippo-parent-0.2.0...pippo-parent-0.3.0
 [0.2.0]: https://github.com/decebals/pippo/compare/pippo-parent-0.1.0...pippo-parent-0.2.0
 
+[#560]: https://github.com/pippo-java/pippo/issues/506
+[#559]: https://github.com/pippo-java/pippo/pull/559
+[#558]: https://github.com/pippo-java/pippo/pull/558
+[#555]: https://github.com/pippo-java/pippo/pull/555
+[#553]: https://github.com/pippo-java/pippo/pull/553
+[#552]: https://github.com/pippo-java/pippo/pull/552
+[#550]: https://github.com/pippo-java/pippo/pull/550
 [#545]: https://github.com/pippo-java/pippo/issues/545
 [#544]: https://github.com/pippo-java/pippo/pull/544
 [#542]: https://github.com/pippo-java/pippo/pull/542
