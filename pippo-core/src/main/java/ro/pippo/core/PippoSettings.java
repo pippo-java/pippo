@@ -105,6 +105,10 @@ public class PippoSettings {
 
     private volatile long lastModified;
 
+    public PippoSettings() {
+        this(RuntimeMode.getCurrent());
+    }
+
     public PippoSettings(RuntimeMode runtimeMode) {
         this.runtimeMode = runtimeMode;
         this.propertiesUrl = getPropertiesUrl();

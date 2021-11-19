@@ -22,6 +22,7 @@ import ro.pippo.core.PippoConstants;
 import ro.pippo.core.PippoSettings;
 import ro.pippo.core.route.RouteContext;
 
+import javax.inject.Inject;
 import java.text.ParseException;
 import java.util.Date;
 
@@ -34,6 +35,7 @@ public class HttpCacheToolkit {
 
     private final PippoSettings pippoSettings;
 
+    @Inject
     public HttpCacheToolkit(PippoSettings pippoSettings) {
         this.pippoSettings = pippoSettings;
     }

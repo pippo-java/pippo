@@ -20,6 +20,7 @@ import org.slf4j.LoggerFactory;
 import ro.pippo.core.route.RouteContext;
 import ro.pippo.core.util.StringUtils;
 
+import javax.inject.Inject;
 import javax.servlet.http.Cookie;
 import java.util.List;
 import java.util.Locale;
@@ -48,6 +49,7 @@ public class Languages {
 
     private final Map<String, String> languageLookup;
 
+    @Inject
     public Languages(PippoSettings pippoSettings) {
         this.pippoSettings = pippoSettings;
 

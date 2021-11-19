@@ -24,6 +24,7 @@ import ro.pippo.core.route.Route;
 import ro.pippo.core.route.RouteGroup;
 import ro.pippo.core.util.ServiceLocator;
 
+import javax.inject.Inject;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -50,6 +51,7 @@ public class Pippo implements ResourceRouting, ReloadWatcher.Listener {
         addShutdownHook();
     }
 
+    @Inject
     public Pippo(Application application) {
         this.application = application;
         log.debug("Application '{}'", application);
@@ -130,6 +132,7 @@ public class Pippo implements ResourceRouting, ReloadWatcher.Listener {
      * @param server
      * @return
      */
+    @Inject
     public Pippo setServer(WebServer server) {
         this.server = server;
         this.server.init(getApplication());

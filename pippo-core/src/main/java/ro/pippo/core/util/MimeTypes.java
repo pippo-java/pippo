@@ -20,6 +20,7 @@ import org.slf4j.LoggerFactory;
 import ro.pippo.core.PippoConstants;
 import ro.pippo.core.PippoSettings;
 
+import javax.inject.Inject;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.List;
@@ -39,6 +40,7 @@ public class MimeTypes {
 
     private final PippoSettings pippoSettings;
 
+    @Inject
     public MimeTypes(PippoSettings pippoSettings) {
         this.pippoSettings = pippoSettings;
         this.extPattern = Pattern.compile("^.*\\.([^.]+)$");
