@@ -15,7 +15,6 @@
 
     <modules>
         <module>pippo-jetty</module>
-        <module>pippo-tjws</module>
         <module>pippo-tomcat</module>
         <module>pippo-undertow</module>
     </modules>
