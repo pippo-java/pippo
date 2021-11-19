@@ -67,13 +67,11 @@ public class Application implements ResourceRouting {
     @Inject
     private HttpCacheToolkit httpCacheToolkit;
 
-    @Inject
     private TemplateEngine templateEngine;
 
     @Inject
     private ContentTypeEngines engines;
 
-    @Inject
     protected Router router;
 
     @Inject
@@ -96,7 +94,6 @@ public class Application implements ResourceRouting {
 
     private Map<String, Object> locals;
 
-    @Inject
     private RouteHandler notFoundRouteHandler;
 
     @Inject
@@ -379,6 +376,7 @@ public class Application implements ResourceRouting {
      *
      * @param routeHandler
      */
+    @Inject
     public void setNotFoundRouteHandler(RouteHandler routeHandler) {
         this.notFoundRouteHandler = routeHandler;
     }
@@ -393,7 +391,7 @@ public class Application implements ResourceRouting {
     }
 
     public void addWebSocket(String uriPattern, WebSocketHandler webSocketHandler) {
-        webSocketRouter.addRoute(uriPattern, webSocketHandler);
+        getWebSocketRouter().addRoute(uriPattern, webSocketHandler);
     }
 
     public WebSocketRouter getWebSocketRouter() {
