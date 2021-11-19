@@ -33,6 +33,9 @@ public class WebServerSettings implements Serializable {
     private String keystorePassword;
     private String truststoreFile;
     private String truststorePassword;
+    private long uploadMaxFileSize = -1L;
+    private String uploadLocation = System.getProperty("java.io.tmpdir");
+    private int uploadFileSizeThreshold = 1 * 1024 * 1024; // 1 MB
 
     public WebServerSettings(PippoSettings pippoSettings) {
         this.port = pippoSettings.getInteger(PippoConstants.SETTING_SERVER_PORT, DEFAULT_PORT);
@@ -42,6 +45,9 @@ public class WebServerSettings implements Serializable {
         this.keystorePassword = pippoSettings.getString(PippoConstants.SETTING_SERVER_KEYSTORE_PASSWORD, keystorePassword);
         this.truststoreFile = pippoSettings.getString(PippoConstants.SETTING_SERVER_TRUSTSTORE_FILE, truststoreFile);
         this.truststorePassword = pippoSettings.getString(PippoConstants.SETTING_SERVER_TRUSTSTORE_PASSWORD, truststorePassword);
+        this.uploadMaxFileSize = pippoSettings.getLong(PippoConstants.SETTING_UPLOAD_MAX_FILE_SIZE, uploadMaxFileSize);
+        this.uploadLocation = pippoSettings.getString(PippoConstants.SETTING_UPLOAD_MAX_FILE_SIZE, uploadLocation);
+        this.uploadFileSizeThreshold = pippoSettings.getInteger(PippoConstants.SETTING_UPLOAD_MAX_FILE_SIZE, uploadFileSizeThreshold);
     }
 
     public String getHost() {
@@ -110,6 +116,54 @@ public class WebServerSettings implements Serializable {
 
     public WebServerSettings truststorePassword(String truststorePassword) {
         this.truststorePassword = truststorePassword;
+
+        return this;
+    }
+
+    /**
+     * The maximum size allowed for uploaded files.
+     */
+    public long getUploadMaxFileSize() {
+        return uploadMaxFileSize;
+    }
+
+    /**
+     * The maximum size allowed for uploaded files.
+     */
+    public WebServerSettings uploadMaxFileSize(long uploadMaxFileSize) {
+        this.uploadMaxFileSize = uploadMaxFileSize;
+
+        return this;
+    }
+
+    /**
+     * The directory location where files will be stored.
+     */
+    public String getUploadLocation() {
+        return uploadLocation;
+    }
+
+    /**
+     * The directory location where files will be stored.
+     */
+    public WebServerSettings uploadLocation(String uploadLocation) {
+        this.uploadLocation = uploadLocation;
+
+        return this;
+    }
+
+    /**
+     * The size threshold after which files will be written to disk.
+     */
+    public int getUploadFileSizeThreshold() {
+        return uploadFileSizeThreshold;
+    }
+
+    /**
+     * The size threshold after which files will be written to disk.
+     */
+    public WebServerSettings uploadFileSizeThreshold(int uploadFileSizeThreshold) {
+        this.uploadFileSizeThreshold = uploadFileSizeThreshold;
 
         return this;
     }

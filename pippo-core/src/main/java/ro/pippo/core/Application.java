@@ -66,9 +66,6 @@ public class Application implements ResourceRouting {
 
     private List<Initializer> initializers;
 
-    private String uploadLocation = System.getProperty("java.io.tmpdir");
-    private long maximumUploadSize = -1L;
-
     private RoutePreDispatchListenerList routePreDispatchListeners;
     private RoutePostDispatchListenerList routePostDispatchListeners;
 
@@ -281,32 +278,6 @@ public class Application implements ResourceRouting {
     protected RequestResponseFactory createRequestResponseFactory() {
 //        return new RequestResponseFactory(this);
         return new GZipRequestResponseFactory(this);
-    }
-
-    /**
-     * The directory location where files will be stored.
-     *
-     * @return
-     */
-    public String getUploadLocation() {
-        return uploadLocation;
-    }
-
-    public void setUploadLocation(String uploadLocation) {
-        this.uploadLocation = uploadLocation;
-    }
-
-    /**
-     * Gets the maximum size allowed for uploaded files.
-     *
-     * @return
-     */
-    public long getMaximumUploadSize() {
-        return maximumUploadSize;
-    }
-
-    public void setMaximumUploadSize(long maximumUploadSize) {
-        this.maximumUploadSize = maximumUploadSize;
     }
 
     public RoutePreDispatchListenerList getRoutePreDispatchListeners() {

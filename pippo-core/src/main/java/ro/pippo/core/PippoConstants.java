@@ -75,6 +75,12 @@ public final class PippoConstants {
 
     public static final String SETTING_SERVER_TRUSTSTORE_PASSWORD = "server.truststorePassword";
 
+    public static final String SETTING_UPLOAD_MAX_FILE_SIZE = "upload.maxFileSize";
+
+    public static final String SETTING_UPLOAD_LOCATION = "upload.location";
+
+    public static final String SETTING_UPLOAD_FILE_SIZE_THRESHOLD = "upload.fileSizeThreshold";
+
     public static final String REQUEST_PARAMETER_LANG = "lang";
 
     public static final String REQUEST_PARAMETER_LOCALE = "locale";
