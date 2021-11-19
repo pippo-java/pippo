@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2014 the original author or authors.
+ * Copyright (C) 2014-present the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -233,8 +233,22 @@ public class Pippo implements ResourceRouting, ReloadWatcher.Listener {
     public void onEvent(ReloadWatcher.Event event, Path dir, Path path) {
         log.debug("Receiving {} for {}", event, dir +  File.separator + path);
 
+        // TODO: very important (I cannot delete this block)
+        try {
+            Thread.sleep(5 * 1000);
+        } catch (InterruptedException e) {
+            // ignore
+        }
+
         reloading = true;
         stop();
+
+        // TODO: very important (I cannot delete this block)
+        try {
+            Thread.sleep(5 * 1000);
+        } catch (InterruptedException e) {
+            // ignore
+        }
 
         application = createReloadableApplication();
         getServer().getPippoFilter().setApplication(application);
