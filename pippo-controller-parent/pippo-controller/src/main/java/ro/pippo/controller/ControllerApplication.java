@@ -22,6 +22,7 @@ import ro.pippo.core.Application;
 import ro.pippo.core.PippoSettings;
 import ro.pippo.core.util.ServiceLocator;
 
+import javax.inject.Inject;
 import java.util.Arrays;
 import java.util.List;
 
@@ -32,17 +33,25 @@ public class ControllerApplication extends Application {
 
     private static final Logger log = LoggerFactory.getLogger(ControllerApplication.class);
 
+    @Inject
     private ControllerInstantiationListenerList controllerInstantiationListeners;
+
+    @Inject
     private ControllerInitializationListenerList controllerInitializationListeners;
+
+    @Inject
     private ControllerInvokeListenerList controllerInvokeListeners;
 
     private ControllerFactory controllerFactory;
+
+    @Inject
     private List<MethodParameterExtractor> extractors;
 
     public ControllerApplication() {
         super();
     }
 
+    @Inject
     public ControllerApplication(PippoSettings settings) {
         super(settings);
     }
@@ -79,6 +88,7 @@ public class ControllerApplication extends Application {
         return controllerFactory;
     }
 
+    @Inject
     public ControllerApplication setControllerFactory(ControllerFactory controllerFactory) {
         this.controllerFactory = controllerFactory;
         log.debug("Controller factory is '{}'", controllerFactory.getClass().getName());
