@@ -124,11 +124,11 @@ public abstract class AbstractWebServer<T extends WebServerSettings> implements 
     }
 
     protected MultipartConfigElement createMultipartConfigElement() {
-        Application application = getApplication();
-        String location = application.getUploadLocation();
-        long maxFileSize = application.getMaximumUploadSize();
-
-        return new MultipartConfigElement(location, maxFileSize, -1L, 0);
+        return new MultipartConfigElement(
+                getSettings().getUploadLocation(),
+                getSettings().getUploadMaxFileSize(),
+                -1L, // the maximum size allowed for multipart/form-data requests
+                getSettings().getUploadFileSizeThreshold());
     }
 
 }
