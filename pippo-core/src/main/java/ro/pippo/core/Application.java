@@ -35,8 +35,8 @@ import ro.pippo.core.util.ServiceLocator;
 import ro.pippo.core.websocket.WebSocketHandler;
 import ro.pippo.core.websocket.WebSocketRouter;
 
+import javax.inject.Inject;
 import javax.servlet.ServletContext;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -52,51 +52,68 @@ public class Application implements ResourceRouting {
 
     private static final Logger log = LoggerFactory.getLogger(Application.class);
 
+    @Inject
     private PippoSettings pippoSettings;
+
+    @Inject
     private Languages languages;
+
+    @Inject
     private Messages messages;
+
+    @Inject
     private MimeTypes mimeTypes;
+
+    @Inject
     private HttpCacheToolkit httpCacheToolkit;
+
+    @Inject
     private TemplateEngine templateEngine;
+
+    @Inject
     private ContentTypeEngines engines;
+
+    @Inject
     protected Router router;
+
+    @Inject
     private ErrorHandler errorHandler;
+
+    @Inject
     private RequestResponseFactory requestResponseFactory;
+
+    @Inject
     private ServletContext servletContext;
 
+    @Inject
     private List<Initializer> initializers;
 
+    @Inject
     private RoutePreDispatchListenerList routePreDispatchListeners;
+
+    @Inject
     private RoutePostDispatchListenerList routePostDispatchListeners;
 
     private Map<String, Object> locals;
+
+    @Inject
     private RouteHandler notFoundRouteHandler;
 
+    @Inject
     private WebSocketRouter webSocketRouter;
 
     public Application() {
         this(new PippoSettings(RuntimeMode.getCurrent()));
     }
 
+    @Inject
     public Application(PippoSettings settings) {
-        this.pippoSettings = settings;
-        this.languages = new Languages(settings);
-        this.messages = new Messages(languages);
-        this.mimeTypes = new MimeTypes(settings);
-        this.httpCacheToolkit = new HttpCacheToolkit(settings);
-        this.engines = new ContentTypeEngines();
-        this.initializers = new ArrayList<>();
-        this.webSocketRouter = new WebSocketRouter();
-
-        registerContentTypeEngine(TextPlainEngine.class);
+        pippoSettings = settings;
     }
 
     public final void init() {
-        // add initializers
-        initializers.addAll(ServiceLocator.locateAll(Initializer.class));
-
         // call each initializer
-        for (Initializer initializer : initializers) {
+        for (Initializer initializer : getInitializers()) {
             log.debug("Initializing '{}'", initializer.getClass().getName());
             try {
                 initializer.init(this);
@@ -119,7 +136,7 @@ public class Application implements ResourceRouting {
 
     public final void destroy() {
         onDestroy();
-        for (Initializer initializer : initializers) {
+        for (Initializer initializer : getInitializers()) {
             log.debug("Destroying '{}'", initializer.getClass().getName());
             try {
                 initializer.destroy(this);
@@ -139,34 +156,54 @@ public class Application implements ResourceRouting {
      * The runtime mode. Must currently be either DEV, TEST, or PROD.
      */
     public RuntimeMode getRuntimeMode() {
-        return pippoSettings.getRuntimeMode();
+        return getPippoSettings().getRuntimeMode();
     }
 
     public PippoSettings getPippoSettings() {
+        if (pippoSettings == null) {
+            pippoSettings = new PippoSettings(RuntimeMode.getCurrent());
+        }
+
         return pippoSettings;
     }
 
     public String getApplicationName() {
-        return pippoSettings.getString(PippoConstants.SETTING_APPLICATION_NAME, "");
+        return getPippoSettings().getString(PippoConstants.SETTING_APPLICATION_NAME, "");
     }
 
     public String getApplicationVersion() {
-        return pippoSettings.getString(PippoConstants.SETTING_APPLICATION_VERSION, "");
+        return getPippoSettings().getString(PippoConstants.SETTING_APPLICATION_VERSION, "");
     }
 
     public Languages getLanguages() {
+        if (languages == null) {
+            languages = new Languages(getPippoSettings());
+        }
+
         return languages;
     }
 
     public Messages getMessages() {
+        if (messages == null) {
+            messages = new Messages(getLanguages());
+        }
+
         return messages;
     }
 
     public MimeTypes getMimeTypes() {
+        if (mimeTypes == null) {
+            mimeTypes = new MimeTypes(getPippoSettings());
+        }
+
         return mimeTypes;
     }
 
     public HttpCacheToolkit getHttpCacheToolkit() {
+        if (httpCacheToolkit == null) {
+            httpCacheToolkit = new HttpCacheToolkit(getPippoSettings());
+        }
+
         return httpCacheToolkit;
     }
 
@@ -193,6 +230,7 @@ public class Application implements ResourceRouting {
         return templateEngine;
     }
 
+    @Inject
     public void setTemplateEngine(TemplateEngine templateEngine) {
         templateEngine.init(this);
         this.templateEngine = templateEngine;
@@ -200,22 +238,27 @@ public class Application implements ResourceRouting {
     }
 
     public ContentTypeEngines getContentTypeEngines() {
+        if (engines == null) {
+            engines = new ContentTypeEngines();
+            registerContentTypeEngine(TextPlainEngine.class);
+        }
+
         return engines;
     }
 
     public boolean hasContentTypeEngine(String contentType) {
-        return engines.hasContentTypeEngine(contentType);
+        return getContentTypeEngines().hasContentTypeEngine(contentType);
     }
 
     public void registerContentTypeEngine(Class<? extends ContentTypeEngine> engineClass) {
-        ContentTypeEngine engine = engines.registerContentTypeEngine(engineClass);
+        ContentTypeEngine engine = getContentTypeEngines().registerContentTypeEngine(engineClass);
         if (engine != null) {
             engine.init(this);
         }
     }
 
     public ContentTypeEngine getContentTypeEngine(String contentType) {
-        return engines.getContentTypeEngine(contentType);
+        return getContentTypeEngines().getContentTypeEngine(contentType);
     }
 
     public Router getRouter() {
@@ -226,6 +269,7 @@ public class Application implements ResourceRouting {
         return router;
     }
 
+    @Inject
     public void setRouter(Router router) {
         setRouter(router, true);
     }
@@ -258,6 +302,7 @@ public class Application implements ResourceRouting {
         return errorHandler;
     }
 
+    @Inject
     public void setErrorHandler(ErrorHandler errorHandler) {
         this.errorHandler = errorHandler;
     }
@@ -352,7 +397,19 @@ public class Application implements ResourceRouting {
     }
 
     public WebSocketRouter getWebSocketRouter() {
+        if (webSocketRouter == null) {
+            webSocketRouter = new WebSocketRouter();
+        }
+
         return webSocketRouter;
+    }
+
+    public List<Initializer> getInitializers() {
+        if (initializers == null) {
+            initializers = ServiceLocator.locateAll(Initializer.class);
+        }
+
+        return initializers;
     }
 
     /**
