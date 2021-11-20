@@ -25,6 +25,7 @@ import ro.pippo.core.util.ServiceLocator;
 import javax.inject.Inject;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * @author Decebal Suiu
@@ -34,18 +35,19 @@ public class ControllerApplication extends Application {
     private static final Logger log = LoggerFactory.getLogger(ControllerApplication.class);
 
     @Inject
-    private ControllerInstantiationListenerList controllerInstantiationListeners;
+    private Optional<ControllerInstantiationListenerList> controllerInstantiationListeners;
 
     @Inject
-    private ControllerInitializationListenerList controllerInitializationListeners;
+    private Optional<ControllerInitializationListenerList> controllerInitializationListeners;
 
     @Inject
-    private ControllerInvokeListenerList controllerInvokeListeners;
-
-    private ControllerFactory controllerFactory;
+    private Optional<ControllerInvokeListenerList> controllerInvokeListeners;
 
     @Inject
-    private List<MethodParameterExtractor> extractors;
+    private Optional<ControllerFactory> controllerFactory;
+
+    @Inject
+    private Optional<List<MethodParameterExtractor>> extractors;
 
     public ControllerApplication() {
         super();
@@ -57,40 +59,39 @@ public class ControllerApplication extends Application {
     }
 
     public ControllerInstantiationListenerList getControllerInstantiationListeners() {
-        if (controllerInstantiationListeners == null) {
-            controllerInstantiationListeners = new ControllerInstantiationListenerList();
+        if (!controllerInstantiationListeners.isPresent()) {
+            controllerInstantiationListeners = Optional.of(new ControllerInstantiationListenerList());
         }
 
-        return controllerInstantiationListeners;
+        return controllerInstantiationListeners.get();
     }
 
     public ControllerInitializationListenerList getControllerInitializationListeners() {
-        if (controllerInitializationListeners == null) {
-            controllerInitializationListeners = new ControllerInitializationListenerList();
+        if (!controllerInitializationListeners.isPresent()) {
+            controllerInitializationListeners = Optional.of(new ControllerInitializationListenerList());
         }
 
-        return controllerInitializationListeners;
+        return controllerInitializationListeners.get();
     }
 
     public ControllerInvokeListenerList getControllerInvokeListeners() {
-        if (controllerInvokeListeners == null) {
-            controllerInvokeListeners = new ControllerInvokeListenerList();
+        if (!controllerInvokeListeners.isPresent()) {
+            controllerInvokeListeners = Optional.of(new ControllerInvokeListenerList());
         }
 
-        return controllerInvokeListeners;
+        return controllerInvokeListeners.get();
     }
 
     public ControllerFactory getControllerFactory() {
-        if (controllerFactory == null) {
-            controllerFactory = new DefaultControllerFactory();
+        if (!controllerFactory.isPresent()) {
+            controllerFactory = Optional.of(new DefaultControllerFactory());
         }
 
-        return controllerFactory;
+        return controllerFactory.get();
     }
 
-    @Inject
     public ControllerApplication setControllerFactory(ControllerFactory controllerFactory) {
-        this.controllerFactory = controllerFactory;
+        this.controllerFactory = Optional.of(controllerFactory);
         log.debug("Controller factory is '{}'", controllerFactory.getClass().getName());
 
         return this;
@@ -103,11 +104,11 @@ public class ControllerApplication extends Application {
     }
 
     public List<MethodParameterExtractor> getExtractors() {
-        if (extractors == null) {
-            extractors = ServiceLocator.locateAll(MethodParameterExtractor.class);
+        if (!extractors.isPresent()) {
+            extractors = Optional.of(ServiceLocator.locateAll(MethodParameterExtractor.class));
         }
 
-        return extractors;
+        return extractors.get();
     }
 
     public ControllerApplication addControllers(String... packageNames) {

@@ -40,6 +40,7 @@ import javax.servlet.ServletContext;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 /**
  * Base class for all Pippo applications.
@@ -53,51 +54,50 @@ public class Application implements ResourceRouting {
     private static final Logger log = LoggerFactory.getLogger(Application.class);
 
     @Inject
+    private Optional<Languages> languages;
+
+    @Inject
+    private Optional<Messages> messages;
+
+    @Inject
+    private Optional<MimeTypes> mimeTypes;
+
+    @Inject
+    private Optional<HttpCacheToolkit> httpCacheToolkit;
+
+    @Inject
+    private Optional<ContentTypeEngines> engines;
+
+    @Inject
+    private Optional<RequestResponseFactory> requestResponseFactory;
+
+    @Inject
+    private Optional<List<Initializer>> initializers;
+
+    @Inject
+    private Optional<RoutePreDispatchListenerList> routePreDispatchListeners;
+
+    @Inject
+    private Optional<RoutePostDispatchListenerList> routePostDispatchListeners;
+
+    @Inject
+    private Optional<WebSocketRouter > webSocketRouter;
+
+    @Inject
+    private Optional<TemplateEngine> templateEngine;
+
+    @Inject
+    private Optional<RouteHandler> notFoundRouteHandler;
+
+    @Inject
+    private Optional<Router> router;
+
+    @Inject
+    private Optional<ErrorHandler> errorHandler;
+
     private PippoSettings pippoSettings;
-
-    @Inject
-    private Languages languages;
-
-    @Inject
-    private Messages messages;
-
-    @Inject
-    private MimeTypes mimeTypes;
-
-    @Inject
-    private HttpCacheToolkit httpCacheToolkit;
-
-    private TemplateEngine templateEngine;
-
-    @Inject
-    private ContentTypeEngines engines;
-
-    protected Router router;
-
-    @Inject
-    private ErrorHandler errorHandler;
-
-    @Inject
-    private RequestResponseFactory requestResponseFactory;
-
-    @Inject
     private ServletContext servletContext;
-
-    @Inject
-    private List<Initializer> initializers;
-
-    @Inject
-    private RoutePreDispatchListenerList routePreDispatchListeners;
-
-    @Inject
-    private RoutePostDispatchListenerList routePostDispatchListeners;
-
     private Map<String, Object> locals;
-
-    private RouteHandler notFoundRouteHandler;
-
-    @Inject
-    private WebSocketRouter webSocketRouter;
 
     public Application() {
         this(new PippoSettings(RuntimeMode.getCurrent()));
@@ -173,35 +173,35 @@ public class Application implements ResourceRouting {
     }
 
     public Languages getLanguages() {
-        if (languages == null) {
-            languages = new Languages(getPippoSettings());
+        if (!languages.isPresent()) {
+            languages = Optional.of(new Languages(getPippoSettings()));
         }
 
-        return languages;
+        return languages.get();
     }
 
     public Messages getMessages() {
-        if (messages == null) {
-            messages = new Messages(getLanguages());
+        if (!messages.isPresent()) {
+            messages = Optional.of(new Messages(getLanguages()));
         }
 
-        return messages;
+        return messages.get();
     }
 
     public MimeTypes getMimeTypes() {
-        if (mimeTypes == null) {
-            mimeTypes = new MimeTypes(getPippoSettings());
+        if (!mimeTypes.isPresent()) {
+            mimeTypes = Optional.of(new MimeTypes(getPippoSettings()));
         }
 
-        return mimeTypes;
+        return mimeTypes.get();
     }
 
     public HttpCacheToolkit getHttpCacheToolkit() {
-        if (httpCacheToolkit == null) {
-            httpCacheToolkit = new HttpCacheToolkit(getPippoSettings());
+        if (!httpCacheToolkit.isPresent()) {
+            httpCacheToolkit = Optional.of(new HttpCacheToolkit(getPippoSettings()));
         }
 
-        return httpCacheToolkit;
+        return httpCacheToolkit.get();
     }
 
     /**
@@ -210,7 +210,7 @@ public class Application implements ResourceRouting {
      * @param engineClass
      */
     public void registerTemplateEngine(Class<? extends TemplateEngine> engineClass) {
-        if (templateEngine != null) {
+        if (templateEngine.isPresent()) {
             log.debug("Template engine already registered, ignoring '{}'", engineClass.getName());
             return;
         }
@@ -224,23 +224,22 @@ public class Application implements ResourceRouting {
     }
 
     public TemplateEngine getTemplateEngine() {
-        return templateEngine;
+        return templateEngine.orElse(null);
     }
 
-    @Inject
     public void setTemplateEngine(TemplateEngine templateEngine) {
         templateEngine.init(this);
-        this.templateEngine = templateEngine;
+        this.templateEngine = Optional.of(templateEngine);
         log.debug("Template engine is '{}'", templateEngine.getClass().getName());
     }
 
     public ContentTypeEngines getContentTypeEngines() {
-        if (engines == null) {
-            engines = new ContentTypeEngines();
+        if (!engines.isPresent()) {
+            engines = Optional.of(new ContentTypeEngines());
             registerContentTypeEngine(TextPlainEngine.class);
         }
 
-        return engines;
+        return engines.get();
     }
 
     public boolean hasContentTypeEngine(String contentType) {
@@ -259,14 +258,13 @@ public class Application implements ResourceRouting {
     }
 
     public Router getRouter() {
-        if (router == null) {
-            router = new DefaultRouter();
+        if (!router.isPresent()) {
+            router = Optional.of(new DefaultRouter());
         }
 
-        return router;
+        return router.get();
     }
 
-    @Inject
     public void setRouter(Router router) {
         setRouter(router, true);
     }
@@ -274,11 +272,11 @@ public class Application implements ResourceRouting {
     public void setRouter(Router router, boolean preserveOldTransformers) {
         if (preserveOldTransformers && (router != null)) {
             // preserve route transformers already registered
-            List<RouteTransformer> transformers = this.router.getRouteTransformers();
+            List<RouteTransformer> transformers = this.router.get().getRouteTransformers();
             transformers.forEach(router::addRouteTransformer);
         }
 
-        this.router = router;
+        this.router = Optional.of(router);
     }
 
     @Override
@@ -292,24 +290,23 @@ public class Application implements ResourceRouting {
     }
 
     public ErrorHandler getErrorHandler() {
-        if (errorHandler == null) {
-            errorHandler = new DefaultErrorHandler(this);
+        if (!errorHandler.isPresent()) {
+            errorHandler = Optional.of(new DefaultErrorHandler(this));
         }
 
-        return errorHandler;
+        return errorHandler.get();
     }
 
-    @Inject
     public void setErrorHandler(ErrorHandler errorHandler) {
-        this.errorHandler = errorHandler;
+        this.errorHandler = Optional.of(errorHandler);
     }
 
     public final RequestResponseFactory getRequestResponseFactory() {
-        if (requestResponseFactory == null) {
-            requestResponseFactory = createRequestResponseFactory();
+        if (!requestResponseFactory.isPresent()) {
+            requestResponseFactory = Optional.of(createRequestResponseFactory());
         }
 
-        return requestResponseFactory;
+        return requestResponseFactory.get();
     }
 
     /**
@@ -323,19 +320,19 @@ public class Application implements ResourceRouting {
     }
 
     public RoutePreDispatchListenerList getRoutePreDispatchListeners() {
-        if (routePreDispatchListeners == null) {
-            routePreDispatchListeners = new RoutePreDispatchListenerList();
+        if (!routePreDispatchListeners.isPresent()) {
+            routePreDispatchListeners = Optional.of(new RoutePreDispatchListenerList());
         }
 
-        return routePreDispatchListeners;
+        return routePreDispatchListeners.get();
     }
 
     public RoutePostDispatchListenerList getRoutePostDispatchListeners() {
-        if (routePostDispatchListeners == null) {
-            routePostDispatchListeners = new RoutePostDispatchListenerList();
+        if (!routePostDispatchListeners.isPresent()) {
+            routePostDispatchListeners = Optional.of(new RoutePostDispatchListenerList());
         }
 
-        return routePostDispatchListeners;
+        return routePostDispatchListeners.get();
     }
 
     public Map<String, Object> getLocals() {
@@ -376,9 +373,8 @@ public class Application implements ResourceRouting {
      *
      * @param routeHandler
      */
-    @Inject
     public void setNotFoundRouteHandler(RouteHandler routeHandler) {
-        this.notFoundRouteHandler = routeHandler;
+        this.notFoundRouteHandler = Optional.of(routeHandler);
     }
 
     /**
@@ -387,7 +383,7 @@ public class Application implements ResourceRouting {
      * @return
      */
     public RouteHandler getNotFoundRouteHandler() {
-        return notFoundRouteHandler;
+        return notFoundRouteHandler.orElse(null);
     }
 
     public void addWebSocket(String uriPattern, WebSocketHandler webSocketHandler) {
@@ -395,25 +391,25 @@ public class Application implements ResourceRouting {
     }
 
     public WebSocketRouter getWebSocketRouter() {
-        if (webSocketRouter == null) {
-            webSocketRouter = new WebSocketRouter();
+        if (!webSocketRouter.isPresent()) {
+            webSocketRouter = Optional.of(new WebSocketRouter());
         }
 
-        return webSocketRouter;
+        return webSocketRouter.get();
     }
 
     public List<Initializer> getInitializers() {
-        if (initializers == null) {
-            initializers = ServiceLocator.locateAll(Initializer.class);
+        if (!initializers.isPresent()) {
+            initializers = Optional.of(ServiceLocator.locateAll(Initializer.class));
         }
 
-        return initializers;
+        return initializers.get();
     }
 
     /**
      * Returns not null only in the context of the web layer (on a HTTP request).
      * It cannot be useful in a service (server side business layer).
-     * For example if want to have access to PippoSettings from a service you must to inject PippoSettings
+     * For example if you want to have access to PippoSettings from a service you must inject PippoSettings
      * in that service and not to use Application.get().getPippoSettings().
      *
      * @return The application instance or null
