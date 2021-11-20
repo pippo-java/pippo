@@ -35,19 +35,19 @@ public class ControllerApplication extends Application {
     private static final Logger log = LoggerFactory.getLogger(ControllerApplication.class);
 
     @Inject
-    private Optional<ControllerInstantiationListenerList> controllerInstantiationListeners;
+    private Optional<ControllerInstantiationListenerList> controllerInstantiationListeners = Optional.empty();
 
     @Inject
-    private Optional<ControllerInitializationListenerList> controllerInitializationListeners;
+    private Optional<ControllerInitializationListenerList> controllerInitializationListeners = Optional.empty();
 
     @Inject
-    private Optional<ControllerInvokeListenerList> controllerInvokeListeners;
+    private Optional<ControllerInvokeListenerList> controllerInvokeListeners = Optional.empty();
 
     @Inject
-    private Optional<ControllerFactory> controllerFactory;
+    private Optional<ControllerFactory> controllerFactory = Optional.empty();
 
     @Inject
-    private Optional<List<MethodParameterExtractor>> extractors;
+    private Optional<List<MethodParameterExtractor>> extractors = Optional.empty();
 
     public ControllerApplication() {
         super();

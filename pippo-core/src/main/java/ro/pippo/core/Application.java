@@ -54,46 +54,46 @@ public class Application implements ResourceRouting {
     private static final Logger log = LoggerFactory.getLogger(Application.class);
 
     @Inject
-    private Optional<Languages> languages;
+    private Optional<Languages> languages = Optional.empty();
 
     @Inject
-    private Optional<Messages> messages;
+    private Optional<Messages> messages = Optional.empty();
 
     @Inject
-    private Optional<MimeTypes> mimeTypes;
+    private Optional<MimeTypes> mimeTypes = Optional.empty();
 
     @Inject
-    private Optional<HttpCacheToolkit> httpCacheToolkit;
+    private Optional<HttpCacheToolkit> httpCacheToolkit = Optional.empty();
 
     @Inject
-    private Optional<ContentTypeEngines> engines;
+    private Optional<ContentTypeEngines> engines = Optional.empty();
 
     @Inject
-    private Optional<RequestResponseFactory> requestResponseFactory;
+    private Optional<RequestResponseFactory> requestResponseFactory = Optional.empty();
 
     @Inject
-    private Optional<List<Initializer>> initializers;
+    private Optional<List<Initializer>> initializers = Optional.empty();
 
     @Inject
-    private Optional<RoutePreDispatchListenerList> routePreDispatchListeners;
+    private Optional<RoutePreDispatchListenerList> routePreDispatchListeners = Optional.empty();
 
     @Inject
-    private Optional<RoutePostDispatchListenerList> routePostDispatchListeners;
+    private Optional<RoutePostDispatchListenerList> routePostDispatchListeners = Optional.empty();
 
     @Inject
-    private Optional<WebSocketRouter > webSocketRouter;
+    private Optional<WebSocketRouter > webSocketRouter = Optional.empty();
 
     @Inject
-    private Optional<TemplateEngine> templateEngine;
+    private Optional<TemplateEngine> templateEngine = Optional.empty();
 
     @Inject
-    private Optional<RouteHandler<?>> notFoundRouteHandler;
+    private Optional<RouteHandler<?>> notFoundRouteHandler = Optional.empty();
 
     @Inject
-    private Optional<Router> router;
+    private Optional<Router> router = Optional.empty();
 
     @Inject
-    private Optional<ErrorHandler> errorHandler;
+    private Optional<ErrorHandler> errorHandler = Optional.empty();
 
     private PippoSettings pippoSettings;
     private ServletContext servletContext;
