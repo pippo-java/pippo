@@ -40,6 +40,7 @@ import javax.servlet.ServletContext;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 
 /**
@@ -270,9 +271,10 @@ public class Application implements ResourceRouting {
     }
 
     public void setRouter(Router router, boolean preserveOldTransformers) {
-        if (preserveOldTransformers && (router != null)) {
+        Objects.requireNonNull(router);
+        if (preserveOldTransformers) {
             // preserve route transformers already registered
-            List<RouteTransformer> transformers = this.router.get().getRouteTransformers();
+            List<RouteTransformer> transformers = getRouter().getRouteTransformers();
             transformers.forEach(router::addRouteTransformer);
         }
 
@@ -373,7 +375,7 @@ public class Application implements ResourceRouting {
      *
      * @param routeHandler
      */
-    public void setNotFoundRouteHandler(RouteHandler routeHandler) {
+    public void setNotFoundRouteHandler(RouteHandler<?> routeHandler) {
         this.notFoundRouteHandler = Optional.of(routeHandler);
     }
 
