@@ -87,7 +87,7 @@ public class Application implements ResourceRouting {
     private Optional<TemplateEngine> templateEngine;
 
     @Inject
-    private Optional<RouteHandler> notFoundRouteHandler;
+    private Optional<RouteHandler<?>> notFoundRouteHandler;
 
     @Inject
     private Optional<Router> router;
@@ -382,7 +382,7 @@ public class Application implements ResourceRouting {
      *
      * @return
      */
-    public RouteHandler getNotFoundRouteHandler() {
+    public RouteHandler<?> getNotFoundRouteHandler() {
         return notFoundRouteHandler.orElse(null);
     }
 
