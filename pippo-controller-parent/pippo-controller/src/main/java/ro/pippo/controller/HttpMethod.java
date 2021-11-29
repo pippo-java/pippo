@@ -32,51 +32,51 @@ public @interface HttpMethod {
     /**
      * HTTP GET controllerMethod.
      */
-    public static final String GET = "GET";
+    String GET = "GET";
 
     /**
      * HTTP PATCH controllerMethod.
      */
-    public static final String PATCH = "PATCH";
+    String PATCH = "PATCH";
 
     /**
      * HTTP POST controllerMethod.
      */
-    public static final String POST = "POST";
+    String POST = "POST";
 
     /**
      * HTTP PUT controllerMethod.
      */
-    public static final String PUT = "PUT";
+    String PUT = "PUT";
 
     /**
      * HTTP DELETE controllerMethod.
      */
-    public static final String DELETE = "DELETE";
+    String DELETE = "DELETE";
 
     /**
      * HTTP HEAD controllerMethod.
      */
-    public static final String HEAD = "HEAD";
+    String HEAD = "HEAD";
 
     /**
      * HTTP OPTIONS controllerMethod.
      */
-    public static final String OPTIONS = "OPTIONS";
+    String OPTIONS = "OPTIONS";
 
     /**
      * ANY filter.
      */
-    public static final String ANY = "ANY";
+    String ANY = "ANY";
 
     /**
      * @deprecated Replaced by {@link #ANY}.
      */
     @Deprecated
-    public static final String ALL = ANY;
+    String ALL = ANY;
 
     /**
-     * Specifies the name of a HTTP controllerMethod. E.g. "GET".
+     * Specifies the name of an HTTP controllerMethod. E.g. "GET".
      */
     String value();
 
