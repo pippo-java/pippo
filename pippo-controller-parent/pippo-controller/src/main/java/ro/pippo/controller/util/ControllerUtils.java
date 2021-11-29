@@ -79,34 +79,6 @@ public class ControllerUtils {
         return suffixes;
     }
 
-    // TODO
-    /*
-    public static Collection<Return> getReturns(Method controllerMethod) {
-        Map<Integer, Return> returns = new TreeMap<>();
-
-        if (controllerMethod.getDeclaringClass().isAnnotationPresent(Returns.class)) {
-            for (Return aReturn : controllerMethod.getDeclaringClass().getAnnotation(Returns.class).value()) {
-                returns.put(aReturn.code(), aReturn);
-            }
-        }
-        if (controllerMethod.getDeclaringClass().isAnnotationPresent(Return.class)) {
-            Return aReturn = controllerMethod.getDeclaringClass().getAnnotation(Return.class);
-            returns.put(aReturn.code(), aReturn);
-        }
-        if (controllerMethod.isAnnotationPresent(Returns.class)) {
-            for (Return aReturn : controllerMethod.getAnnotation(Returns.class).value()) {
-                returns.put(aReturn.code(), aReturn);
-            }
-        }
-        if (controllerMethod.isAnnotationPresent(Return.class)) {
-            Return aReturn = controllerMethod.getAnnotation(Return.class);
-            returns.put(aReturn.code(), aReturn);
-        }
-
-        return returns.values();
-    }
-    */
-
     /**
      * Returns the name of a parameter.
      *
