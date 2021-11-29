@@ -15,12 +15,16 @@
  */
 package ro.pippo.weld;
 
-import com.jayway.restassured.RestAssured;
 import org.jboss.weld.environment.se.Weld;
 import org.junit.ClassRule;
 import org.junit.Test;
 import ro.pippo.controller.Controller;
 import ro.pippo.controller.ControllerApplication;
+import ro.pippo.controller.ControllerFactory;
+import ro.pippo.controller.ControllerHandlerFactory;
+import ro.pippo.controller.ControllerRouteFactory;
+import ro.pippo.controller.DefaultControllerHandlerFactory;
+import ro.pippo.controller.DefaultControllerRouteFactory;
 import ro.pippo.controller.GET;
 import ro.pippo.controller.Path;
 import ro.pippo.test.PippoRule;
@@ -46,8 +50,7 @@ public class ControllerInterceptorTest extends PippoTest {
 
     @Test
     public void testControllerWithInterceptor() {
-        RestAssured.when().get("/")
-            .then().statusCode(200);
+        when().get("/").then().statusCode(200);
     }
 
     @Inherited
@@ -89,7 +92,13 @@ public class ControllerInterceptorTest extends PippoTest {
 
         @Override
         protected void onInit() {
-            setControllerFactory(new WeldControllerFactory(new Weld().initialize()));
+            ControllerFactory controllerFactory = new WeldControllerFactory(new Weld().initialize());
+            ControllerHandlerFactory controllerHandlerFactory = new DefaultControllerHandlerFactory()
+                .setControllerFactory(controllerFactory);
+            ControllerRouteFactory controllerRouteFactory = new DefaultControllerRouteFactory()
+                .setControllerHandlerFactory(controllerHandlerFactory);
+            setControllerRouteFactory(controllerRouteFactory);
+
             addControllers(ControllerWithInterceptor.class);
         }
 

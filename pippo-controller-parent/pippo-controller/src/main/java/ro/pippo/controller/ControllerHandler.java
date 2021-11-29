@@ -30,6 +30,7 @@ import ro.pippo.core.route.RouteContext;
 import ro.pippo.core.route.RouteHandler;
 import ro.pippo.core.route.RouteMatch;
 import ro.pippo.core.util.LangUtils;
+import ro.pippo.core.util.ServiceLocator;
 import ro.pippo.core.util.StringUtils;
 
 import java.io.File;
@@ -46,6 +47,10 @@ import java.util.TreeSet;
 
 /**
  * It's a {@link RouteHandler} that executes the controller's methods.
+ * You can customize {@link ContentTypeEngines}, {@link ControllerFactory}, {@link MethodParameterExtractor}s.
+ * By default, the {@link MethodParameterExtractor}s are obtained via {@link java.util.ServiceLoader}.
+ * {@link DefaultControllerFactory} is used if a custom {@link ControllerFactory} is not supplied
+ * via {@link ControllerHandler::setControllerFactory}.
  *
  * @author Decebal Suiu
  * @author James Moger
@@ -57,31 +62,28 @@ public class ControllerHandler implements RouteHandler {
     private final Class<? extends Controller> controllerClass;
     private final Method controllerMethod;
 
-    private final ControllerApplication application;
+    private ControllerFactory controllerFactory;
 
     private final List<String> declaredConsumes;
     private final List<String> declaredProduces;
     private final boolean isNoCache;
 
-    private List<RouteHandler> interceptors;
+    private List<RouteHandler<?>> interceptors;
+    private List<MethodParameterExtractor> availableExtractors;
     private MethodParameterExtractor[] extractors;
 
     private Controller controller;
 
     @SuppressWarnings("unchecked")
-    public ControllerHandler(ControllerApplication application, Method controllerMethod) {
-        this.application = application;
-
+    public ControllerHandler(ContentTypeEngines contentTypeEngines, Method controllerMethod) {
         this.controllerClass = (Class<? extends Controller>) controllerMethod.getDeclaringClass();
         this.controllerMethod = controllerMethod;
 
-        ContentTypeEngines engines = application.getContentTypeEngines();
-
         this.declaredConsumes = ControllerUtils.getConsumes(controllerMethod);
-        validateConsumes(engines.getContentTypes());
+        validateConsumes(contentTypeEngines.getContentTypes());
 
         this.declaredProduces = ControllerUtils.getProduces(controllerMethod);
-        validateProduces(engines.getContentTypes());
+        validateProduces(contentTypeEngines.getContentTypes());
 
         this.isNoCache = ClassUtils.getAnnotation(controllerMethod, NoCache.class) != null;
 
@@ -173,9 +175,37 @@ public class ControllerHandler implements RouteHandler {
         }
     }
 
+    public List<MethodParameterExtractor> getMethodParameterExtractors() {
+        if (availableExtractors == null) {
+            availableExtractors = ServiceLocator.locateAll(MethodParameterExtractor.class);
+        }
+
+        return availableExtractors;
+    }
+
+    public ControllerHandler setMethodParameterExtractors(List<MethodParameterExtractor> extractors) {
+        this.availableExtractors = extractors;
+
+        return this;
+    }
+
+    public ControllerFactory getControllerFactory() {
+        if (controllerFactory == null) {
+            controllerFactory = new DefaultControllerFactory();
+        }
+
+        return controllerFactory;
+    }
+
+    public ControllerHandler setControllerFactory(ControllerFactory controllerFactory) {
+        this.controllerFactory = controllerFactory;
+
+        return this;
+    }
+
     protected Controller getController() {
         if (controller == null) {
-            return application.getControllerFactory().createController(controllerClass);
+            return getControllerFactory().createController(controllerClass);
         }
 
         return controller;
@@ -207,7 +237,7 @@ public class ControllerHandler implements RouteHandler {
         extractors = new MethodParameterExtractor[parameters.length];
         for (int i = 0; i < parameters.length; i++) {
             MethodParameter parameter = new MethodParameter(controllerMethod, i);
-            MethodParameterExtractor extractor = application.getExtractors().stream()
+            MethodParameterExtractor extractor = getMethodParameterExtractors().stream()
                 .filter(e -> e.isApplicable(parameter))
                 .findFirst()
                 .orElse(null);

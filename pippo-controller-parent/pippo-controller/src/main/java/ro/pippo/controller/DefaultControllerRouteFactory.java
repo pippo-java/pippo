@@ -24,6 +24,8 @@ import java.lang.reflect.Method;
 
 /**
  * Default {@link ControllerRouteFactory} implementation.
+ * {@link DefaultControllerHandlerFactory} is used if a custom {@link ControllerHandlerFactory} is not supplied
+ * via {@link DefaultControllerRouteFactory::setControllerHandlerFactory}.
  *
  * @author Decebal Suiu
  */
@@ -31,16 +33,12 @@ public class DefaultControllerRouteFactory implements ControllerRouteFactory {
 
     private static final Logger log = LoggerFactory.getLogger(DefaultControllerRouteFactory.class);
 
-    private final ControllerApplication application;
-
-    public DefaultControllerRouteFactory(ControllerApplication application) {
-        this.application = application;
-    }
+    private ControllerHandlerFactory controllerHandlerFactory;
 
     @Override
     public Route createRoute(String requestMethod, String uriPattern, Method controllerMethod) {
         // create the route handler
-        RouteHandler<?> handler = new ControllerHandler(application, controllerMethod);
+        RouteHandler<?> handler = getControllerHandlerFactory().createRouteHandler(controllerMethod);
 
         // create the route
         Route route = new Route(requestMethod, uriPattern, handler)
@@ -50,6 +48,20 @@ public class DefaultControllerRouteFactory implements ControllerRouteFactory {
         log.debug("Created route '{}' for '{}'", route, controllerMethod);
 
         return route;
+    }
+
+    public ControllerHandlerFactory getControllerHandlerFactory() {
+        if (controllerHandlerFactory == null) {
+            controllerHandlerFactory = new DefaultControllerHandlerFactory();
+        }
+
+        return controllerHandlerFactory;
+    }
+
+    public DefaultControllerRouteFactory setControllerHandlerFactory(ControllerHandlerFactory controllerHandlerFactory) {
+        this.controllerHandlerFactory = controllerHandlerFactory;
+
+        return this;
     }
 
 }

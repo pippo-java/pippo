@@ -37,6 +37,8 @@ import java.util.Set;
 
 /**
  * Register annotated controller routes.
+ * {@link DefaultControllerRouteFactory} is used if a custom {@link ControllerRouteFactory} is not supplied
+ * via {@link ControllerRegistry::setControllerRouteFactory}.
  *
  * @author Decebal Suiu
  * @author James Moger
@@ -48,14 +50,8 @@ public class ControllerRegistry {
     private final Set<Class<? extends Annotation>> httpMethodAnnotationClasses = new HashSet<>(Arrays.asList(
         DELETE.class, GET.class, HEAD.class, OPTIONS.class, PATCH.class, POST.class, PUT.class));
 
-    private final ControllerRouteFactory controllerRouteFactory;
-    private final List<Route> routes;
-
-    public ControllerRegistry(ControllerRouteFactory controllerRouteFactory) {
-        this.controllerRouteFactory = controllerRouteFactory;
-
-        routes = new ArrayList<>();
-    }
+    private ControllerRouteFactory controllerRouteFactory;
+    private List<Route> routes = new ArrayList<>();
 
     /**
      * Register all controller methods in the specified packages.
@@ -149,6 +145,20 @@ public class ControllerRegistry {
         log.debug("Found {} annotated controller method(s)", controllerMethods.size());
     }
 
+    public ControllerRouteFactory getControllerRouteFactory() {
+        if (controllerRouteFactory == null) {
+            controllerRouteFactory = new DefaultControllerRouteFactory();
+        }
+
+        return controllerRouteFactory;
+    }
+
+    public ControllerRegistry setControllerRouteFactory(ControllerRouteFactory controllerRouteFactory) {
+        this.controllerRouteFactory = controllerRouteFactory;
+
+        return this;
+    }
+
     /**
      * Register the controller methods as routes.
      *
@@ -218,7 +228,7 @@ public class ControllerRegistry {
                     }
 
                     // create controller method route
-                    Route route = controllerRouteFactory.createRoute(httpMethod, fullPath, method);
+                    Route route = getControllerRouteFactory().createRoute(httpMethod, fullPath, method);
 
                     // add the route to the list of routes
                     routes.add(route);
