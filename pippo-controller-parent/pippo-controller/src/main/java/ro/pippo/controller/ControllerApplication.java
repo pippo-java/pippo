@@ -19,11 +19,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ro.pippo.core.Application;
 import ro.pippo.core.PippoSettings;
-import ro.pippo.core.util.ServiceLocator;
 
 import javax.inject.Inject;
-import java.util.Arrays;
-import java.util.List;
 import java.util.Optional;
 
 /**
@@ -42,7 +39,8 @@ public class ControllerApplication extends Application {
     @Inject
     private Optional<ControllerInvokeListenerList> controllerInvokeListeners = Optional.empty();
 
-    private ControllerRouteFactory controllerRouteFactory;
+    @Inject
+    private Optional<ControllerRouteFactory> controllerRouteFactory = Optional.empty();
 
     public ControllerApplication() {
         super();
@@ -70,26 +68,26 @@ public class ControllerApplication extends Application {
     }
 
     public ControllerInvokeListenerList getControllerInvokeListeners() {
-        if (controllerInvokeListeners == null) {
-            controllerInvokeListeners = new ControllerInvokeListenerList();
+        if (!controllerInvokeListeners.isPresent()) {
+            controllerInvokeListeners = Optional.of(new ControllerInvokeListenerList());
         }
 
-        return controllerInvokeListeners;
+        return controllerInvokeListeners.get();
     }
 
     public ControllerRouteFactory getControllerRouteFactory() {
-        if (controllerRouteFactory == null) {
+        if (!controllerRouteFactory.isPresent()) {
             ControllerHandlerFactory controllerHandlerFactory = new DefaultControllerHandlerFactory()
                 .setContentTypeEngines(getContentTypeEngines());
-            controllerRouteFactory = new DefaultControllerRouteFactory()
-                .setControllerHandlerFactory(controllerHandlerFactory);
+            controllerRouteFactory = Optional.of(new DefaultControllerRouteFactory()
+                .setControllerHandlerFactory(controllerHandlerFactory));
         }
 
-        return controllerRouteFactory;
+        return controllerRouteFactory.get();
     }
 
     public ControllerApplication setControllerRouteFactory(ControllerRouteFactory controllerRouteFactory) {
-        this.controllerRouteFactory = controllerRouteFactory;
+        this.controllerRouteFactory = Optional.of(controllerRouteFactory);
         log.debug("Controller route factory is '{}'", controllerRouteFactory.getClass().getName());
 
         return this;
