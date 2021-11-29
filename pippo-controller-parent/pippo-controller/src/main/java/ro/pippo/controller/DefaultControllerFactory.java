@@ -18,9 +18,8 @@ package ro.pippo.controller;
 import ro.pippo.core.PippoRuntimeException;
 
 /**
- * Basic implementation of a controller factory that uses Java reflection to
- * instantiate an object.
- * Create a new controller instance every time a request is done.
+ * Basic implementation of {@link ControllerFactory} that uses Java reflection to instantiate an object.
+ * Create a new {@link Controller} instance every time a request is done.
  *
  * @author Decebal Suiu
  */

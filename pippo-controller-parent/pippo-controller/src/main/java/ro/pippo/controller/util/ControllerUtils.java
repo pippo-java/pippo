@@ -42,7 +42,6 @@ public class ControllerUtils {
                 .collect(Collectors.toList());
     }
 
-    // TODO one controllerMethod that takes annotation type as parameter
     public static List<String> getConsumes(Method method) {
         Set<String> types = new LinkedHashSet<>();
         Consumes consumes = ClassUtils.getAnnotation(method, Consumes.class);
@@ -55,7 +54,6 @@ public class ControllerUtils {
         return new ArrayList<>(types);
     }
 
-    // TODO one controllerMethod that takes annotation type as parameter
     public static List<String> getProduces(Method method) {
         Set<String> contentTypes = new LinkedHashSet<>();
         Produces produces = ClassUtils.getAnnotation(method, Produces.class);
@@ -78,34 +76,6 @@ public class ControllerUtils {
 
         return suffixes;
     }
-
-    // TODO
-    /*
-    public static Collection<Return> getReturns(Method controllerMethod) {
-        Map<Integer, Return> returns = new TreeMap<>();
-
-        if (controllerMethod.getDeclaringClass().isAnnotationPresent(Returns.class)) {
-            for (Return aReturn : controllerMethod.getDeclaringClass().getAnnotation(Returns.class).value()) {
-                returns.put(aReturn.code(), aReturn);
-            }
-        }
-        if (controllerMethod.getDeclaringClass().isAnnotationPresent(Return.class)) {
-            Return aReturn = controllerMethod.getDeclaringClass().getAnnotation(Return.class);
-            returns.put(aReturn.code(), aReturn);
-        }
-        if (controllerMethod.isAnnotationPresent(Returns.class)) {
-            for (Return aReturn : controllerMethod.getAnnotation(Returns.class).value()) {
-                returns.put(aReturn.code(), aReturn);
-            }
-        }
-        if (controllerMethod.isAnnotationPresent(Return.class)) {
-            Return aReturn = controllerMethod.getAnnotation(Return.class);
-            returns.put(aReturn.code(), aReturn);
-        }
-
-        return returns.values();
-    }
-    */
 
     /**
      * Returns the name of a parameter.
