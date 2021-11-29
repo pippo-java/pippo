@@ -27,14 +27,7 @@ public class ControllerInvokeListenerList extends ListenerList<ControllerInvokeL
 
     @Override
     public void onInvoke(final Controller controller, final Method method) {
-        notify(new Notifier<ControllerInvokeListener>() {
-
-            @Override
-            public void notify(ControllerInvokeListener listener) {
-                listener.onInvoke(controller, method);
-            }
-
-        });
+        notify(listener -> listener.onInvoke(controller, method));
     }
 
 }

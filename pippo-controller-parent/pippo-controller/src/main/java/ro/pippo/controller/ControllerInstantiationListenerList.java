@@ -25,14 +25,7 @@ public class ControllerInstantiationListenerList extends ListenerList<Controller
 
     @Override
     public void onInstantiation(final Controller controller) {
-        notify(new Notifier<ControllerInstantiationListener>() {
-
-            @Override
-            public void notify(ControllerInstantiationListener listener) {
-                listener.onInstantiation(controller);
-            }
-
-        });
+        notify(listener -> listener.onInstantiation(controller));
     }
 
 }
