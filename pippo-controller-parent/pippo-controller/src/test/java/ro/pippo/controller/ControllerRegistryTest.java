@@ -42,7 +42,7 @@ public class ControllerRegistryTest {
 
     @Before
     public void before() {
-        controllerRegistry = new ControllerRegistry(new ControllerApplication());
+        controllerRegistry = new ControllerRegistry(new DefaultControllerRouteFactory(new ControllerApplication()));
     }
 
     @After

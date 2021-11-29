@@ -37,6 +37,7 @@ public class ControllerApplication extends Application {
     private ControllerInvokeListenerList controllerInvokeListeners;
 
     private ControllerFactory controllerFactory;
+    private ControllerRouteFactory controllerRouteFactory;
     private List<MethodParameterExtractor> extractors;
 
     public ControllerApplication() {
@@ -86,6 +87,21 @@ public class ControllerApplication extends Application {
         return this;
     }
 
+    public ControllerRouteFactory getControllerRouteFactory() {
+        if (controllerRouteFactory == null) {
+            controllerRouteFactory = new DefaultControllerRouteFactory(this);
+        }
+
+        return controllerRouteFactory;
+    }
+
+    public ControllerApplication setControllerRouteFactory(ControllerRouteFactory controllerRouteFactory) {
+        this.controllerRouteFactory = controllerRouteFactory;
+        log.debug("Controller route factory is '{}'", controllerRouteFactory.getClass().getName());
+
+        return this;
+    }
+
     public ControllerApplication addExtractors(MethodParameterExtractor... extractors) {
         getExtractors().addAll(Arrays.asList(extractors));
 
@@ -101,7 +117,7 @@ public class ControllerApplication extends Application {
     }
 
     public ControllerApplication addControllers(String... packageNames) {
-        ControllerRegistry controllerRegistry = new ControllerRegistry(this);
+        ControllerRegistry controllerRegistry = new ControllerRegistry(getControllerRouteFactory());
         controllerRegistry.register(packageNames);
         controllerRegistry.getRoutes().forEach(this::addRoute);
 
@@ -109,7 +125,7 @@ public class ControllerApplication extends Application {
     }
 
     public ControllerApplication addControllers(Package... packages) {
-        ControllerRegistry controllerRegistry = new ControllerRegistry(this);
+        ControllerRegistry controllerRegistry = new ControllerRegistry(getControllerRouteFactory());
         controllerRegistry.register(packages);
         controllerRegistry.getRoutes().forEach(this::addRoute);
 
@@ -117,7 +133,7 @@ public class ControllerApplication extends Application {
     }
 
     public ControllerApplication addControllers(Class<? extends Controller>... controllerClasses) {
-        ControllerRegistry controllerRegistry = new ControllerRegistry(this);
+        ControllerRegistry controllerRegistry = new ControllerRegistry(getControllerRouteFactory());
         controllerRegistry.register(controllerClasses);
         controllerRegistry.getRoutes().forEach(this::addRoute);
 
@@ -125,7 +141,7 @@ public class ControllerApplication extends Application {
     }
 
     public ControllerApplication addControllers(Controller... controllers) {
-        ControllerRegistry controllerRegistry = new ControllerRegistry(this);
+        ControllerRegistry controllerRegistry = new ControllerRegistry(getControllerRouteFactory());
         controllerRegistry.register(controllers);
         controllerRegistry.getRoutes().forEach(this::addRoute);
 

@@ -19,7 +19,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ro.pippo.controller.util.ClassUtils;
 import ro.pippo.core.route.Route;
-import ro.pippo.core.route.RouteHandler;
 import ro.pippo.core.util.LangUtils;
 import ro.pippo.core.util.StringUtils;
 
@@ -49,11 +48,11 @@ public class ControllerRegistry {
     private final Set<Class<? extends Annotation>> httpMethodAnnotationClasses = new HashSet<>(Arrays.asList(
         DELETE.class, GET.class, HEAD.class, OPTIONS.class, PATCH.class, POST.class, PUT.class));
 
-    private final ControllerApplication application;
+    private final ControllerRouteFactory controllerRouteFactory;
     private final List<Route> routes;
 
-    public ControllerRegistry(ControllerApplication application) {
-        this.application = application;
+    public ControllerRegistry(ControllerRouteFactory controllerRouteFactory) {
+        this.controllerRouteFactory = controllerRouteFactory;
 
         routes = new ArrayList<>();
     }
@@ -218,13 +217,8 @@ public class ControllerRegistry {
                         );
                     }
 
-                    // create the route handler
-                    RouteHandler handler = new ControllerHandler(application, method);
-
-                    // create the route
-                    Route route = new Route(httpMethod, fullPath, handler)
-                        .bind("__controllerClass", controllerClass)
-                        .bind("__controllerMethod", method);
+                    // create controller method route
+                    Route route = controllerRouteFactory.createRoute(httpMethod, fullPath, method);
 
                     // add the route to the list of routes
                     routes.add(route);
