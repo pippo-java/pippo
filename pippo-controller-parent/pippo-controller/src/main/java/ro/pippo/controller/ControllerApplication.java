@@ -132,4 +132,11 @@ public class ControllerApplication extends Application {
         return this;
     }
 
+    /**
+     * See {@link Application#get()}.
+     */
+    public static ControllerApplication get() {
+        return (ControllerApplication) Application.get();
+    }
+
 }
