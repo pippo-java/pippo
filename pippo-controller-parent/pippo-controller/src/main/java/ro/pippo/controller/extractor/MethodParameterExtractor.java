@@ -20,6 +20,7 @@ import ro.pippo.core.route.RouteContext;
 
 /**
  * Interface that defines a method parameter extractor.
+ * This interface is implemented by all method parameter extractors.
  *
  * @author Decebal Suiu
  * @author James Moger
