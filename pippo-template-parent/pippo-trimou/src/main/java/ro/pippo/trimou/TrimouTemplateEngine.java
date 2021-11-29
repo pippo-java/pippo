@@ -28,12 +28,9 @@ import org.trimou.handlebars.i18n.DateTimeFormatHelper;
 import org.trimou.minify.Minify;
 import org.trimou.prettytime.PrettyTimeHelper;
 import ro.pippo.core.AbstractTemplateEngine;
-import ro.pippo.core.Application;
 import ro.pippo.core.PippoConstants;
 import ro.pippo.core.PippoRuntimeException;
-import ro.pippo.core.PippoSettings;
 import ro.pippo.core.TemplateEngine;
-import ro.pippo.core.route.Router;
 import ro.pippo.core.util.StringUtils;
 
 import java.io.Writer;
@@ -52,55 +49,9 @@ public class TrimouTemplateEngine extends AbstractTemplateEngine {
 
     public static final String MUSTACHE = "mustache";
 
-    private ThreadLocalLocaleSupport localeSupport;
+    private ThreadLocalLocaleSupport localeSupport = new ThreadLocalLocaleSupport();
+
     private MustacheEngine engine;
-
-    @Override
-    public void init(Application application) {
-        super.init(application);
-
-        this.localeSupport = new ThreadLocalLocaleSupport();
-
-        Router router = getRouter();
-        PippoSettings pippoSettings = getPippoSettings();
-
-        MustacheEngineBuilder builder = MustacheEngineBuilder.newBuilder();
-        builder.setLocaleSupport(localeSupport);
-        builder.setProperty(EngineConfigurationKey.DEFAULT_FILE_ENCODING, PippoConstants.UTF8);
-        builder.registerHelper("ng", new AngularJsHelper());
-        builder.registerHelper("i18n", new I18nHelper(application.getMessages()));
-        builder.registerHelper("formatTime", new DateTimeFormatHelper());
-        builder.registerHelper("prettyTime", new PrettyTimeHelper());
-        builder.registerHelper("webjarsAt", new WebjarsAtHelper(router));
-        builder.registerHelper("publicAt", new PublicAtHelper(router));
-        builder.registerHelpers(HelpersBuilder.extra().build());
-
-        String pathPrefix = getTemplatePathPrefix();
-        pathPrefix = StringUtils.removeStart(pathPrefix, "/");
-        builder.addTemplateLocator(new ClassPathTemplateLocator(10, pathPrefix, MUSTACHE));
-
-        if (pippoSettings.isDev()) {
-            // enable debug mode
-            builder.setProperty(EngineConfigurationKey.DEBUG_MODE, true);
-        } else {
-            // automatically minify pages generated in production/test
-            builder.addMustacheListener(Minify.htmlListener());
-        }
-
-        // set global template variables
-        builder.addGlobalData("contextPath", router.getContextPath());
-        builder.addGlobalData("appPath", router.getApplicationPath());
-
-        // allow custom initialization
-        init(application, builder);
-
-        engine = builder.build();
-    }
-
-    @Override
-    protected String getDefaultFileExtension() {
-        return MUSTACHE;
-    }
 
     @Override
     public void renderString(String templateContent, Map<String, Object> model, Writer writer) {
@@ -117,7 +68,7 @@ public class TrimouTemplateEngine extends AbstractTemplateEngine {
 
         try {
             localeSupport.setCurrentLocale(locale);
-            Mustache template = engine.compileMustache("StringTemplate", templateContent);
+            Mustache template = getMustacheEngine().compileMustache("StringTemplate", templateContent);
             template.render(writer, model);
             writer.flush();
         } catch (Exception e) {
@@ -152,16 +103,16 @@ public class TrimouTemplateEngine extends AbstractTemplateEngine {
 
             if (locale != null) {
                 // try the complete Locale
-                template = engine.getMustache(getLocalizedTemplateName(templateName, locale.toString()));
+                template = getMustacheEngine().getMustache(getLocalizedTemplateName(templateName, locale.toString()));
                 if (template == null) {
                     // try only the language
-                    template = engine.getMustache(getLocalizedTemplateName(templateName, locale.getLanguage()));
+                    template = getMustacheEngine().getMustache(getLocalizedTemplateName(templateName, locale.getLanguage()));
                 }
             }
 
             if (template == null) {
                 // fallback to the template without any language or locale
-                template = engine.getMustache(templateName);
+                template = getMustacheEngine().getMustache(templateName);
             }
 
             if (template == null) {
@@ -180,17 +131,52 @@ public class TrimouTemplateEngine extends AbstractTemplateEngine {
         }
     }
 
-    /**
-     * Override this method if you want to modify the template configuration.
-     *
-     * @param application
-     * @param builder
-     */
-    protected void init(Application application, MustacheEngineBuilder builder) {
+    @Override
+    protected String getDefaultFileExtension() {
+        return MUSTACHE;
+    }
+
+    protected MustacheEngineBuilder createMustacheEngineBuilder() {
+        MustacheEngineBuilder builder = MustacheEngineBuilder.newBuilder()
+            .setLocaleSupport(localeSupport)
+            .setProperty(EngineConfigurationKey.DEFAULT_FILE_ENCODING, PippoConstants.UTF8)
+            .registerHelper("ng", new AngularJsHelper())
+            .registerHelper("i18n", new I18nHelper(getMessages()))
+            .registerHelper("formatTime", new DateTimeFormatHelper())
+            .registerHelper("prettyTime", new PrettyTimeHelper())
+            .registerHelper("webjarsAt", new WebjarsAtHelper(getRouter()))
+            .registerHelper("publicAt", new PublicAtHelper(getRouter()))
+            .registerHelpers(HelpersBuilder.extra().build());
+
+        String pathPrefix = getTemplatePathPrefix();
+        pathPrefix = StringUtils.removeStart(pathPrefix, "/");
+        builder.addTemplateLocator(new ClassPathTemplateLocator(10, pathPrefix, MUSTACHE));
+
+        if (getPippoSettings().isDev()) {
+            // enable debug mode
+            builder.setProperty(EngineConfigurationKey.DEBUG_MODE, true);
+        } else {
+            // automatically minify pages generated in production/test
+            builder.addMustacheListener(Minify.htmlListener());
+        }
+
+        // set global template variables
+        builder.addGlobalData("contextPath", getRouter().getContextPath());
+        builder.addGlobalData("appPath", getRouter().getApplicationPath());
+
+        return builder;
     }
 
     private String getLocalizedTemplateName(String templateName, String localePart) {
         return StringUtils.removeEnd(templateName, "." + getFileExtension()) + "_" + localePart;
+    }
+
+    private MustacheEngine getMustacheEngine() {
+        if (engine == null) {
+            engine = createMustacheEngineBuilder().build();
+        }
+
+        return engine;
     }
 
 }
