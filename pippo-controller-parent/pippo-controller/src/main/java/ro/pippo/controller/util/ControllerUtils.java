@@ -42,7 +42,6 @@ public class ControllerUtils {
                 .collect(Collectors.toList());
     }
 
-    // TODO one controllerMethod that takes annotation type as parameter
     public static List<String> getConsumes(Method method) {
         Set<String> types = new LinkedHashSet<>();
         Consumes consumes = ClassUtils.getAnnotation(method, Consumes.class);
@@ -55,7 +54,6 @@ public class ControllerUtils {
         return new ArrayList<>(types);
     }
 
-    // TODO one controllerMethod that takes annotation type as parameter
     public static List<String> getProduces(Method method) {
         Set<String> contentTypes = new LinkedHashSet<>();
         Produces produces = ClassUtils.getAnnotation(method, Produces.class);
