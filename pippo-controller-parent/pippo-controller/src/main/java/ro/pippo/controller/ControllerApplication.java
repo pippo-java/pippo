@@ -39,10 +39,7 @@ public class ControllerApplication extends Application {
 
     public ControllerRouteFactory getControllerRouteFactory() {
         if (controllerRouteFactory == null) {
-            ControllerHandlerFactory controllerHandlerFactory = new DefaultControllerHandlerFactory()
-                .setContentTypeEngines(getContentTypeEngines());
-            controllerRouteFactory = new DefaultControllerRouteFactory()
-                .setControllerHandlerFactory(controllerHandlerFactory);
+            controllerRouteFactory = new DefaultControllerRouteFactory().setContentTypeEngines(getContentTypeEngines());
         }
 
         return controllerRouteFactory;

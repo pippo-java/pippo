@@ -17,6 +17,7 @@ package ro.pippo.controller;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import ro.pippo.core.ContentTypeEngines;
 import ro.pippo.core.route.Route;
 import ro.pippo.core.route.RouteHandler;
 
@@ -24,8 +25,8 @@ import java.lang.reflect.Method;
 
 /**
  * Default {@link ControllerRouteFactory} implementation.
- * {@link DefaultControllerHandlerFactory} is used if a custom {@link ControllerHandlerFactory} is not supplied
- * via {@link DefaultControllerRouteFactory::setControllerHandlerFactory}.
+ * {@link DefaultControllerFactory} is used if a custom {@link ControllerFactory} is not supplied
+ * via {@link DefaultControllerRouteFactory::setControllerFactory}.
  *
  * @author Decebal Suiu
  */
@@ -33,12 +34,13 @@ public class DefaultControllerRouteFactory implements ControllerRouteFactory {
 
     private static final Logger log = LoggerFactory.getLogger(DefaultControllerRouteFactory.class);
 
-    private ControllerHandlerFactory controllerHandlerFactory;
+    private ContentTypeEngines contentTypeEngines;
+    private ControllerFactory controllerFactory;
 
     @Override
     public Route createRoute(String requestMethod, String uriPattern, Method controllerMethod) {
         // create the route handler
-        RouteHandler<?> handler = getControllerHandlerFactory().createRouteHandler(controllerMethod);
+        RouteHandler<?> handler = createRouteHandler(controllerMethod);
 
         // create the route
         Route route = new Route(requestMethod, uriPattern, handler)
@@ -50,16 +52,34 @@ public class DefaultControllerRouteFactory implements ControllerRouteFactory {
         return route;
     }
 
-    public ControllerHandlerFactory getControllerHandlerFactory() {
-        if (controllerHandlerFactory == null) {
-            controllerHandlerFactory = new DefaultControllerHandlerFactory();
-        }
-
-        return controllerHandlerFactory;
+    protected RouteHandler<?> createRouteHandler(Method controllerMethod) {
+        return new ControllerHandler(getContentTypeEngines(), controllerMethod).setControllerFactory(getControllerFactory());
     }
 
-    public DefaultControllerRouteFactory setControllerHandlerFactory(ControllerHandlerFactory controllerHandlerFactory) {
-        this.controllerHandlerFactory = controllerHandlerFactory;
+    public ContentTypeEngines getContentTypeEngines() {
+        if (contentTypeEngines == null) {
+            return new ContentTypeEngines();
+        }
+
+        return contentTypeEngines;
+    }
+
+    public DefaultControllerRouteFactory setContentTypeEngines(ContentTypeEngines contentTypeEngines) {
+        this.contentTypeEngines = contentTypeEngines;
+
+        return this;
+    }
+
+    public ControllerFactory getControllerFactory() {
+        if (controllerFactory == null) {
+            controllerFactory = new DefaultControllerFactory();
+        }
+
+        return controllerFactory;
+    }
+
+    public DefaultControllerRouteFactory setControllerFactory(ControllerFactory controllerFactory) {
+        this.controllerFactory = controllerFactory;
 
         return this;
     }
