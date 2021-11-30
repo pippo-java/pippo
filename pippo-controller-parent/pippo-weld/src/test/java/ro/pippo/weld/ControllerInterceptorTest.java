@@ -21,9 +21,7 @@ import org.junit.Test;
 import ro.pippo.controller.Controller;
 import ro.pippo.controller.ControllerApplication;
 import ro.pippo.controller.ControllerFactory;
-import ro.pippo.controller.ControllerHandlerFactory;
 import ro.pippo.controller.ControllerRouteFactory;
-import ro.pippo.controller.DefaultControllerHandlerFactory;
 import ro.pippo.controller.DefaultControllerRouteFactory;
 import ro.pippo.controller.GET;
 import ro.pippo.controller.Path;
@@ -93,10 +91,8 @@ public class ControllerInterceptorTest extends PippoTest {
         @Override
         protected void onInit() {
             ControllerFactory controllerFactory = new WeldControllerFactory(new Weld().initialize());
-            ControllerHandlerFactory controllerHandlerFactory = new DefaultControllerHandlerFactory()
-                .setControllerFactory(controllerFactory);
             ControllerRouteFactory controllerRouteFactory = new DefaultControllerRouteFactory()
-                .setControllerHandlerFactory(controllerHandlerFactory);
+                .setControllerFactory(controllerFactory);
             setControllerRouteFactory(controllerRouteFactory);
 
             addControllers(ControllerWithInterceptor.class);
