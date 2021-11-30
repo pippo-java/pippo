@@ -25,14 +25,7 @@ public class ControllerInitializationListenerList extends ListenerList<Controlle
 
     @Override
     public void onInitialize(final Controller controller) {
-        notify(new Notifier<ControllerInitializationListener>() {
-
-            @Override
-            public void notify(ControllerInitializationListener listener) {
-                listener.onInitialize(controller);
-            }
-
-        });
+        notify(listener -> listener.onInitialize(controller));
     }
 
 }

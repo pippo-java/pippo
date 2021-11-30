@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2014-present the original author or authors.
+ * Copyright (C) 2021-present the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,19 +15,17 @@
  */
 package ro.pippo.controller;
 
-import ro.pippo.core.util.ListenerList;
+import ro.pippo.core.route.RouteHandler;
 
 import java.lang.reflect.Method;
 
 /**
+ * Creates a {@link RouteHandler} for a {@link Controller}'s method.
+ *
  * @author Decebal Suiu
  */
-public class ControllerInvokeListenerList extends ListenerList<ControllerInvokeListener>
-    implements ControllerInvokeListener {
+public interface ControllerHandlerFactory {
 
-    @Override
-    public void onInvoke(final Controller controller, final Method method) {
-        notify(listener -> listener.onInvoke(controller, method));
-    }
+    RouteHandler<?> createRouteHandler(Method controllerMethod);
 
 }

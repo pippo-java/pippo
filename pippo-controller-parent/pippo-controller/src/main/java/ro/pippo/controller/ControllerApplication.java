@@ -17,13 +17,8 @@ package ro.pippo.controller;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import ro.pippo.controller.extractor.MethodParameterExtractor;
 import ro.pippo.core.Application;
 import ro.pippo.core.PippoSettings;
-import ro.pippo.core.util.ServiceLocator;
-
-import java.util.Arrays;
-import java.util.List;
 
 /**
  * @author Decebal Suiu
@@ -36,8 +31,7 @@ public class ControllerApplication extends Application {
     private ControllerInitializationListenerList controllerInitializationListeners;
     private ControllerInvokeListenerList controllerInvokeListeners;
 
-    private ControllerFactory controllerFactory;
-    private List<MethodParameterExtractor> extractors;
+    private ControllerRouteFactory controllerRouteFactory;
 
     public ControllerApplication() {
         super();
@@ -71,37 +65,26 @@ public class ControllerApplication extends Application {
         return controllerInvokeListeners;
     }
 
-    public ControllerFactory getControllerFactory() {
-        if (controllerFactory == null) {
-            controllerFactory = new DefaultControllerFactory();
+    public ControllerRouteFactory getControllerRouteFactory() {
+        if (controllerRouteFactory == null) {
+            ControllerHandlerFactory controllerHandlerFactory = new DefaultControllerHandlerFactory()
+                .setContentTypeEngines(getContentTypeEngines());
+            controllerRouteFactory = new DefaultControllerRouteFactory()
+                .setControllerHandlerFactory(controllerHandlerFactory);
         }
 
-        return controllerFactory;
+        return controllerRouteFactory;
     }
 
-    public ControllerApplication setControllerFactory(ControllerFactory controllerFactory) {
-        this.controllerFactory = controllerFactory;
-        log.debug("Controller factory is '{}'", controllerFactory.getClass().getName());
+    public ControllerApplication setControllerRouteFactory(ControllerRouteFactory controllerRouteFactory) {
+        this.controllerRouteFactory = controllerRouteFactory;
+        log.debug("Controller route factory is '{}'", controllerRouteFactory.getClass().getName());
 
         return this;
-    }
-
-    public ControllerApplication addExtractors(MethodParameterExtractor... extractors) {
-        getExtractors().addAll(Arrays.asList(extractors));
-
-        return this;
-    }
-
-    public List<MethodParameterExtractor> getExtractors() {
-        if (extractors == null) {
-            extractors = ServiceLocator.locateAll(MethodParameterExtractor.class);
-        }
-
-        return extractors;
     }
 
     public ControllerApplication addControllers(String... packageNames) {
-        ControllerRegistry controllerRegistry = new ControllerRegistry(this);
+        ControllerRegistry controllerRegistry = new ControllerRegistry().setControllerRouteFactory(getControllerRouteFactory());
         controllerRegistry.register(packageNames);
         controllerRegistry.getRoutes().forEach(this::addRoute);
 
@@ -109,7 +92,7 @@ public class ControllerApplication extends Application {
     }
 
     public ControllerApplication addControllers(Package... packages) {
-        ControllerRegistry controllerRegistry = new ControllerRegistry(this);
+        ControllerRegistry controllerRegistry = new ControllerRegistry().setControllerRouteFactory(getControllerRouteFactory());
         controllerRegistry.register(packages);
         controllerRegistry.getRoutes().forEach(this::addRoute);
 
@@ -117,7 +100,7 @@ public class ControllerApplication extends Application {
     }
 
     public ControllerApplication addControllers(Class<? extends Controller>... controllerClasses) {
-        ControllerRegistry controllerRegistry = new ControllerRegistry(this);
+        ControllerRegistry controllerRegistry = new ControllerRegistry().setControllerRouteFactory(getControllerRouteFactory());
         controllerRegistry.register(controllerClasses);
         controllerRegistry.getRoutes().forEach(this::addRoute);
 
@@ -125,11 +108,18 @@ public class ControllerApplication extends Application {
     }
 
     public ControllerApplication addControllers(Controller... controllers) {
-        ControllerRegistry controllerRegistry = new ControllerRegistry(this);
+        ControllerRegistry controllerRegistry = new ControllerRegistry().setControllerRouteFactory(getControllerRouteFactory());
         controllerRegistry.register(controllers);
         controllerRegistry.getRoutes().forEach(this::addRoute);
 
         return this;
+    }
+
+    /**
+     * See {@link Application#get()}.
+     */
+    public static ControllerApplication get() {
+        return (ControllerApplication) Application.get();
     }
 
 }

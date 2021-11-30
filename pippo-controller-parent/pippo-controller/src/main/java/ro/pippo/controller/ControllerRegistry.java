@@ -19,7 +19,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ro.pippo.controller.util.ClassUtils;
 import ro.pippo.core.route.Route;
-import ro.pippo.core.route.RouteHandler;
 import ro.pippo.core.util.LangUtils;
 import ro.pippo.core.util.StringUtils;
 
@@ -38,6 +37,8 @@ import java.util.Set;
 
 /**
  * Register annotated controller routes.
+ * {@link DefaultControllerRouteFactory} is used if a custom {@link ControllerRouteFactory} is not supplied
+ * via {@link ControllerRegistry::setControllerRouteFactory}.
  *
  * @author Decebal Suiu
  * @author James Moger
@@ -49,14 +50,8 @@ public class ControllerRegistry {
     private final Set<Class<? extends Annotation>> httpMethodAnnotationClasses = new HashSet<>(Arrays.asList(
         DELETE.class, GET.class, HEAD.class, OPTIONS.class, PATCH.class, POST.class, PUT.class));
 
-    private final ControllerApplication application;
-    private final List<Route> routes;
-
-    public ControllerRegistry(ControllerApplication application) {
-        this.application = application;
-
-        routes = new ArrayList<>();
-    }
+    private ControllerRouteFactory controllerRouteFactory;
+    private List<Route> routes = new ArrayList<>();
 
     /**
      * Register all controller methods in the specified packages.
@@ -150,6 +145,20 @@ public class ControllerRegistry {
         log.debug("Found {} annotated controller method(s)", controllerMethods.size());
     }
 
+    public ControllerRouteFactory getControllerRouteFactory() {
+        if (controllerRouteFactory == null) {
+            controllerRouteFactory = new DefaultControllerRouteFactory();
+        }
+
+        return controllerRouteFactory;
+    }
+
+    public ControllerRegistry setControllerRouteFactory(ControllerRouteFactory controllerRouteFactory) {
+        this.controllerRouteFactory = controllerRouteFactory;
+
+        return this;
+    }
+
     /**
      * Register the controller methods as routes.
      *
@@ -218,13 +227,8 @@ public class ControllerRegistry {
                         );
                     }
 
-                    // create the route handler
-                    RouteHandler handler = new ControllerHandler(application, method);
-
-                    // create the route
-                    Route route = new Route(httpMethod, fullPath, handler)
-                        .bind("__controllerClass", controllerClass)
-                        .bind("__controllerMethod", method);
+                    // create controller method route
+                    Route route = getControllerRouteFactory().createRoute(httpMethod, fullPath, method);
 
                     // add the route to the list of routes
                     routes.add(route);

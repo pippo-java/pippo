@@ -20,6 +20,7 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
+import ro.pippo.core.ContentTypeEngines;
 import ro.pippo.core.route.Route;
 
 import java.util.List;
@@ -42,7 +43,7 @@ public class ControllerRegistryTest {
 
     @Before
     public void before() {
-        controllerRegistry = new ControllerRegistry(new ControllerApplication());
+        controllerRegistry = new ControllerRegistry();
     }
 
     @After

@@ -18,14 +18,14 @@ package ro.pippo.controller;
 import java.lang.reflect.Method;
 
 /**
- * Listener interface that receives messages when controllers methods are invoked.
+ * Listener interface that receives messages when {@link Controller}'s methods are invoked.
  *
  * @author Decebal Suiu
  */
 public interface ControllerInvokeListener {
 
     /**
-     * Called for every controller before its action method is invoke.
+     * Called for every controller before its action method is invoked.
      *
      * @param controller
      */

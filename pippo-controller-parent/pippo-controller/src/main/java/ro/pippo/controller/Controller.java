@@ -23,6 +23,9 @@ import ro.pippo.core.route.RouteContext;
 import ro.pippo.core.route.RouteDispatcher;
 
 /**
+ * Superclass for all controllers.
+ * This class contains only helper methods which facilitates the interaction with {@link Request} and {@link Response}.
+ *
  * @author Decebal Suiu
  */
 public class Controller {
