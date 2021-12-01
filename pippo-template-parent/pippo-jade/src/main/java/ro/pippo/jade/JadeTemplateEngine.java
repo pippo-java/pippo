@@ -49,34 +49,6 @@ public class JadeTemplateEngine extends AbstractTemplateEngine {
     private JadeConfiguration configuration;
 
     @Override
-    public void init(Application application) {
-        super.init(application);
-
-        Router router = getRouter();
-        PippoSettings pippoSettings = getPippoSettings();
-
-        configuration = new JadeConfiguration();
-        configuration.setTemplateLoader(new ClassTemplateLoader(JadeTemplateEngine.class, getTemplatePathPrefix()));
-        configuration.setMode(Mode.HTML);
-        if (pippoSettings.isDev()) {
-            configuration.setPrettyPrint(true);
-            configuration.setCaching(false); // disable cache
-        }
-
-        // set global template variables
-        configuration.getSharedVariables().put("contextPath", router.getContextPath());
-        configuration.getSharedVariables().put("appPath", router.getApplicationPath());
-
-        // allow custom initialization
-        init(application, configuration);
-    }
-
-    @Override
-    protected String getDefaultFileExtension() {
-        return JADE;
-    }
-
-    @Override
     public void renderString(String templateContent, Map<String, Object> model, Writer writer) {
         // prepare the locale-aware i18n method
         String language = (String) model.get(PippoConstants.REQUEST_PARAMETER_LANG);
@@ -97,11 +69,11 @@ public class JadeTemplateEngine extends AbstractTemplateEngine {
             JadeConfiguration stringTemplateConfiguration = new JadeConfiguration();
             stringTemplateConfiguration.setCaching(false);
             stringTemplateConfiguration.setTemplateLoader(stringTemplateLoader);
-            stringTemplateConfiguration.setMode(configuration.getMode());
-            stringTemplateConfiguration.setPrettyPrint(configuration.isPrettyPrint());
+            stringTemplateConfiguration.setMode(getConfiguration().getMode());
+            stringTemplateConfiguration.setPrettyPrint(getConfiguration().isPrettyPrint());
 
-            JadeTemplate stringTemplate = configuration.getTemplate("StringTemplate");
-            configuration.renderTemplate(stringTemplate, model, writer);
+            JadeTemplate stringTemplate = getConfiguration().getTemplate("StringTemplate");
+            getConfiguration().renderTemplate(stringTemplate, model, writer);
             writer.flush();
         } catch (Exception e) {
             throw new PippoRuntimeException(e);
@@ -124,21 +96,41 @@ public class JadeTemplateEngine extends AbstractTemplateEngine {
 
         model.put("pippo", new PippoHelper(getMessages(), language, locale, getRouter()));
         try {
-            JadeTemplate template = configuration.getTemplate(templateName);
-            configuration.renderTemplate(template, model, writer);
+            JadeTemplate template = getConfiguration().getTemplate(templateName);
+            getConfiguration().renderTemplate(template, model, writer);
             writer.flush();
         } catch (Exception e) {
             throw new PippoRuntimeException(e);
         }
     }
 
-    /**
-     * Override this method if you want to modify the template configuration.
-     *
-     * @param application
-     * @param configuration
-     */
-    protected void init(Application application, JadeConfiguration configuration) {
+    @Override
+    protected String getDefaultFileExtension() {
+        return JADE;
+    }
+
+    protected JadeConfiguration createJadeConfiguration() {
+        JadeConfiguration configuration = new JadeConfiguration();
+        configuration.setTemplateLoader(new ClassTemplateLoader(JadeTemplateEngine.class, getTemplatePathPrefix()));
+        configuration.setMode(Mode.HTML);
+        if (getPippoSettings().isDev()) {
+            configuration.setPrettyPrint(true);
+            configuration.setCaching(false); // disable cache
+        }
+
+        // set global template variables
+        configuration.getSharedVariables().put("contextPath", getRouter().getContextPath());
+        configuration.getSharedVariables().put("appPath", getRouter().getApplicationPath());
+
+        return configuration;
+    }
+
+    private JadeConfiguration getConfiguration() {
+        if (configuration == null) {
+            configuration = createJadeConfiguration();
+        }
+
+        return configuration;
     }
 
     private class ClassTemplateLoader implements TemplateLoader {

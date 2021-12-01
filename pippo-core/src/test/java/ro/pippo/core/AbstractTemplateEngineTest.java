@@ -238,11 +238,6 @@ public class AbstractTemplateEngineTest {
     private static class TestTemplateEngine extends AbstractTemplateEngine {
 
         @Override
-        public void init(Application application) {
-            super.init(application);
-        }
-
-        @Override
         public void renderString(String templateContent, Map<String, Object> model, Writer writer) {
             // do nothing
         }
