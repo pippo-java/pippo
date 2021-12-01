@@ -37,6 +37,30 @@ public class Route {
 
     private Map<String, Object> attributes;
 
+    /**
+     * Used in subclasses (facilitates the injection of dependencies).
+     * <pre>{@code
+     * @Component
+     * public class LogRoute extends Route implements RouteHandler {
+     *
+     *     public LogRoute() {
+     *         super(HttpConstants.Method.GET, "/log");
+     *
+     *         setRouteHandler(this);
+     *     }
+     *
+     *     @Override
+     *     public void handle(RouteContext routeContext) {
+     *         // do something
+     *     }
+     *
+     * }
+     * }</pre>
+     */
+    protected Route(String requestMethod, String uriPattern) {
+        this(requestMethod, uriPattern, routeContext -> {});
+    }
+
     public Route(String requestMethod, String uriPattern, RouteHandler routeHandler) {
         this.requestMethod = requestMethod;
         this.uriPattern = uriPattern;
