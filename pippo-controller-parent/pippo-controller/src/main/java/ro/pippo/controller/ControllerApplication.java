@@ -42,38 +42,12 @@ public class ControllerApplication extends Application {
         super(settings);
     }
 
-    public ControllerInstantiationListenerList getControllerInstantiationListeners() {
-        if (controllerInstantiationListeners == null) {
-            controllerInstantiationListeners = new ControllerInstantiationListenerList();
-        }
-
-        return controllerInstantiationListeners;
-    }
-
-    public ControllerInitializationListenerList getControllerInitializationListeners() {
-        if (controllerInitializationListeners == null) {
-            controllerInitializationListeners = new ControllerInitializationListenerList();
-        }
-
-        return controllerInitializationListeners;
-    }
-
-    public ControllerInvokeListenerList getControllerInvokeListeners() {
-        if (controllerInvokeListeners == null) {
-            controllerInvokeListeners = new ControllerInvokeListenerList();
-        }
-
-        return controllerInvokeListeners;
-    }
-
     public ControllerRouteFactory getControllerRouteFactory() {
         if (!controllerRouteFactory.isPresent()) {
-            controllerRouteFactory = Optional.of(new DefaultControllerRouteFactory()
-                .setContentTypeEngines(getContentTypeEngines())
-                .setControllerHandlerFactory(controllerHandlerFactory));
+            controllerRouteFactory = Optional.of(new DefaultControllerRouteFactory().setContentTypeEngines(getContentTypeEngines()));
         }
 
-        return controllerRouteFactory;
+        return controllerRouteFactory.get();
     }
 
     public ControllerApplication setControllerRouteFactory(ControllerRouteFactory controllerRouteFactory) {
