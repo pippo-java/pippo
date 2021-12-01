@@ -27,10 +27,6 @@ public class ControllerApplication extends Application {
 
     private static final Logger log = LoggerFactory.getLogger(ControllerApplication.class);
 
-    private ControllerInstantiationListenerList controllerInstantiationListeners;
-    private ControllerInitializationListenerList controllerInitializationListeners;
-    private ControllerInvokeListenerList controllerInvokeListeners;
-
     private ControllerRouteFactory controllerRouteFactory;
 
     public ControllerApplication() {
@@ -39,30 +35,6 @@ public class ControllerApplication extends Application {
 
     public ControllerApplication(PippoSettings settings) {
         super(settings);
-    }
-
-    public ControllerInstantiationListenerList getControllerInstantiationListeners() {
-        if (controllerInstantiationListeners == null) {
-            controllerInstantiationListeners = new ControllerInstantiationListenerList();
-        }
-
-        return controllerInstantiationListeners;
-    }
-
-    public ControllerInitializationListenerList getControllerInitializationListeners() {
-        if (controllerInitializationListeners == null) {
-            controllerInitializationListeners = new ControllerInitializationListenerList();
-        }
-
-        return controllerInitializationListeners;
-    }
-
-    public ControllerInvokeListenerList getControllerInvokeListeners() {
-        if (controllerInvokeListeners == null) {
-            controllerInvokeListeners = new ControllerInvokeListenerList();
-        }
-
-        return controllerInvokeListeners;
     }
 
     public ControllerRouteFactory getControllerRouteFactory() {
