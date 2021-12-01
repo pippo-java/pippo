@@ -25,7 +25,7 @@ import java.util.Map;
 /**
  * @author Decebal Suiu
  */
-public class Route {
+public class Route implements Comparable<Route> {
 
     private String requestMethod;
     private String uriPattern;
@@ -34,6 +34,7 @@ public class Route {
 
     private boolean runAsFinally;
     private String name;
+    private int order;
 
     private Map<String, Object> attributes;
 
@@ -82,6 +83,7 @@ public class Route {
         this.attributes = new HashMap<>(route.attributes);
         this.name = route.name;
         this.runAsFinally = route.runAsFinally;
+        this.order = route.order;
     }
 
     /**
@@ -276,6 +278,29 @@ public class Route {
         }
 
         this.absoluteUriPattern = absoluteUriPattern;
+    }
+
+    /**
+     * Returns the order for this route.
+     * This method is used to sort a list of {@code Route}s.
+     * Lower numbers are registered before higher numbers.
+     */
+    public int getOrder() {
+        return order;
+    }
+
+    /**
+     * Specify the order for this route.
+     */
+    public Route setOrder(int order) {
+        this.order = order;
+
+        return this;
+    }
+
+    @Override
+    public int compareTo(Route o) {
+        return order - o.order;
     }
 
     @Override
