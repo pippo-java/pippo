@@ -149,14 +149,6 @@ public class Route {
     }
 
     /**
-     * @deprecated Replaced by {@link #ANY(String, RouteHandler)}.
-     */
-    @Deprecated
-    public static Route ALL(String uriPattern, RouteHandler routeHandler) {
-        return ANY(uriPattern, routeHandler);
-    }
-
-    /**
      * Create a route responding to any HTTP Verb (GET, POST, PUT, ...).
      *
      * @param uriPattern
