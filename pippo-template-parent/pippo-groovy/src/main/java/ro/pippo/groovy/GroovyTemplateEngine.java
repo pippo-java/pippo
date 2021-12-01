@@ -22,9 +22,7 @@ import org.kohsuke.MetaInfServices;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ro.pippo.core.AbstractTemplateEngine;
-import ro.pippo.core.Application;
 import ro.pippo.core.PippoRuntimeException;
-import ro.pippo.core.PippoSettings;
 import ro.pippo.core.TemplateEngine;
 import ro.pippo.core.util.StringUtils;
 
@@ -47,47 +45,9 @@ public class GroovyTemplateEngine extends AbstractTemplateEngine {
     private MarkupTemplateEngine engine;
 
     @Override
-    public void init(Application application) {
-        super.init(application);
-
-        PippoSettings pippoSettings = getPippoSettings();
-
-        TemplateConfiguration configuration = new TemplateConfiguration();
-        configuration.setBaseTemplateClass(PippoGroovyTemplate.class);
-        configuration.setAutoEscape(true);
-
-        if (pippoSettings.isDev()) {
-            // Do not cache templates in dev mode
-            configuration.setCacheTemplates(false);
-        } else {
-            configuration.setAutoIndent(true);
-            configuration.setAutoNewLine(true);
-            configuration.setAutoIndentString("  ");
-        }
-
-        String pathPrefix = getTemplatePathPrefix();
-        pathPrefix = StringUtils.removeStart(pathPrefix, "/");
-        pathPrefix = StringUtils.removeEnd(pathPrefix, "/");
-
-        GroovyTemplateResolver cachingResolver = new GroovyTemplateResolver(pathPrefix);
-
-        ClassLoader classLoader = getClass().getClassLoader();
-
-        // allow custom initialization
-        init(application, configuration);
-
-        engine = new MarkupTemplateEngine(classLoader, configuration, cachingResolver);
-    }
-
-    @Override
-    protected String getDefaultFileExtension() {
-        return GROOVY;
-    }
-
-    @Override
     public void renderString(String templateContent, Map<String, Object> model, Writer writer) {
         try {
-            Template groovyTemplate = engine.createTemplate(templateContent);
+            Template groovyTemplate = getMarkupTemplateEngine().createTemplate(templateContent);
             PippoGroovyTemplate gt = (PippoGroovyTemplate) groovyTemplate.make(model);
             gt.setup(getLanguages(), getMessages(), getRouter());
             gt.writeTo(writer);
@@ -105,7 +65,7 @@ public class GroovyTemplateEngine extends AbstractTemplateEngine {
 
         Template groovyTemplate;
         try {
-            groovyTemplate = engine.createTemplateByPath(templateName);
+            groovyTemplate = getMarkupTemplateEngine().createTemplateByPath(templateName);
         } catch (ClassNotFoundException | IOException | RuntimeException e) {
             log.error("Error reading Groovy template {} ", templateName, e);
             throw new PippoRuntimeException(e);
@@ -121,13 +81,41 @@ public class GroovyTemplateEngine extends AbstractTemplateEngine {
         }
     }
 
-    /**
-     * Override this method if you want to modify the template configuration.
-     *
-     * @param application
-     * @param configuration
-     */
-    protected void init(Application application, TemplateConfiguration configuration) {
+    @Override
+    protected String getDefaultFileExtension() {
+        return GROOVY;
     }
 
+    protected TemplateConfiguration createTemplateConfiguration() {
+        TemplateConfiguration configuration = new TemplateConfiguration();
+        configuration.setBaseTemplateClass(PippoGroovyTemplate.class);
+        configuration.setAutoEscape(true);
+
+        if (getPippoSettings().isDev()) {
+            // Do not cache templates in dev mode
+            configuration.setCacheTemplates(false);
+        } else {
+            configuration.setAutoIndent(true);
+            configuration.setAutoNewLine(true);
+            configuration.setAutoIndentString("  ");
+        }
+
+        return configuration;
+    }
+
+    protected GroovyTemplateResolver createGroovyTemplateResolver() {
+        String pathPrefix = getTemplatePathPrefix();
+        pathPrefix = StringUtils.removeStart(pathPrefix, "/");
+        pathPrefix = StringUtils.removeEnd(pathPrefix, "/");
+
+        return new GroovyTemplateResolver(pathPrefix);
+    }
+
+    private MarkupTemplateEngine getMarkupTemplateEngine() {
+        if (engine == null) {
+            engine = new MarkupTemplateEngine(getClass().getClassLoader(), createTemplateConfiguration(), createGroovyTemplateResolver());
+        }
+
+        return engine;
+    }
 }

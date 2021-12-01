@@ -31,15 +31,6 @@ public class ControllerApplication extends Application {
     private static final Logger log = LoggerFactory.getLogger(ControllerApplication.class);
 
     @Inject
-    private Optional<ControllerInstantiationListenerList> controllerInstantiationListeners = Optional.empty();
-
-    @Inject
-    private Optional<ControllerInitializationListenerList> controllerInitializationListeners = Optional.empty();
-
-    @Inject
-    private Optional<ControllerInvokeListenerList> controllerInvokeListeners = Optional.empty();
-
-    @Inject
     private Optional<ControllerRouteFactory> controllerRouteFactory = Optional.empty();
 
     public ControllerApplication() {
@@ -52,38 +43,37 @@ public class ControllerApplication extends Application {
     }
 
     public ControllerInstantiationListenerList getControllerInstantiationListeners() {
-        if (!controllerInstantiationListeners.isPresent()) {
-            controllerInstantiationListeners = Optional.of(new ControllerInstantiationListenerList());
+        if (controllerInstantiationListeners == null) {
+            controllerInstantiationListeners = new ControllerInstantiationListenerList();
         }
 
-        return controllerInstantiationListeners.get();
+        return controllerInstantiationListeners;
     }
 
     public ControllerInitializationListenerList getControllerInitializationListeners() {
-        if (!controllerInitializationListeners.isPresent()) {
-            controllerInitializationListeners = Optional.of(new ControllerInitializationListenerList());
+        if (controllerInitializationListeners == null) {
+            controllerInitializationListeners = new ControllerInitializationListenerList();
         }
 
-        return controllerInitializationListeners.get();
+        return controllerInitializationListeners;
     }
 
     public ControllerInvokeListenerList getControllerInvokeListeners() {
-        if (!controllerInvokeListeners.isPresent()) {
-            controllerInvokeListeners = Optional.of(new ControllerInvokeListenerList());
+        if (controllerInvokeListeners == null) {
+            controllerInvokeListeners = new ControllerInvokeListenerList();
         }
 
-        return controllerInvokeListeners.get();
+        return controllerInvokeListeners;
     }
 
     public ControllerRouteFactory getControllerRouteFactory() {
         if (!controllerRouteFactory.isPresent()) {
-            ControllerHandlerFactory controllerHandlerFactory = new DefaultControllerHandlerFactory()
-                .setContentTypeEngines(getContentTypeEngines());
             controllerRouteFactory = Optional.of(new DefaultControllerRouteFactory()
+                .setContentTypeEngines(getContentTypeEngines())
                 .setControllerHandlerFactory(controllerHandlerFactory));
         }
 
-        return controllerRouteFactory.get();
+        return controllerRouteFactory;
     }
 
     public ControllerApplication setControllerRouteFactory(ControllerRouteFactory controllerRouteFactory) {

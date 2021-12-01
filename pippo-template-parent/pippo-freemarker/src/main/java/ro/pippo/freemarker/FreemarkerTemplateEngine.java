@@ -21,12 +21,9 @@ import freemarker.template.SimpleScalar;
 import freemarker.template.Template;
 import org.kohsuke.MetaInfServices;
 import ro.pippo.core.AbstractTemplateEngine;
-import ro.pippo.core.Application;
 import ro.pippo.core.PippoConstants;
 import ro.pippo.core.PippoRuntimeException;
-import ro.pippo.core.PippoSettings;
 import ro.pippo.core.TemplateEngine;
-import ro.pippo.core.route.Router;
 import ro.pippo.core.util.StringUtils;
 
 import java.io.Writer;
@@ -41,9 +38,10 @@ public class FreemarkerTemplateEngine extends AbstractTemplateEngine {
 
     public static final String FTL = "ftl";
 
+    private Configuration configuration;
+
     private WebjarsAtMethod webjarResourcesMethod;
     private PublicAtMethod publicResourcesMethod;
-    private Configuration configuration;
 
     static {
         try {
@@ -54,26 +52,53 @@ public class FreemarkerTemplateEngine extends AbstractTemplateEngine {
     }
 
     @Override
-    public void init(Application application) {
-        super.init(application);
+    public void renderString(String templateContent, Map<String, Object> model, Writer writer) {
+        Map <String, Object> enhancedModel = enhancesTemplateModel(model);
 
-        Router router = getRouter();
-        PippoSettings pippoSettings = getPippoSettings();
+        try {
+            Template template = new Template("StringTemplate", templateContent, getConfiguration());
+            template.process(enhancedModel, writer);
+        } catch (Exception e) {
+            throw new PippoRuntimeException(e);
+        }
+    }
 
-        configuration = new Configuration(Configuration.VERSION_2_3_21);
+    @Override
+    public void renderResource(String templateName, Map<String, Object> model, Writer writer) {
+        Map <String, Object> enhancedModel = enhancesTemplateModel(model);
+        Locale locale = (Locale) enhancedModel.get("locale");
+
+        try {
+            if (templateName.indexOf('.') == -1) {
+                templateName += "." + getFileExtension();
+            }
+            Template template = getConfiguration().getTemplate(templateName, locale);
+            template.process(enhancedModel, writer);
+        } catch (Exception e) {
+            throw new PippoRuntimeException(e);
+        }
+    }
+
+    @Override
+    protected String getDefaultFileExtension() {
+        return FTL;
+    }
+
+    protected Configuration createConfiguration() {
+        Configuration configuration = new Configuration(Configuration.VERSION_2_3_21);
         configuration.setDefaultEncoding(PippoConstants.UTF8);
         configuration.setOutputEncoding(PippoConstants.UTF8);
         configuration.setLocalizedLookup(true);
         configuration.setClassForTemplateLoading(FreemarkerTemplateEngine.class, getTemplatePathPrefix());
 
-        // We also do not want Freemarker to chose a platform dependent
+        // We also do not want Freemarker to choose a platform dependent
         // number formatting. Eg "1000" could be printed out by FTL as "1,000"
         // on some platforms.
         // See also:
         // http://freemarker.sourceforge.net/docs/app_faq.html#faq_number_grouping
         configuration.setNumberFormat("0.######"); // now it will print 1000000
 
-        if (pippoSettings.isDev()) {
+        if (getPippoSettings().isDev()) {
             configuration.setTemplateUpdateDelayMilliseconds(0); // disable cache
         } else {
             // never update the templates in production or while testing...
@@ -85,28 +110,19 @@ public class FreemarkerTemplateEngine extends AbstractTemplateEngine {
         }
 
         // set global template variables
-        configuration.setSharedVariable("contextPath", new SimpleScalar(router.getContextPath()));
-        configuration.setSharedVariable("appPath", new SimpleScalar(router.getApplicationPath()));
+        configuration.setSharedVariable("contextPath", new SimpleScalar(getRouter().getContextPath()));
+        configuration.setSharedVariable("appPath", new SimpleScalar(getRouter().getApplicationPath()));
 
-        webjarResourcesMethod = new WebjarsAtMethod(router);
-        publicResourcesMethod = new PublicAtMethod(router);
-
-        // allow custom initialization
-        init(application, configuration);
+        return configuration;
     }
 
-    @Override
-    protected String getDefaultFileExtension() {
-        return FTL;
-    }
-
-    @Override
-    public void renderString(String templateContent, Map<String, Object> model, Writer writer) {
+    protected Map<String, Object> enhancesTemplateModel(Map<String, Object> model) {
         // prepare the locale-aware i18n method
         String language = (String) model.get(PippoConstants.REQUEST_PARAMETER_LANG);
         if (StringUtils.isNullOrEmpty(language)) {
             language = getLanguageOrDefault(language);
         }
+        model.put("lang", language);
         model.put("i18n", new I18nMethod(getMessages(), language));
 
         // prepare the locale-aware prettyTime method
@@ -114,56 +130,37 @@ public class FreemarkerTemplateEngine extends AbstractTemplateEngine {
         if (locale == null) {
             locale = getLocaleOrDefault(language);
         }
+        model.put("locale", locale);
         model.put("prettyTime", new PrettyTimeMethod(locale));
         model.put("formatTime", new FormatTimeMethod(locale));
-        model.put("webjarsAt", webjarResourcesMethod);
-        model.put("publicAt", publicResourcesMethod);
+        model.put("webjarsAt", getWebjarResourcesMethod());
+        model.put("publicAt", getPublicResourcesMethod());
 
-        try {
-            Template template = new Template("StringTemplate", templateContent, configuration);
-            template.process(model, writer);
-        } catch (Exception e) {
-            throw new PippoRuntimeException(e);
-        }
+        return model;
     }
 
-    @Override
-    public void renderResource(String templateName, Map<String, Object> model, Writer writer) {
-        // prepare the locale-aware i18n method
-        String language = (String) model.get(PippoConstants.REQUEST_PARAMETER_LANG);
-        if (StringUtils.isNullOrEmpty(language)) {
-            language = getLanguageOrDefault(language);
+    protected final WebjarsAtMethod getWebjarResourcesMethod() {
+        if (webjarResourcesMethod == null) {
+            webjarResourcesMethod = new WebjarsAtMethod(getRouter());
         }
-        model.put("i18n", new I18nMethod(getMessages(), language));
 
-        // prepare the locale-aware prettyTime method
-        Locale locale = (Locale) model.get(PippoConstants.REQUEST_PARAMETER_LOCALE);
-        if (locale == null) {
-            locale = getLocaleOrDefault(language);
-        }
-        model.put("prettyTime", new PrettyTimeMethod(locale));
-        model.put("formatTime", new FormatTimeMethod(locale));
-        model.put("webjarsAt", webjarResourcesMethod);
-        model.put("publicAt", publicResourcesMethod);
-
-        try {
-            if (templateName.indexOf('.') == -1) {
-                templateName += "." + getFileExtension();
-            }
-            Template template = configuration.getTemplate(templateName, locale);
-            template.process(model, writer);
-        } catch (Exception e) {
-            throw new PippoRuntimeException(e);
-        }
+        return webjarResourcesMethod;
     }
 
-    /**
-     * Override this method if you want to modify the template configuration.
-     *
-     * @param application
-     * @param configuration
-     */
-    protected void init(Application application, Configuration configuration) {
+    protected final PublicAtMethod getPublicResourcesMethod() {
+        if (publicResourcesMethod == null) {
+            publicResourcesMethod = new PublicAtMethod(getRouter());
+        }
+
+        return  publicResourcesMethod;
+    }
+
+    private Configuration getConfiguration() {
+        if (configuration == null) {
+            configuration = createConfiguration();
+        }
+
+        return configuration;
     }
 
 }

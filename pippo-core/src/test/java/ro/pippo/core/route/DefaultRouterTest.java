@@ -20,7 +20,6 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
-import ro.pippo.core.EmptyHandler;
 import ro.pippo.core.HttpConstants;
 
 import java.util.Collections;
@@ -36,7 +35,7 @@ import static org.junit.Assert.*;
  */
 public class DefaultRouterTest {
 
-    private static final RouteHandler emptyHandler = new EmptyHandler();
+    private static final RouteHandler emptyHandler = routeContext -> {};
 
     private DefaultRouter router;
 

@@ -25,7 +25,7 @@ import java.util.Map;
 /**
  * @author Decebal Suiu
  */
-public class Route {
+public class Route implements Comparable<Route> {
 
     private String requestMethod;
     private String uriPattern;
@@ -34,8 +34,33 @@ public class Route {
 
     private boolean runAsFinally;
     private String name;
+    private int order;
 
     private Map<String, Object> attributes;
+
+    /**
+     * Used in subclasses (facilitates the injection of dependencies).
+     * <pre>{@code
+     * @Component
+     * public class LogRoute extends Route implements RouteHandler {
+     *
+     *     public LogRoute() {
+     *         super(HttpConstants.Method.GET, "/log");
+     *
+     *         setRouteHandler(this);
+     *     }
+     *
+     *     @Override
+     *     public void handle(RouteContext routeContext) {
+     *         // do something
+     *     }
+     *
+     * }
+     * }</pre>
+     */
+    protected Route(String requestMethod, String uriPattern) {
+        this(requestMethod, uriPattern, routeContext -> {});
+    }
 
     public Route(String requestMethod, String uriPattern, RouteHandler routeHandler) {
         this.requestMethod = requestMethod;
@@ -58,6 +83,7 @@ public class Route {
         this.attributes = new HashMap<>(route.attributes);
         this.name = route.name;
         this.runAsFinally = route.runAsFinally;
+        this.order = route.order;
     }
 
     /**
@@ -146,14 +172,6 @@ public class Route {
      */
     public static Route CONNECT(String uriPattern, RouteHandler routeHandler) {
         return new Route(HttpConstants.Method.CONNECT, uriPattern, routeHandler);
-    }
-
-    /**
-     * @deprecated Replaced by {@link #ANY(String, RouteHandler)}.
-     */
-    @Deprecated
-    public static Route ALL(String uriPattern, RouteHandler routeHandler) {
-        return ANY(uriPattern, routeHandler);
     }
 
     /**
@@ -260,6 +278,29 @@ public class Route {
         }
 
         this.absoluteUriPattern = absoluteUriPattern;
+    }
+
+    /**
+     * Returns the order for this route.
+     * This method is used to sort a list of {@code Route}s.
+     * Lower numbers are registered before higher numbers.
+     */
+    public int getOrder() {
+        return order;
+    }
+
+    /**
+     * Specify the order for this route.
+     */
+    public Route setOrder(int order) {
+        this.order = order;
+
+        return this;
+    }
+
+    @Override
+    public int compareTo(Route o) {
+        return order - o.order;
     }
 
     @Override

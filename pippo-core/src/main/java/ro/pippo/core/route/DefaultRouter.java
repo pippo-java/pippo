@@ -182,6 +182,9 @@ public class DefaultRouter implements Router {
                 addCompiledRoute(compiledRoute);
             }
         }
+
+        // sort compiled routes
+        Collections.sort(compiledRoutes);
     }
 
     public List<Route> getRoutes(String requestMethod) {

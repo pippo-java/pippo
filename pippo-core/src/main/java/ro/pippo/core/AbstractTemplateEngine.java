@@ -21,12 +21,7 @@ import ro.pippo.core.route.Router;
 import java.util.Locale;
 
 /**
- * Convenience abstract implementation of {@link TemplateEngine}
- *
- * To use the convenience methods in this class, implementations must override {@link #init(Application)}
- * and call this class' implementation before performing any of their initialization.
- *
- * @see TemplateEngine
+ * Convenience abstract implementation of {@link TemplateEngine}.
  *
  * @author Ranganath Kini
  */
@@ -37,28 +32,20 @@ public abstract class AbstractTemplateEngine implements TemplateEngine {
     private Router router;
     private PippoSettings pippoSettings;
 
+    private Application application;
+
     private String fileExtension;
     private String templatePathPrefix;
 
     /**
-     * Performs common initialization for template engines.
-     *
-     * Implementations must override this method to do their own template engine specific initialization.
-     * To use the convenience of this class, implementations must invoke this class's implementation before
-     * performing their own initialization.
+     * This method is called by {@link Application#setTemplateEngine(TemplateEngine)}.
      *
      * @param application reference to the Pippo {@link Application} that can be used to retrieve settings
      *                     and other settings for the initialization
      */
     @Override
-    public void init(Application application) {
-        languages = application.getLanguages();
-        messages = application.getMessages();
-        router = application.getRouter();
-        pippoSettings = application.getPippoSettings();
-
-        fileExtension = pippoSettings.getString(PippoConstants.SETTING_TEMPLATE_EXTENSION, getDefaultFileExtension());
-        templatePathPrefix = pippoSettings.getString(PippoConstants.SETTING_TEMPLATE_PATH_PREFIX, TemplateEngine.DEFAULT_PATH_PREFIX);
+    public final void init(Application application) {
+        this.application = application;
     }
 
     /**
@@ -85,6 +72,10 @@ public abstract class AbstractTemplateEngine implements TemplateEngine {
      * @return String the configured file extension for template resources
      */
     protected final String getFileExtension() {
+        if (fileExtension == null) {
+            fileExtension = getPippoSettings().getString(PippoConstants.SETTING_TEMPLATE_EXTENSION, getDefaultFileExtension());
+        }
+
         return fileExtension;
     }
 
@@ -92,6 +83,10 @@ public abstract class AbstractTemplateEngine implements TemplateEngine {
      * @see Application#getLanguages()
      */
     protected final Languages getLanguages() {
+        if (languages == null) {
+            languages = getApplication().getLanguages();
+        }
+
         return languages;
     }
 
@@ -99,13 +94,21 @@ public abstract class AbstractTemplateEngine implements TemplateEngine {
      * @see Application#getMessages()
      */
     protected final Messages getMessages() {
-        return this.messages;
+        if (messages == null) {
+            messages = getApplication().getMessages();
+        }
+
+        return messages;
     }
 
     /**
      * @see Application#getPippoSettings()
      */
     protected final PippoSettings getPippoSettings() {
+        if (pippoSettings == null) {
+            pippoSettings = getApplication().getPippoSettings();
+        }
+
         return pippoSettings;
     }
 
@@ -113,34 +116,38 @@ public abstract class AbstractTemplateEngine implements TemplateEngine {
      * @see Languages#getLocaleOrDefault(String)
      */
     protected final Locale getLocaleOrDefault(String language) {
-        return languages.getLocaleOrDefault(language);
+        return getLanguages().getLocaleOrDefault(language);
     }
 
     /**
      * @see Languages#getLocaleOrDefault(RouteContext)
      */
     protected final Locale getLocaleOrDefault(RouteContext routeContext) {
-        return languages.getLocaleOrDefault(routeContext);
+        return getLanguages().getLocaleOrDefault(routeContext);
     }
 
     /**
      * @see Languages#getLanguageOrDefault(String)
      */
     protected final String getLanguageOrDefault(String language) {
-        return languages.getLanguageOrDefault(language);
+        return getLanguages().getLanguageOrDefault(language);
     }
 
     /**
      * @see Languages#getLanguageOrDefault(RouteContext)
      */
     protected final String getLanguageOrDefault(RouteContext routeContext) {
-        return languages.getLanguageOrDefault(routeContext);
+        return getLanguages().getLanguageOrDefault(routeContext);
     }
 
     /**
      * @see Application#getRouter()
      */
     protected final Router getRouter() {
+        if (router == null) {
+            router = getApplication().getRouter();
+        }
+
         return router;
     }
 
@@ -150,7 +157,15 @@ public abstract class AbstractTemplateEngine implements TemplateEngine {
      * @return String the template path prefix for loading template resources
      */
     protected final String getTemplatePathPrefix() {
+        if (templatePathPrefix == null) {
+            templatePathPrefix = getPippoSettings().getString(PippoConstants.SETTING_TEMPLATE_PATH_PREFIX, TemplateEngine.DEFAULT_PATH_PREFIX);
+        }
+
         return templatePathPrefix;
+    }
+
+    protected final Application getApplication() {
+        return application;
     }
 
 }

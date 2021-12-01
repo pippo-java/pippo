@@ -31,7 +31,7 @@ import static org.junit.Assert.*;
  */
 public class PathRegexBuilderTest {
 
-    private static final RouteHandler emptyHandler = new EmptyHandler();
+    private static final RouteHandler emptyHandler = (routeContext) -> {};
 
     private DefaultRouter router;
 
