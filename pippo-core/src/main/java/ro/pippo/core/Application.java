@@ -17,6 +17,8 @@ package ro.pippo.core;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import ro.pippo.core.entity.DefaultEntityRequestEngine;
+import ro.pippo.core.entity.EntityRequestEngine;
 import ro.pippo.core.gzip.GZipRequestResponseFactory;
 import ro.pippo.core.route.DefaultRouter;
 import ro.pippo.core.route.ResourceRouting;
@@ -59,6 +61,7 @@ public class Application implements ResourceRouting {
     private HttpCacheToolkit httpCacheToolkit;
     private TemplateEngine templateEngine;
     private ContentTypeEngines engines;
+    private EntityRequestEngine entityRequestEngine;
     protected Router router;
     private ErrorHandler errorHandler;
     private RequestResponseFactory requestResponseFactory;
@@ -216,6 +219,18 @@ public class Application implements ResourceRouting {
 
     public ContentTypeEngine getContentTypeEngine(String contentType) {
         return engines.getContentTypeEngine(contentType);
+    }
+
+    public EntityRequestEngine getEntityRequestEngine() {
+        if (entityRequestEngine == null) {
+            entityRequestEngine = new DefaultEntityRequestEngine(getContentTypeEngines());
+        }
+
+        return entityRequestEngine;
+    }
+
+    public void setEntityRequestEngine(EntityRequestEngine entityRequestEngine) {
+        this.entityRequestEngine = entityRequestEngine;
     }
 
     public Router getRouter() {
