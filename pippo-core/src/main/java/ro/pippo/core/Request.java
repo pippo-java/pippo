@@ -17,11 +17,9 @@ package ro.pippo.core;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import ro.pippo.core.converters.Converter;
+import ro.pippo.core.entity.EntityRequestEngine;
 import ro.pippo.core.route.RouteContext;
 import ro.pippo.core.route.RouteDispatcher;
-import ro.pippo.core.util.ClassUtils;
 import ro.pippo.core.util.CookieUtils;
 import ro.pippo.core.util.IoUtils;
 import ro.pippo.core.util.StringUtils;
@@ -30,9 +28,6 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.servlet.http.Part;
-import java.lang.reflect.Field;
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
 import java.net.URI;
 import java.util.Collection;
 import java.util.Collections;
@@ -56,6 +51,7 @@ public final class Request {
 
     private HttpServletRequest httpServletRequest;
     private ContentTypeEngines contentTypeEngines;
+    private EntityRequestEngine entityRequestEngine;
     private Map<String, ParameterValue> parameters; // query&post parameters
     private Map<String, ParameterValue> pathParameters; // path parameters
     private Map<String, ParameterValue> allParameters; // parameters + pathParameters
@@ -72,6 +68,7 @@ public final class Request {
     public Request(HttpServletRequest servletRequest, Application application) {
         this.httpServletRequest = servletRequest;
         this.contentTypeEngines = application.getContentTypeEngines();
+        this.entityRequestEngine = application.getEntityRequestEngine();
 
         applicationPath = application.getRouter().getApplicationPath();
 
@@ -227,121 +224,28 @@ public final class Request {
         initAllParameters();
     }
 
+    /**
+     * Forward to {@link EntityRequestEngine::createEntityFromParameters}.
+     */
+    @Deprecated
     public <T> T createEntityFromParameters(Class<T> entityClass) {
-        T entity;
-        try {
-            entity = entityClass.newInstance();
-        } catch (Exception e) {
-            log.error("Cannot create new instance of class '{}'", entityClass.getName(), e);
-            return null;
-        }
-
-        updateEntityFromParameters(entity);
-
-        return entity;
+        return entityRequestEngine.createEntityFromParameters(entityClass, this);
     }
 
-    @SuppressWarnings("unchecked")
+    /**
+     * Forward to {@link EntityRequestEngine::updateEntityFromParameters}.
+     */
+    @Deprecated
     public <T, X> T updateEntityFromParameters(T entity) {
-        for (Field field : ClassUtils.getAllFields(entity.getClass())) {
-            String parameterName = field.getName();
-            ParamField parameter = field.getAnnotation(ParamField.class);
-            if (parameter != null) {
-                parameterName = parameter.value();
-            }
-
-            if (getParameters().containsKey(parameterName)) {
-                if (!field.isAccessible()) {
-                    field.setAccessible(true);
-                }
-
-                String pattern = (parameter != null) ? parameter.pattern() : null;
-                Class<? extends Converter> converterClass = (parameter != null && void.class != parameter.converterClass()) ? parameter.converterClass() : null;
-
-                try {
-                    Class<?> fieldClass = field.getType();
-                    Object value;
-                    if (converterClass == null) {
-                        if (Collection.class.isAssignableFrom(fieldClass)) {
-                            Type parameterType = field.getGenericType();
-                            if (!ParameterizedType.class.isAssignableFrom(parameterType.getClass())) {
-                                throw new PippoRuntimeException("Please specify a generic parameter type for field '{}' {}",
-                                        field.getName(), fieldClass.getName());
-                            }
-                            ParameterizedType parameterizedType = (ParameterizedType) parameterType;
-                            Class<X> genericClass;
-                            try {
-                                genericClass = (Class<X>) parameterizedType.getActualTypeArguments()[0];
-                            } catch (ClassCastException e) {
-                                throw new PippoRuntimeException("Please specify a generic parameter type for field '{}' {}",
-                                        field.getName(), fieldClass.getName());
-                            }
-
-                            if (Set.class == fieldClass) {
-                                value = getParameters().get(parameterName).toSet(genericClass, pattern);
-                            } else if (List.class == fieldClass) {
-                                value = getParameters().get(parameterName).toList(genericClass, pattern);
-                            } else if (fieldClass.isInterface()) {
-                                throw new PippoRuntimeException("Field '{}' collection '{}' is not a supported type!",
-                                        field.getName(), fieldClass.getName());
-                            } else {
-                                Class<? extends Collection> collectionClass = (Class<? extends Collection>) fieldClass;
-                                value = getParameters().get(parameterName).toCollection(collectionClass, genericClass, pattern);
-                            }
-                        } else {
-                            value = getParameters().get(parameterName).to(fieldClass, pattern);
-                        }
-                    } else {
-                        value = getParameters().get(parameterName).convert(converterClass, pattern);
-                    }
-                    field.set(entity, value);
-                } catch (IllegalAccessException e) {
-                    log.error("Cannot set value for field '{}' from parameter '{}'", field.getName(), parameterName, e);
-                } catch (PippoRuntimeException e) {
-                    log.error(e.getMessage(), e);
-                }
-            }
-        }
-
-        return entity;
+        return entityRequestEngine.updateEntityFromParameters(entity, this);
     }
 
+    /**
+     * Forward to {@link EntityRequestEngine::createEntityFromBody}.
+     */
+    @Deprecated
     public <T> T createEntityFromBody(Class<T> entityClass) {
-        try {
-            String body = getBody();
-            if (StringUtils.isNullOrEmpty(body)) {
-                log.warn("Can not create entity '{}' from null or empty request body!", entityClass.getName());
-                return null;
-            }
-
-            // try to determine the body content-type
-            String contentType = getContentType();
-            if (StringUtils.isNullOrEmpty(contentType)) {
-                // sloppy client, try the accept header
-                contentType = getAcceptType();
-            }
-
-            if (StringUtils.isNullOrEmpty(contentType)) {
-                throw new PippoRuntimeException(
-                    "Failed to create entity '{}' from request body because 'content-type' is not specified!",
-                    entityClass.getName());
-            }
-
-            ContentTypeEngine engine = contentTypeEngines.getContentTypeEngine(contentType);
-            if (engine == null) {
-                throw new PippoRuntimeException(
-                    "Failed to create entity '{}' from request body because a content engine for '{}' could not be found!",
-                    entityClass.getName(), contentType);
-            }
-
-            return engine.fromString(body, entityClass);
-        } catch (PippoRuntimeException e) {
-            // pass-through PippoRuntimeExceptions
-            throw e;
-        } catch (Exception e) {
-            // capture and re-throw all other exceptions
-            throw new PippoRuntimeException(e, "Failed to create entity '{}' from request body!", entityClass.getName());
-        }
+        return entityRequestEngine.createEntityFromBody(entityClass, this);
     }
 
     public String getHost() {
@@ -371,7 +275,7 @@ public final class Request {
     public String getAcceptType() {
         if (acceptType == null) {
             acceptType = httpServletRequest.getHeader(HttpConstants.Header.ACCEPT);
-            // try to specify an AcceptType from an registered ContentType suffix
+            // try to specify an AcceptType from a registered ContentType suffix
             String suffix = StringUtils.getFileExtension(getPath());
             if (!StringUtils.isNullOrEmpty(suffix)) {
                 ContentTypeEngine engine = contentTypeEngines.getContentTypeEngine(suffix);

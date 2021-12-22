@@ -1043,18 +1043,21 @@ public final class Response {
             throw new PippoRuntimeException("You must set a template engine in your application");
         }
 
+        // extended model (add extra fields)
+        Map<String, Object> extendedModel = new HashMap<>(model);
+
         // merge the model passed with the locals data
-        model.putAll(getLocals());
+        extendedModel.putAll(getLocals());
 
         // add session (if exists) to model
         Session session = Session.get();
         if (session != null) {
-            model.put("session", session);
+            extendedModel.put("session", session);
         }
 
         // render the template using the merged model
         StringWriter stringWriter = new StringWriter();
-        templateEngine.renderResource(templateName, model, stringWriter);
+        templateEngine.renderResource(templateName, extendedModel, stringWriter);
 
         return stringWriter.toString();
     }
