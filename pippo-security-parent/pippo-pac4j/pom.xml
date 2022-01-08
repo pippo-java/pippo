@@ -14,7 +14,7 @@
     <description>Pac4j integration</description>
 
     <properties>
-        <pac4j.version>2.2.0</pac4j.version>
+        <pac4j.version>5.2.0</pac4j.version>
     </properties>
 
     <dependencies>
