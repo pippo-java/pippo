@@ -16,14 +16,19 @@
 package ro.pippo.pac4j;
 
 import org.pac4j.core.config.Config;
+import org.pac4j.core.context.WebContext;
+import org.pac4j.core.context.session.SessionStore;
 import org.pac4j.core.engine.DefaultSecurityLogic;
+import org.pac4j.core.engine.SecurityGrantedAccessAdapter;
 import org.pac4j.core.engine.SecurityLogic;
 import org.pac4j.core.exception.TechnicalException;
+import org.pac4j.core.profile.UserProfile;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ro.pippo.core.route.RouteContext;
 import ro.pippo.core.route.RouteHandler;
 
+import java.util.Collection;
 import java.util.Objects;
 
 /**
@@ -42,7 +47,7 @@ public class Pac4jSecurityHandler implements RouteHandler {
 
     private static final Logger log = LoggerFactory.getLogger(Pac4jSecurityHandler.class);
 
-    private SecurityLogic<Object, PippoWebContext> securityLogic = new DefaultSecurityLogic<>();
+    private SecurityLogic securityLogic = new DefaultSecurityLogic();
     private Config config;
     private String clients;
     private String authorizers;
@@ -58,15 +63,10 @@ public class Pac4jSecurityHandler implements RouteHandler {
     }
 
     public Pac4jSecurityHandler(Config config, String clients, String authorizers, String matchers) {
-        this(config, clients, authorizers, matchers, null);
-    }
-
-    public Pac4jSecurityHandler(Config config, String clients, String authorizers, String matchers, Boolean multiProfile) {
         this.config = config;
         this.clients = clients;
         this.authorizers = authorizers;
         this.matchers = matchers;
-        this.multiProfile = multiProfile;
     }
 
     @Override
@@ -76,11 +76,9 @@ public class Pac4jSecurityHandler implements RouteHandler {
         Objects.requireNonNull(config);
 
         PippoWebContext webContext = new PippoWebContext(routeContext, config.getSessionStore());
-
+        PippoNopSecurityGrantedAccessAdapter securityGrantedAccessAdapter = new PippoNopSecurityGrantedAccessAdapter();
         try {
-            securityLogic.perform(webContext, config, (ctx, parameters) -> {
-                throw new SecurityGrantedAccessException();
-            }, config.getHttpActionAdapter(), clients, authorizers, matchers, multiProfile);
+            securityLogic.perform(webContext, config.getSessionStore(), config, securityGrantedAccessAdapter, config.getHttpActionAdapter(), clients, authorizers, matchers, multiProfile);
             // stop the processing if no success granted access exception has been raised
             log.debug("Halt the request processing");
         } catch (SecurityGrantedAccessException e) {
@@ -90,11 +88,11 @@ public class Pac4jSecurityHandler implements RouteHandler {
         }
     }
 
-    public SecurityLogic<Object, PippoWebContext> getSecurityLogic() {
+    public SecurityLogic getSecurityLogic() {
         return securityLogic;
     }
 
-    public Pac4jSecurityHandler setSecurityLogic(SecurityLogic<Object, PippoWebContext> securityLogic) {
+    public Pac4jSecurityHandler setSecurityLogic(SecurityLogic securityLogic) {
         this.securityLogic = securityLogic;
 
         return this;
@@ -139,6 +137,15 @@ public class Pac4jSecurityHandler implements RouteHandler {
             super("access granted");
         }
 
+    }
+
+    private class PippoNopSecurityGrantedAccessAdapter implements SecurityGrantedAccessAdapter {
+        private PippoNopSecurityGrantedAccessAdapter(){};
+
+        @Override
+        public Object adapt(WebContext webContext, SessionStore sessionStore, Collection<UserProfile> collection, Object... objects) throws Exception {
+            throw new SecurityGrantedAccessException();
+        }
     }
 
 }

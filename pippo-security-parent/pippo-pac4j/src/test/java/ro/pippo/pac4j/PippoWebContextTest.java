@@ -22,7 +22,7 @@ import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.pac4j.core.context.Cookie;
 import org.pac4j.core.context.session.SessionStore;
 import ro.pippo.core.Application;
@@ -34,17 +34,13 @@ import ro.pippo.core.route.Router;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Enumeration;
-import java.util.Map;
+import java.util.*;
 
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.*;
-import static org.mockito.Matchers.anyString;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 
 /**
@@ -91,18 +87,9 @@ public class PippoWebContextTest {
     public void shouldReturnPippoSessionStoreWhenAccessed() {
         PippoWebContext context = makePippoWebContext();
 
-        SessionStore<PippoWebContext> sessionStore = context.getSessionStore();
+        SessionStore sessionStore = context.getSessionStore();
         assertThat(sessionStore, instanceOf(PippoSessionStore.class));
-        assertThat(sessionStore.getTrackableSession(context), is(mockSession));
-    }
-
-    @Test
-    public void shouldThrowUnsupportedOperationExceptionIfSettingSessionStoreIsAttempted() {
-        PippoWebContext context = makePippoWebContext();
-
-        thrown.expect(UnsupportedOperationException.class);
-
-        context.setSessionStore(new PippoSessionStore());
+        assertThat(sessionStore.getTrackableSession(context).get(), is(mockSession));
     }
 
     @Test
@@ -117,7 +104,7 @@ public class PippoWebContextTest {
 
         PippoWebContext context = makePippoWebContext();
 
-        assertThat(context.getRequestParameter(expectedParameterName),
+        assertThat(context.getRequestParameter(expectedParameterName).get(),
             is(expectedParameterValue));
 
         verify(mockHttpRequest, times(1)).getParameterNames();
@@ -172,7 +159,7 @@ public class PippoWebContextTest {
 
         PippoWebContext context = makePippoWebContext();
 
-        assertThat(context.getRequestAttribute(expectedAttributeName), is(expectedAttributeValue));
+        assertThat(context.getRequestAttribute(expectedAttributeName).get(), is(expectedAttributeValue));
 
         verify(mockHttpRequest, times(1)).getAttribute(expectedAttributeName);
     }
@@ -185,7 +172,7 @@ public class PippoWebContextTest {
 
         PippoWebContext context = makePippoWebContext();
 
-        assertThat(context.getRequestAttribute(expectedAttributeName), is(nullValue()));
+        assertThat(context.getRequestAttribute(expectedAttributeName), is(Optional.ofNullable(null)));
 
         verify(mockHttpRequest, times(1)).getAttribute(expectedAttributeName);
     }
@@ -201,7 +188,7 @@ public class PippoWebContextTest {
 
         context.setRequestAttribute(expectedAttributeName, expectedAttributeValue);
 
-        assertThat(context.getRequestAttribute(expectedAttributeName), is(expectedAttributeValue));
+        assertThat(context.getRequestAttribute(expectedAttributeName).get(), is(expectedAttributeValue));
 
         verify(mockHttpRequest, times(1)).setAttribute(expectedAttributeName, expectedAttributeValue);
         verify(mockHttpRequest, times(1)).getAttribute(expectedAttributeName);

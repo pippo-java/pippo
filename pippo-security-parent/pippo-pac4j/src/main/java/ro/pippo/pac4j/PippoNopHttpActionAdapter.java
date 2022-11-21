@@ -15,7 +15,9 @@
  */
 package ro.pippo.pac4j;
 
-import org.pac4j.core.http.HttpActionAdapter;
+import org.pac4j.core.context.WebContext;
+import org.pac4j.core.exception.http.HttpAction;
+import org.pac4j.core.http.adapter.HttpActionAdapter;
 
 /**
  * No-operation HTTP action adapter for the {@link PippoWebContext}.
@@ -28,7 +30,7 @@ import org.pac4j.core.http.HttpActionAdapter;
  *
  * @author Decebal Suiu
  */
-public class PippoNopHttpActionAdapter implements HttpActionAdapter<Void, PippoWebContext> {
+public class PippoNopHttpActionAdapter implements HttpActionAdapter {
 
     public static final PippoNopHttpActionAdapter INSTANCE = new PippoNopHttpActionAdapter();
 
@@ -37,8 +39,7 @@ public class PippoNopHttpActionAdapter implements HttpActionAdapter<Void, PippoW
     }
 
     @Override
-    public Void adapt(int code, PippoWebContext context) {
+    public Object adapt(HttpAction httpAction, WebContext webContext) {
         return null;
     }
-
 }

@@ -26,6 +26,7 @@ import ro.pippo.core.route.RouteContext;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
@@ -38,31 +39,21 @@ import java.util.stream.Collectors;
 public class PippoWebContext implements WebContext {
 
     private final RouteContext routeContext;
-    private final SessionStore<PippoWebContext> sessionStore;
+    private final SessionStore sessionStore;
 
     public PippoWebContext(RouteContext routeContext) {
         this(routeContext, null);
     }
 
-    public PippoWebContext(RouteContext routeContext, SessionStore<PippoWebContext> sessionStore) {
+    public PippoWebContext(RouteContext routeContext, SessionStore sessionStore) {
         this.routeContext = routeContext;
         this.sessionStore = (sessionStore != null) ? sessionStore : new PippoSessionStore();
     }
 
     @Override
-    public SessionStore<PippoWebContext> getSessionStore() {
-        return sessionStore;
-    }
-
-    @Override
-    public void setSessionStore(SessionStore sessionStore) {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public String getRequestParameter(String name) {
+    public Optional<String> getRequestParameter(String name) {
         ParameterValue parameter = getRequest().getParameter(name);
-        return parameter.isNull() ? null : parameter.toString();
+        return parameter.isNull() ? null : Optional.of(parameter.toString());
     }
 
     @Override
@@ -76,8 +67,8 @@ public class PippoWebContext implements WebContext {
     }
 
     @Override
-    public Object getRequestAttribute(String name) {
-        return getRequest().getHttpServletRequest().getAttribute(name);
+    public Optional getRequestAttribute(String name) {
+        return Optional.ofNullable(getRequest().getHttpServletRequest().getAttribute(name));
     }
 
     @Override
@@ -86,8 +77,8 @@ public class PippoWebContext implements WebContext {
     }
 
     @Override
-    public String getRequestHeader(String name) {
-        return getRequest().getHeader(name);
+    public Optional<String> getRequestHeader(String name) {
+        return Optional.ofNullable(getRequest().getHeader(name));
     }
 
     @Override
@@ -101,18 +92,13 @@ public class PippoWebContext implements WebContext {
     }
 
     @Override
-    public void writeResponseContent(String contentToWrite) {
-        getResponse().getWriter().write(contentToWrite);
-    }
-
-    @Override
-    public void setResponseStatus(int statusCode) {
-        getResponse().status(statusCode);
-    }
-
-    @Override
     public void setResponseHeader(String name, String value) {
         getResponse().header(name, value);
+    }
+
+    @Override
+    public Optional<String> getResponseHeader(String name) {
+        return Optional.of(getResponse().getHeader(name));
     }
 
     @Override
@@ -155,8 +141,6 @@ public class PippoWebContext implements WebContext {
             cookie.setHttpOnly(c.isHttpOnly());
             cookie.setDomain(c.getDomain());
             cookie.setMaxAge(c.getMaxAge());
-            cookie.setVersion(c.getVersion());
-
             return cookie;
         }).collect(Collectors.toList());
     }
@@ -193,4 +177,7 @@ public class PippoWebContext implements WebContext {
         return getRouteContext().getResponse();
     }
 
+    public SessionStore getSessionStore() {
+        return sessionStore;
+    }
 }
