@@ -38,7 +38,7 @@ import java.util.Objects;
  */
 public class Pac4jLogoutHandler implements RouteHandler {
 
-    private LogoutLogic<Object, PippoWebContext> logoutLogic = new DefaultLogoutLogic<>();
+    private LogoutLogic logoutLogic = new DefaultLogoutLogic();
     private Config config;
     private String defaultUrl;
     private String logoutUrlPattern;
@@ -68,14 +68,14 @@ public class Pac4jLogoutHandler implements RouteHandler {
 
         PippoWebContext webContext = new PippoWebContext(routeContext, config.getSessionStore());
 
-        logoutLogic.perform(webContext, config, config.getHttpActionAdapter(), defaultUrl, logoutUrlPattern, localLogout, destroySession, centralLogout);
+        logoutLogic.perform(webContext, config.getSessionStore(), config, config.getHttpActionAdapter(), defaultUrl, logoutUrlPattern, localLogout, destroySession, centralLogout);
     }
 
-    public LogoutLogic<Object, PippoWebContext> getLogoutLogic() {
+    public LogoutLogic getLogoutLogic() {
         return logoutLogic;
     }
 
-    public Pac4jLogoutHandler setLogoutLogic(LogoutLogic<Object, PippoWebContext> logoutLogic) {
+    public Pac4jLogoutHandler setLogoutLogic(LogoutLogic logoutLogic) {
         this.logoutLogic = logoutLogic;
 
         return this;

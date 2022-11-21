@@ -36,10 +36,10 @@ import java.util.Objects;
  */
 public class Pac4jCallbackHandler implements RouteHandler {
 
-    private CallbackLogic<Object, PippoWebContext> callbackLogic = new DefaultCallbackLogic<>();
+    private final String defaultClient;
+    private CallbackLogic callbackLogic = new DefaultCallbackLogic();
     private Config config;
     private String defaultUrl;
-    private Boolean multiProfile;
     private Boolean renewSession;
 
     public Pac4jCallbackHandler(Config config) {
@@ -47,18 +47,14 @@ public class Pac4jCallbackHandler implements RouteHandler {
     }
 
     public Pac4jCallbackHandler(Config config, String defaultUrl) {
-        this(config, defaultUrl, null);
+        this(config, defaultUrl, Boolean.FALSE, "");
     }
 
-    public Pac4jCallbackHandler(Config config, String defaultUrl, Boolean multiProfile) {
-        this(config, defaultUrl, multiProfile, null);
-    }
-
-    public Pac4jCallbackHandler(Config config, String defaultUrl, Boolean multiProfile, Boolean renewSession) {
+    public Pac4jCallbackHandler(Config config, String defaultUrl, Boolean renewSession, String defaultClient) {
         this.config = config;
         this.defaultUrl = defaultUrl;
-        this.multiProfile = multiProfile;
         this.renewSession = renewSession;
+        this.defaultClient = defaultClient;
     }
 
     @Override
@@ -69,14 +65,14 @@ public class Pac4jCallbackHandler implements RouteHandler {
 
         PippoWebContext webContext = new PippoWebContext(routeContext, config.getSessionStore());
 
-        callbackLogic.perform(webContext, config, config.getHttpActionAdapter(), defaultUrl, multiProfile, renewSession);
+        callbackLogic.perform(webContext, config.getSessionStore(), config, config.getHttpActionAdapter(), defaultUrl, renewSession, defaultClient);
     }
 
-    public CallbackLogic<Object, PippoWebContext> getCallbackLogic() {
+    public CallbackLogic getCallbackLogic() {
         return callbackLogic;
     }
 
-    public Pac4jCallbackHandler setCallbackLogic(CallbackLogic<Object, PippoWebContext> callbackLogic) {
+    public Pac4jCallbackHandler setCallbackLogic(CallbackLogic callbackLogic) {
         this.callbackLogic = callbackLogic;
 
         return this;
@@ -88,16 +84,6 @@ public class Pac4jCallbackHandler implements RouteHandler {
 
     public Pac4jCallbackHandler setDefaultUrl(String defaultUrl) {
         this.defaultUrl = defaultUrl;
-
-        return this;
-    }
-
-    public Boolean getMultiProfile() {
-        return multiProfile;
-    }
-
-    public Pac4jCallbackHandler setMultiProfile(Boolean multiProfile) {
-        this.multiProfile = multiProfile;
 
         return this;
     }

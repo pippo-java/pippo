@@ -18,9 +18,13 @@ package ro.pippo.pac4j;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 import ro.pippo.core.Session;
 import ro.pippo.core.route.RouteContext;
+
+import javax.servlet.ServletContext;
+import javax.servlet.http.HttpSessionContext;
+import java.util.*;
 
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsNull.nullValue;
@@ -50,7 +54,7 @@ public class PippoSessionStoreTest {
         PippoSessionStore sessionStore = new PippoSessionStore();
         Session session = sessionStore.getSession(mockPippoWebContext);
 
-        assertThat(session, is(mockSession));
+        assertThat(session, is(Optional.of(mockSession).get()));
 
         verify(mockRouteContext, times(1)).getSession();
         verify(mockPippoWebContext, times(1)).getRouteContext();
@@ -64,7 +68,7 @@ public class PippoSessionStoreTest {
         PippoSessionStore sessionStore = new PippoSessionStore();
         Object session = sessionStore.getTrackableSession(mockPippoWebContext);
 
-        assertThat(session, is(mockSession));
+        assertThat(session, is(Optional.of(mockSession)));
 
         verify(mockRouteContext, times(1)).getSession();
         verify(mockPippoWebContext, times(1)).getRouteContext();
@@ -81,7 +85,7 @@ public class PippoSessionStoreTest {
 
         PippoSessionStore sessionStore = new PippoSessionStore();
 
-        assertThat(sessionStore.get(mockPippoWebContext, expectedKey), is(expectedValue));
+        assertThat(sessionStore.get(mockPippoWebContext, expectedKey), is(Optional.of(expectedValue)));
 
         verify(mockSession, times(1)).get(expectedKey);
         verify(mockRouteContext, times(1)).getSession();
@@ -98,7 +102,7 @@ public class PippoSessionStoreTest {
 
         PippoSessionStore sessionStore = new PippoSessionStore();
 
-        assertThat(sessionStore.get(mockPippoWebContext, expectedKey), is(nullValue()));
+        assertThat(sessionStore.get(mockPippoWebContext, expectedKey), is(Optional.ofNullable(null)));
 
         verify(mockSession, times(1)).get(expectedKey);
         verify(mockRouteContext, times(1)).getSession();
@@ -130,7 +134,6 @@ public class PippoSessionStoreTest {
         when(mockPippoWebContext.getRouteContext()).thenReturn(mockRouteContext);
 
         PippoSessionStore sessionStore = new PippoSessionStore();
-
         sessionStore.set(mockPippoWebContext, expectedKey, null);
 
         verify(mockSession, times(1)).remove(expectedKey);
@@ -161,8 +164,7 @@ public class PippoSessionStoreTest {
         when(mockPippoWebContext.getRouteContext()).thenReturn(mockRouteContext);
 
         PippoSessionStore sessionStore = new PippoSessionStore();
-
-        assertThat(sessionStore.getOrCreateSessionId(mockPippoWebContext), is(expectedSessionId));
+        assertThat(sessionStore.getSessionId(mockPippoWebContext,false), is(Optional.of(expectedSessionId)));
 
         verify(mockSession, times(1)).getId();
         verify(mockRouteContext, times(1)).getSession();
@@ -183,6 +185,120 @@ public class PippoSessionStoreTest {
 
     @Test
     public void shouldBuildFromProvidedTrackableSession() {
+    }
+
+    private class HttpSession implements javax.servlet.http.HttpSession{
+
+        private final long creationTime;
+        private final String id;
+        private final long lastAccessTime;
+        private Map<String, Object> attributeMap = new HashMap<String, Object>();
+        private Map<String, Object> valueMap = new HashMap<String, Object>();
+
+        private HttpSession(){
+            this.creationTime = 0;
+            this.id = "SESSION-ID";
+            this.lastAccessTime = 0;
+        }
+        @Override
+        public long getCreationTime() {
+            return this.creationTime;
+        }
+
+        @Override
+        public String getId() {
+            return this.id;
+        }
+
+        @Override
+        public long getLastAccessedTime() {
+            return this.lastAccessTime;
+        }
+
+        @Override
+        public ServletContext getServletContext() {
+            throw new RuntimeException("NOT IMPLEMENTED");
+        }
+
+        @Override
+        public void setMaxInactiveInterval(int i) {
+
+        }
+
+        @Override
+        public int getMaxInactiveInterval() {
+            return 0;
+        }
+
+        /**
+         * @deprecated
+         */
+        @Override
+        public HttpSessionContext getSessionContext() {
+            throw new RuntimeException("NOT IMPLEMENTED");
+        }
+
+        @Override
+        public Object getAttribute(String key) {
+            return attributeMap.get(key);
+        }
+
+        @Override
+        public Object getValue(String key) {
+            return valueMap.get(key);
+        }
+
+        @Override
+        public Enumeration<String> getAttributeNames() {
+            return Collections.enumeration(attributeMap.keySet());
+        }
+
+        /**
+         * @deprecated
+         */
+        @Override
+        public String[] getValueNames() {
+            return new String[0];
+        }
+
+        @Override
+        public void setAttribute(String key, Object value) {
+            attributeMap.put(key,value);
+        }
+
+        /**
+         * @param s
+         * @param o
+         * @deprecated
+         */
+        @Override
+        public void putValue(String s, Object o) {
+            valueMap.put(s,o);
+        }
+
+        @Override
+        public void removeAttribute(String s) {
+            attributeMap.remove(s);
+        }
+
+        /**
+         * @param s
+         * @deprecated
+         */
+        @Override
+        public void removeValue(String s) {
+            valueMap.remove(s);
+        }
+
+        @Override
+        public void invalidate() {
+            throw new RuntimeException("NOT IMPLEMENTED");
+        }
+
+        @Override
+        public boolean isNew() {
+            return false;
+        }
     }
 
 }

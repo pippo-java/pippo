@@ -14,7 +14,8 @@
     <description>Pac4j integration</description>
 
     <properties>
-        <pac4j.version>2.2.0</pac4j.version>
+        <pac4j.version>5.7.0</pac4j.version>
+        <mockito.version>4.9.0</mockito.version>
     </properties>
 
     <dependencies>
