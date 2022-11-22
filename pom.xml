@@ -56,6 +56,10 @@
         <mockito.version>2.24.0</mockito.version>
         <cobertura.version>2.7</cobertura.version>
         <coveralls.version>3.1.0</coveralls.version>
+
+        <sonar.projectKey>pippo-java_pippo</sonar.projectKey>
+        <sonar.organization>pippo</sonar.organization>
+        <sonar.host.url>https://sonarcloud.io</sonar.host.url>
     </properties>
 
     <build>
