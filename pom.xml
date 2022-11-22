@@ -58,7 +58,7 @@
         <coveralls.version>3.1.0</coveralls.version>
 
         <sonar.projectKey>pippo-java_pippo</sonar.projectKey>
-        <sonar.organization>pippo</sonar.organization>
+        <sonar.organization>pippo-java</sonar.organization>
         <sonar.host.url>https://sonarcloud.io</sonar.host.url>
     </properties>
 
