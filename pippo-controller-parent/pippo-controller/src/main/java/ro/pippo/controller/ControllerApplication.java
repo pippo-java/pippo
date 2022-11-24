@@ -20,6 +20,9 @@ import org.slf4j.LoggerFactory;
 import ro.pippo.core.Application;
 import ro.pippo.core.PippoSettings;
 
+import javax.inject.Inject;
+import java.util.Optional;
+
 /**
  * @author Decebal Suiu
  */
@@ -27,26 +30,28 @@ public class ControllerApplication extends Application {
 
     private static final Logger log = LoggerFactory.getLogger(ControllerApplication.class);
 
-    private ControllerRouteFactory controllerRouteFactory;
+    @Inject
+    private Optional<ControllerRouteFactory> controllerRouteFactory = Optional.empty();
 
     public ControllerApplication() {
         super();
     }
 
+    @Inject
     public ControllerApplication(PippoSettings settings) {
         super(settings);
     }
 
     public ControllerRouteFactory getControllerRouteFactory() {
-        if (controllerRouteFactory == null) {
-            controllerRouteFactory = new DefaultControllerRouteFactory().setContentTypeEngines(getContentTypeEngines());
+        if (!controllerRouteFactory.isPresent()) {
+            controllerRouteFactory = Optional.of(new DefaultControllerRouteFactory().setContentTypeEngines(getContentTypeEngines()));
         }
 
-        return controllerRouteFactory;
+        return controllerRouteFactory.get();
     }
 
     public ControllerApplication setControllerRouteFactory(ControllerRouteFactory controllerRouteFactory) {
-        this.controllerRouteFactory = controllerRouteFactory;
+        this.controllerRouteFactory = Optional.of(controllerRouteFactory);
         log.debug("Controller route factory is '{}'", controllerRouteFactory.getClass().getName());
 
         return this;

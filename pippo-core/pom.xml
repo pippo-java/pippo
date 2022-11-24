@@ -29,6 +29,14 @@
             <version>${slf4j.version}</version>
         </dependency>
 
+        <!-- Inject (DI) -->
+        <dependency>
+            <groupId>javax.inject</groupId>
+            <artifactId>javax.inject</artifactId>
+            <version>1</version>
+            <scope>provided</scope>
+        </dependency>
+
         <!-- Test -->
         <dependency>
             <groupId>junit</groupId>

@@ -20,6 +20,8 @@ import ro.pippo.core.route.Router;
 
 import java.util.Locale;
 
+import javax.inject.Inject;
+
 /**
  * Convenience abstract implementation of {@link TemplateEngine}.
  *
@@ -44,6 +46,7 @@ public abstract class AbstractTemplateEngine implements TemplateEngine {
      *                     and other settings for the initialization
      */
     @Override
+    @Inject
     public final void init(Application application) {
         this.application = application;
     }

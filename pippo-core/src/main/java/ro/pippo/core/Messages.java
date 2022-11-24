@@ -21,6 +21,7 @@ import ro.pippo.core.route.RouteContext;
 import ro.pippo.core.util.ClasspathUtils;
 import ro.pippo.core.util.StringUtils;
 
+import javax.inject.Inject;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URL;
@@ -51,6 +52,7 @@ public class Messages {
 
     private final Languages languages;
 
+    @Inject
     public Messages(Languages languages) {
         this.languages = languages;
         this.languageMessages = loadRegisteredMessageResources();
