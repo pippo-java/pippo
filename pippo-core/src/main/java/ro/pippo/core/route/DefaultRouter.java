@@ -43,7 +43,7 @@ import java.util.stream.StreamSupport;
  * @author Decebal Suiu
  * @author James Moger
  */
-public class DefaultRouter implements Router {
+public class DefaultRouter implements Router, ResourceRouting {
 
     private static final Logger log = LoggerFactory.getLogger(DefaultRouter.class);
 
