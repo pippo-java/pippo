@@ -42,6 +42,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * Base class for all Pippo applications.
@@ -246,7 +247,8 @@ public class Application implements ResourceRouting {
     }
 
     public void setRouter(Router router, boolean preserveOldTransformers) {
-        if (preserveOldTransformers && (router != null)) {
+        Objects.requireNonNull(router);
+        if (preserveOldTransformers && (this.router != null)) {
             // preserve route transformers already registered
             List<RouteTransformer> transformers = this.router.getRouteTransformers();
             transformers.forEach(router::addRouteTransformer);
