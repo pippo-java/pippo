@@ -53,12 +53,6 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 #### Fixed
 - [#545]: Error after I upgraded from `1.12.0` to `1.13.0`
 
-#### Changed
-
-#### Added
-
-#### Removed
-
 ### [1.13.0] - 2020-05-29
 
 #### Fixed
@@ -84,8 +78,6 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 #### Added
 - [#499]: Feature/java 11 build 
 
-#### Removed
-
 ### [1.12.0] - 2018-12-12
 
 #### Fixed
@@ -104,8 +96,6 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 - [#260]: Add `route` method helper in templates (only for Pebble engine)
 - [#468]: Add wrapper method in `Request` to get header names
 - [#474]: Send `gzip` response when `Accept-Encoding:*` is present
-
-#### Removed
 
 ### [1.11.0] - 2018-10-05
 
@@ -128,8 +118,6 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 - [#452]: Add new headers
 - [#456]: Add `CorsHandler` for Cross-origin resource sharing
 
-#### Removed
-
 ### [1.10.0] - 2018-07-10
 
 #### Fixed
@@ -148,8 +136,6 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 - [#428]: Add support for Prometheus (metrics)
 - Add `getResourceAsString` method in `IoUtils`
 
-#### Removed
-
 ### [1.9.0] - 2018-05-10
 
 #### Fixed
@@ -159,10 +145,6 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 - [#418]: Convert to float, double and BigDecimal according Locale
 - [#419]: Uses Locale in request context
 - [#421]: Update to Freemarker 2.3.28
-
-#### Added
-
-#### Removed
 
 ### [1.8.0] - 2018-02-24
 
@@ -179,8 +161,6 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 #### Added
 - Add automatically `PippoNopHttpActionAdapter` in `SettingsConfigFactory#build` (pippo-pac4j module)
 
-#### Removed
-
 ### [1.7.0] - 2017-12-12
 
 #### Fixed
@@ -192,8 +172,6 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 #### Added
 - [#408]: Add security (PAC4J) module
 
-#### Removed
-
 ### [1.6.0] - 2017-11-18
 
 #### Fixed
@@ -204,16 +182,12 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 - [#396]: ErrorHandler not properly working with Controllers and CheckedExceptions
 - [#400]: Duplicate routes being created
 
-#### Changed
-
 #### Added
 - [#384]: Add full support to configure Undertow server
 - [#388]: TemplateEngine customization and extension support
 - [#397]: Add path params in websocket uri
 - [#404]: Add Polish translation
 - Add OPTIONS to Routing
-
-#### Removed
 
 ### [1.5.0] - 2017-08-07
 
@@ -240,11 +214,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 - Add log entry in Less and Sass
 - [#377]: Handle keystore paths that are relative to Classpath
 
-#### Removed
-
 ### [1.4.0] - 2017-05-03
-
-#### Fixed
 
 #### Changed
 - [#361]: Move PippoFilter instantiation from Pippo class to the WebServer implementations (breaking change)
@@ -253,22 +223,16 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 - Log exception for `PippoFilter.init` method
 - [#360]: Websocket support (Jetty and Undertow)
 
-#### Removed
-
 ### [1.3.0] - 2017-04-04
 
 #### Fixed
 - [353]: Two annotations named Param
 - [356]: `ClasspathResourceHandler` Directory Traversal Bug (Security)
 
-#### Changed
-
 #### Added
 - [#352]: NotFound (CatchAll) route handler
 - [#354]: Add possibility in Controller to return the template rendered string
 - [#355]: Hot reloading
-
-#### Removed
 
 ### [1.2.0] - 2017-02-17
 
@@ -291,8 +255,6 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 - Add `getSettings` method helper in `RouteContext`
 - Add `getMessages` and `getSettings` methods helper in `Controller`
 
-#### Removed
-
 ### [1.1.0] - 2017-01-04
 
 #### Fixed
@@ -312,19 +274,13 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 - Use `gzip` compression where it's possible; see [#331]
 - Add `getWriter` method to `Response`
 
-#### Removed
-
 ### [1.0.0] - 2016-11-21
-
-#### Fixed
 
 #### Changed
 - [#327]: Improve PippoTest (add the possibility to set a custom web server or to set `pippoFilterPath`)
 
 #### Added
 - Force `pippo.mode` on TEST in `PippoTest`
-
-#### Removed
 
 ### [0.10.0] - 2016-11-07
 
@@ -339,8 +295,6 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 - [#321]: Add possibility to register filter, servlet, listener
 - [#323]: Inject `Application` instance in `ServletContext`
 - [#326]: Add `SingletonControllerFactory`
-
-#### Removed
 
 ### [0.9.1] - 2016-08-27
 
@@ -393,8 +347,6 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 - [#288]: Extract addRoute, GET, POST, ... methods in Routing interface
 - [#299]: Encrypted/signed cookie based session
 
-#### Removed
-
 ### [0.8.0] - 2016-01-29
 
 #### Fixed
@@ -421,8 +373,6 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 - [#231]: Add [pippo-test] module
 - Add DirectoryHandler for serving external directories
 - Add [pippo-csv] content-type engine to easily serialize and deserialize to/from CSV
-
-#### Removed
 
 ### [0.7.0] - 2015-11-09
 
@@ -455,8 +405,6 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 - [#218]: Add Response method to finalize a response and return the OutputStream for custom streaming
 - [#220]: Add support for `:alnum:`, `:alpha:`, `:ascii:`, `:digit:`, `:xdigit:` POSIX character classes for URL path parameters. This allows use of UTF-8 in path parameters.
 
-#### Removed
-
 ### [0.6.0] - 2015-06-03
 
 #### Fixed
@@ -488,8 +436,6 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 - [#170]: Added less and sass compilers [pippo-less4j], [pippo-sasscompiler], [pippo-demo-css]
 - [#180]: Add support for `artifactId` version alias in WebjarsAt declarations (i.e. ${WebjarsAt('jquery/jquery.min.js')})
 - [#185]: Allow specifying `Accept-Type` with a URI suffix expression (i.e. GET("/contact/{id: [0-9]+}(\.(json|xml|yaml))?", () -> {}));
-
-#### Removed
 
 ### [0.5.0] - 2015-06-03
 
@@ -550,7 +496,6 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 ### [0.4.0] - 2015-03-27
 *Massive change, needs more documenting :)*
 
-#### Fixed
 #### Changed
 - Moved Controller implementation to [pippo-controller]
 
