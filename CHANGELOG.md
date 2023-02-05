@@ -5,7 +5,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 ### [Unreleased][unreleased]
 
 #### Fixed
-- [#560]: Hot reloading does not work
+- [#506]: Hot reloading does not work
 - Enable reloading by default only in DEV mode
 
 #### Changed
@@ -14,19 +14,29 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 - [#552]: ContentTypeEngines: Change the log level from debug to info
 - [#553]: PippoRule: Make methods startPippo and stopPippo public
 - Update JUnit to 4.13.1
-- Update Jetty to 9.4.35
+- Update Jetty to 9.4.44
 - Update Tomcat to 8.5.61
 - Update Snakeyaml to 1.26
+- Update XStream to 1.4.18
+- Update Pebble to 3.1.5
+- Make AbstractTemplateEngine#init method final, use lazy instantiation
 
 #### Added
 - [#555]: Add possibility to disable suffix for Pebble loader
 - [#558]: Add method CorsHandler.details
 - [#559]: Add http status constant TOO_MANY_REQUESTS = 429
+- [#593]: Add EntityRequestEngine
+- [#619]: Add resource route helper in router
 - Use a ThreadFactory with a prefix for ReloadWatcher executor
 - Improve reload configurability
 - Add support for ZonedDateTime in Pebble's PrettyTimeExtension
+- Add logging in ReloadClassLoader
+- Enable reloading by default only in DEV mode
+- Add ControllerApplication#get method
+- Add support for route order
 
 #### Removed
+- [#512]: Remove pippo-tjws
 
 ### [1.13.1] - 2020-06-01
 
@@ -611,7 +621,8 @@ Initial release.
 [0.3.0]: https://github.com/decebals/pippo/compare/pippo-parent-0.2.0...pippo-parent-0.3.0
 [0.2.0]: https://github.com/decebals/pippo/compare/pippo-parent-0.1.0...pippo-parent-0.2.0
 
-[#560]: https://github.com/pippo-java/pippo/issues/506
+[#619]: https://github.com/pippo-java/pippo/pull/619
+[#593]: https://github.com/pippo-java/pippo/pull/593
 [#559]: https://github.com/pippo-java/pippo/pull/559
 [#558]: https://github.com/pippo-java/pippo/pull/558
 [#555]: https://github.com/pippo-java/pippo/pull/555
@@ -629,7 +640,9 @@ Initial release.
 [#528]: https://github.com/pippo-java/pippo/issues/528
 [#523]: https://github.com/pippo-java/pippo/issues/523
 [#522]: https://github.com/pippo-java/pippo/issues/522
+[#512]: https://github.com/pippo-java/pippo/issues/512
 [#510]: https://github.com/pippo-java/pippo/pull/510
+[#506]: https://github.com/pippo-java/pippo/issues/506
 [#499]: https://github.com/pippo-java/pippo/pull/499
 [#496]: https://github.com/pippo-java/pippo/issues/496
 [#494]: https://github.com/pippo-java/pippo/pull/494
@@ -680,7 +693,7 @@ Initial release.
 [#382]: https://github.com/decebals/pippo/issues/382
 [#381]: https://github.com/decebals/pippo/issues/381
 [#378]: https://github.com/decebals/pippo/pull/378
-[#377]:https://github.com/decebals/pippo/pull/377
+[#377]: https://github.com/decebals/pippo/pull/377
 [#368]: https://github.com/decebals/pippo/issues/368
 [#367]: https://github.com/decebals/pippo/issues/367
 [#366]: https://github.com/decebals/pippo/issues/366
