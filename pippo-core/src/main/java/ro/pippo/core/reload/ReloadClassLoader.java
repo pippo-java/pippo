@@ -59,7 +59,7 @@ public abstract class ReloadClassLoader extends ClassLoader {
             int index = className.lastIndexOf('.');
             if (index >= 0) {
                 String packageName = className.substring(0, index);
-                if (getPackage(packageName) == null) {
+                if (getDefinedPackage(packageName) == null) {
                     try {
                         definePackage(packageName, null, null, null, null, null, null, null);
                     } catch (IllegalArgumentException e) {

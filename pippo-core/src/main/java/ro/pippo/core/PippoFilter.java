@@ -265,7 +265,7 @@ public class PippoFilter implements Filter {
 
         try {
             Class<?> applicationClass = Class.forName(applicationClassName);
-            application = (Application) applicationClass.newInstance();
+            application = (Application) applicationClass.getDeclaredConstructor().newInstance();
         } catch (Exception e) {
             log.error("Cannot create application with className '{}'", applicationClassName, e);
             throw new ServletException(e);

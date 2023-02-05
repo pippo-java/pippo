@@ -33,7 +33,7 @@ import org.junit.rules.TestRule;
 import org.junit.rules.TestWatcher;
 import org.junit.runner.Description;
 
-import com.sun.org.apache.xerces.internal.impl.Constants;
+//import com.sun.org.apache.xerces.internal.impl.Constants;
 
 import ro.pippo.core.PippoRuntimeException;
 import ro.pippo.core.util.IoUtils;
@@ -57,7 +57,7 @@ public class JaxbEngineTest {
         jaxbEngine = new JaxbEngine();
 
         // JDK property to allow printing out information from the limit analyzer
-        jaxbEngine.setProperty(Constants.JDK_ENTITY_COUNT_INFO, "yes");
+//        jaxbEngine.setProperty(Constants.JDK_ENTITY_COUNT_INFO, "yes");
     }
 
     @Test

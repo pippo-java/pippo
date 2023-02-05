@@ -52,7 +52,7 @@ public class DefaultEntityRequestEngine implements EntityRequestEngine {
     public <T> T createEntityFromParameters(Class<T> entityClass, Request request) {
         T entity;
         try {
-            entity = entityClass.newInstance();
+            entity = entityClass.getDeclaredConstructor().newInstance();
         } catch (Exception e) {
             log.error("Cannot create new instance of class '{}'", entityClass.getName(), e);
             return null;

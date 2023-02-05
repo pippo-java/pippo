@@ -155,7 +155,7 @@ public class PippoServlet extends HttpServlet {
 
         try {
             Class<?> applicationClass = Class.forName(applicationClassName);
-            application = (Application) applicationClass.newInstance();
+            application = (Application) applicationClass.getDeclaredConstructor().newInstance();
         } catch (Exception e) {
             log.error("Cannot create application with className '{}'", applicationClassName, e);
             throw new PippoRuntimeException(e);

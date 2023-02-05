@@ -306,8 +306,8 @@ public class Pippo implements ResourceRouting, ReloadWatcher.Listener {
 
         try {
             Class<?> applicationClass = classLoader.loadClass(applicationClassName);
-            application = (Application) applicationClass.newInstance();
-        } catch (InstantiationException | ClassNotFoundException | IllegalAccessException e) {
+            application = (Application) applicationClass.getDeclaredConstructor().newInstance();
+        } catch (Exception e) {
             throw new PippoRuntimeException(e);
         }
 
