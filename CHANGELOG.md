@@ -5,6 +5,16 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 ### [Unreleased][unreleased]
 
 #### Fixed
+
+#### Changed
+
+#### Added
+
+#### Removed
+
+### [1.14.0] - 2023-02-05
+
+#### Fixed
 - [#506]: Hot reloading does not work
 - Enable reloading by default only in DEV mode
 
@@ -592,7 +602,8 @@ Initial release.
 - Added [pippo-freemarker]
 - Added [pippo-jetty]
 
-[unreleased]: https://github.com/decebals/pippo/compare/release-1.13.1...HEAD
+[unreleased]: https://github.com/decebals/pippo/compare/release-1.14.0...HEAD
+[1.14.0]: https://github.com/decebals/pippo/compare/release-1.13.1...release-1.14.0
 [1.13.1]: https://github.com/decebals/pippo/compare/release-1.13.0...release-1.13.1
 [1.13.0]: https://github.com/decebals/pippo/compare/release-1.12.0...release-1.13.0
 [1.12.0]: https://github.com/decebals/pippo/compare/release-1.11.0...release-1.12.0
