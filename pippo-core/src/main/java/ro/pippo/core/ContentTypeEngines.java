@@ -91,7 +91,7 @@ public class ContentTypeEngines {
     public ContentTypeEngine registerContentTypeEngine(Class<? extends ContentTypeEngine> engineClass) {
         ContentTypeEngine engine;
         try {
-            engine = engineClass.newInstance();
+            engine = engineClass.getDeclaredConstructor().newInstance();
         } catch (Exception e) {
             throw new PippoRuntimeException(e, "Failed to instantiate '{}'", engineClass.getName());
         }

@@ -186,7 +186,7 @@ public class Application implements ResourceRouting {
         }
 
         try {
-            TemplateEngine engine = engineClass.newInstance();
+            TemplateEngine engine = engineClass.getDeclaredConstructor().newInstance();
             setTemplateEngine(engine);
         } catch (Exception e) {
             throw new PippoRuntimeException(e, "Failed to instantiate '{}'", engineClass.getName());

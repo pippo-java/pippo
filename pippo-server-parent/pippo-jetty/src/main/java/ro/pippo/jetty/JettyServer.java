@@ -194,8 +194,8 @@ public class JettyServer extends AbstractWebServer<JettySettings> {
         // all listeners
         listeners.forEach(listener -> {
             try {
-                handler.addEventListener(listener.newInstance());
-            } catch (InstantiationException | IllegalAccessException e) {
+                handler.addEventListener(listener.getDeclaredConstructor().newInstance());
+            } catch (Exception e) {
                 throw new PippoRuntimeException(e);
             }
         });
@@ -221,8 +221,8 @@ public class JettyServer extends AbstractWebServer<JettySettings> {
         try {
             // create an instance of JettyWebSocketFilter
             Class<?> pippoFilterClass = Class.forName("ro.pippo.jetty.websocket.JettyWebSocketFilter");
-            return (PippoFilter) pippoFilterClass.newInstance();
-        } catch (ClassNotFoundException | IllegalAccessException | InstantiationException e) {
+            return (PippoFilter) pippoFilterClass.getDeclaredConstructor().newInstance();
+        } catch (Exception e) {
             throw new PippoRuntimeException(e);
         }
     }
