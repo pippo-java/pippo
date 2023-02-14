@@ -17,15 +17,18 @@ package ro.pippo.session.jdbc;
 
 //import com.mchange.v2.c3p0.ComboPooledDataSource;
 //import java.beans.PropertyVetoException;
-import java.sql.SQLException;
+
 import org.apache.commons.dbcp2.BasicDataSource;
-import org.junit.AfterClass;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 import ro.pippo.session.SessionData;
+
+import java.sql.SQLException;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 /**
  * @author Herman Barrantes
@@ -51,7 +54,7 @@ public class JDBCSessionDataStorageTest {
 //    }
 
     // With DBCP2
-    @BeforeClass
+    @BeforeAll
     public static void setUpClass() {
         BasicDataSource bds = new BasicDataSource();
         bds.setDriverClassName("org.h2.Driver");
@@ -69,7 +72,7 @@ public class JDBCSessionDataStorageTest {
 //        dataSource = bds;
 //    }
 
-    @AfterClass
+    @AfterAll
     public static void tearDownClass() throws SQLException {
         dataSource.close();
     }

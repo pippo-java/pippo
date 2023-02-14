@@ -16,31 +16,32 @@
 package ro.pippo.session.infinispan;
 
 import org.infinispan.manager.EmbeddedCacheManager;
-import org.junit.AfterClass;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import org.junit.BeforeClass;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 import ro.pippo.session.SessionData;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 /**
  * @author Herman Barrantes
  */
-@Ignore("Missing configuration for default cache 'default' declared on container")
+@Disabled("Missing configuration for default cache 'default' declared on container")
 public class InfinispanSessionDataStorageTest {
 
     private static final String KEY = "KEY";
     private static final String VALUE = "VALUE";
     private static EmbeddedCacheManager cacheManager;
 
-    @BeforeClass
+    @BeforeAll
     public static void setUpClass() {
         cacheManager = InfinispanFactory.create();
     }
 
-    @AfterClass
+    @AfterAll
     public static void tearDownClass() {
         cacheManager.stop();
     }

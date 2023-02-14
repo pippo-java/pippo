@@ -16,13 +16,14 @@
 package ro.pippo.session.ehcache;
 
 import org.ehcache.CacheManager;
-import org.junit.AfterClass;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 import ro.pippo.session.SessionData;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 /**
  * @author Herman Barrantes
@@ -33,12 +34,12 @@ public class EhcacheSessionDataStorageTest {
     private static final String VALUE = "VALUE";
     private static CacheManager cacheManager;
 
-    @BeforeClass
+    @BeforeAll
     public static void setUpClass() {
         cacheManager = EhcacheFactory.create();
     }
 
-    @AfterClass
+    @AfterAll
     public static void tearDownClass() {
         cacheManager.close();
     }

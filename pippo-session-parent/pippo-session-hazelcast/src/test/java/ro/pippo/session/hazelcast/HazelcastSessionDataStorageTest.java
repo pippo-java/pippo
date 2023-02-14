@@ -17,12 +17,13 @@ package ro.pippo.session.hazelcast;
 
 import com.hazelcast.core.Hazelcast;
 import com.hazelcast.core.HazelcastInstance;
-import org.junit.After;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Test;
 import ro.pippo.session.SessionData;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 /**
  * @author Herman Barrantes
@@ -33,7 +34,7 @@ public class HazelcastSessionDataStorageTest {
     private static final String KEY = "KEY";
     private static final String VALUE = "VALUE";
 
-    @After
+    @AfterEach
     public void tearDown() {
         Hazelcast.shutdownAll();
     }
