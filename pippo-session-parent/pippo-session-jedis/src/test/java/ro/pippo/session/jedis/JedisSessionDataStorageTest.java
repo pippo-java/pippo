@@ -16,10 +16,13 @@
 package ro.pippo.session.jedis;
 
 import java.io.IOException;
+import java.net.ServerSocket;
+
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.junit.Assert.*;
+
 import redis.clients.jedis.JedisPool;
 import redis.embedded.RedisServer;
 import ro.pippo.session.SessionData;
@@ -36,7 +39,7 @@ public class JedisSessionDataStorageTest {
 
     @BeforeClass
     public static void setUpClass() throws IOException {
-        redisServer = new RedisServer();
+        redisServer = new RedisServer(randomPort());
         redisServer.start();
         jedisPool = new JedisPool();
     }
@@ -128,6 +131,22 @@ public class JedisSessionDataStorageTest {
         instance.delete(sessionId);
         SessionData deleted = instance.get(sessionId);
         assertNull(deleted);
+    }
+
+    /**
+     * Finds free port on host machine to bind to.
+     *
+     * @return free port
+     */
+    private static int randomPort() {
+        try (ServerSocket serverSocket = new ServerSocket(0)) {
+            assertNotNull("Can't create *any* server socket", serverSocket);
+            assertTrue("No free server sockets to bind to", serverSocket.getLocalPort() > 0);
+            return serverSocket.getLocalPort();
+        } catch (IOException e) {
+            fail("Port is not available");
+            return -1;  // won't execute, required only to compile
+        }
     }
 
 }
