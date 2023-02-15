@@ -15,9 +15,7 @@
  */
 package ro.pippo.core;
 
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.ExpectedException;
+import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
 import java.sql.Date;
@@ -26,35 +24,36 @@ import java.sql.Timestamp;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.UUID;
-import java.util.Collections;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * @author James Moger
  */
 public class ParameterValueTest {
 
-    @Rule
-    public ExpectedException thrown = ExpectedException.none();
-
     @Test
     public void testBooleans() throws Exception {
-        assertEquals(false, new ParameterValue("").toBoolean());
-        assertEquals(false, new ParameterValue(" ").toBoolean());
-        assertEquals(true, new ParameterValue("true").toBoolean());
-        assertEquals(true, new ParameterValue("true", "true", "true").toBoolean());
-        assertEquals(true, new ParameterValue("yes").toBoolean());
-        assertEquals(true, new ParameterValue("on").toBoolean());
-        assertEquals(true, new ParameterValue("1").toBoolean());
-        assertEquals(true, new ParameterValue("2").toBoolean());
-        assertEquals(false, new ParameterValue("0").toBoolean());
+        assertFalse(new ParameterValue("").toBoolean());
+        assertFalse(new ParameterValue(" ").toBoolean());
+        assertTrue(new ParameterValue("true").toBoolean());
+        assertTrue(new ParameterValue("true", "true", "true").toBoolean());
+        assertTrue(new ParameterValue("yes").toBoolean());
+        assertTrue(new ParameterValue("on").toBoolean());
+        assertTrue(new ParameterValue("1").toBoolean());
+        assertTrue(new ParameterValue("2").toBoolean());
+        assertFalse(new ParameterValue("0").toBoolean());
         assertArrayEquals(new Boolean[]{true, false, true}, new ParameterValue("true", "false", "true").to(Boolean[].class));
         assertArrayEquals(new Boolean[]{true, true, true}, new ParameterValue("true", "yes", "on").to(Boolean[].class));
     }
@@ -74,7 +73,7 @@ public class ParameterValueTest {
         assertEquals(0, new ParameterValue(" ").toShort());
         assertEquals(4096, new ParameterValue("4096").toShort());
         assertEquals(4096, new ParameterValue("4096", "2048", "1024").toShort());
-        assertArrayEquals(new short[]{4096, 2048, 1024}, new ParameterValue(new String[]{"4096", "2048", "1024"}).to(short[].class));
+        assertArrayEquals(new short[]{4096, 2048, 1024}, new ParameterValue("4096", "2048", "1024").to(short[].class));
     }
 
     @Test

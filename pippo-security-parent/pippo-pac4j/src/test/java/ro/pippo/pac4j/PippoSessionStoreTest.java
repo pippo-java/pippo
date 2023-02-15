@@ -15,16 +15,18 @@
  */
 package ro.pippo.pac4j;
 
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 import ro.pippo.core.Session;
 import ro.pippo.core.route.RouteContext;
 
-import static org.hamcrest.core.Is.is;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.IsNull.nullValue;
-import static org.junit.Assert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.anyString;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -33,7 +35,7 @@ import static org.mockito.Mockito.when;
 /**
  * @author Ranganath Kini
  */
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class PippoSessionStoreTest {
 
     @Mock
@@ -53,7 +55,7 @@ public class PippoSessionStoreTest {
         PippoSessionStore sessionStore = new PippoSessionStore();
         Session session = sessionStore.getSession(mockPippoWebContext);
 
-        assertThat(session, is(mockSession));
+        assertSame(mockSession, session);
 
         verify(mockRouteContext, times(1)).getSession();
         verify(mockPippoWebContext, times(1)).getRouteContext();
@@ -67,7 +69,7 @@ public class PippoSessionStoreTest {
         PippoSessionStore sessionStore = new PippoSessionStore();
         Object session = sessionStore.getTrackableSession(mockPippoWebContext);
 
-        assertThat(session, is(mockSession));
+        assertSame(mockSession, session);
 
         verify(mockRouteContext, times(1)).getSession();
         verify(mockPippoWebContext, times(1)).getRouteContext();
@@ -84,7 +86,7 @@ public class PippoSessionStoreTest {
 
         PippoSessionStore sessionStore = new PippoSessionStore();
 
-        assertThat(sessionStore.get(mockPippoWebContext, expectedKey), is(expectedValue));
+        assertEquals(expectedValue, sessionStore.get(mockPippoWebContext, expectedKey));
 
         verify(mockSession, times(1)).get(expectedKey);
         verify(mockRouteContext, times(1)).getSession();
@@ -101,7 +103,7 @@ public class PippoSessionStoreTest {
 
         PippoSessionStore sessionStore = new PippoSessionStore();
 
-        assertThat(sessionStore.get(mockPippoWebContext, expectedKey), is(nullValue()));
+        assertThat(sessionStore.get(mockPippoWebContext, expectedKey), nullValue());
 
         verify(mockSession, times(1)).get(expectedKey);
         verify(mockRouteContext, times(1)).getSession();
@@ -148,7 +150,7 @@ public class PippoSessionStoreTest {
 
         PippoSessionStore sessionStore = new PippoSessionStore();
 
-        assertThat(sessionStore.destroySession(mockPippoWebContext), is(true));
+        assertTrue(sessionStore.destroySession(mockPippoWebContext));
 
         verify(mockSession, times(1)).invalidate();
         verify(mockRouteContext, times(1)).getSession();
@@ -165,7 +167,7 @@ public class PippoSessionStoreTest {
 
         PippoSessionStore sessionStore = new PippoSessionStore();
 
-        assertThat(sessionStore.getOrCreateSessionId(mockPippoWebContext), is(expectedSessionId));
+        assertEquals(expectedSessionId, sessionStore.getOrCreateSessionId(mockPippoWebContext));
 
         verify(mockSession, times(1)).getId();
         verify(mockRouteContext, times(1)).getSession();
@@ -178,7 +180,7 @@ public class PippoSessionStoreTest {
 
         PippoSessionStore sessionStore = new PippoSessionStore();
 
-        assertThat(sessionStore.renewSession(mockPippoWebContext), is(true));
+        assertTrue(sessionStore.renewSession(mockPippoWebContext));
 
         verify(mockRouteContext, times(1)).recreateSession();
         verify(mockPippoWebContext, times(1)).getRouteContext();

@@ -15,8 +15,8 @@
  */
 package ro.pippo.core;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import ro.pippo.core.route.DefaultRouter;
 import ro.pippo.core.route.Route;
 import ro.pippo.core.route.RouteHandler;
@@ -24,7 +24,8 @@ import ro.pippo.core.util.PathRegexBuilder;
 
 import java.util.Map;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * @author Decebal Suiu
@@ -35,7 +36,7 @@ public class PathRegexBuilderTest {
 
     private DefaultRouter router;
 
-    @Before
+    @BeforeEach
     public void before() {
         router = new DefaultRouter();
     }

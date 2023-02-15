@@ -20,23 +20,25 @@ import de.flapdoodle.embed.memcached.MemcachedProcess;
 import de.flapdoodle.embed.memcached.MemcachedStarter;
 import de.flapdoodle.embed.memcached.config.MemcachedConfig;
 import de.flapdoodle.embed.memcached.distribution.Version;
-import java.io.IOException;
 import net.rubyeye.xmemcached.CommandFactory;
 import net.rubyeye.xmemcached.MemcachedClient;
 import net.rubyeye.xmemcached.command.BinaryCommandFactory;
-import org.junit.AfterClass;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import org.junit.BeforeClass;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 import ro.pippo.core.Application;
+
+import java.io.IOException;
+
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * @author Herman Barrantes
  */
-@Ignore("See issue #337 on GitHub")
+@Disabled("See issue #337 on GitHub")
 public class XmemcachedFactoryTest {
 
     private static final String HOST = "localhost:11211";
@@ -45,7 +47,7 @@ public class XmemcachedFactoryTest {
     private static MemcachedExecutable memcachedExe;
     private static MemcachedProcess memcached;
 
-    @BeforeClass
+    @BeforeAll
     public static void setUpClass() throws IOException {
         application = new Application();
         MemcachedStarter runtime = MemcachedStarter.getDefaultInstance();
@@ -54,7 +56,7 @@ public class XmemcachedFactoryTest {
         memcached = memcachedExe.start();
     }
 
-    @AfterClass
+    @AfterAll
     public static void tearDownClass() {
         memcached.stop();
         memcachedExe.stop();

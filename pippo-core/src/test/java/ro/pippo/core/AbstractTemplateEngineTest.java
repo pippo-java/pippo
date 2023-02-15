@@ -15,13 +15,13 @@
  */
 package ro.pippo.core;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 import ro.pippo.core.route.RouteContext;
 import ro.pippo.core.route.Router;
 
@@ -29,8 +29,8 @@ import java.io.Writer;
 import java.util.Locale;
 import java.util.Map;
 
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.anyString;
 import static org.mockito.Mockito.eq;
@@ -40,7 +40,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class AbstractTemplateEngineTest {
 
     private static final String EXPECTED_LANGUAGE = "en_US";
@@ -66,9 +66,11 @@ public class AbstractTemplateEngineTest {
 
     private TestTemplateEngine templateEngine;
 
-    @Before
+    private AutoCloseable closeable;
+
+    @BeforeEach
     public void setupApplication() {
-        MockitoAnnotations.initMocks(this);
+        closeable = MockitoAnnotations.openMocks(this);
         templateEngine = new TestTemplateEngine();
 
         when(mockApplication.getPippoSettings()).thenReturn(mockPippoSettings);
@@ -77,10 +79,11 @@ public class AbstractTemplateEngineTest {
         when(mockApplication.getRouter()).thenReturn(mockRouter);
     }
 
-    @After
-    public void tearDown() {
+    @AfterEach
+    public void tearDown() throws Exception {
         reset(mockApplication);
         reset(mockLanguages);
+        closeable.close();
     }
 
     @Test

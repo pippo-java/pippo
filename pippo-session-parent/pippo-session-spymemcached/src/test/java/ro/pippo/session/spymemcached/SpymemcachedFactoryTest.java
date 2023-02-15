@@ -20,20 +20,22 @@ import de.flapdoodle.embed.memcached.MemcachedProcess;
 import de.flapdoodle.embed.memcached.MemcachedStarter;
 import de.flapdoodle.embed.memcached.config.MemcachedConfig;
 import de.flapdoodle.embed.memcached.distribution.Version;
-import java.io.IOException;
 import net.spy.memcached.ConnectionFactoryBuilder;
 import net.spy.memcached.MemcachedClient;
-import org.junit.AfterClass;
-import static org.junit.Assert.assertNotNull;
-import org.junit.BeforeClass;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 import ro.pippo.core.Application;
+
+import java.io.IOException;
+
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 /**
  * @author Herman Barrantes
  */
-@Ignore("See issue #337 on GitHub")
+@Disabled("See issue #337 on GitHub")
 public class SpymemcachedFactoryTest {
 
     private static final String HOST = "localhost:11211";
@@ -42,7 +44,7 @@ public class SpymemcachedFactoryTest {
     private static MemcachedExecutable memcachedExe;
     private static MemcachedProcess memcached;
 
-    @BeforeClass
+    @BeforeAll
     public static void setUpClass() throws IOException {
         application = new Application();
         MemcachedStarter runtime = MemcachedStarter.getDefaultInstance();
@@ -51,7 +53,7 @@ public class SpymemcachedFactoryTest {
         memcached = memcachedExe.start();
     }
 
-    @AfterClass
+    @AfterAll
     public static void tearDownClass() {
         memcached.stop();
         memcachedExe.stop();

@@ -23,12 +23,15 @@ import de.flapdoodle.embed.mongo.config.MongodConfigBuilder;
 import de.flapdoodle.embed.mongo.config.Net;
 import de.flapdoodle.embed.mongo.distribution.Version;
 import de.flapdoodle.embed.process.runtime.Network;
-import java.io.IOException;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Test;
-import static org.junit.Assert.*;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 import ro.pippo.session.SessionData;
+
+import java.io.IOException;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 /**
  * @author Herman Barrantes
@@ -43,7 +46,7 @@ public class MongoDBSessionDataStorageTest {
     private static MongodProcess mongod;
     private static MongoClient mongoClient;
 
-    @BeforeClass
+    @BeforeAll
     public static void setUpClass() throws IOException {
         Integer port = Network.getFreeServerPort();
         MongodStarter starter = MongodStarter.getDefaultInstance();
@@ -56,7 +59,7 @@ public class MongoDBSessionDataStorageTest {
         mongoClient = new MongoClient(HOST, port);
     }
 
-    @AfterClass
+    @AfterAll
     public static void tearDownClass() {
         mongoClient.close();
         mongod.stop();

@@ -15,17 +15,20 @@
  */
 package ro.pippo.core;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.ExpectedException;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.function.Executable;
 
 import java.util.HashMap;
 import java.util.Map;
 
 import static org.hamcrest.CoreMatchers.equalTo;
-import static org.junit.Assert.*;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * @author Decebal Suiu
@@ -34,15 +37,12 @@ public class DefaultUriMatcherTest {
 
     private DefaultUriMatcher uriMatcher;
 
-    @Rule
-    public ExpectedException thrown = ExpectedException.none();
-
-    @Before
+    @BeforeEach
     public void before() {
         uriMatcher = new DefaultUriMatcher();
     }
 
-    @After
+    @AfterEach
     public void after() {
         uriMatcher = null;
     }
@@ -58,9 +58,9 @@ public class DefaultUriMatcherTest {
 
     @Test
     public void testNoBinding() {
-        thrown.expect(PippoRuntimeException.class);
-        thrown.expectMessage("No binding for '/contact/{id}'. Create binding with 'addUriPattern'");
-        uriMatcher.match("/contact/1", "/contact/{id}");
+        Executable executable = () -> uriMatcher.match("/contact/1", "/contact/{id}");
+        Exception exception = assertThrows(PippoRuntimeException.class, executable);
+        assertTrue(exception.getMessage().contains("No binding for '/contact/{id}'. Create binding with 'addUriPattern'"));
     }
 
     @Test
