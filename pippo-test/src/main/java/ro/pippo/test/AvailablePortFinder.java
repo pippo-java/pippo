@@ -30,8 +30,17 @@ public class AvailablePortFinder {
 
     public static final int MAX_PORT_NUMBER = 49151;
 
+    /**
+     * Finds free port on host machine to bind to.
+     *
+     * @return free port
+     */
     public static int findAvailablePort() {
-        return findAvailablePort(MIN_PORT_NUMBER, MAX_PORT_NUMBER);
+        try (ServerSocket serverSocket = new ServerSocket(0)) {
+            return serverSocket.getLocalPort();
+        } catch (IOException e) {
+            throw new IllegalStateException("Could not find *any* available port");
+        }
     }
 
     public static int findAvailablePort(int minPortNumber, int maxPortNumber) {
