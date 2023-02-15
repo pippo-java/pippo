@@ -15,7 +15,7 @@
  */
 package ro.pippo.core;
 
-import javax.servlet.ServletContext;
+import jakarta.servlet.ServletContext;
 
 /**
  * Interface to be implemented in Servlet 3.0+ environments in order to configure the

@@ -26,7 +26,7 @@ import static ro.pippo.core.HttpConstants.Header.ACCESS_CONTROL_ALLOW_ORIGIN;
 import static ro.pippo.core.HttpConstants.Header.ACCESS_CONTROL_EXPOSE_HEADERS;
 import static ro.pippo.core.HttpConstants.Header.ACCESS_CONTROL_MAX_AGE;
 
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletResponse;
 
 import org.junit.Before;
 import org.junit.Test;

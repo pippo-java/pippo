@@ -20,7 +20,7 @@ import ro.pippo.core.Request;
 import ro.pippo.core.Response;
 import ro.pippo.core.util.StringUtils;
 
-import javax.servlet.ServletException;
+import jakarta.servlet.ServletException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Enumeration;
@@ -50,7 +50,7 @@ public abstract class AbstractWebSocketFilter extends PippoFilter {
             return false;
         }
 
-        if (!headerContainsToken(request, "Sec-websocket-version", "13")) {
+        if (!headerContainsToken(request, "Sec-WebSocket-Version", "13")) {
             response.badRequest().header("Sec-WebSocket-Version", "13"); // http://tools.ietf.org/html/rfc6455#section-4.4
             return false;
         }

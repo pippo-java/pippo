@@ -19,13 +19,21 @@ import com.jayway.restassured.RestAssured;
 import com.jayway.restassured.mapper.ObjectMapper;
 import com.jayway.restassured.mapper.ObjectMapperDeserializationContext;
 import com.jayway.restassured.mapper.ObjectMapperSerializationContext;
+import org.eclipse.jetty.websocket.api.Session;
+import org.eclipse.jetty.websocket.client.WebSocketClient;
 import org.junit.rules.TestRule;
 import org.junit.runner.Description;
 import org.junit.runners.model.Statement;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import ro.pippo.core.Application;
 import ro.pippo.core.ContentTypeEngine;
 import ro.pippo.core.Pippo;
 import ro.pippo.core.PippoRuntimeException;
+
+import java.io.IOException;
+import java.net.URI;
+import java.util.concurrent.CompletableFuture;
 
 /**
  * Start Pippo prior to test execution and stop Pippo after the tests have completed.
@@ -34,7 +42,10 @@ import ro.pippo.core.PippoRuntimeException;
  */
 public class PippoRule implements TestRule {
 
+    private static final Logger log = LoggerFactory.getLogger(PippoRule.class);
+
     private final Pippo pippo;
+    private final WebSocketClient webSocketClient;
 
     /**
      * This constructor dynamically allocates a free port.
@@ -55,6 +66,8 @@ public class PippoRule implements TestRule {
         this.pippo = pippo;
 
         pippo.getServer().setPort(port);
+        webSocketClient = new WebSocketClient();
+        webSocketClient.setMaxTextMessageSize(8 * 1024);
     }
 
     /**
@@ -84,12 +97,34 @@ public class PippoRule implements TestRule {
     }
 
     public void startPippo() {
-        pippo.start();
+        try {
+            pippo.start();
+        } catch (Exception e) {
+            throw new RuntimeException("Error starting Pippo", e);
+        }
+        try {
+            webSocketClient.start();
+        } catch (Exception e) {
+            throw new RuntimeException("Error starting WebSocket client", e);
+        }
         initRestAssured();
     }
 
     public void stopPippo() {
-        pippo.stop();
+        try {
+            webSocketClient.stop();
+        } catch (Exception e) {
+            log.error("Error stopping WebSocket client", e);
+        }
+        try {
+            pippo.stop();
+        } catch (Exception e) {
+            log.error("Error stopping Pippo", e);
+        }
+    }
+
+    public CompletableFuture<Session> wsConnect(Object clientEndPoint, String path) throws IOException {
+        return webSocketClient.connect(clientEndPoint, URI.create(String.format("ws://%s:%d%s", "localhost", pippo.getServer().getPort(), path)));
     }
 
     protected void initRestAssured() {

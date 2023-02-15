@@ -15,7 +15,7 @@
     <description>Jetty embedded server</description>
 
     <properties>
-        <jetty.version>9.4.44.v20210927</jetty.version>
+        <jetty.version>11.0.13</jetty.version>
     </properties>
 
     <dependencies>
@@ -45,7 +45,7 @@
 
         <dependency>
             <groupId>org.eclipse.jetty.websocket</groupId>
-            <artifactId>websocket-server</artifactId>
+            <artifactId>websocket-jetty-server</artifactId>
             <version>${jetty.version}</version>
         </dependency>
 
@@ -54,6 +54,14 @@
             <artifactId>metainf-services</artifactId>
             <scope>provided</scope>
         </dependency>
+
+        <dependency>
+            <groupId>ro.pippo</groupId>
+            <artifactId>pippo-test</artifactId>
+            <version>${project.version}</version>
+            <scope>test</scope>
+        </dependency>
+
     </dependencies>
 
 </project>

@@ -16,7 +16,7 @@
 package ro.pippo.core.websocket;
 
 import java.io.IOException;
-import java.net.InetSocketAddress;
+import java.net.SocketAddress;
 
 /**
  * @author Decebal Suiu
@@ -49,6 +49,6 @@ public interface WebSocketConnection {
      */
     WebSocketConnection sendMessage(byte[] message) throws IOException;
 
-    InetSocketAddress getRemoteAddress();
+    SocketAddress getRemoteAddress();
 
 }

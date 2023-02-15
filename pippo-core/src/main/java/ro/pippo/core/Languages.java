@@ -20,7 +20,7 @@ import org.slf4j.LoggerFactory;
 import ro.pippo.core.route.RouteContext;
 import ro.pippo.core.util.StringUtils;
 
-import javax.servlet.http.Cookie;
+import jakarta.servlet.http.Cookie;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;

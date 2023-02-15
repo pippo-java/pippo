@@ -16,6 +16,7 @@
 
     <properties>
         <rest-assured.version>2.9.0</rest-assured.version>
+        <jetty-websocket.version>11.0.13</jetty-websocket.version>
     </properties>
 
     <dependencies>
@@ -31,6 +32,12 @@
             <artifactId>rest-assured</artifactId>
             <version>${rest-assured.version}</version>
             <scope>compile</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.eclipse.jetty.websocket</groupId>
+            <artifactId>websocket-jetty-client</artifactId>
+            <version>${jetty-websocket.version}</version>
         </dependency>
 
         <dependency>

@@ -25,9 +25,9 @@ import ro.pippo.core.util.IoUtils;
 import ro.pippo.core.util.MimeTypes;
 import ro.pippo.core.util.StringUtils;
 
-import javax.servlet.ServletOutputStream;
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.ServletOutputStream;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;

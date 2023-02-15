@@ -171,7 +171,7 @@ public class PippoWebContext implements WebContext {
             cookie.isSecure()
         );
 
-        javax.servlet.http.Cookie addedCookie = getResponse().getCookie(cookie.getName());
+        jakarta.servlet.http.Cookie addedCookie = getResponse().getCookie(cookie.getName());
         addedCookie.setHttpOnly(cookie.isHttpOnly());
         addedCookie.setComment(cookie.getComment());
     }

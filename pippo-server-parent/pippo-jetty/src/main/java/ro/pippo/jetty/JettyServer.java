@@ -33,11 +33,11 @@ import ro.pippo.core.PippoRuntimeException;
 import ro.pippo.core.PippoServletContextListener;
 import ro.pippo.core.WebServer;
 
-import javax.servlet.DispatcherType;
-import javax.servlet.MultipartConfigElement;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.DispatcherType;
+import jakarta.servlet.MultipartConfigElement;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -58,9 +58,18 @@ public class JettyServer extends AbstractWebServer<JettySettings> {
 
     private Server server;
 
+    // TODO temp
+    @Deprecated
+    private static Server _s_DONT_USE;
+    @Deprecated
+    public static Server _get_DONT_USE() {
+        return _s_DONT_USE;
+    }
+
     @Override
     public void start() {
         server = createServer();
+        _s_DONT_USE = server;
 
         ServerConnector serverConnector = createServerConnector(server);
         serverConnector.setIdleTimeout(TimeUnit.HOURS.toMillis(1));
@@ -160,7 +169,7 @@ public class JettyServer extends AbstractWebServer<JettySettings> {
             return new ServerConnector(server);
         }
 
-        SslContextFactory sslContextFactory = new SslContextFactory.Server();
+        SslContextFactory.Server sslContextFactory = new SslContextFactory.Server();
         sslContextFactory.setKeyStorePath(asJettyFriendlyPath(keyStoreFile, "Keystore file"));
 
         if (getSettings().getKeystorePassword() != null) {
@@ -213,7 +222,7 @@ public class JettyServer extends AbstractWebServer<JettySettings> {
     protected PippoFilter createPippoFilter() {
         try {
             // try to load a class from jetty.websocket
-            Class.forName("org.eclipse.jetty.websocket.server.WebSocketServerFactory");
+            Class.forName("org.eclipse.jetty.websocket.server.JettyWebSocketServerContainer");
         } catch (ClassNotFoundException e) {
             return super.createPippoFilter();
         }
@@ -257,7 +266,7 @@ public class JettyServer extends AbstractWebServer<JettySettings> {
             throws IOException, ServletException {
 
             if (isMultipartRequest(request)) {
-                baseRequest.setAttribute(Request.MULTIPART_CONFIG_ELEMENT, multipartConfig);
+                baseRequest.setAttribute(Request.__MULTIPART_CONFIG_ELEMENT, multipartConfig);
             }
 
             super.doHandle(target, baseRequest, request, response);

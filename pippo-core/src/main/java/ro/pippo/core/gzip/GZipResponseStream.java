@@ -15,8 +15,9 @@
  */
 package ro.pippo.core.gzip;
 
-import javax.servlet.ServletOutputStream;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.ServletOutputStream;
+import jakarta.servlet.WriteListener;
+import jakarta.servlet.http.HttpServletResponse;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.zip.GZIPOutputStream;
@@ -92,6 +93,17 @@ public class GZipResponseStream extends ServletOutputStream {
         }
 
         gzipOutputStream.write(b, off, len);
+    }
+
+    @Override
+    public boolean isReady() {
+        // we are writing to internal buffer, so we are always ready
+        return true;
+    }
+
+    @Override
+    public void setWriteListener(WriteListener writeListener) {
+        // we are always ready, ignore
     }
 
 }

@@ -25,8 +25,8 @@ import ro.pippo.core.Request;
 import ro.pippo.core.Response;
 import ro.pippo.core.util.ServiceLocator;
 
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.List;

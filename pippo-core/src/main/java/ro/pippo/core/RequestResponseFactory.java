@@ -15,8 +15,8 @@
  */
 package ro.pippo.core;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 /**
  * Helps in creating <code>Request<code/> and <code>Response<code/> objects.

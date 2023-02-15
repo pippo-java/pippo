@@ -18,11 +18,10 @@ package ro.pippo.undertow.websocket;
 import io.undertow.websockets.core.WebSocketChannel;
 import io.undertow.websockets.core.WebSockets;
 import io.undertow.websockets.spi.WebSocketHttpExchange;
-import ro.pippo.core.PippoRuntimeException;
 import ro.pippo.core.websocket.WebSocketConnection;
 
 import java.io.IOException;
-import java.net.InetSocketAddress;
+import java.net.SocketAddress;
 import java.nio.ByteBuffer;
 
 /**
@@ -66,7 +65,7 @@ public class UndertowWebSocketConnection implements WebSocketConnection {
     }
 
     @Override
-    public InetSocketAddress getRemoteAddress() {
+    public SocketAddress getRemoteAddress() {
         return channel.getSourceAddress();
     }
 
