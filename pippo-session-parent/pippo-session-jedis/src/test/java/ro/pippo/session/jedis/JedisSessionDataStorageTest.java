@@ -39,9 +39,10 @@ public class JedisSessionDataStorageTest {
 
     @BeforeClass
     public static void setUpClass() throws IOException {
-        redisServer = new RedisServer(AvailablePortFinder.findAvailablePort());
+        int port = AvailablePortFinder.findAvailablePort();
+        redisServer = new RedisServer(port);
         redisServer.start();
-        jedisPool = new JedisPool();
+        jedisPool = new JedisPool("localhost", port);
     }
 
     @AfterClass
