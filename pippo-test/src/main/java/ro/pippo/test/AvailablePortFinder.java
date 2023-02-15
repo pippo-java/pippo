@@ -24,27 +24,16 @@ import java.net.ServerSocket;
 public class AvailablePortFinder {
 
     /**
-     * Avoid returning privileged port.
+     * Finds free port on host machine to bind to.
+     *
+     * @return free port
      */
-    public static final int MIN_PORT_NUMBER = 1100;
-
-    public static final int MAX_PORT_NUMBER = 49151;
-
     public static int findAvailablePort() {
-        return findAvailablePort(MIN_PORT_NUMBER, MAX_PORT_NUMBER);
-    }
-
-    public static int findAvailablePort(int minPortNumber, int maxPortNumber) {
-        for (int port = minPortNumber; port < maxPortNumber; port++) {
-            try {
-                new ServerSocket(port).close();
-                return port;
-            } catch (IOException e) {
-                // must already be taken
-            }
+        try (ServerSocket serverSocket = new ServerSocket(0)) {
+            return serverSocket.getLocalPort();
+        } catch (IOException e) {
+            throw new IllegalStateException("Could not find *any* available port");
         }
-
-        throw new IllegalStateException("Could not find available port in range " + minPortNumber + " to " + maxPortNumber);
     }
 
 }
