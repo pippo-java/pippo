@@ -21,6 +21,7 @@ import org.junit.jupiter.api.Test;
 import redis.clients.jedis.JedisPool;
 import redis.embedded.RedisServer;
 import ro.pippo.session.SessionData;
+import ro.pippo.test.AvailablePortFinder;
 
 import java.io.IOException;
 
@@ -40,9 +41,10 @@ public class JedisSessionDataStorageTest {
 
     @BeforeAll
     public static void setUpClass() throws IOException {
-        redisServer = new RedisServer();
+        int port = AvailablePortFinder.findAvailablePort();
+        redisServer = new RedisServer(port);
         redisServer.start();
-        jedisPool = new JedisPool();
+        jedisPool = new JedisPool("localhost", port);
     }
 
     @AfterAll
