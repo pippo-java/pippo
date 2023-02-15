@@ -16,16 +16,13 @@
 package ro.pippo.session.jedis;
 
 import java.io.IOException;
-
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.junit.Assert.*;
-
 import redis.clients.jedis.JedisPool;
 import redis.embedded.RedisServer;
 import ro.pippo.session.SessionData;
-import ro.pippo.test.AvailablePortFinder;
 
 /**
  * @author Herman Barrantes
@@ -39,7 +36,7 @@ public class JedisSessionDataStorageTest {
 
     @BeforeClass
     public static void setUpClass() throws IOException {
-        redisServer = new RedisServer(AvailablePortFinder.findAvailablePort());
+        redisServer = new RedisServer();
         redisServer.start();
         jedisPool = new JedisPool();
     }
