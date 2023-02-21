@@ -17,6 +17,8 @@ package ro.pippo.test;
 
 import org.eclipse.jetty.websocket.api.Session;
 import org.eclipse.jetty.websocket.client.WebSocketClient;
+import org.junit.jupiter.api.extension.AfterAllCallback;
+import org.junit.jupiter.api.extension.BeforeAllCallback;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import io.restassured.RestAssured;
@@ -25,8 +27,6 @@ import io.restassured.config.RestAssuredConfig;
 import io.restassured.mapper.ObjectMapper;
 import io.restassured.mapper.ObjectMapperDeserializationContext;
 import io.restassured.mapper.ObjectMapperSerializationContext;
-import org.junit.jupiter.api.extension.AfterEachCallback;
-import org.junit.jupiter.api.extension.BeforeEachCallback;
 import org.junit.jupiter.api.extension.ExtensionContext;
 import ro.pippo.core.Application;
 import ro.pippo.core.ContentTypeEngine;
@@ -42,7 +42,7 @@ import java.util.concurrent.CompletableFuture;
  *
  * @author Decebal Suiu
  */
-public class PippoExtension implements BeforeEachCallback, AfterEachCallback {
+public class PippoExtension implements BeforeAllCallback, AfterAllCallback {
 
     private static final Logger log = LoggerFactory.getLogger(PippoExtension.class);
 
@@ -114,12 +114,12 @@ public class PippoExtension implements BeforeEachCallback, AfterEachCallback {
     }
 
     @Override
-    public void beforeEach(ExtensionContext extensionContext) {
+    public void beforeAll(ExtensionContext extensionContext) {
         startPippo();
     }
 
     @Override
-    public void afterEach(ExtensionContext extensionContext) {
+    public void afterAll(ExtensionContext extensionContext) {
         stopPippo();
     }
 
