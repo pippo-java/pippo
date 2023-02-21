@@ -20,23 +20,25 @@ import de.flapdoodle.embed.memcached.MemcachedProcess;
 import de.flapdoodle.embed.memcached.MemcachedStarter;
 import de.flapdoodle.embed.memcached.config.MemcachedConfig;
 import de.flapdoodle.embed.memcached.distribution.Version;
-import java.io.IOException;
-import java.net.InetSocketAddress;
 import net.rubyeye.xmemcached.MemcachedClient;
 import net.rubyeye.xmemcached.XMemcachedClient;
-import org.junit.AfterClass;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import org.junit.BeforeClass;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 import ro.pippo.session.SessionData;
+
+import java.io.IOException;
+import java.net.InetSocketAddress;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 /**
  * @author Herman Barrantes
  */
-@Ignore("See issue #337 on GitHub")
+@Disabled("See issue #337 on GitHub")
 public class XmemcachedSessionDataStorageTest {
 
     private static final String KEY = "KEY";
@@ -48,7 +50,7 @@ public class XmemcachedSessionDataStorageTest {
     private static MemcachedProcess memcached;
     private static MemcachedClient client;
 
-    @BeforeClass
+    @BeforeAll
     public static void setUpClass() throws IOException {
         MemcachedStarter runtime = MemcachedStarter.getDefaultInstance();
         memcachedExe = runtime.prepare(
@@ -57,7 +59,7 @@ public class XmemcachedSessionDataStorageTest {
         client = new XMemcachedClient(new InetSocketAddress(HOST, PORT));
     }
 
-    @AfterClass
+    @AfterAll
     public static void tearDownClass() throws IOException {
         client.shutdown();
         memcached.stop();

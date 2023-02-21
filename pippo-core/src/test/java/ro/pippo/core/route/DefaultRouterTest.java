@@ -15,11 +15,10 @@
  */
 package ro.pippo.core.route;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.ExpectedException;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.function.Executable;
 import ro.pippo.core.HttpConstants;
 
 import java.util.Collections;
@@ -28,7 +27,13 @@ import java.util.List;
 import java.util.Map;
 
 import static org.hamcrest.CoreMatchers.equalTo;
-import static org.junit.Assert.*;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * @author Decebal Suiu
@@ -39,15 +44,12 @@ public class DefaultRouterTest {
 
     private DefaultRouter router;
 
-    @Rule
-    public ExpectedException thrown = ExpectedException.none();
-
-    @Before
+    @BeforeEach
     public void before() {
         router = new DefaultRouter();
     }
 
-    @After
+    @AfterEach
     public void after() {
         router = null;
     }
@@ -55,25 +57,25 @@ public class DefaultRouterTest {
     @Test
     public void testNullUriPatternRoute() throws Exception {
         Route route = Route.GET(null, emptyHandler);
-        thrown.expect(Exception.class);
-        thrown.expectMessage("The uri pattern cannot be null or empty");
-        router.addRoute(route);
+        Executable executable = () -> router.addRoute(route);
+        Exception exception = assertThrows(Exception.class, executable);
+        assertEquals("The uri pattern cannot be null or empty", exception.getMessage());
     }
 
     @Test
     public void testEmptyUriPatternRoute() throws Exception {
         Route route = Route.GET("", emptyHandler);
-        thrown.expect(Exception.class);
-        thrown.expectMessage("The uri pattern cannot be null or empty");
-        router.addRoute(route);
+        Executable executable = () -> router.addRoute(route);
+        Exception exception = assertThrows(Exception.class, executable);
+        assertEquals("The uri pattern cannot be null or empty", exception.getMessage());
     }
 
     @Test
     public void testUnspecifiedMethodRequestRoute() throws Exception {
         Route route = new Route("", "/.*", emptyHandler);
-        thrown.expect(Exception.class);
-        thrown.expectMessage("Unspecified request method");
-        router.addRoute(route);
+        Executable executable = () -> router.addRoute(route);
+        Exception exception = assertThrows(Exception.class, executable);
+        assertTrue(exception.getMessage().contains("Unspecified request method"));
     }
 
     @Test
@@ -759,9 +761,9 @@ public class DefaultRouterTest {
         assertEquals(1, matches.size());
         Route route = matches.get(0).getRoute();
         assertTrue(route.getAttributes().containsKey("audit"));
-        assertTrue(route.getAttribute("audit"));
+        assertTrue((boolean) route.getAttribute("audit"));
         assertTrue(route.getAttributes().containsKey("secure"));
-        assertTrue(route.getAttribute("secure"));
+        assertTrue((boolean) route.getAttribute("secure"));
     }
 
     @Test

@@ -15,14 +15,19 @@
  */
 package ro.pippo.session.jedis;
 
-import java.io.IOException;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Test;
-import static org.junit.Assert.*;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 import redis.clients.jedis.JedisPool;
 import redis.embedded.RedisServer;
 import ro.pippo.session.SessionData;
+import ro.pippo.test.AvailablePortFinder;
+
+import java.io.IOException;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 /**
  * @author Herman Barrantes
@@ -34,14 +39,15 @@ public class JedisSessionDataStorageTest {
     private static RedisServer redisServer;
     private static JedisPool jedisPool;
 
-    @BeforeClass
+    @BeforeAll
     public static void setUpClass() throws IOException {
-        redisServer = new RedisServer();
+        int port = AvailablePortFinder.findAvailablePort();
+        redisServer = new RedisServer(port);
         redisServer.start();
-        jedisPool = new JedisPool();
+        jedisPool = new JedisPool("localhost", port);
     }
 
-    @AfterClass
+    @AfterAll
     public static void tearDownClass() {
         jedisPool.destroy();
         redisServer.stop();

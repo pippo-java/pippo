@@ -15,14 +15,16 @@
  */
 package ro.pippo.pac4j;
 
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.ExpectedException;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.MockitoAnnotations;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
 import org.pac4j.core.context.Cookie;
 import org.pac4j.core.context.session.SessionStore;
 import ro.pippo.core.Application;
@@ -42,11 +44,13 @@ import java.util.Map;
 
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.CoreMatchers.nullValue;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.anyString;
 import static org.mockito.Mockito.atLeastOnce;
+import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -54,7 +58,8 @@ import static org.mockito.Mockito.when;
 /**
  * @author Ranganath Kini
  */
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
+@MockitoSettings(strictness = Strictness.WARN)
 public class PippoWebContextTest {
 
     private static final String DEFAULT_APPLICATION_PATH = "/mock";
@@ -78,17 +83,24 @@ public class PippoWebContextTest {
     @Mock
     private Application mockApplication;
 
-    @Rule
-    public ExpectedException thrown = ExpectedException.none();
-
     private Response response;
 
-    @Before
+    private AutoCloseable closeable;
+
+    @BeforeEach
     public void setup() {
+        closeable = MockitoAnnotations.openMocks(this);
+
         when(mockRouteContext.getSession()).thenReturn(mockSession);
         when(mockRouter.getApplicationPath()).thenReturn(DEFAULT_APPLICATION_PATH);
         when(mockApplication.getRouter()).thenReturn(mockRouter);
         when(mockHttpRequest.getParameterNames()).thenReturn(EMPTY_ENUMERATION);
+    }
+
+    @AfterEach
+    public void tearDown() throws Exception {
+        reset(mockApplication);
+        closeable.close();
     }
 
     @Test
@@ -103,10 +115,7 @@ public class PippoWebContextTest {
     @Test
     public void shouldThrowUnsupportedOperationExceptionIfSettingSessionStoreIsAttempted() {
         PippoWebContext context = makePippoWebContext();
-
-        thrown.expect(UnsupportedOperationException.class);
-
-        context.setSessionStore(new PippoSessionStore());
+        assertThrows(UnsupportedOperationException.class, () -> context.setSessionStore(new PippoSessionStore()));
     }
 
     @Test

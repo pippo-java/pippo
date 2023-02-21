@@ -15,28 +15,20 @@
  */
 package ro.pippo.jaxb;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.isA;
-import static org.hamcrest.Matchers.startsWith;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertThrows;
-
-import java.io.IOException;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import ro.pippo.core.PippoRuntimeException;
+import ro.pippo.core.util.IoUtils;
 
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
+import java.io.IOException;
 
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.TestRule;
-import org.junit.rules.TestWatcher;
-import org.junit.runner.Description;
-
-//import com.sun.org.apache.xerces.internal.impl.Constants;
-
-import ro.pippo.core.PippoRuntimeException;
-import ro.pippo.core.util.IoUtils;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.isA;
+import static org.hamcrest.Matchers.startsWith;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 /**
  * @author Dwouglas Mhagnum
@@ -45,14 +37,7 @@ public class JaxbEngineTest {
 
     private JaxbEngine jaxbEngine;
 
-    @Rule
-    public TestRule watcher = new TestWatcher() {
-       protected void starting(Description description) {
-          System.out.println(String.format("[%s] Starting test: %s", this.getClass().getName(), description.getMethodName()));
-       }
-    };
-
-    @Before
+    @BeforeEach
     public void setUp() {
         jaxbEngine = new JaxbEngine();
 

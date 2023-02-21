@@ -15,14 +15,14 @@
  */
 package ro.pippo.core.gzip;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import ro.pippo.core.Application;
 
 import jakarta.servlet.http.HttpServletRequest;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class GZipRequestResponseFactoryTest {
 
@@ -47,4 +47,5 @@ public class GZipRequestResponseFactoryTest {
         Mockito.doReturn("deflate,identity").when(httpServletRequest).getHeader("accept-encoding");
         assertFalse(requestResponseFactory.acceptsGZipEncoding(httpServletRequest));
     }
+
 }

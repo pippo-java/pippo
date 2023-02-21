@@ -15,7 +15,7 @@
  */
 package ro.pippo.test;
 
-import com.jayway.restassured.RestAssured;
+import io.restassured.RestAssured;
 
 /**
  * Pippo Test marries Pippo, JUnit and RestAssured to provide a convenient
@@ -26,14 +26,12 @@ import com.jayway.restassured.RestAssured;
  * </p>
  * <pre>
  * // one Pippo instance for EACH test
- * @Rule
- * public PippoRule pippoRule = new PippoRule(new PippoApplication());
- *
+ * @RegisterExtension
+ * public PippoExtension pippoExtension = new PippoExtension(new PippoApplication());
  * // or
  * // one Pippo instance for ALL tests
- * @ClassRule
- * public static PippoRule pippoRule = new PippoRule(new PippoApplication());
- * </pre>
+ * @RegisterExtension
+  * public static PippoExtension pippoExtension = new PippoExtension(new PippoApplication()); * </pre>
  *
  * @author Decebal Suiu
  */

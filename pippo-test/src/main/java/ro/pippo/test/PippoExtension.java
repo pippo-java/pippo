@@ -15,17 +15,19 @@
  */
 package ro.pippo.test;
 
-import com.jayway.restassured.RestAssured;
-import com.jayway.restassured.mapper.ObjectMapper;
-import com.jayway.restassured.mapper.ObjectMapperDeserializationContext;
-import com.jayway.restassured.mapper.ObjectMapperSerializationContext;
 import org.eclipse.jetty.websocket.api.Session;
 import org.eclipse.jetty.websocket.client.WebSocketClient;
-import org.junit.rules.TestRule;
-import org.junit.runner.Description;
-import org.junit.runners.model.Statement;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import io.restassured.RestAssured;
+import io.restassured.config.ObjectMapperConfig;
+import io.restassured.config.RestAssuredConfig;
+import io.restassured.mapper.ObjectMapper;
+import io.restassured.mapper.ObjectMapperDeserializationContext;
+import io.restassured.mapper.ObjectMapperSerializationContext;
+import org.junit.jupiter.api.extension.AfterEachCallback;
+import org.junit.jupiter.api.extension.BeforeEachCallback;
+import org.junit.jupiter.api.extension.ExtensionContext;
 import ro.pippo.core.Application;
 import ro.pippo.core.ContentTypeEngine;
 import ro.pippo.core.Pippo;
@@ -40,29 +42,32 @@ import java.util.concurrent.CompletableFuture;
  *
  * @author Decebal Suiu
  */
-public class PippoRule implements TestRule {
+public class PippoExtension implements BeforeEachCallback, AfterEachCallback {
 
-    private static final Logger log = LoggerFactory.getLogger(PippoRule.class);
+    private static final Logger log = LoggerFactory.getLogger(PippoExtension.class);
 
     private final Pippo pippo;
     private final WebSocketClient webSocketClient;
 
+    public PippoExtension() {
+        this(new Application());
+    }
     /**
      * This constructor dynamically allocates a free port.
      */
-    public PippoRule(Application application) {
+    public PippoExtension(Application application) {
         this(application, AvailablePortFinder.findAvailablePort());
     }
 
-    public PippoRule(Application application, Integer port) {
+    public PippoExtension(Application application, Integer port) {
         this(new Pippo(application), port);
     }
 
-    public PippoRule(Pippo pippo) {
+    public PippoExtension(Pippo pippo) {
         this(pippo, AvailablePortFinder.findAvailablePort());
     }
 
-    public PippoRule(Pippo pippo, Integer port) {
+    public PippoExtension(Pippo pippo, Integer port) {
         this.pippo = pippo;
 
         pippo.getServer().setPort(port);
@@ -75,25 +80,6 @@ public class PippoRule implements TestRule {
      */
     public Application getApplication() {
         return pippo.getApplication();
-    }
-
-    @Override
-    public Statement apply(Statement statement, Description description) {
-        // decorate statement
-        return new Statement() {
-
-            @Override
-            public void evaluate() throws Throwable {
-                startPippo();
-
-                try {
-                    statement.evaluate();
-                } finally {
-                    stopPippo();
-                }
-            }
-
-        };
     }
 
     public void startPippo() {
@@ -127,12 +113,22 @@ public class PippoRule implements TestRule {
         return webSocketClient.connect(clientEndPoint, URI.create(String.format("ws://%s:%d%s", "localhost", pippo.getServer().getPort(), path)));
     }
 
+    @Override
+    public void beforeEach(ExtensionContext extensionContext) {
+        startPippo();
+    }
+
+    @Override
+    public void afterEach(ExtensionContext extensionContext) {
+        stopPippo();
+    }
+
     protected void initRestAssured() {
         // port
         RestAssured.port = pippo.getServer().getPort();
 
         // objectMapper
-        RestAssured.objectMapper(new ObjectMapper() {
+        ObjectMapper objectMapper = new ObjectMapper() {
 
             @Override
             public Object deserialize(ObjectMapperDeserializationContext context) {
@@ -141,7 +137,7 @@ public class PippoRule implements TestRule {
                     throw new PippoRuntimeException("No ContentTypeEngine registered for {}", context.getContentType());
                 }
 
-                return engine.fromString(context.getDataToDeserialize().asString(), context.getType());
+                return engine.fromString(context.getDataToDeserialize().asString(), context.getType().getClass());
             }
 
             @Override
@@ -154,7 +150,8 @@ public class PippoRule implements TestRule {
                 return engine.toString(context.getObjectToSerialize());
             }
 
-        });
+        };
+        RestAssured.config = RestAssuredConfig.config().objectMapperConfig(new ObjectMapperConfig(objectMapper));
     }
 
 }

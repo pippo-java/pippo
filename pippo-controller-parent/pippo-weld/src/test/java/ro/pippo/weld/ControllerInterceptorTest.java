@@ -16,8 +16,8 @@
 package ro.pippo.weld;
 
 import org.jboss.weld.environment.se.Weld;
-import org.junit.ClassRule;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.RegisterExtension;
 import ro.pippo.controller.Controller;
 import ro.pippo.controller.ControllerApplication;
 import ro.pippo.controller.ControllerFactory;
@@ -25,7 +25,7 @@ import ro.pippo.controller.ControllerRouteFactory;
 import ro.pippo.controller.DefaultControllerRouteFactory;
 import ro.pippo.controller.GET;
 import ro.pippo.controller.Path;
-import ro.pippo.test.PippoRule;
+import ro.pippo.test.PippoExtension;
 import ro.pippo.test.PippoTest;
 
 import javax.annotation.Priority;
@@ -43,8 +43,8 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 public class ControllerInterceptorTest extends PippoTest {
 
-    @ClassRule
-    public static PippoRule pippoRule = new PippoRule(new PippoApplication());
+    @RegisterExtension
+    public static PippoExtension pippoExtension = new PippoExtension(new PippoApplication());
 
     @Test
     public void testControllerWithInterceptor() {

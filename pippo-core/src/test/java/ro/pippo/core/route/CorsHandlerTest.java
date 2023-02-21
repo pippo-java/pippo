@@ -15,8 +15,17 @@
  */
 package ro.pippo.core.route;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertThrows;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
+import ro.pippo.core.Application;
+import ro.pippo.core.PippoRuntimeException;
+import ro.pippo.core.Response;
+
+import jakarta.servlet.http.HttpServletResponse;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static ro.pippo.core.HttpConstants.Header.ACCESS_CONTROL_ALLOW_CREDENTIALS;
@@ -25,16 +34,6 @@ import static ro.pippo.core.HttpConstants.Header.ACCESS_CONTROL_ALLOW_METHODS;
 import static ro.pippo.core.HttpConstants.Header.ACCESS_CONTROL_ALLOW_ORIGIN;
 import static ro.pippo.core.HttpConstants.Header.ACCESS_CONTROL_EXPOSE_HEADERS;
 import static ro.pippo.core.HttpConstants.Header.ACCESS_CONTROL_MAX_AGE;
-
-import jakarta.servlet.http.HttpServletResponse;
-
-import org.junit.Before;
-import org.junit.Test;
-import org.mockito.Mockito;
-
-import ro.pippo.core.Application;
-import ro.pippo.core.PippoRuntimeException;
-import ro.pippo.core.Response;
 
 /**
  * The following error must be thrown if the test is performed with the JRE
@@ -48,7 +47,7 @@ public class CorsHandlerTest {
     private RouteContext routeContext;
     private Response response;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         Application application = new Application();
 

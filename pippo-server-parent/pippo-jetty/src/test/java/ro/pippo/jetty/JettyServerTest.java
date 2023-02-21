@@ -4,13 +4,13 @@ import org.eclipse.jetty.websocket.api.Session;
 import org.eclipse.jetty.websocket.api.annotations.OnWebSocketMessage;
 import org.eclipse.jetty.websocket.api.annotations.WebSocket;
 import org.hamcrest.Matchers;
-import org.junit.Assert;
-import org.junit.ClassRule;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.RegisterExtension;
 import ro.pippo.core.Application;
 import ro.pippo.core.websocket.WebSocketContext;
 import ro.pippo.core.websocket.WebSocketHandler;
-import ro.pippo.test.PippoRule;
+import ro.pippo.test.PippoExtension;
 import ro.pippo.test.PippoTest;
 
 import java.io.IOException;
@@ -21,8 +21,8 @@ import java.util.concurrent.LinkedBlockingQueue;
 
 public class JettyServerTest extends PippoTest {
 
-    @ClassRule
-    public static PippoRule pippoRule = new PippoRule(new Application() {{
+    @RegisterExtension
+    public static PippoExtension pippoRule = new PippoExtension(new Application() {{
 
         GET("/foo", context -> context.send("foo"));
 
@@ -73,7 +73,7 @@ public class JettyServerTest extends PippoTest {
             session.getRemote().sendString(message);
 
             String response = incoming.take();
-            Assert.assertEquals(response, message);
+            Assertions.assertEquals(response, message);
 
         }
 

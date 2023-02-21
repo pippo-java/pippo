@@ -15,22 +15,23 @@
  */
 package ro.pippo.core;
 
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mockito;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 import ro.pippo.core.route.RouteContext;
 
 /**
  * @author Tim Hinkes
  */
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class DefaultErrorHandlerTest {
+
     private DefaultErrorHandler defaultErrorHandler;
     private RouteContext routeContext;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         Application application = Mockito.mock(Application.class);
         this.routeContext = Mockito.mock(RouteContext.class);
