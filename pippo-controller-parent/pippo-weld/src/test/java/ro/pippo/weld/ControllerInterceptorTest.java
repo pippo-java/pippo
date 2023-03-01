@@ -51,6 +51,12 @@ public class ControllerInterceptorTest extends PippoTest {
         when().get("/").then().statusCode(200);
     }
 
+    /** Tests that server is working after restart */
+    @Test
+    public void testControllerWithInterceptor2() {
+        when().get("/").then().statusCode(200);
+    }
+
     @Inherited
     @InterceptorBinding
     @Retention(RUNTIME)
