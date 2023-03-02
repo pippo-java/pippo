@@ -17,7 +17,6 @@
     <properties>
         <rest-assured.version>5.3.0</rest-assured.version>
         <jetty-websocket.version>11.0.13</jetty-websocket.version>
-        <logback.version>1.4.5</logback.version>
     </properties>
 
     <dependencies>
@@ -45,12 +44,6 @@
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter-engine</artifactId>
             <version>${junit.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>ch.qos.logback</groupId>
-            <artifactId>logback-core</artifactId>
-            <version>${logback.version}</version>
         </dependency>
     </dependencies>
 
