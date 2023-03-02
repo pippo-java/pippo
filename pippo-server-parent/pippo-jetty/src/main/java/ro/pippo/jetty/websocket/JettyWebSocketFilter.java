@@ -15,7 +15,7 @@
  */
 package ro.pippo.jetty.websocket;
 
-import org.eclipse.jetty.websocket.core.WebSocketComponents;
+import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.websocket.core.server.WebSocketServerComponents;
 import org.eclipse.jetty.websocket.server.JettyServerUpgradeRequest;
 import org.eclipse.jetty.websocket.server.JettyWebSocketCreator;
@@ -29,7 +29,6 @@ import ro.pippo.core.websocket.WebSocketRouter;
 
 import jakarta.servlet.FilterConfig;
 import jakarta.servlet.ServletException;
-import ro.pippo.jetty.JettyServer;
 
 import java.io.IOException;
 import java.time.Duration;
@@ -41,21 +40,20 @@ public class JettyWebSocketFilter extends AbstractWebSocketFilter {
 
     private static final Logger log = LoggerFactory.getLogger(JettyWebSocketFilter.class);
 
+    private final Server server;
     private JettyWebSocketServerContainer serverContainer;
     private JettyWebSocketCreator creator;
+
+    public JettyWebSocketFilter(Server server) {
+        this.server = server;
+    }
 
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
         super.init(filterConfig);
 
         try {
-
-            // TODO
-
-            /*
-             * Alternative is JettyWebSocketServletContainerInitializer.configure
-             */
-            WebSocketComponents components = WebSocketServerComponents.ensureWebSocketComponents(JettyServer._get_DONT_USE(), filterConfig.getServletContext());
+            WebSocketServerComponents.ensureWebSocketComponents(server, filterConfig.getServletContext());
             serverContainer = JettyWebSocketServerContainer.ensureContainer(filterConfig.getServletContext());
 
             String inputBufferSize = filterConfig.getInitParameter("inputBufferSize");
@@ -76,7 +74,6 @@ public class JettyWebSocketFilter extends AbstractWebSocketFilter {
             creator = (request, response) -> createWebSocketAdapter(request);
 
             serverContainer.start();
-
         } catch (ServletException e) {
             throw e;
         } catch (Exception e) {

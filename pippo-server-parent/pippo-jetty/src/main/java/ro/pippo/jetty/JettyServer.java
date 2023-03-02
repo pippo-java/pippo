@@ -58,18 +58,9 @@ public class JettyServer extends AbstractWebServer<JettySettings> {
 
     private Server server;
 
-    // TODO temp
-    @Deprecated
-    private static Server _s_DONT_USE;
-    @Deprecated
-    public static Server _get_DONT_USE() {
-        return _s_DONT_USE;
-    }
-
     @Override
     public void start() {
         server = createServer();
-        _s_DONT_USE = server;
 
         ServerConnector serverConnector = createServerConnector(server);
         serverConnector.setIdleTimeout(TimeUnit.HOURS.toMillis(1));
@@ -230,7 +221,7 @@ public class JettyServer extends AbstractWebServer<JettySettings> {
         try {
             // create an instance of JettyWebSocketFilter
             Class<?> pippoFilterClass = Class.forName("ro.pippo.jetty.websocket.JettyWebSocketFilter");
-            return (PippoFilter) pippoFilterClass.getDeclaredConstructor().newInstance();
+            return (PippoFilter) pippoFilterClass.getDeclaredConstructor(Server.class).newInstance(server);
         } catch (Exception e) {
             throw new PippoRuntimeException(e);
         }
