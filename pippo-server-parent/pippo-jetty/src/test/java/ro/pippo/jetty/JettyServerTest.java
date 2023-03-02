@@ -59,7 +59,6 @@ public class JettyServerTest extends PippoTest {
 
     @Test
     public void testWsText() throws IOException, ExecutionException, InterruptedException {
-
         BlockingQueue<String> incoming = new LinkedBlockingQueue<>();
 
         WsEchoEndpoint clientEndPoint = new WsEchoEndpoint(incoming);
@@ -67,21 +66,20 @@ public class JettyServerTest extends PippoTest {
         CompletableFuture<Session> clientSessionPromise = pippoRule.wsConnect(clientEndPoint, "/ws/echo");
 
         try (Session session = clientSessionPromise.get()) {
-
             String message = "ping";
 
             session.getRemote().sendString(message);
 
             String response = incoming.take();
             Assertions.assertEquals(response, message);
-
         }
-
     }
 
     @WebSocket
     @SuppressWarnings("InnerClassMayBeStatic")
     public class WsEchoEndpoint {
+
+        private final BlockingQueue<String> queue;
 
         public WsEchoEndpoint(BlockingQueue<String> queue) {
             this.queue = queue;
@@ -91,8 +89,6 @@ public class JettyServerTest extends PippoTest {
         public void onText(@SuppressWarnings("unused") Session session, String message) throws InterruptedException {
             queue.put(message);
         }
-
-        private final BlockingQueue<String> queue;
 
     }
 

@@ -46,7 +46,6 @@ public class JettyWebSocketFilter extends AbstractWebSocketFilter {
 
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
-
         super.init(filterConfig);
 
         try {
