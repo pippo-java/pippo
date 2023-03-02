@@ -38,6 +38,7 @@
             <groupId>org.eclipse.jetty.websocket</groupId>
             <artifactId>websocket-jetty-client</artifactId>
             <version>${jetty-websocket.version}</version>
+            <optional>true</optional>
         </dependency>
 
         <dependency>

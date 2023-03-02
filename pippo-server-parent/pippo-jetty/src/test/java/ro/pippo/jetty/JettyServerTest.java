@@ -25,8 +25,8 @@ import org.junit.jupiter.api.extension.RegisterExtension;
 import ro.pippo.core.Application;
 import ro.pippo.core.websocket.WebSocketContext;
 import ro.pippo.core.websocket.WebSocketHandler;
-import ro.pippo.test.PippoExtension;
 import ro.pippo.test.PippoTest;
+import ro.pippo.test.PippoWebSocketExtension;
 
 import java.io.IOException;
 import java.util.concurrent.BlockingQueue;
@@ -37,7 +37,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 public class JettyServerTest extends PippoTest {
 
     @RegisterExtension
-    public static PippoExtension pippoRule = new PippoExtension(new Application() {{
+    public static PippoWebSocketExtension pippoExtension = new PippoWebSocketExtension(new Application() {{
 
         GET("/foo", context -> context.send("foo"));
 
@@ -78,7 +78,7 @@ public class JettyServerTest extends PippoTest {
 
         WsEchoEndpoint clientEndPoint = new WsEchoEndpoint(incoming);
 
-        CompletableFuture<Session> clientSessionPromise = pippoRule.wsConnect(clientEndPoint, "/ws/echo");
+        CompletableFuture<Session> clientSessionPromise = pippoExtension.wsConnect(clientEndPoint, "/ws/echo");
 
         try (Session session = clientSessionPromise.get()) {
             String message = "ping";

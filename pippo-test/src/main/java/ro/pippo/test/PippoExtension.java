@@ -15,8 +15,6 @@
  */
 package ro.pippo.test;
 
-import org.eclipse.jetty.websocket.api.Session;
-import org.eclipse.jetty.websocket.client.WebSocketClient;
 import org.junit.jupiter.api.extension.AfterAllCallback;
 import org.junit.jupiter.api.extension.BeforeAllCallback;
 import org.slf4j.Logger;
@@ -33,10 +31,6 @@ import ro.pippo.core.ContentTypeEngine;
 import ro.pippo.core.Pippo;
 import ro.pippo.core.PippoRuntimeException;
 
-import java.io.IOException;
-import java.net.URI;
-import java.util.concurrent.CompletableFuture;
-
 /**
  * Start Pippo prior to test execution and stop Pippo after the tests have completed.
  *
@@ -46,8 +40,7 @@ public class PippoExtension implements BeforeAllCallback, AfterAllCallback {
 
     private static final Logger log = LoggerFactory.getLogger(PippoExtension.class);
 
-    private final Pippo pippo;
-    private final WebSocketClient webSocketClient;
+    protected final Pippo pippo;
 
     public PippoExtension() {
         this(new Application());
@@ -71,8 +64,6 @@ public class PippoExtension implements BeforeAllCallback, AfterAllCallback {
         this.pippo = pippo;
 
         pippo.getServer().setPort(port);
-        webSocketClient = new WebSocketClient();
-        webSocketClient.setMaxTextMessageSize(8 * 1024);
     }
 
     /**
@@ -88,29 +79,15 @@ public class PippoExtension implements BeforeAllCallback, AfterAllCallback {
         } catch (Exception e) {
             throw new RuntimeException("Error starting Pippo", e);
         }
-        try {
-            webSocketClient.start();
-        } catch (Exception e) {
-            throw new RuntimeException("Error starting WebSocket client", e);
-        }
         initRestAssured();
     }
 
     public void stopPippo() {
         try {
-            webSocketClient.stop();
-        } catch (Exception e) {
-            log.error("Error stopping WebSocket client", e);
-        }
-        try {
             pippo.stop();
         } catch (Exception e) {
             log.error("Error stopping Pippo", e);
         }
-    }
-
-    public CompletableFuture<Session> wsConnect(Object clientEndPoint, String path) throws IOException {
-        return webSocketClient.connect(clientEndPoint, URI.create(String.format("ws://%s:%d%s", "localhost", pippo.getServer().getPort(), path)));
     }
 
     @Override
