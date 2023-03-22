@@ -24,10 +24,10 @@ import ro.pippo.core.util.CookieUtils;
 import ro.pippo.core.util.IoUtils;
 import ro.pippo.core.util.StringUtils;
 
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
-import javax.servlet.http.Part;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
+import jakarta.servlet.http.Part;
 import java.net.URI;
 import java.util.Collection;
 import java.util.Collections;

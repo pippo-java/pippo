@@ -37,7 +37,7 @@ import ro.pippo.core.util.ServiceLocator;
 import ro.pippo.core.websocket.WebSocketHandler;
 import ro.pippo.core.websocket.WebSocketRouter;
 
-import javax.servlet.ServletContext;
+import jakarta.servlet.ServletContext;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;

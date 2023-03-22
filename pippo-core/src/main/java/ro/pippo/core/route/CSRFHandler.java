@@ -23,7 +23,7 @@ import ro.pippo.core.StatusCodeException;
 import ro.pippo.core.util.CryptoUtils;
 import ro.pippo.core.util.StringUtils;
 
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletResponse;
 import java.util.Arrays;
 import java.util.List;
 

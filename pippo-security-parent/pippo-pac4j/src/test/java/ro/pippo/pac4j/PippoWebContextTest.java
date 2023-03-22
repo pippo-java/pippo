@@ -34,8 +34,8 @@ import ro.pippo.core.Session;
 import ro.pippo.core.route.RouteContext;
 import ro.pippo.core.route.Router;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
@@ -314,8 +314,8 @@ public class PippoWebContextTest {
     public void shouldReturnAllCookiesFromUnderlyingRequest() {
         int authCookieExpiry = 604800000;
 
-        javax.servlet.http.Cookie testCookie = new javax.servlet.http.Cookie("test", "talk");
-        javax.servlet.http.Cookie authCookie = new javax.servlet.http.Cookie("sid", "DEADBEEF");
+        jakarta.servlet.http.Cookie testCookie = new jakarta.servlet.http.Cookie("test", "talk");
+        jakarta.servlet.http.Cookie authCookie = new jakarta.servlet.http.Cookie("sid", "DEADBEEF");
         authCookie.setDomain("foo.example.com");
         authCookie.setPath(DEFAULT_APPLICATION_PATH);
         authCookie.setComment("auth cookie");
@@ -324,7 +324,7 @@ public class PippoWebContextTest {
         authCookie.setMaxAge(authCookieExpiry);
 
         when(mockHttpRequest.getCookies())
-            .thenReturn(new javax.servlet.http.Cookie[] { testCookie, authCookie });
+            .thenReturn(new jakarta.servlet.http.Cookie[] { testCookie, authCookie });
 
         PippoWebContext context = makePippoWebContext();
 
@@ -351,7 +351,7 @@ public class PippoWebContextTest {
     @Test
     public void shouldReturnEmptyCollectionIfNoCookiesInUnderlyingRequest() {
         when(mockHttpRequest.getCookies())
-            .thenReturn(new javax.servlet.http.Cookie[0]);
+            .thenReturn(new jakarta.servlet.http.Cookie[0]);
 
         PippoWebContext context = makePippoWebContext();
 
@@ -374,14 +374,14 @@ public class PippoWebContextTest {
 
         makePippoWebContext().addResponseCookie(cookieToAdd);
 
-        ArgumentCaptor<javax.servlet.http.Cookie> cookieArgumentCaptor
-            = ArgumentCaptor.forClass(javax.servlet.http.Cookie.class);
+        ArgumentCaptor<jakarta.servlet.http.Cookie> cookieArgumentCaptor
+            = ArgumentCaptor.forClass(jakarta.servlet.http.Cookie.class);
 
         response.commit();
 
         verify(mockHttpResponse, times(1)).addCookie(cookieArgumentCaptor.capture());
 
-        javax.servlet.http.Cookie cookieAdded = cookieArgumentCaptor.getValue();
+        jakarta.servlet.http.Cookie cookieAdded = cookieArgumentCaptor.getValue();
 
         assertThat(cookieAdded.getName(), is(cookieToAdd.getName()));
         assertThat(cookieAdded.getValue(), is(cookieToAdd.getValue()));

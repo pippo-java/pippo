@@ -19,7 +19,7 @@ import org.eclipse.jetty.websocket.api.Session;
 import ro.pippo.core.websocket.WebSocketConnection;
 
 import java.io.IOException;
-import java.net.InetSocketAddress;
+import java.net.SocketAddress;
 import java.nio.ByteBuffer;
 
 /**
@@ -63,7 +63,7 @@ public class JettyWebSocketConnection implements WebSocketConnection {
     }
 
     @Override
-    public InetSocketAddress getRemoteAddress() {
+    public SocketAddress getRemoteAddress() {
         return session.getRemoteAddress();
     }
 

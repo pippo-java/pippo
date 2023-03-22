@@ -70,8 +70,8 @@ public class TomcatServer extends AbstractWebServer<TomcatSettings> {
         wrapper.setLoadOnStartup(1);
         wrapper.setServlet(pippoServlet);
         wrapper.setMultipartConfigElement(createMultipartConfigElement());
+        wrapper.addMapping(pippoFilterPath);
         context.addChild(wrapper);
-        context.addServletMapping(pippoFilterPath, name);
 
         // inject application as context attribute
         context.getServletContext().setAttribute(PIPPO_APPLICATION, getApplication());
@@ -128,20 +128,19 @@ public class TomcatServer extends AbstractWebServer<TomcatSettings> {
         connector.setPort(getSettings().getPort());
         connector.setSecure(true);
         connector.setScheme("https");
-        connector.setAttribute("keyAlias", getSettings().getKeyAlias());
-        connector.setAttribute("keystorePass", getSettings().getKeystorePassword());
-        connector.setAttribute("keystoreType", getSettings().getKeyType());
-        connector.setAttribute("keystoreFile", getSettings().getKeystoreFile());
-        connector.setAttribute("clientAuth", getSettings().getClientAuth());
+        connector.setProperty("keyAlias", getSettings().getKeyAlias());
+        connector.setProperty("keystorePass", getSettings().getKeystorePassword());
+        connector.setProperty("keystoreType", getSettings().getKeyType());
+        connector.setProperty("keystoreFile", getSettings().getKeystoreFile());
+        connector.setProperty("clientAuth", getSettings().getClientAuth() ? "required" : "none");
         if (getSettings().getClientAuth()) {
-            connector.setAttribute("truststoreFile", getSettings().getTruststoreFile());
-            connector.setAttribute("truststorePass", getSettings().getTruststorePassword());
+            connector.setProperty("truststoreFile", getSettings().getTruststoreFile());
+            connector.setProperty("truststorePassword", getSettings().getTruststorePassword());
         }
-        connector.setAttribute("protocol", "HTTP/1.1");
-        connector.setAttribute("sslProtocol", "TLS");
-        connector.setAttribute("maxThreads", getSettings().getMaxConnections());
-        connector.setAttribute("protocol", "org.apache.coyote.http11.Http11AprProtocol");
-        connector.setAttribute("SSLEnabled", true);
+        connector.setProperty("protocol", "HTTP/1.1");
+        connector.setProperty("sslProtocol", "TLS");
+        connector.setProperty("maxThreads", String.valueOf(getSettings().getMaxConnections()));
+        connector.setProperty("SSLEnabled", "true");
     }
 
 }

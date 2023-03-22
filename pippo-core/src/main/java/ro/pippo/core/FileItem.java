@@ -17,7 +17,7 @@ package ro.pippo.core;
 
 import ro.pippo.core.util.IoUtils;
 
-import javax.servlet.http.Part;
+import jakarta.servlet.http.Part;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;

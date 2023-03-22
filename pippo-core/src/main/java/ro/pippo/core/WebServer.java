@@ -23,7 +23,7 @@ import java.util.EventListener;
 public interface WebServer<T extends WebServerSettings> {
 
     /**
-     * Attribute name used to retrieve the application instance from a {@link javax.servlet.ServletContext}.
+     * Attribute name used to retrieve the application instance from a {@link jakarta.servlet.ServletContext}.
      * See also {@link WebServerInitializer}.
      *
      * <pre>
@@ -100,15 +100,15 @@ public interface WebServer<T extends WebServerSettings> {
      * Servlet API provides following Listener interfaces:
      *
      * <ul>
-     * <li>{@code javax.servlet.ServletContextListener}</li>
-     * <li>{@code javax.servlet.ServletContextAttributeListener}</li>
-     * <li>{@code javax.servlet.ServletRequestListener}</li>
-     * <li>{@code javax.servlet.ServletRequestAttributeListener}</li>
-     * <li>{@code javax.servlet.http.HttpSessionListener}</li>
-     * <li>{@code javax.servlet.http.HttpSessionBindingListener}</li>
-     * <li>{@code javax.servlet.http.HttpSessionAttributeListener}</li>
-     * <li>{@code javax.servlet.http.HttpSessionActivationListener}</li>
-     * <li>{@code javax.servlet.AsyncListener}</li>
+     * <li>{@link jakarta.servlet.ServletContextListener}</li>
+     * <li>{@link jakarta.servlet.ServletContextAttributeListener}</li>
+     * <li>{@link jakarta.servlet.ServletRequestListener}</li>
+     * <li>{@link jakarta.servlet.ServletRequestAttributeListener}</li>
+     * <li>{@link jakarta.servlet.http.HttpSessionListener}</li>
+     * <li>{@link jakarta.servlet.http.HttpSessionBindingListener}</li>
+     * <li>{@link jakarta.servlet.http.HttpSessionAttributeListener}</li>
+     * <li>{@link jakarta.servlet.http.HttpSessionActivationListener}</li>
+     * <li>{@link jakarta.servlet.AsyncListener}</li>
      * </ul>
      *
      * @param listener

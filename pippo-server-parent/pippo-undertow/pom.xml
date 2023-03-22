@@ -15,7 +15,7 @@
     <description>Undertow embedded server</description>
 
     <properties>
-        <undertow.version>1.4.27.Final</undertow.version>
+        <undertow.version>2.2.20.Final</undertow.version>
     </properties>
 
     <dependencies>
@@ -27,7 +27,7 @@
 
         <dependency>
             <groupId>io.undertow</groupId>
-            <artifactId>undertow-servlet</artifactId>
+            <artifactId>undertow-servlet-jakarta</artifactId>
             <version>${undertow.version}</version>
         </dependency>
 

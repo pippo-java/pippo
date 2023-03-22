@@ -15,9 +15,11 @@
  */
 package ro.pippo.jetty.websocket;
 
-import org.eclipse.jetty.websocket.api.WebSocketPolicy;
-import org.eclipse.jetty.websocket.server.WebSocketServerFactory;
-import org.eclipse.jetty.websocket.servlet.ServletUpgradeRequest;
+import org.eclipse.jetty.server.Server;
+import org.eclipse.jetty.websocket.core.server.WebSocketServerComponents;
+import org.eclipse.jetty.websocket.server.JettyServerUpgradeRequest;
+import org.eclipse.jetty.websocket.server.JettyWebSocketCreator;
+import org.eclipse.jetty.websocket.server.JettyWebSocketServerContainer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ro.pippo.core.Request;
@@ -25,9 +27,11 @@ import ro.pippo.core.Response;
 import ro.pippo.core.websocket.AbstractWebSocketFilter;
 import ro.pippo.core.websocket.WebSocketRouter;
 
-import javax.servlet.FilterConfig;
-import javax.servlet.ServletException;
+import jakarta.servlet.FilterConfig;
+import jakarta.servlet.ServletException;
+
 import java.io.IOException;
+import java.time.Duration;
 
 /**
  * @author Decebal Suiu
@@ -36,33 +40,40 @@ public class JettyWebSocketFilter extends AbstractWebSocketFilter {
 
     private static final Logger log = LoggerFactory.getLogger(JettyWebSocketFilter.class);
 
-    private WebSocketServerFactory webSocketFactory;
+    private final Server server;
+    private JettyWebSocketServerContainer serverContainer;
+    private JettyWebSocketCreator creator;
+
+    public JettyWebSocketFilter(Server server) {
+        this.server = server;
+    }
 
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
         super.init(filterConfig);
 
         try {
-            WebSocketPolicy serverPolicy = WebSocketPolicy.newServerPolicy();
+            WebSocketServerComponents.ensureWebSocketComponents(server, filterConfig.getServletContext());
+            serverContainer = JettyWebSocketServerContainer.ensureContainer(filterConfig.getServletContext());
 
             String inputBufferSize = filterConfig.getInitParameter("inputBufferSize");
             if (inputBufferSize != null) {
-                serverPolicy.setInputBufferSize(Integer.parseInt(inputBufferSize));
+                serverContainer.setInputBufferSize(Integer.parseInt(inputBufferSize));
             }
 
             String idleTimeout = filterConfig.getInitParameter("idleTimeout");
             if (idleTimeout != null) {
-                serverPolicy.setIdleTimeout(Integer.parseInt(idleTimeout));
+                serverContainer.setIdleTimeout(Duration.ofMillis(Long.parseLong(idleTimeout)));
             }
 
             String maxTextMessageSize = filterConfig.getInitParameter("maxTextMessageSize");
             if (maxTextMessageSize != null) {
-                serverPolicy.setMaxTextMessageSize(Integer.parseInt(maxTextMessageSize));
+                serverContainer.setMaxTextMessageSize(Integer.parseInt(maxTextMessageSize));
             }
 
-            webSocketFactory = new WebSocketServerFactory(filterConfig.getServletContext(), serverPolicy);
-            webSocketFactory.setCreator((request, response) -> createWebSocketAdapter(request));
-            webSocketFactory.start();
+            creator = (request, response) -> createWebSocketAdapter(request);
+
+            serverContainer.start();
         } catch (ServletException e) {
             throw e;
         } catch (Exception e) {
@@ -72,9 +83,9 @@ public class JettyWebSocketFilter extends AbstractWebSocketFilter {
 
     @Override
     public void destroy() {
-        if (webSocketFactory != null) {
+        if (serverContainer != null) {
             try {
-                webSocketFactory.stop();
+                serverContainer.stop();
             } catch (Exception e) {
                 log.warn("A problem occurred while stopping the web socket factory", e);
             }
@@ -85,13 +96,11 @@ public class JettyWebSocketFilter extends AbstractWebSocketFilter {
 
     @Override
     protected boolean acceptWebSocket(Request request, Response response) throws IOException, ServletException {
-        return super.acceptWebSocket(request, response) && webSocketFactory
-            .acceptWebSocket(request.getHttpServletRequest(), response.getHttpServletResponse());
+        return super.acceptWebSocket(request, response) && serverContainer.upgrade(creator, request.getHttpServletRequest(), response.getHttpServletResponse());
     }
 
-    protected JettyWebSocketAdapter createWebSocketAdapter(ServletUpgradeRequest request) {
+    protected JettyWebSocketAdapter createWebSocketAdapter(JettyServerUpgradeRequest request) {
         WebSocketRouter.WebSocketMatch match = findWebSocketRoute(request.getRequestPath());
-
         return new JettyWebSocketAdapter(match.getHandler(), match.getPathParameters());
     }
 

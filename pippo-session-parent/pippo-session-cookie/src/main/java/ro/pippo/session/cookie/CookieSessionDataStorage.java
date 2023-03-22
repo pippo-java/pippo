@@ -26,9 +26,9 @@ import ro.pippo.session.DefaultSessionData;
 import ro.pippo.session.SessionDataStorage;
 import ro.pippo.session.SessionDataTranscoder;
 
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 /**
  * @author Decebal Suiu
