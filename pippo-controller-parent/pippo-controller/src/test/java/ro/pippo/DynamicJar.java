@@ -233,7 +233,11 @@ public class DynamicJar {
             Enumeration<JarEntry> enumEntries = jar.entries();
             while (enumEntries.hasMoreElements()) {
                 JarEntry entry = enumEntries.nextElement();
-                File f = destDir.resolve(entry.getName()).toFile();
+                final Path zipEntryPath = destDir.resolve(entry.getName());
+                if (!zipEntryPath.normalize().startsWith(destDir.normalize())) {
+                    throw new IOException("Bad zip entry");
+                }
+                File f = zipEntryPath.toFile();
                 f.getParentFile().mkdirs();
                 InputStream is = jar.getInputStream(entry);
                 FileOutputStream fos = new FileOutputStream(f);
