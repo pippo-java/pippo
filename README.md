@@ -86,9 +86,9 @@ public class Contact  {
 }
 ```
 
-The second step is to choose your favorite [server](http://www.pippo.ro/doc/server.html),
-[template engine](http://www.pippo.ro/doc/templates.html)
-and [content type engine](http://www.pippo.ro/doc/content-types.html).  
+The second step is to choose your favorite [server](http://pippo-java.github.io/doc/server.html),
+[template engine](http://pippo-java.github.io/doc/templates.html)
+and [content type engine](http://pippo-java.github.io/doc/content-types.html).  
 For example, I will choose `Jetty` as server, `Freemarker` as template engine, `Jackson` as JSON engine and `JAXB` as XML engine.  
 My Maven `pom.xml` looks like:
 
@@ -259,7 +259,7 @@ Don't forget that the `Controller` concept is included in `pippo-controller` mod
 
 Documentation
 ---------------
-Documentation is available on [pippo.ro](http://www.pippo.ro)
+Documentation is available on [pippo-java.github.io](https://pippo-java.github.io)
 
 Demo
 ---------------
